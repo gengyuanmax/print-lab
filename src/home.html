@@ -1,0 +1,192 @@
+<title>印刷实验室</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@400;700;900&display=swap">
+<style>
+/*@shared*/
+/* Hub: the same proof-sheet identity as the labs. Three numbered "plates", one per lab, each with a small live proof. */
+.labs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+@media (max-width:980px){.labs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.labs{grid-template-columns:minmax(0,1fr)}.labcard .proofbox{aspect-ratio:1}}
+.labcard{display:flex;flex-direction:column;gap:12px;color:var(--ink);text-decoration:none;border-top:1.5px solid var(--ink);padding-top:12px;min-width:0}
+.labcard .proofbox{position:relative;background:var(--sheet);border:1px solid var(--rule);padding:16px;aspect-ratio:4/5;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.labcard .proofbox > *{width:100%;height:100%;display:block}
+.labcard .proofbox canvas{object-fit:contain}
+a.labcard:hover .proofbox{border-color:var(--ink)}
+a.labcard:hover .go{background:var(--ink);color:var(--sheet)}
+a.labcard:focus-visible{outline:2.5px solid var(--blue);outline-offset:4px}
+.lhead{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.num{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--muted)}
+.status{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;border:1.5px solid var(--ink);padding:3px 7px}
+.status.soon{border-style:dashed;color:var(--muted);border-color:var(--muted)}
+.labcard h2{margin:0;font-family:var(--display);font-weight:800;font-size:28px;line-height:1.05;letter-spacing:-.01em}
+.labcard h2 small{display:block;font-family:var(--mono);font-weight:400;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.labcard p{margin:0;text-wrap:pretty}
+.labcard ul{margin:0;padding-left:1.15em;display:flex;flex-direction:column;gap:3px;font-size:13.5px;color:var(--muted)}
+.go{align-self:flex-start;margin-top:auto}
+.labcard.soon{color:var(--muted)}
+.labcard.soon .proofbox{opacity:.75}
+.split{margin-top:56px;border-top:3px solid var(--ink);padding-top:16px;display:flex;flex-direction:column;gap:14px}
+.split h2{margin:0;font-family:var(--display);font-weight:800;font-size:28px;letter-spacing:-.01em}
+.split > p{margin:0;max-width:44em;color:var(--muted);text-wrap:pretty}
+.layers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1.5px solid var(--ink)}
+@media (max-width:760px){.layers{grid-template-columns:minmax(0,1fr)}}
+.layer{padding:14px;display:flex;flex-direction:column;gap:6px;font-size:13.5px;min-width:0}
+.layer + .layer{border-left:1.5px solid var(--ink)}
+@media (max-width:760px){.layer + .layer{border-left:0;border-top:1.5px solid var(--ink)}}
+.layer b{font-family:var(--display);font-weight:800;font-size:18px}
+.layer .q{color:var(--ink)}
+.layer .k{font-family:var(--mono);font-size:11.5px;color:var(--muted);line-height:1.6}
+.foot{margin-top:40px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
+.foot a{color:var(--ink);text-decoration-color:var(--pink);text-decoration-thickness:2px;text-underline-offset:3px}
+</style>
+
+<div class="wrap">
+  <header class="mast">
+    <div class="mast-top">
+      <div class="eyebrow"><span>Print labs · <span class="zh">网点 / 版式 / 实物</span><span class="en">Dots / Layout / Object</span></span></div>
+      <div class="langsw" role="group" aria-label="Language / 语言">
+        <button type="button" data-setlang="zh" lang="zh-CN">中文</button>
+        <button type="button" data-setlang="en" lang="en">EN</button>
+      </div>
+    </div>
+    <h1 class="mis"><span aria-hidden="true"><span class="zh">印刷实验室</span><span class="en">Print Labs</span></span><span><span class="zh">印刷实验室</span><span class="en">Print Labs</span></span></h1>
+    <p class="lede"><span class="zh">一组关于 Swiss、Riso 和半调网点的交互实验。每个实验室把一类印刷风格拆成可以调的参数：图像怎么变成墨点，页面怎么排，纸怎么变成拿在手里的东西。</span><span class="en">Interactive experiments with Swiss, Riso and halftone print styles. Each lab breaks one part of the look into settings you can adjust: how an image becomes ink, how a page is laid out, and how paper becomes an object you hold.</span></p>
+  </header>
+
+  <main class="labs">
+    <a class="labcard" data-page="print" href="print.html">
+      <div class="proofbox"><canvas id="pvPrint" width="480" height="600" aria-hidden="true"></canvas></div>
+      <div class="lhead"><span class="num">01</span><span class="status"><span class="zh">可用</span><span class="en">Open</span></span></div>
+      <h2><span class="zh">印痕实验室</span><span class="en">Print Texture Lab</span><small><span class="zh">Print texture lab</span><span class="en">印痕实验室</span></small></h2>
+      <p><span class="zh">图像怎么变成墨点，墨点怎么落在纸上。</span><span class="en">How an image turns into dots, and how the dots land on paper.</span></p>
+      <ul>
+        <li><span class="zh">网点、抖动、FM 颗粒等加网方式</span><span class="en">Halftone dots, dithering, FM grain and other screens</span></li>
+        <li><span class="zh">丝网、凸版、木刻、印章、拓印、复印</span><span class="en">Screen print, letterpress, woodcut, seals, rubbings, photocopies</span></li>
+        <li><span class="zh">Riso 油墨、纸张、套色错位和缺墨</span><span class="en">Riso inks, paper stocks, misregistration and ink starvation</span></li>
+        <li><span class="zh">分版视图，预设特征可以逐个关掉</span><span class="en">Plate view; switch a preset's features off one by one</span></li>
+      </ul>
+      <span class="btn go"><span class="zh">打开 →</span><span class="en">Open →</span></span>
+    </a>
+
+    <a class="labcard" data-page="layout" href="layout.html">
+      <div class="proofbox"><svg id="pvLayout" viewBox="0 0 400 500" aria-hidden="true"></svg></div>
+      <div class="lhead"><span class="num">02</span><span class="status"><span class="zh">可用</span><span class="en">Open</span></span></div>
+      <h2><span class="zh">版式实验室</span><span class="en">Layout Lab</span><small><span class="zh">Layout lab</span><span class="en">版式实验室</span></small></h2>
+      <p><span class="zh">元素怎么在页面上排：同一套规则，换一个种子就是另一张海报。</span><span class="en">How elements sit on the page: one set of rules, a new poster with every seed.</span></p>
+      <ul>
+        <li><span class="zh">网格、字号比例、构图和阅读路径</span><span class="en">Grids, type scales, composition and reading paths</span></li>
+        <li><span class="zh">油墨叠印、满版底色、空印</span><span class="en">Overprinting, floods and knockouts</span></li>
+        <li><span class="zh">拼贴材料、印章、中文排印</span><span class="en">Collage materials, seals and Chinese typesetting</span></li>
+        <li><span class="zh">五种风格卡，可以并排对比</span><span class="en">Five style cards you can compare side by side</span></li>
+      </ul>
+      <span class="btn go"><span class="zh">打开 →</span><span class="en">Open →</span></span>
+    </a>
+
+    <div class="labcard soon" aria-disabled="true">
+      <div class="proofbox"><svg id="pvObject" viewBox="0 0 400 500" aria-hidden="true"></svg></div>
+      <div class="lhead"><span class="num">03</span><span class="status soon"><span class="zh">下一个</span><span class="en">Next</span></span></div>
+      <h2><span class="zh">实物实验室</span><span class="en">Object Lab</span><small><span class="zh">Object lab</span><span class="en">实物实验室</span></small></h2>
+      <p><span class="zh">纸怎么变成拿在手里的东西。正在筹备。</span><span class="en">How paper becomes something you hold. In preparation.</span></p>
+      <ul>
+        <li><span class="zh">画幅与出血</span><span class="en">Formats and bleed</span></li>
+        <li><span class="zh">一张纸折成 8 页的 zine</span><span class="en">An 8-page zine from one sheet</span></li>
+        <li><span class="zh">印前检查</span><span class="en">Preflight checks</span></li>
+      </ul>
+    </div>
+  </main>
+
+  <section class="split" data-aria-zh="三个实验室怎么分工" data-aria-en="How the labs divide the work">
+    <h2><span class="zh">三个实验室怎么分工</span><span class="en">How the labs divide the work</span></h2>
+    <p><span class="zh">这里说的“风格”，是一组能一眼认出来的最终视觉特征，而不是某一条生产流程。所以每个预设都描述最终效果，再标出每个特征来自设计决定、工艺还是材料。</span><span class="en">A “style” here is a set of final visual features you recognise at a glance, not a particular production process. So every preset describes the final look, then marks whether each feature comes from a design decision, a process or a material.</span></p>
+    <div class="layers">
+      <div class="layer"><b><span class="zh">01 印痕</span><span class="en">01 Print texture</span></b><span class="q"><span class="zh">图像怎么变成墨，墨怎么留在纸上？</span><span class="en">How does an image become ink, and how does the ink sit on paper?</span></span><span class="k"><span class="zh">加网 · 工艺 · 影调 · 油墨 · 纸张 · 反白 · 瑕疵</span><span class="en">Screens · processes · tone · inks · paper · knockouts · flaws</span></span></div>
+      <div class="layer"><b><span class="zh">02 版式</span><span class="en">02 Layout</span></b><span class="q"><span class="zh">字、图和形状在页面上怎么排？</span><span class="en">How are type, images and shapes arranged on the page?</span></span><span class="k"><span class="zh">网格 · 字体 · 构图 · 动线 · 形状 · 拼贴 · 印章 · 规则</span><span class="en">Grid · type · composition · flow · shapes · collage · seals · rules</span></span></div>
+      <div class="layer"><b><span class="zh">03 实物</span><span class="en">03 Object</span></b><span class="q"><span class="zh">印好的纸怎么变成一件东西？</span><span class="en">How does a printed sheet become an object?</span></span><span class="k"><span class="zh">画幅 · 出血 · 折页 · 装订 · 印前检查</span><span class="en">Format · bleed · folding · binding · preflight</span></span></div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span><span class="zh">每个实验室的页面底部都列出了参考资料；参数清单是对设计实践的综合整理，不出自某一本书。</span><span class="en">Each lab lists its references at the bottom of the page. The parameter lists are a synthesis of design practice, not taken from any single book.</span></span>
+    <a href="https://github.com/gengyuanmax/print-lab" target="_blank" rel="noopener">GitHub · gengyuanmax/print-lab</a>
+  </footer>
+</div>
+
+<script>/*@links*/</script>
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+const PINK = '#FF48B0', BLUE = '#0078BF', YELLOW = '#FFE800', INK = '#1C1B22', PAPER = '#FBFBF8';
+
+/* 01: a two-colour AM halftone of a sphere, the second plate slightly off register */
+function drawPrint(){
+  const c = $('pvPrint'), g = c.getContext('2d'), W = c.width, H = c.height;
+  g.fillStyle = PAPER; g.fillRect(0,0,W,H);
+  const tone = (x, y) => {               // darkness of a lit sphere on a light ground with a slope below
+    const cx = W*.48, cy = H*.42, r = W*.36, dx = (x-cx)/r, dy = (y-cy)/r, d2 = dx*dx + dy*dy;
+    if (d2 < 1){ const lit = Math.max(0, -dx*.45 - dy*.55 + Math.sqrt(1-d2)*.75); return Math.min(1, .95 - lit*.85); }
+    return y > H*.74 - (x/W)*H*.12 ? .55 + .3*(x/W) : .06;
+  };
+  const plate = (colour, angle, cell, ox, oy, k) => {
+    g.save(); g.globalCompositeOperation = 'multiply'; g.fillStyle = colour;
+    const a = angle*Math.PI/180, ca = Math.cos(a), sa = Math.sin(a), R = Math.hypot(W,H);
+    for (let u=-R; u<R; u+=cell) for (let v=-R; v<R; v+=cell){
+      const x = W/2 + u*ca - v*sa, y = H/2 + u*sa + v*ca;
+      if (x < -cell || y < -cell || x > W+cell || y > H+cell) continue;
+      const t = k(tone(x, y)); if (t < .03) continue;
+      g.beginPath(); g.arc(x+ox, y+oy, cell*.62*Math.sqrt(t), 0, Math.PI*2); g.fill();
+    }
+    g.restore();
+  };
+  plate(PINK, 15, 9, 0, 0, t => t);
+  plate(BLUE, 75, 9, 5, 3, t => Math.max(0, t*1.25 - .45));
+}
+
+/* 02: a small Swiss-ish poster on a grid, the accent plate off register */
+function drawLayout(){
+  const s = $('pvLayout'), W = 400, H = 500, m = 28, cols = 6, gut = 8, cw = (W - 2*m - gut*(cols-1))/cols;
+  const x = i => m + i*(cw+gut);
+  let out = `<rect width="${W}" height="${H}" fill="${PAPER}"/>`;
+  for (let i=0;i<cols;i++) out += `<rect x="${x(i)}" y="${m}" width="${cw}" height="${H-2*m}" fill="rgba(255,72,176,.07)"/>`;
+  out += `<g style="mix-blend-mode:multiply"><circle cx="${x(4)+cw*.4}" cy="150" r="96" fill="${PINK}"/><rect x="${x(0)+5}" y="292" width="${x(3)+cw-x(0)}" height="46" fill="${BLUE}"/></g>`;
+  out += `<text x="${x(0)}" y="118" font-family="Bricolage Grotesque, Noto Sans SC, sans-serif" font-weight="800" font-size="78" letter-spacing="-2" fill="${INK}" style="mix-blend-mode:multiply">GRID</text>`;
+  out += `<rect x="${x(0)}" y="380" width="${x(5)+cw-x(0)}" height="4" fill="${INK}"/>`;
+  for (let r=0;r<5;r++) out += `<rect x="${x(3)}" y="${398 + r*12}" width="${(x(5)+cw-x(3))*(r===4?.55:1)}" height="4" fill="${INK}" opacity=".55"/>`;
+  for (let r=0;r<3;r++) out += `<rect x="${x(0)}" y="${398 + r*12}" width="${x(1)+cw-x(0)}" height="4" fill="${INK}" opacity=".35"/>`;
+  out += `<text x="${x(0)}" y="${H-m+16}" font-family="JetBrains Mono, monospace" font-size="10" fill="${INK}" letter-spacing="1.5">— 02 / 06 —</text>`;
+  s.innerHTML = out;
+}
+
+/* 03: the classic one-sheet 8-page zine imposition: top row upside down, a cut along the middle fold */
+function drawObject(){
+  const s = $('pvObject'), W = 400, H = 500, sw = 340, sh = 240, x0 = (W-sw)/2, y0 = 120, pw = sw/4, ph = sh/2;
+  const top = [5,4,3,2], bottom = [6,7,8,1];
+  let out = `<rect width="${W}" height="${H}" fill="${PAPER}"/><rect x="${x0}" y="${y0}" width="${sw}" height="${sh}" fill="#fff" stroke="${INK}" stroke-width="1.5"/>`;
+  for (let i=1;i<4;i++) out += `<line x1="${x0+i*pw}" y1="${y0}" x2="${x0+i*pw}" y2="${y0+sh}" stroke="${INK}" stroke-width="1" stroke-dasharray="4 4"/>`;
+  out += `<line x1="${x0}" y1="${y0+ph}" x2="${x0+sw}" y2="${y0+ph}" stroke="${INK}" stroke-width="1" stroke-dasharray="4 4"/>`;
+  out += `<line x1="${x0+pw}" y1="${y0+ph}" x2="${x0+3*pw}" y2="${y0+ph}" stroke="${PINK}" stroke-width="3"/>`;
+  const num = (n, cx, cy, flip) => `<text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central" font-family="Bricolage Grotesque, sans-serif" font-weight="800" font-size="30" fill="${n===1 ? BLUE : INK}"${flip ? ` transform="rotate(180 ${cx} ${cy})"` : ''}>${n}</text>`;
+  top.forEach((n,i) => out += num(n, x0 + pw*(i+.5), y0 + ph*.5, true));
+  bottom.forEach((n,i) => out += num(n, x0 + pw*(i+.5), y0 + ph*1.5, false));
+  out += `<g font-family="JetBrains Mono, monospace" font-size="11" fill="${INK}" letter-spacing="1"><text x="${x0}" y="${y0-18}">A4 · 8 PP</text><text x="${x0+sw}" y="${y0+sh+28}" text-anchor="end" fill="${PINK}">✂ CUT</text></g>`;
+  out += `<g stroke="${INK}" stroke-width="1"><path d="M${x0-12} ${y0}H${x0-4}M${x0} ${y0-12}V${y0-4}M${x0+sw+12} ${y0}H${x0+sw+4}M${x0+sw} ${y0-12}V${y0-4}M${x0-12} ${y0+sh}H${x0-4}M${x0} ${y0+sh+12}V${y0+sh+4}M${x0+sw+12} ${y0+sh}H${x0+sw+4}M${x0+sw} ${y0+sh+12}V${y0+sh+4}"/></g>`;
+  s.innerHTML = out;
+}
+
+/* language: shared with the labs through the same storage key */
+let LANG = 'zh';
+try { const v = localStorage.getItem('printlab-lang'); LANG = v==='en'||v==='zh' ? v : ((navigator.language||'').toLowerCase().startsWith('zh') ? 'zh' : 'en'); }
+catch(e){ LANG = (navigator.language||'').toLowerCase().startsWith('zh') ? 'zh' : 'en'; }
+function applyLang(l){
+  LANG = l; const r = document.documentElement;
+  r.dataset.lang = l; r.lang = l==='zh' ? 'zh-CN' : 'en';
+  document.title = l==='zh' ? '印刷实验室' : 'Print Labs';
+  document.querySelectorAll('[data-setlang]').forEach(b => b.setAttribute('aria-pressed', b.dataset.setlang===l));
+  document.querySelectorAll('[data-aria-zh]').forEach(e => e.setAttribute('aria-label', e.dataset['aria' + (l==='zh' ? 'Zh' : 'En')]));
+  try { localStorage.setItem('printlab-lang', l); } catch(e){}
+}
+document.querySelectorAll('[data-setlang]').forEach(b => b.addEventListener('click', () => applyLang(b.dataset.setlang)));
+applyLang(LANG);
+drawPrint(); drawLayout(); drawObject();
+})();
+</script>

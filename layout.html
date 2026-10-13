@@ -8,7 +8,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@400;700;900&family=Noto+Serif+SC:wght@500;900&family=Space+Mono:wght@400;700&display=swap">
 <style>
-/* Layout: same proof-sheet identity as the print lab — sticky poster proof on the left, a "job ticket" of layout parameters on the right, live layout metrics under the proof. Single committed paper look. */
+/* shared.css — one source for every page in Print Labs: colour tokens, type, masthead, lab grid, controls, notes, references.
+   Pages add their own rules after this block. Edit here, then run build.py. */
 :root{
   --paper:#F1F0EB;
   --sheet:#FBFBF8;
@@ -24,38 +25,62 @@
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55}
+.wrap{max-width:1240px;margin:0 auto;padding-inline:20px;padding-block:28px 56px}
+.mast{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px 32px;align-items:end;border-bottom:3px solid var(--ink);padding-bottom:18px;margin-bottom:28px}
 :root[data-lang="en"] .zh{display:none!important}
 :root:not([data-lang="en"]) .en{display:none!important}
-.wrap{max-width:1240px;margin:0 auto;padding-inline:20px;padding-block:28px 56px}
-
-/* masthead */
-.mast{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px 32px;align-items:end;border-bottom:3px solid var(--ink);padding-bottom:18px;margin-bottom:28px}
-@media (max-width:760px){.mast{grid-template-columns:1fr}}
 .mast-top{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap;align-items:center}
 .eyebrow a{color:var(--ink);text-decoration-color:var(--pink);text-decoration-thickness:2px;text-underline-offset:3px}
 .langsw{display:inline-flex;border:1.5px solid var(--ink)}
 .langsw button{font:600 12px/1 var(--mono);letter-spacing:.06em;padding:8px 12px;min-height:34px;border:0;background:transparent;color:var(--ink);cursor:pointer}
-.langsw button:hover:not([aria-pressed="true"]){background:rgba(28,27,34,.07)}
 .langsw button + button{border-left:1.5px solid var(--ink)}
 .langsw button[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
+.langsw button:hover:not([aria-pressed="true"]){background:rgba(28,27,34,.07)}
 .mis{display:grid;margin:0;font-family:var(--display);font-weight:900;font-size:clamp(48px,9vw,112px);line-height:.92;letter-spacing:-.02em;text-wrap:balance}
 :root[data-lang="en"] .mis{font-size:clamp(40px,7vw,92px);font-weight:800}
 .mis > span{grid-area:1/1;mix-blend-mode:multiply}
 .mis > span:first-child{color:var(--pink)}
 .mis > span:last-child{color:var(--blue);transform:translate(.045em,.03em)}
 .lede{max-width:34em;margin:0;color:var(--muted);text-wrap:pretty}
-
-/* lab */
+@media (max-width:760px){.mast{grid-template-columns:1fr}}
 .lab{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:32px;align-items:start}
-@media (max-width:900px){.lab{grid-template-columns:minmax(0,1fr)}}
 .stage{min-width:0;display:flex;flex-direction:column;gap:14px}
-@media (min-width:901px){.stage{position:sticky;top:calc(16px + env(safe-area-inset-top, 0px))}}
-.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
-.toolbar .row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.tip{position:absolute;z-index:30;max-width:320px;padding:10px 12px;background:var(--ink);color:var(--sheet);font-size:12.5px;line-height:1.5;box-shadow:4px 4px 0 var(--pink);pointer-events:none;display:flex;flex-direction:column;gap:5px}
+.tip[hidden]{display:none!important}
+.tip strong{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;font-weight:600}
+.tip em{font-style:normal;font-family:var(--mono);font-size:10.5px;opacity:.72}
+.panel{min-width:0;display:flex;flex-direction:column;gap:22px}
+.group{display:flex;flex-direction:column;gap:12px;padding-top:12px;border-top:1.5px solid var(--ink)}
+.group h2{margin:0;display:flex;justify-content:space-between;align-items:baseline;font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:-.01em}
+.group h2 small{font-family:var(--mono);font-weight:400;font-size:10.5px;letter-spacing:.14em;color:var(--muted)}
+.seg button:hover{background:rgba(28,27,34,.07)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
+.field{display:grid;grid-template-columns:8em minmax(0,1fr) 4em;gap:10px;align-items:center;font-size:13.5px}
+.field output{font-family:var(--mono);font-size:12px;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+.field input[type=range]{width:100%;accent-color:var(--ink)}
+.sw{display:flex;flex-wrap:wrap;gap:6px}
+.sw button{width:28px;height:28px;border:1.5px solid rgba(0,0,0,.18);cursor:pointer;padding:0}
+.sw button[aria-pressed="true"]{outline:2.5px solid var(--ink);outline-offset:2px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font:500 13px var(--body);padding:8px 12px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer;min-height:38px}
 .btn:hover{background:rgba(28,27,34,.07)}
 .btn[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-within{outline:2.5px solid var(--blue);outline-offset:2px}
+.refs{margin-top:48px;border-top:3px solid var(--ink);padding-top:16px}
+.refs li > *{display:block}
+.refs a{color:var(--ink);text-decoration-color:var(--pink);text-decoration-thickness:2px;text-underline-offset:3px;overflow-wrap:anywhere}
+.seg button{font:500 13px/1.25 var(--body);padding:7px 8px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer;min-height:38px}
+.hint,.note{font-size:12.5px;color:var(--muted);margin:0;text-wrap:pretty}
+
+/* Layout: same proof-sheet identity as the print lab — sticky poster proof on the left, a "job ticket" of layout parameters on the right, live layout metrics under the proof. Single committed paper look. */
+
+/* masthead */
+
+/* lab */
+@media (max-width:900px){.lab{grid-template-columns:minmax(0,1fr)}}
+@media (min-width:901px){.stage{position:sticky;top:calc(16px + env(safe-area-inset-top, 0px))}}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.toolbar .row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .seedtag{font-family:var(--mono);font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
 .proof{background:var(--sheet);border:1px solid var(--rule);padding:20px;position:relative}
 .posterwrap{position:relative;width:100%;overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,.04),0 10px 30px -12px rgba(28,27,34,.25)}
@@ -69,10 +94,8 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);f
 .metric b{font-family:var(--display);font-weight:800;font-size:22px;line-height:1.1;font-variant-numeric:tabular-nums}
 .metric i{font-style:normal;font-size:12px;color:var(--muted)}
 .metric.ok b{color:var(--ink)} .metric.bad b{color:#C2183C}
-.note{font-size:12.5px;color:var(--muted);margin:0;text-wrap:pretty}
 
 /* panel */
-.panel{min-width:0;display:flex;flex-direction:column;gap:22px}
 .presetbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
 @media (max-width:420px){.presetbar{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .presetbar button{font:700 14px/1.2 var(--display);padding:10px 6px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer;min-height:48px;display:flex;flex-direction:column;gap:2px;align-items:flex-start;text-align:left}
@@ -80,31 +103,16 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);f
 .presetbar button:hover{background:rgba(28,27,34,.07)}
 .presetbar button[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
 .presetbar button[aria-pressed="true"] small{color:rgba(251,251,248,.7)}
-.group{display:flex;flex-direction:column;gap:12px;padding-top:12px;border-top:1.5px solid var(--ink)}
-.group h2{margin:0;display:flex;justify-content:space-between;align-items:baseline;font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:-.01em}
-.group h2 small{font-family:var(--mono);font-weight:400;font-size:10.5px;letter-spacing:.14em;color:var(--muted)}
 .ghint{font-size:12.5px;color:var(--muted);margin:-4px 0 2px;text-wrap:pretty}
-.field{display:grid;grid-template-columns:8em minmax(0,1fr) 4em;gap:10px;align-items:center;font-size:13.5px}
-.field output{font-family:var(--mono);font-size:12px;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
-.field input[type=range]{width:100%;accent-color:var(--ink)}
 .row2{display:grid;grid-template-columns:8em minmax(0,1fr);gap:10px;align-items:start;font-size:13.5px}
 .seg{display:flex;flex-wrap:wrap;gap:6px}
 .seg button:only-child{flex:0 0 auto;min-width:5em}
-.seg button{font:500 13px/1.25 var(--body);padding:7px 8px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer;min-height:38px;flex:1 1 auto}
-.seg button:hover{background:rgba(28,27,34,.07)}
-.seg button[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
-.sw{display:flex;flex-wrap:wrap;gap:6px}
-.sw button{width:28px;height:28px;border:1.5px solid rgba(0,0,0,.18);cursor:pointer;padding:0}
-.sw button[aria-pressed="true"]{outline:2.5px solid var(--ink);outline-offset:2px}
+.seg button{flex:1 1 auto}
 .txt{width:100%;font:14px var(--body);padding:7px 9px;border:1.5px solid var(--ink);background:var(--sheet);color:var(--ink);border-radius:0}
 textarea.txt{min-height:76px;resize:vertical;line-height:1.45}
 .off{opacity:.4}
-button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-within{outline:2.5px solid var(--blue);outline-offset:2px}
-.refs{margin-top:48px;border-top:3px solid var(--ink);padding-top:16px}
 .refs h2{margin:0 0 14px;font-family:var(--display);font-weight:800;font-size:28px;letter-spacing:-.01em}
 .refs ol{margin:0;padding-left:1.6em;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px 32px;font-size:14px}
-.refs li > *{display:block}
-.refs a{color:var(--ink);text-decoration-color:var(--pink);text-decoration-thickness:2px;text-underline-offset:3px;overflow-wrap:anywhere}
 .refs li > span{font-size:12.5px;color:var(--muted)}
 
 /* pages, ink layers, motion */
@@ -132,10 +140,6 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
 .lb{display:inline-flex;align-items:center;gap:6px;min-width:0}
 .info{flex:none;width:18px;height:18px;border-radius:50%;border:1.5px solid var(--ink);background:transparent;color:var(--ink);font:italic 700 11px/1 Georgia,"Instrument Serif",serif;cursor:pointer;padding:0;display:inline-flex;align-items:center;justify-content:center}
 .info:hover{background:var(--ink);color:var(--sheet)}
-.tip{position:absolute;z-index:30;max-width:320px;padding:10px 12px;background:var(--ink);color:var(--sheet);font-size:12.5px;line-height:1.5;box-shadow:4px 4px 0 var(--pink);pointer-events:none;display:flex;flex-direction:column;gap:5px}
-.tip[hidden]{display:none!important}
-.tip strong{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;font-weight:600}
-.tip em{font-style:normal;font-family:var(--mono);font-size:10.5px;opacity:.72}
 .notecard{border-left:3px solid var(--pink);padding:4px 0 4px 12px;font-size:13.5px;color:var(--muted);display:flex;flex-direction:column;gap:4px;min-height:3.2em}
 .notecard .nk{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
 .notecard .tt{text-wrap:pretty}
@@ -179,7 +183,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
 <div class="wrap">
   <header class="mast">
     <div class="mast-top">
-      <div class="eyebrow"><span>Layout lab · <span class="zh">网格 / 字体 / 构图 / 动线</span><span class="en">Grid / Type / Composition / Flow</span></span><a id="toPrint" href="index.html"><span class="zh">← 印痕实验室</span><span class="en">← Print Texture Lab</span></a></div>
+      <div class="eyebrow"><a data-page="home" href="index.html"><span class="zh">← 印刷实验室</span><span class="en">← Print Labs</span></a><span>02 · Layout lab · <span class="zh">网格 / 字体 / 构图 / 动线</span><span class="en">Grid / Type / Composition / Flow</span></span><a data-page="print" href="print.html"><span class="zh">← 印痕实验室</span><span class="en">← Print Texture Lab</span></a></div>
       <div class="langsw" role="group" aria-label="Language / 语言">
         <button type="button" data-setlang="zh" lang="zh-CN">中文</button>
         <button type="button" data-setlang="en" lang="en">EN</button>
@@ -244,6 +248,25 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
   </section>
 </div>
 
+<script>/* links.js — where the pages of Print Labs live. On GitHub Pages or from local files the pages sit side by side;
+   inside claude.ai each page is its own artifact, so the links go to the published artifacts instead. */
+(() => {
+  const h = location.hostname;
+  const local = h.endsWith('github.io') || location.protocol === 'file:' || h === 'localhost' || h === '127.0.0.1';
+  const FILE = {home:'index.html', print:'print.html', layout:'layout.html'};
+  const ART = {
+    home:'https://claude.ai/artifact/PeE1kDmTykEsa3FWtq1ujK',
+    print:'https://claude.ai/artifact/BEBGEYAVkseDmEd78EbxS4',
+    layout:'https://claude.ai/artifact/3kpSy3NxXfTr8N6h2EhqAB',
+  };
+  const wire = () => document.querySelectorAll('a[data-page]').forEach(a => {
+    const k = a.dataset.page;
+    if (local || !ART[k] || ART[k].startsWith('@')) { a.href = FILE[k]; return; }
+    a.href = ART[k]; a.target = '_blank'; a.rel = 'noopener';
+  });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wire); else wire();
+})();
+</script>
 <script>
 (() => {
 /* ---------- shared data ---------- */
@@ -1517,7 +1540,6 @@ function applyLang(l){
 }
 document.querySelectorAll('[data-setlang]').forEach(b => b.addEventListener('click', () => { if (b.dataset.setlang!==LANG) applyLang(b.dataset.setlang); }));
 
-if (!LOCAL){ $('toPrint').href = 'https://claude.ai/artifact/BEBGEYAVkseDmEd78EbxS4'; $('toPrint').target = '_blank'; $('toPrint').rel = 'noopener'; }
 
 applyLang(LANG);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => render());

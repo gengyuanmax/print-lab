@@ -37,11 +37,11 @@ python3 build.py
 选择加网方式、印刷工艺、油墨和纸张，观察它们如何改变图像。可使用内置测试图，也可上传照片。
 
 - **加网与影调**：AM 调幅网（圆形、椭圆、菱形、方形）、线条网、交叉排线、Ben-Day 网点、有序抖动（Bayer）、误差扩散（Floyd–Steinberg）、FM 调频网、阈值位图和连续调。可调整对比度、黑场、白场、中间调及色调分离。
-- **工艺模拟**：丝网、凸版、木刻、印章（朱文、白文）、拓印、复印、蓝晒与物影摄影。选择工艺后，纹理由该工艺决定；复印效果可调整翻印次数。原图除测试画面外，还可选印文、蕨叶（实物）、木纹（表面）和木活字演出海报。凸版可调活字磨损（边缘缺口、实地木纹、每块版墨量不同、更深的压痕）。纸张可做旧：泛黄、边缘与斑点（foxing）、对折或十字折痕，折痕处墨层开裂；做旧模拟的是时间，不是印刷工艺。
+- **工艺模拟**：丝网、凸版、木刻、印章（朱文、白文）、拓印、复印、蓝晒与物影摄影。选择工艺后，纹理由该工艺决定；复印效果可调整翻印次数。原图除测试画面外，还可选印文、蕨叶（实物）、木纹（表面）和木活字演出海报。加网可改网格排列（直角网格、同心圆、放射线、螺旋），并可只在一个外形里印（圆、星、心或几个字），外面留纸色。凸版可调活字磨损（边缘缺口、实地木纹、每块版墨量不同、更深的压痕）。纸张可做旧：泛黄、边缘与斑点（foxing）、对折或十字折痕，折痕处墨层开裂；做旧模拟的是时间，不是印刷工艺。
 - **油墨与过渡**：单色、双色叠印、三色叠印、双色调、渐变映射和过渡映射；支持透明叠印或不透明遮盖。可比较 AM 调幅网、FM 调频网、有序抖动、叠印渐变、分墨渐变、平网阶梯、线条粗细、硬边与陷印八种过渡方式。
 - **纸张与纹理**：非涂布纸、涂布纸、硫酸纸，以及 9 种纸色；可添加方格、点阵、横线、账本格线和信封防窥底纹。提供 12 种油墨近似色（含白墨），以及套色错位、墨色颗粒、缺墨、墨辊条纹、纸纹、网点扩大和 RGB 通道偏移。
 - **印版与反白**：分版视图展示各色对应的黑白分色稿，便于理解制版。可分别对 A、B 版反相，交换着墨与留白区域；搭配纸色和白墨可尝试不同效果。实际制版文件仍需符合印厂要求。
-- **预设与说明**：28 张样张附有核心、典型和可选特征，并标注其来自设计、工艺还是材料。可逐项关闭效果进行比较；各类加网方式、工艺和材料也附有原理说明及参考资料。
+- **预设与说明**：30 张样张附有核心、典型和可选特征，并标注其来自设计、工艺还是材料。可逐项关闭效果进行比较；各类加网方式、工艺和材料也附有原理说明及参考资料。
 
 ## 02 版式实验室 · Layout Lab
 
@@ -108,7 +108,7 @@ python3 build.py
 **Print Texture Lab** is a browser playground for print textures: halftone screens, Riso-style overprinting, print flaws, related print processes and duotones. It is a single self-contained `print.html`; uploaded photos are processed locally and never leave the browser.
 
 - **Screens**: AM dots (round / ellipse / diamond / square), line screen, cross-hatch, Ben-Day, ordered dither (Bayer), error diffusion (Floyd–Steinberg), FM stochastic, threshold, continuous tone
-- **Processes**: screen print, letterpress, woodcut, seal stamp (zhuwen / baiwen), rubbing, photocopy with copy generations, cyanotype, photogram; a process makes its own marks. Sources include a fern (object), wood grain (surface) and a wood-type show bill. Letterpress has a type-wear setting (chipped edges, wood grain in solids, uneven inking per block, deeper impression), and the paper can be aged: yellowing, edges and foxing, one or two folds with ink cracking along them (time, not a print process)
+- **Processes**: screen print, letterpress, woodcut, seal stamp (zhuwen / baiwen), rubbing, photocopy with copy generations, cyanotype, photogram; a process makes its own marks. Sources include a fern (object), wood grain (surface) and a wood-type show bill. Screens can follow a grid, concentric rings, rays or a spiral, and printing can be confined to an outline (circle, star, heart or a few letters) with paper outside. Letterpress has a type-wear setting (chipped edges, wood grain in solids, uneven inking per block, deeper impression), and the paper can be aged: yellowing, edges and foxing, one or two folds with ink cracking along them (time, not a print process)
 - **Printed-on patterns**: graph paper, dot grid, ruled, ledger, security tint
 - **Transitions**: one A → B change made eight ways: AM dots, FM grain, ordered dither, overlap, split fountain, tint steps, line weight, hard edge and trapping
 - **Tone**: contrast, black point, white point, midtones, posterize
@@ -118,7 +118,7 @@ python3 build.py
 - **Ink modes**: mono, two-colour, three-colour, duotone, gradient map (digital duotone); overprint or opaque coverage
 - **Inks**: 12 approximate Riso ink colours, including white
 - **Flaws**: misregistration, ink grain, ink starvation, roller banding, paper texture, dot gain, RGB split
-- **Presets**: 28 proofs, each described by its final look, with essential / representative / optional features and where each comes from (design, process, material); switch features off one by one
+- **Presets**: 30 proofs, each described by its final look, with essential / representative / optional features and where each comes from (design, process, material); switch features off one by one
 - **Provenance**: every screen, process, paper stock, ink mode and dot shape carries a fact-checked origin note with links (hover a button for a summary)
 - **Bilingual**: switch between 中文 and English in the top-right corner
 

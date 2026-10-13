@@ -47,7 +47,7 @@
 #modeSeg{grid-template-columns:repeat(3,minmax(0,1fr))}
 #modeSeg button{font-size:12.5px;padding-inline:3px}
 @media (max-width:520px){#modeSeg{grid-template-columns:repeat(3,minmax(0,1fr))}}
-.field.off{opacity:.4}
+.field.off,.seg.off{opacity:.4}
 @media (max-width:420px){.seg{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .sublabel{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:-4px}
 .sublabel .note{text-transform:none;letter-spacing:.02em}
@@ -193,6 +193,11 @@
         <div class="seg" id="shapeSeg"></div>
         <div class="field"><label for="cell"><span class="zh">网点尺寸</span><span class="en">Dot size</span></label><input type="range" id="cell" min="3" max="28" step="1"><output id="cellOut"></output></div>
         <div class="field"><label for="angle"><span class="zh">网角</span><span class="en">Screen angle</span></label><input type="range" id="angle" min="0" max="90" step="1"><output id="angleOut"></output></div>
+        <div class="sublabel"><span class="zh">网格排列</span><span class="en">Screen geometry</span> <span class="note"><span class="zh">网点和线条沿什么排开；仅 AM 调幅网、线条网和交叉排线</span><span class="en">what the dots and lines are arranged along; AM dots, line screen and cross-hatch only</span></span></div>
+        <div class="seg" id="geoSeg"></div>
+        <div class="sublabel"><span class="zh">外形</span><span class="en">Outline</span> <span class="note"><span class="zh">只在一个形状或几个字里面印，外面留纸色</span><span class="en">print only inside a shape or a few letters; outside stays paper</span></span></div>
+        <div class="seg" id="outlineSeg"></div>
+        <div class="field" id="outlineTextRow"><label for="outlineText"><span class="zh">外形文字</span><span class="en">Letters</span></label><input type="text" id="outlineText" maxlength="6" autocomplete="off" style="font:inherit;padding:6px 8px;border:1.5px solid var(--ink);background:var(--sheet);color:var(--ink);min-width:0"><output></output></div>
       </div>
 
       <div class="group">
@@ -289,6 +294,8 @@
         <h3><span class="zh">加网与抖动</span><span class="en">Screening &amp; dithering</span></h3>
         <ol>
           <li><a href="https://en.wikipedia.org/wiki/Halftone" target="_blank" rel="noopener">Halftone</a><span><span class="zh">Wikipedia · 调幅网点、加网角度与摩尔纹</span><span class="en">Wikipedia · AM dots, screen angles and moiré</span></span></li>
+          <li><a href="https://www.fineprintschool.com/glossary-of-printing-terms/circular-screen" target="_blank" rel="noopener">Circular screen</a><span><span class="zh">Fine Print School · 用同心圆代替网点的网屏</span><span class="en">Fine Print School · a screen of concentric circles instead of dots</span></span></li>
+          <li><a href="https://en.wikipedia.org/wiki/Clipping_path" target="_blank" rel="noopener">Clipping path</a><span><span class="zh">Wikipedia · 用闭合路径裁出图像；“外形”选项的原理</span><span class="en">Wikipedia · a closed path that cuts out an image; how the outline option works</span></span></li>
           <li><a href="https://en.wikipedia.org/wiki/Ben-Day_dots" target="_blank" rel="noopener">Ben-Day dots</a><span><span class="zh">Wikipedia · 固定尺寸网点与波普印刷</span><span class="en">Wikipedia · fixed-size dots and pop printing</span></span></li>
           <li><a href="https://en.wikipedia.org/wiki/Ordered_dithering" target="_blank" rel="noopener">Ordered dithering</a><span><span class="zh">Wikipedia · Bayer 矩阵（Bayer, 1973）</span><span class="en">Wikipedia · Bayer matrix (Bayer, 1973)</span></span></li>
           <li><a href="https://en.wikipedia.org/wiki/Floyd%E2%80%93Steinberg_dithering" target="_blank" rel="noopener">Floyd–Steinberg dithering</a><span><span class="zh">Wikipedia · 误差扩散（Floyd &amp; Steinberg, 1976）</span><span class="en">Wikipedia · error diffusion (Floyd &amp; Steinberg, 1976)</span></span></li>
@@ -420,6 +427,8 @@ const TRANS = [
   {id:'trap', tip:'trap', zh:'硬边与陷印', en:'Hard edge & trap', szh:'上：未陷印  下：已陷印', sen:'top: gap · bottom: trapped'},
 ];
 const STAMPS = [{id:'zhu', zh:'朱文（红字）', en:'Zhuwen (red characters)'}, {id:'bai', zh:'白文（白字）', en:'Baiwen (white characters)'}];
+const GEOS = [{id:'grid', zh:'直角网格', en:'Grid'}, {id:'rings', zh:'同心圆', en:'Concentric'}, {id:'rays', zh:'放射线', en:'Radial'}, {id:'spiral', zh:'螺旋', en:'Spiral'}];
+const OUTLINES = [{id:'none', zh:'整张', en:'Full sheet'}, {id:'circle', zh:'圆', en:'Circle'}, {id:'star', zh:'星', en:'Star'}, {id:'heart', zh:'心', en:'Heart'}, {id:'text', zh:'文字', en:'Letters'}];
 const FOLDS = [{id:'none', zh:'没有折痕', en:'No fold'}, {id:'half', zh:'对折过', en:'Folded once'}, {id:'quarter', zh:'十字折过', en:'Folded in four'}];
 const STOCKS = [
   {id:'uncoated', zh:'非涂布', en:'Uncoated', gain:.18, sat:.88, tex:.15},
@@ -455,6 +464,12 @@ const SHAPES = [
 /* provenance / credits for each style: short origin note + links (fact-checked against the linked sources) */
 const W = t => 'https://en.wikipedia.org/wiki/' + t;
 const PROV = {
+  grid:{o:{zh:'常规做法：网点排在一张旋转过网角的直角网格上。', en:'The usual case: dots on a square grid turned to the screen angle.'}},
+  rings:{o:{zh:'同心圆网（circular screen，也叫 bullseye）是传统的特殊效果网屏之一：用同心圆代替网点，和直线网、波浪线网、铜版雕刻网等一起出现在制版手册里。', en:'The circular (bullseye) screen is one of the classic special-effect screens: concentric circles instead of dots, listed in platemaking manuals alongside straight-line, wavy-line and steel-engraving screens.'},
+    l:[['Fine Print School · Circular screen','https://www.fineprintschool.com/glossary-of-printing-terms/circular-screen'],['A graphic guide to Veloxes','https://aiap.it/2000-2020/cdpg/index%EF%B9%96ID=4870&IDsubarea=169&IDsez=188.html']]},
+  rays:{o:{zh:'放射线排列：网点和线条从中心向外辐射。没有找到可靠的单一出处，是本页按同心圆网的思路做的变体。', en:'Radial: dots and lines fan out from the centre. No reliable single source; this page\'s variation on the circular screen.'}},
+  spiral:{o:{zh:'螺旋排列：线条绕中心一圈圈外旋。没有找到可靠的单一出处，是本页的变体。', en:'Spiral: lines wind outwards from the centre. No reliable single source; this page\'s variation.'}},
+  circle:{o:{zh:'只在形状内部印，外面留纸色，相当于用一条闭合路径裁出图像（clipping path）。', en:'Printing only inside a shape and leaving the rest paper is a clipping path: a closed path that cuts out the image.'}, l:[['Clipping path',W('Clipping_path')]]},
   // screens
   am:{o:{zh:'1852 年 Fox Talbot 在专利中提出用“网幕”把照片转成可印刷的图像；1880 年《纽约每日图报》首次在报纸上印出具有完整明暗层次的照片；1881 年 Frederic Ives 取得第一个商业成功的半色调工艺专利，此后交叉线网屏让它成为标准做法。',
     en:'In an 1852 patent, Fox Talbot proposed using screens to turn photographs into printable images. In 1880 the New York Daily Graphic printed the first full-tone photograph in a newspaper. In 1881 Frederic Ives patented the first commercially successful halftone process, and cross-line screens later made halftone the standard.'},
@@ -544,7 +559,7 @@ const PROV = {
   opaque:{o:{zh:'不透明遮盖：油墨厚而不透明，后印的颜色直接盖住先印的，丝网印刷里很常见。', en:'Opaque: thick ink that covers whatever was printed before it, common in screen printing.'}},
 };
 const linkList = l => l ? l.map(([t,u]) => `<a href="${u}" target="_blank" rel="noopener">${t}</a>`).join('<i>·</i>') : '';
-const DEFAULTS = {trans:'am', pattern:'none', shape:'round', gain:0, ca:0, inkC:'yellow', blend:'multiply', process:'none', stampType:'zhu', copyGen:0, black:0, white:1, gamma:1, posterize:0, stock:'uncoated', invA:false, invB:false, wear:0, age:0, fox:0, fold:'none'};
+const DEFAULTS = {trans:'am', pattern:'none', shape:'round', gain:0, ca:0, inkC:'yellow', blend:'multiply', process:'none', stampType:'zhu', copyGen:0, black:0, white:1, gamma:1, posterize:0, stock:'uncoated', invA:false, invB:false, wear:0, age:0, fox:0, fold:'none', geo:'grid', outline:'none', outlineText:'INK'};
 /* presets describe a final effect. Each lists the visible features that make it recognisable:
    e = essential, r = representative, o = optional; where each comes from: d = design decision, p = process, m = material;
    and what switching the feature off changes (used by the feature switches). */
@@ -580,6 +595,10 @@ const PRESETS = [
     f:[F('e','p','色块内部斑驳、边缘积墨，纸面带压痕','Mottled solids, squeezed edges, a pressed impression',{process:'none'}), F('r','m','明显的纸张纹理','Heavy paper texture',{tex:0}), F('r','p','墨色不匀','Uneven ink',{grain:0,starve:0})]},
   {name:{zh:'木活字演出海报', en:'Wood-type show bill'}, tag:{zh:'凸版 · 亮红 + 联邦蓝 · 再生纸', en:'Letterpress · bright red + federal blue · recycled'}, src:'poster', p:{screen:'am',process:'letter',cell:8,angle:0,contrast:1.3,mode:'sep',inkA:'red',inkB:'fedblue',paper:'recycled',mx:3,my:2,grain:.3,starve:.35,band:0,tex:.6,gain:.2,wear:.7,age:.35,fox:.3,fold:'half'},
     f:[F('e','p','凸版：实地斑驳、边缘积墨、纸面压痕','Letterpress: mottled solids, squeezed edges, a pressed impression',{process:'none',screen:'thresh'}), F('e','d','两三种鲜艳专色，重叠处叠出第三色','Two or three bright spot colours, overlapping into a third',{mode:'mono'}), F('e','m','磨损的旧木活字：边缘缺口、实地里的木纹、每块版墨量不同','Worn wood type: chipped edges, wood grain in the solids, each block inked a little differently',{wear:0}), F('r','m','粗纹再生纸','Rough recycled paper',{tex:0,paper:'white'}), F('r','p','手工对版，套色略有错位','Hand-registered plates, slightly off',{mx:0,my:0}), F('o','p','墨色不匀','Uneven ink',{grain:0,starve:0}), F('o','m','时间：泛黄、斑点、折痕处墨层开裂','Time: yellowing, foxing, ink cracked along the fold',{age:0,fox:0,fold:'none'})]},
+  {name:{zh:'同心圆网徽章', en:'Bullseye badge'}, tag:{zh:'线条网 · 同心圆 · 圆形外形', en:'Line screen · concentric · circle outline'}, p:{screen:'line',geo:'rings',outline:'circle',cell:9,angle:0,contrast:1.25,mode:'mono',inkA:'fedblue',inkB:'black',paper:'recycled',mx:0,my:0,grain:.2,starve:.15,band:0,tex:.35},
+    f:[F('e','d','线条沿同心圆排开，粗细表现明暗','Lines run in concentric rings, their weight carrying the tone',{geo:'grid'}), F('e','d','只在圆里印，外面留纸色','Printed only inside a circle, paper outside',{outline:'none'}), F('o','m','米色再生纸','Recycled cream paper',{paper:'white',tex:0})]},
+  {name:{zh:'字形放射网', en:'Radial letters'}, tag:{zh:'AM · 放射线 · 文字外形 · 双色', en:'AM · radial · letter outline · two-colour'}, p:{screen:'am',geo:'rays',outline:'text',outlineText:'INK',cell:10,angle:0,contrast:1.2,mode:'sep',inkA:'fpink',inkB:'blue',paper:'white',mx:4,my:3,grain:.35,starve:.25,band:.15,tex:.3},
+    f:[F('e','d','网点沿放射线排开','Dots fanned out along rays',{geo:'grid'}), F('e','d','图像只出现在大字里面','The image appears only inside the big letters',{outline:'none'}), F('r','p','双色叠印与错位','Two-colour overprint and misregistration',{mode:'mono',mx:0,my:0})]},
   {name:{zh:'木刻版画', en:'Woodcut print'}, tag:{zh:'木刻 · 黑 · 再生纸', en:'Woodcut · black · recycled'}, p:{screen:'am',process:'wood',cell:8,angle:10,contrast:1.3,mode:'mono',inkA:'black',inkB:'black',paper:'recycled',mx:0,my:0,grain:.2,starve:.15,band:0,tex:.5},
     f:[F('e','p','刀痕线条与色块边缘的缺口','Gouged lines and chipped solids',{process:'none'}), F('r','m','再生纸','Recycled paper',{paper:'white'}), F('o','p','墨色带木纹','Wood grain in the ink',{grain:0,starve:0})]},
   {name:{zh:'连续调双色', en:'Continuous duotone'}, tag:{zh:'连续调 · 橙 + 黑 双色调', en:'Continuous · orange + black duotone'}, p:{screen:'cont',cell:8,angle:0,contrast:1.15,mode:'duo',inkA:'orange',inkB:'black',paper:'recycled',mx:2,my:1,grain:.2,starve:.1,band:0,tex:.4},
@@ -852,14 +871,23 @@ function xeroxDegrade(pl, n, gens, nz){
 
 /* ---------- screening ---------- */
 const BAYER = (() => { const m=[[0,2],[3,1]]; let M=m; while (M.length<8){ const s=M.length, R=[]; for (let y=0;y<s*2;y++){ R.push([]); for (let x=0;x<s*2;x++){ const q=[[0,2],[3,1]][y>=s?1:0][x>=s?1:0]; R[y].push(4*M[y%s][x%s]+q); } } M=R; } return M; })();
-function screen(pl, n, type, cell, angDeg, idx, nz, shape, wear = 0){
+function screen(pl, n, type, cell, angDeg, idx, nz, shape, wear = 0, geo = 'grid'){
   const out = new Uint8Array(n*n), TAU = Math.PI*2;
   const a = angDeg*Math.PI/180, c = Math.cos(a), s = Math.sin(a);
+  // screen geometry: returns [u, w] cell coordinates; w is the coordinate a line screen draws its lines along
+  const K = Math.max(8, Math.round(TAU*n*.5/cell)), cx0 = n/2, cy0 = n/2;
+  const uw = (x, y) => {
+    if (geo==='grid') return [(x*c+y*s)/cell, (-x*s+y*c)/cell];
+    const dx = x - cx0, dy = y - cy0, r = Math.hypot(dx, dy), th = Math.atan2(dy, dx) + a, ring = Math.max(1, Math.round(TAU*r/cell));
+    if (geo==='rings') return [th/TAU*ring, r/cell];                 // dots along rings; lines are circles
+    if (geo==='rays') return [r/cell, th/TAU*K];                     // dots along spokes; lines are rays
+    return [th/TAU*ring, r/cell - th/TAU];                           // spiral: one arm winding outwards
+  };
   const at = (x,y) => { x=x<0?0:x>=n?n-1:x|0; y=y<0?0:y>=n?n-1:y|0; return pl[y*n+x]; };
   if (type==='am' || type==='line' || type==='hatch'){
     for (let y=0;y<n;y++) for (let x=0;x<n;x++){
       const i=y*n+x, v=pl[i]; if (v<=0) continue;
-      const u=(x*c+y*s)/cell, w=(-x*s+y*c)/cell;
+      const [u, w] = uw(x, y);
       let on;
       if (type==='am'){ on = v > spotT(shape, u, w); }
       else if (type==='line'){ on = v > (1-Math.cos(TAU*w))/2; }
@@ -1029,7 +1057,8 @@ function render(canvas, p, srcCanvas){
 
   if (p.mode==='trans'){
     // tone → A-to-B transition, made with the chosen technique; B is read at its misregistered position
-    const [pa] = plates(data, n, 'mono', p.contrast, gainEff, {black:p.black, white:p.white, gamma:p.gamma, posterize:p.posterize});
+    const om0 = outlineMask(n, p), [pa] = plates(data, n, 'mono', p.contrast, gainEff, {black:p.black, white:p.white, gamma:p.gamma, posterize:p.posterize});
+    if (om0) for (let k=0;k<pa.length;k++) pa[k] = Math.max(pa[k], .2)*om0[k];
     const cell = Math.max(2, p.cell*sc), dx = Math.round(p.mx*sc), dy = Math.round(p.my*sc), id = p.trans || 'am';
     const mA = new Float32Array(N), mB = new Float32Array(N), split = id==='split';
     for (let y=0;y<n;y++) for (let x=0;x<n;x++){
@@ -1076,9 +1105,12 @@ function render(canvas, p, srcCanvas){
     let [pa, pb, pc] = plates(data, n, p.mode, p.contrast, gainEff, {black:p.black, white:p.white, gamma:p.gamma, posterize:p.posterize});
     const inv = pl => { for (let i=0;i<pl.length;i++) pl[i] = 1-pl[i]; };
     const baiwen = proc==='stamp' && p.stampType==='bai';
+    const om = outlineMask(n, p);
     if (p.invA !== baiwen) inv(pa);
     if (pb && (p.invB !== baiwen)) inv(pb);
     if (pc && baiwen) inv(pc);
+    // inside the outline plate A never drops below a light tint, so the shape still reads where the image is blank
+    if (om){ for (let i=0;i<pa.length;i++) pa[i] = Math.max(pa[i], .2)*om[i]; [pb, pc].forEach(pl => { if (pl) for (let i=0;i<pl.length;i++) pl[i] *= om[i]; }); }
     if (proc==='xerox' && p.copyGen > 0){ pa = xeroxDegrade(pa, n, p.copyGen, nz); if (pb) pb = xeroxDegrade(pb, n, p.copyGen, nz); if (pc) pc = xeroxDegrade(pc, n, p.copyGen, nz); }
     const cell = Math.max(1.6, p.cell*sc);
     const lineish = eff==='line'||eff==='hatch'||eff==='wood';
@@ -1086,9 +1118,9 @@ function render(canvas, p, srcCanvas){
     let mA, mB, mC;
     if (cont){ mA = pa; mB = pb; mC = pc; }
     else {
-      mA = screen(pa, n, eff, cell, p.angle, 0, nz, p.shape, p.wear);
-      mB = pb ? screen(pb, n, eff, cell, p.angle + (lineish?45:30), 1, nz, p.shape, p.wear) : null;
-      mC = pc ? screen(pc, n, eff, cell, p.angle + (lineish?90:60), 2, nz, p.shape, p.wear) : null;
+      mA = screen(pa, n, eff, cell, p.angle, 0, nz, p.shape, p.wear, p.geo);
+      mB = pb ? screen(pb, n, eff, cell, p.angle + (lineish?45:30), 1, nz, p.shape, p.wear, p.geo) : null;
+      mC = pc ? screen(pc, n, eff, cell, p.angle + (lineish?90:60), 2, nz, p.shape, p.wear, p.geo) : null;
       if (gainEff > .02){
         const r = Math.max(1, Math.round(gainEff*2.5*sc)), amt = .3 + .6*gainEff;
         spread(mA, n, r, g2, amt, 0);
@@ -1149,6 +1181,26 @@ function render(canvas, p, srcCanvas){
   }
   ctx.putImageData(sd,0,0);
   return result;
+}
+
+/* outline: a mask the size of the proof; 1 inside the shape, 0 outside */
+const outlineCache = {};
+function outlineMask(n, p){
+  if (!p.outline || p.outline==='none') return null;
+  const key = [n, p.outline, p.outline==='text' ? p.outlineText : ''].join('|'); if (outlineCache[key]) return outlineCache[key];
+  const c = document.createElement('canvas'); c.width = c.height = n; const g = c.getContext('2d'); g.fillStyle = '#000';
+  const cx = n/2, cy = n/2;
+  g.beginPath();
+  if (p.outline==='circle') g.arc(cx, cy, n*.43, 0, Math.PI*2);
+  else if (p.outline==='star'){ for (let k=0;k<10;k++){ const r = k%2 ? n*.2 : n*.47, a = -Math.PI/2 + k*Math.PI/5; g.lineTo(cx + r*Math.cos(a), cy + n*.03 + r*Math.sin(a)); } g.closePath(); }
+  else if (p.outline==='heart'){ const s = n*.44; g.moveTo(cx, cy + s*.95); g.bezierCurveTo(cx - s*1.25, cy + s*.15, cx - s*.95, cy - s*.95, cx, cy - s*.42); g.bezierCurveTo(cx + s*.95, cy - s*.95, cx + s*1.25, cy + s*.15, cx, cy + s*.95); }
+  else { const t = (p.outlineText || ' ').slice(0, 6), font = h => `900 ${h}px "Bricolage Grotesque", "Archivo", "Noto Sans SC", sans-serif`;
+    g.font = font(100); const w = g.measureText(t).width || 1, h = Math.min(n*.8, 100*n*.9/w*.96);
+    g.font = font(h); g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(t, cx, cy + h*.04); }
+  if (p.outline!=='text') g.fill();
+  const d = g.getImageData(0, 0, n, n).data, m = new Float32Array(n*n); for (let i=0;i<n*n;i++) m[i] = d[i*4+3]/255;
+  const keys = Object.keys(outlineCache); if (keys.length > 8) delete outlineCache[keys[0]];
+  return (outlineCache[key] = m);
 }
 
 /* ageing: time, not process. Cracks along folds, crease light and shade, yellowing (stronger and patchier near the edges), foxing spots */
@@ -1220,6 +1272,8 @@ function buildControls(){
   seg($('stockSeg'), STOCKS, 'stock');
   seg($('patSeg'), PATTERNS, 'pattern');
   seg($('foldSeg'), FOLDS, 'fold');
+  seg($('geoSeg'), GEOS, 'geo');
+  seg($('outlineSeg'), OUTLINES, 'outline');
   seg($('transSeg'), TRANS, 'trans');
   $('transSeg').querySelectorAll('button').forEach(b => b.addEventListener('click', () => { P.mode = 'trans'; syncControls(); schedule(); }));
   swatches($('inkA'), INKS, 'inkA');
@@ -1236,6 +1290,7 @@ buildControls();
 const pct = v => Math.round(v*100)+'%';
 const SLIDERS = {cell:v=>v+' px', angle:v=>v+'°', contrast:v=>(+v).toFixed(2), black:pct, white:pct, gamma:v=>(+v).toFixed(2), posterize:v=>v>1?v+(LANG==='zh'?' 级':' lv'):(LANG==='zh'?'关':'off'),
   copyGen:v=>v>0?(LANG==='zh'?`翻印 ${v} 次`:`gen ${v}`):(LANG==='zh'?'原稿':'original'), mx:v=>v+' px', my:v=>v+' px', grain:pct, starve:pct, band:pct, tex:pct, gain:pct, ca:v=>v+' px', wear:pct, age:pct, fox:pct};
+$('outlineText').addEventListener('input', e => { P.outlineText = e.target.value || ' '; manual(); schedule(); });
 Object.keys(SLIDERS).forEach(k => {
   $(k).addEventListener('input', e => { P[k] = parseFloat(e.target.value); $(k+'Out').textContent = SLIDERS[k](P[k]); manual(); schedule(); });
 });
@@ -1243,7 +1298,9 @@ Object.keys(SLIDERS).forEach(k => {
 function syncControls(){
   Object.keys(SLIDERS).forEach(k => { $(k).value = P[k]; $(k+'Out').textContent = SLIDERS[k](P[k]); });
   const press = (sel, key) => document.querySelectorAll(sel+' button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===P[key]));
-  press('#screenSeg','screen'); press('#procSeg','process'); press('#stampSeg','stampType'); press('#modeSeg','mode'); press('#stockSeg','stock'); press('#patSeg','pattern'); press('#foldSeg','fold'); press('#transSeg','trans');
+  press('#screenSeg','screen'); press('#procSeg','process'); press('#stampSeg','stampType'); press('#modeSeg','mode'); press('#stockSeg','stock'); press('#patSeg','pattern'); press('#foldSeg','fold'); press('#geoSeg','geo'); press('#outlineSeg','outline');
+  $('outlineTextRow').hidden = P.outline!=='text'; if (document.activeElement!==$('outlineText')) $('outlineText').value = P.outlineText;
+  $('geoSeg').classList.toggle('off', !['am','line','hatch'].includes(P.screen) || (P.process && P.process!=='none')); press('#transSeg','trans');
   $('transMini').hidden = P.mode!=='trans';
   if (P.mode!=='trans') document.querySelectorAll('#transSeg button').forEach(b => b.setAttribute('aria-pressed', false));
   const tmode = P.mode==='trans', grad = P.mode==='grad', proc = tmode ? 'none' : (P.process || 'none');

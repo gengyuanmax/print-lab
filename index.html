@@ -179,7 +179,7 @@ a.labcard:focus-visible{outline:2.5px solid var(--blue);outline-offset:4px}
     </a>
 
     <a class="labcard" data-page="object" href="object.html">
-      <div class="proofbox"><svg id="pvObject" viewBox="0 0 400 500" aria-hidden="true"></svg></div>
+      <div class="proofbox"><canvas id="pvObject" width="800" height="1000" aria-hidden="true"></canvas></div>
       <div class="lhead"><span class="num">03</span><span class="status"><span class="zh">可用 · 简版</span><span class="en">Open · lite</span></span></div>
       <h2><span class="zh">实物实验室</span><span class="en">Object Lab</span><small><span class="zh">Object lab</span><span class="en">实物实验室</span></small></h2>
       <p><span class="zh">纸怎么变成拿在手里的东西：拼版、折线、裁切和印前检查。</span><span class="en">How paper becomes something you hold: imposition, folds, cuts and preflight.</span></p>
@@ -193,14 +193,14 @@ a.labcard:focus-visible{outline:2.5px solid var(--blue);outline-offset:4px}
     </a>
 
     <a class="labcard" data-page="element" href="element.html">
-      <div class="proofbox"><svg id="pvElement" viewBox="0 0 400 500" aria-hidden="true"></svg></div>
+      <div class="proofbox"><canvas id="pvElement" width="800" height="1000" aria-hidden="true"></canvas></div>
       <div class="lhead"><span class="num">04</span><span class="status"><span class="zh">可用</span><span class="en">Open</span></span></div>
       <h2><span class="zh">元素实验室</span><span class="en">Element Lab</span><small><span class="zh">Element lab</span><span class="en">元素实验室</span></small></h2>
       <p><span class="zh">一个元素为什么“不搭”，怎么一步步翻译进这种风格。</span><span class="en">Why an element looks out of place, and how to translate it into the style step by step.</span></p>
       <ul>
         <li><span class="zh">网页组件：导航、按钮、卡片、图标、分隔线、链接与状态、标签、作品列表</span><span class="en">Web components: navigation, buttons, cards, icons, dividers, links and states, tags, work lists</span></li>
         <li><span class="zh">视觉元素：几何、拟物、摄影、手绘；照片可以裁切、镜像、抠图、切条、重复、斜放、转成剪影或线稿、放大网点、扫描拖影</span><span class="en">Visual elements: geometry, objects, photos, drawings; photos can be cropped, mirrored, cut out, sliced, repeated, tilted, turned into silhouettes or line art, screened with giant dots or dragged on the scanner</span></li>
-        <li><span class="zh">两个元素的运算：叠印、不透明遮盖、镂空、补漏白、留白描边、硬阴影、反白、布尔运算、蒙版、图在字里</span><span class="en">Two elements: overprint, opaque cover, knockout, trapping, paper keyline, hard shadow, reverse, booleans, clipping, image in type</span></li>
+        <li><span class="zh">组合台：自己定义一个或两个元素（形状、文字、照片、手绘、拟物），套用单元素手段，再比较十几种组合手段；元素可以直接拖动，套色错位可调</span><span class="en">Composer: define one or two elements (shape, type, photo, drawing, object), apply single-element moves, then compare a dozen ways to combine them; drag the elements and set the misregistration</span></li>
         <li><span class="zh">三种翻译方案：线与字、色块、印刷物件</span><span class="en">Three translations: rules &amp; type, ink blocks, print objects</span></li>
         <li><span class="zh">改造前后并排，逐条适配检查和来源</span><span class="en">Before and after side by side, with a fit check and sources</span></li>
       </ul>
@@ -322,20 +322,100 @@ function drawLayout(){
   g.putImageData(im,0,0);
 }
 
-/* 03: the classic one-sheet 8-page zine imposition: top row upside down, a cut along the middle fold */
+/* shared print furniture for the poster thumbnails: Riso orange + federal blue on cream, black, misregistration and ink grain */
+const OR = '#FF6C2F', FB = '#3D5588', CREAM = '#F3EEE2';
+function screenFill(g, colour, angle, cell, tone, box, ox = 0, oy = 0){
+  const [x0, y0, x1, y1] = box, a = angle*Math.PI/180, ca = Math.cos(a), sa = Math.sin(a), cx = (x0+x1)/2, cy = (y0+y1)/2, R = Math.hypot(x1-x0, y1-y0);
+  g.fillStyle = colour;
+  for (let u=-R; u<R; u+=cell) for (let v=-R; v<R; v+=cell){
+    const x = cx + u*ca - v*sa, y = cy + u*sa + v*ca; if (x < x0 || y < y0 || x > x1 || y > y1) continue;
+    const t = tone(x, y); if (t < .03) continue;
+    g.beginPath(); g.arc(x+ox, y+oy, cell*.66*Math.sqrt(Math.min(1, t)), 0, Math.PI*2); g.fill();
+  }
+}
+function furniture(g, W, H, m, folio){
+  g.globalCompositeOperation = 'source-over'; g.strokeStyle = INK; g.lineWidth = 1.5;
+  [[m/2,m/2],[W-m/2,m/2],[m/2,H-m/2],[W-m/2,H-m/2]].forEach(([x,y]) => { g.beginPath(); g.arc(x,y,8,0,Math.PI*2); g.moveTo(x-14,y); g.lineTo(x+14,y); g.moveTo(x,y-14); g.lineTo(x,y+14); g.stroke(); });
+  [OR, FB, '#2A2A3A', INK].forEach((col,i) => { g.fillStyle = col; g.fillRect(W-m-4*30+i*30, H-m/2-11, 22, 22); });
+  g.fillStyle = INK; g.font = '500 17px "JetBrains Mono", monospace'; g.textBaseline = 'alphabetic'; g.fillText(folio, m, H-m/2+6);
+}
+function inkGrain(g, W, H, seed){
+  let s = seed; const rnd = () => (s = (s*16807) % 2147483647) / 2147483647;
+  const im = g.getImageData(0,0,W,H), d = im.data, pp = [0xF3,0xEE,0xE2];
+  for (let i=0;i<d.length;i+=4){ if (rnd() < .06 && d[i]+d[i+1]+d[i+2] < 600){ const k = .35 + .4*rnd(); d[i]+=(pp[0]-d[i])*k; d[i+1]+=(pp[1]-d[i+1])*k; d[i+2]+=(pp[2]-d[i+2])*k; } }
+  g.putImageData(im,0,0);
+}
+
+/* 03: the one-sheet 8-page zine printed in two inks: top row upside down, a cut along the middle fold, and the folded booklet below */
 function drawObject(){
-  const s = $('pvObject'), W = 400, H = 500, sw = 340, sh = 240, x0 = (W-sw)/2, y0 = 120, pw = sw/4, ph = sh/2;
+  const c = $('pvObject'), g = c.getContext('2d'), W = c.width, H = c.height, m = 56;
+  g.globalCompositeOperation = 'source-over'; g.fillStyle = CREAM; g.fillRect(0,0,W,H);
+  const sw = W - 2*m, sh = sw/2, x0 = m, y0 = 104, pw = sw/4, ph = sh/2;
   const top = [5,4,3,2], bottom = [6,7,8,1];
-  let out = `<rect width="${W}" height="${H}" fill="${PAPER}"/><rect x="${x0}" y="${y0}" width="${sw}" height="${sh}" fill="#fff" stroke="${INK}" stroke-width="1.5"/>`;
-  for (let i=1;i<4;i++) out += `<line x1="${x0+i*pw}" y1="${y0}" x2="${x0+i*pw}" y2="${y0+sh}" stroke="${INK}" stroke-width="1" stroke-dasharray="4 4"/>`;
-  out += `<line x1="${x0}" y1="${y0+ph}" x2="${x0+sw}" y2="${y0+ph}" stroke="${INK}" stroke-width="1" stroke-dasharray="4 4"/>`;
-  out += `<line x1="${x0+pw}" y1="${y0+ph}" x2="${x0+3*pw}" y2="${y0+ph}" stroke="${PINK}" stroke-width="3"/>`;
-  const num = (n, cx, cy, flip) => `<text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central" font-family="Bricolage Grotesque, sans-serif" font-weight="800" font-size="30" fill="${n===1 ? BLUE : INK}"${flip ? ` transform="rotate(180 ${cx} ${cy})"` : ''}>${n}</text>`;
-  top.forEach((n,i) => out += num(n, x0 + pw*(i+.5), y0 + ph*.5, true));
-  bottom.forEach((n,i) => out += num(n, x0 + pw*(i+.5), y0 + ph*1.5, false));
-  out += `<g font-family="JetBrains Mono, monospace" font-size="11" fill="${INK}" letter-spacing="1"><text x="${x0}" y="${y0-18}">A4 · 8 PP</text><text x="${x0+sw}" y="${y0+sh+28}" text-anchor="end" fill="${PINK}">✂ CUT</text></g>`;
-  out += `<g stroke="${INK}" stroke-width="1"><path d="M${x0-12} ${y0}H${x0-4}M${x0} ${y0-12}V${y0-4}M${x0+sw+12} ${y0}H${x0+sw+4}M${x0+sw} ${y0-12}V${y0-4}M${x0-12} ${y0+sh}H${x0-4}M${x0} ${y0+sh+12}V${y0+sh+4}M${x0+sw+12} ${y0+sh}H${x0+sw+4}M${x0+sw} ${y0+sh+12}V${y0+sh+4}"/></g>`;
-  s.innerHTML = out;
+  g.globalCompositeOperation = 'multiply';
+  // page fills: orange floods and federal-blue screened gradients, alternating like a real spread plan
+  const pages = [...top.map((n,i) => [n, i, 0]), ...bottom.map((n,i) => [n, i, 1])];
+  pages.forEach(([n, i, r]) => {
+    const px = x0 + i*pw, py = y0 + r*ph, box = [px+10, py+10, px+pw-10, py+ph-10];
+    if (n===1){ g.fillStyle = FB; g.fillRect(box[0]+4, box[1]+3, box[2]-box[0], box[3]-box[1]); return; }
+    if (n % 3===0){ g.fillStyle = OR; g.globalAlpha = .88; g.fillRect(...box.slice(0,2), box[2]-box[0], box[3]-box[1]); g.globalAlpha = 1; }
+    else screenFill(g, n % 2 ? OR : FB, n % 2 ? 15 : 75, 11, (x, y) => r ? (y - box[1])/(box[3]-box[1]) : 1 - (y - box[1])/(box[3]-box[1]), box, n % 2 ? 0 : 4, n % 2 ? 0 : 3);
+  });
+  // page numbers: black, the top row upside down; the cover number knocked out to paper
+  g.globalCompositeOperation = 'source-over'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.font = '800 92px "Bricolage Grotesque", "Archivo", sans-serif';
+  pages.forEach(([n, i, r]) => { const cx = x0 + pw*(i+.5), cy = y0 + ph*(r+.5); g.save(); g.translate(cx, cy); if (!r) g.rotate(Math.PI); g.fillStyle = n===1 ? CREAM : INK; g.fillText(String(n), 0, 6); g.restore(); });
+  // sheet edge, folds (dashed) and the cut along the middle
+  g.strokeStyle = INK; g.lineWidth = 2; g.strokeRect(x0, y0, sw, sh);
+  g.setLineDash([8, 8]); g.lineWidth = 1.5; for (let i=1;i<4;i++){ g.beginPath(); g.moveTo(x0+i*pw, y0-14); g.lineTo(x0+i*pw, y0+sh+14); g.stroke(); }
+  g.beginPath(); g.moveTo(x0-14, y0+ph); g.lineTo(x0+pw, y0+ph); g.moveTo(x0+3*pw, y0+ph); g.lineTo(x0+sw+14, y0+ph); g.stroke(); g.setLineDash([]);
+  g.strokeStyle = OR; g.lineWidth = 7; g.beginPath(); g.moveTo(x0+pw, y0+ph); g.lineTo(x0+3*pw, y0+ph); g.stroke();
+  g.textAlign = 'left'; g.textBaseline = 'alphabetic'; g.fillStyle = INK; g.font = '600 18px "JetBrains Mono", monospace';
+  g.fillText('A4 · 8 PP · 2 INKS', x0, y0 - 24); g.textAlign = 'right'; g.fillStyle = OR; g.fillText('✂ CUT', x0+sw, y0+sh+40); g.textAlign = 'left';
+  // the folded booklet: the cover with two pages fanned behind it and a screened shadow
+  const bx = 250, by = 560, bw = 300, bh = 330;
+  g.globalCompositeOperation = 'multiply';
+  screenFill(g, FB, 45, 10, (x, y) => Math.max(0, .75 - Math.hypot((x - (bx + bw*.62))/(bw*.7), (y - (by + bh + 20))/40)), [bx - 40, by + bh - 30, bx + bw + 110, by + bh + 70], 4, 3);
+  g.globalCompositeOperation = 'source-over';
+  [[34, -18, '#FBF8F1'], [17, -9, '#F7F3EA']].forEach(([dx, dy, col]) => { g.fillStyle = col; g.fillRect(bx+dx, by+dy, bw, bh); g.strokeStyle = INK; g.lineWidth = 2; g.strokeRect(bx+dx, by+dy, bw, bh); });
+  g.globalCompositeOperation = 'multiply'; g.fillStyle = FB; g.fillRect(bx+4, by+3, bw, bh);
+  g.globalCompositeOperation = 'source-over'; g.strokeStyle = INK; g.lineWidth = 2; g.strokeRect(bx, by, bw, bh);
+  g.fillStyle = CREAM; g.font = '800 120px "Bricolage Grotesque", "Archivo", sans-serif'; g.fillText('1', bx + 26, by + bh - 26);
+  g.fillStyle = INK; g.fillRect(bx, by, 9, bh);   // the spine
+  inkGrain(g, W, H, 23);
+  furniture(g, W, H, m, '— 03 / 04 —  OBJECT LAB');
+}
+
+/* 04: two elements combined the ways the composer combines them: overprint with a miss, a paper keyline, a hard shadow */
+function drawElement(){
+  const c = $('pvElement'), g = c.getContext('2d'), W = c.width, H = c.height, m = 56;
+  g.globalCompositeOperation = 'source-over'; g.fillStyle = CREAM; g.fillRect(0,0,W,H);
+  // A: an orange halftone landscape, screened; B: "INK" in federal blue, overprinting, a little off register
+  const ax0 = m, ay0 = 110, ax1 = W - m - 90, ay1 = 470;
+  const ridge = x => ay0 + 150 - 70*Math.sin((x - ax0)*.011) - 30*Math.sin((x - ax0)*.033);
+  g.globalCompositeOperation = 'multiply';
+  screenFill(g, OR, 15, 12, (x, y) => y < ridge(x) ? .18 + .25*(y - ay0)/(ay1 - ay0) : y < ay0 + 270 ? .9 - .25*(y - ridge(x))/200 : .45 + .4*Math.sin(y*.12)*Math.sin(x*.02), [ax0, ay0, ax1, ay1]);
+  g.fillStyle = FB; g.font = '800 270px "Bricolage Grotesque", "Archivo", sans-serif'; g.textBaseline = 'alphabetic'; g.fillText('INK', ax0 + 150 + 5, ay0 + 330 + 4);
+  // three small specimens in a row, each with its label
+  const row = 600, sz = 170, gap = (W - 2*m - 3*sz)/2, X = i => m + i*(sz + gap);
+  // overprint: two shapes, the overlap a third colour
+  g.fillStyle = OR; g.beginPath(); g.arc(X(0) + 70, row + 85, 64, 0, Math.PI*2); g.fill();
+  g.fillStyle = FB; g.save(); g.translate(X(0) + 115 + 4, row + 88 + 3); g.rotate(Math.PI/4); g.fillRect(-50, -50, 100, 100); g.restore();
+  // paper keyline: a blue flood, an orange circle with a ring of paper around it
+  g.globalCompositeOperation = 'source-over';
+  g.fillStyle = FB; g.fillRect(X(1), row, sz, sz);
+  g.fillStyle = CREAM; g.beginPath(); g.arc(X(1) + sz/2, row + sz/2, 62, 0, Math.PI*2); g.fill();
+  g.globalCompositeOperation = 'multiply'; g.fillStyle = OR; g.beginPath(); g.arc(X(1) + sz/2 + 4, row + sz/2 + 3, 50, 0, Math.PI*2); g.fill();
+  // hard shadow: black type with an orange offset copy underneath
+  g.font = '800 132px "Bricolage Grotesque", "Archivo", sans-serif';
+  g.fillStyle = OR; g.fillText('Aa', X(2) + 8 + 10, row + 128 + 8);
+  g.globalCompositeOperation = 'source-over'; g.fillStyle = INK; g.fillText('Aa', X(2) + 8, row + 128);
+  g.fillStyle = INK; g.fillRect(m, row + sz + 26, W - 2*m, 5);
+  g.font = '600 18px "JetBrains Mono", monospace';
+  ['A + B · OVERPRINT', 'PAPER KEYLINE', 'HARD SHADOW'].forEach((t, i) => g.fillText(t, X(i), row + sz + 62));
+  g.fillStyle = OR; g.fillText('A', ax1 + 22, ay0 + 24); g.fillStyle = FB; g.fillText('B', ax1 + 22, ay0 + 52);
+  g.fillStyle = INK; g.fillText('↗ miss 1.5 mm', ax1 - 150, ay1 + 34);
+  inkGrain(g, W, H, 31);
+  furniture(g, W, H, m, '— 04 / 04 —  ELEMENT LAB');
 }
 
 /* language: shared with the labs through the same storage key */
@@ -352,32 +432,8 @@ function applyLang(l){
 }
 document.querySelectorAll('[data-setlang]').forEach(b => b.addEventListener('click', () => applyLang(b.dataset.setlang)));
 applyLang(LANG);
-function drawElement(){
-  const s = $('pvElement'), OR = '#FF6C2F', FB = '#3D5588', UI = '#2563EB';
-  let o = `<rect width="400" height="500" fill="${PAPER}"/>`;
-  const cap = (y, txt) => `<text x="36" y="${y}" font-family="JetBrains Mono, monospace" font-size="12" letter-spacing="1.5" fill="#8a8794">${txt}</text>`;
-  // before: a pill-shaped segmented control with a floating, shadowed active item and duotone line icons
-  o += cap(60, 'BEFORE');
-  o += `<defs><filter id="pvSh" x="-20%" y="-40%" width="140%" height="180%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#141428" flood-opacity=".18"/></filter></defs>`;
-  o += `<rect x="36" y="76" width="328" height="50" rx="25" fill="#E9E7E2" stroke="#C9C6BF"/>`;
-  o += `<rect x="41" y="81" width="104" height="40" rx="20" fill="#FFFFFF" filter="url(#pvSh)"/>`;
-  [['Index',58,UI],['Works',168,'#4B5060'],['About',268,'#4B5060']].forEach(([t, x, c], i) => {
-    o += `<rect x="${x+1.5}" y="${92.5}" width="13" height="13" rx="2" fill="${UI}" opacity=".22"/><rect x="${x}" y="91" width="13" height="13" rx="2" fill="none" stroke="#5B6170" stroke-width="1.4"/>`;
-    o += `<text x="${x+20}" y="103" font-family="Inter, sans-serif" font-size="14" fill="${c}">${t}</text>`;
-    if (i) o += `<line x1="${x-12}" y1="90" x2="${x-12}" y2="112" stroke="#C9C6BF" stroke-dasharray="2 3"/>`;
-  });
-  // after: a flat ink block with the label knocked out; the others in one ink on the grid
-  o += cap(196, 'AFTER');
-  o += `<rect x="36" y="212" width="112" height="44" fill="${OR}" opacity=".85"/><rect x="39" y="214" width="112" height="44" fill="${FB}" opacity=".28" style="mix-blend-mode:multiply"/>`;
-  o += `<text x="48" y="240" font-family="JetBrains Mono, monospace" font-size="11" fill="${PAPER}">01</text><text x="70" y="240" font-family="Bricolage Grotesque, sans-serif" font-weight="700" font-size="16" fill="${PAPER}">Index</text>`;
-  [['02','Works',162],['03','About',262]].forEach(([n, t, x]) => { o += `<text x="${x}" y="240" font-family="JetBrains Mono, monospace" font-size="11" fill="${INK}">${n}</text><text x="${x+22}" y="240" font-family="Bricolage Grotesque, sans-serif" font-weight="700" font-size="16" fill="${INK}">${t}</text>`; });
-  o += `<rect x="36" y="262" width="328" height="3" fill="${INK}"/>`;
-  [['Specimen', OR, -1.5], ['Specimen', FB, 1.5], ['Specimen', INK, 0]].forEach(([t, c, d]) => { o += `<text x="${36+d}" y="${350+d}" font-family="Bricolage Grotesque, sans-serif" font-weight="800" font-size="58" letter-spacing="-2" fill="${c}"${c===FB ? ' style="mix-blend-mode:multiply"' : ''}>${t}</text>`; });
-  for (let y=380; y<460; y+=8) for (let x=260; x<360; x+=8){ const d = Math.hypot(x-310, y-420); if (d < 40) o += `<circle cx="${x}" cy="${y}" r="${2.6*Math.sqrt(1 - d/44)}" fill="${FB}"/>`; }
-  s.innerHTML = o;
-}
 drawPrint(); drawLayout(); drawObject(); drawElement();
-if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawLayout);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { drawLayout(); drawObject(); drawElement(); });
 })();
 </script>
 </body>

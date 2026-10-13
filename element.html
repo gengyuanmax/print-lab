@@ -118,9 +118,19 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
 .pg .ttl .p3{color:var(--k)}
 .pg .disc{flex:none;width:clamp(56px,16cqi,110px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle, var(--b) 0 34%, transparent 36%) 0 0/7px 7px;mix-blend-mode:multiply;box-shadow:inset 0 0 0 0 transparent}
 .pg .gridx{padding-left:0}
-.optiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
-.optile{display:flex;flex-direction:column;gap:4px;margin:0}
-.optile canvas{display:block;width:100%;height:auto;border:1px solid var(--rule)}
+.optiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.optile{display:flex;flex-direction:column;gap:4px;margin:0;padding:0;border:0;background:none;font:inherit;color:inherit;text-align:left;cursor:pointer}
+.optile canvas{display:block;width:100%;height:auto;border:1px solid var(--rule);outline:3px solid transparent;outline-offset:1px}
+.optile:hover canvas{outline-color:color-mix(in srgb, var(--ink) 30%, transparent)}
+.optile.on canvas{outline-color:var(--ink)}
+.optile:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+.optile .cap2{display:flex;justify-content:space-between;gap:6px;font-size:12.5px;color:var(--ink)}
+.optile .cap2 i{font-style:normal;font-family:var(--mono);font-size:10px;letter-spacing:.06em;padding:1px 5px;border:1.5px solid var(--ink);white-space:nowrap;align-self:flex-start}
+.optile .cap2 i.warn{border-color:#C2183C;color:#C2183C}
+.optile.on .cap2{font-weight:600}
+canvas.mixcv{touch-action:none;cursor:grab}
+.txtin{font:inherit;font-size:14px;padding:8px 10px;border:1.5px solid var(--ink);background:var(--sheet);color:var(--ink);border-radius:0;width:100%;box-sizing:border-box}
+.subh{margin:14px 0 4px;font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .optile figcaption{display:flex;justify-content:space-between;gap:6px;font-size:12.5px;color:var(--ink)}
 .optile figcaption i{font-style:normal;font-family:var(--mono);font-size:10px;letter-spacing:.06em;padding:1px 5px;border:1.5px solid var(--ink)}
 .optile figcaption i.warn{border-color:#C2183C;color:#C2183C}
@@ -140,7 +150,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
       </div>
     </div>
     <h1 class="mis"><span aria-hidden="true"><span class="zh">元素实验室</span><span class="en">Element Lab</span></span><span><span class="zh">元素实验室</span><span class="en">Element Lab</span></span></h1>
-    <p class="lede"><span class="zh">一个元素放进 Swiss / Riso / 半调风格里总觉得“不搭”，通常是因为它没有走同一条印刷管线。这里把一个元素拆成几步翻译：每一步可以单独开关，看改造前后放在同一张纸上的样子，并逐条检查哪里还不适配、规则出自哪里。</span><span class="en">When an element feels out of place in a Swiss / Riso / halftone design, it usually has not gone through the same print pipeline. This lab translates one element step by step: switch each step on or off, compare before and after on the same paper, and check what still does not fit and where each rule comes from.</span></p>
+    <p class="lede"><span class="zh">一个元素放进 Swiss / Riso / 半调风格里总觉得“不搭”，通常是因为它没有走同一条印刷管线。“翻译”把一个元素拆成几步改造，每一步可以单独开关，并逐条检查哪里还不适配、规则出自哪里；“组合台”让你自己定义一个或两个元素，试单元素手段和两个元素的组合手段。</span><span class="en">When an element feels out of place in a Swiss / Riso / halftone design, it usually has not gone through the same print pipeline. Translate takes one element through the steps, each switchable, and checks what still does not fit and where each rule comes from; the Composer lets you define one or two elements and try single-element moves and ways to combine them.</span></p>
   </header>
 
   <main class="lab">
@@ -159,6 +169,48 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
 
     <aside class="panel" id="panel" data-aria-zh="参数" data-aria-en="Settings">
       <div class="group">
+        <h2><span class="zh">模式</span><span class="en">Mode</span> <small>MODE</small></h2>
+        <p class="hint"><span class="zh">“翻译”把一个现成的元素一步步改进印刷风格；“组合台”让你自己定义一个或两个元素，试单元素手段和两个元素的组合手段。</span><span class="en">Translate takes a ready-made element into the print style step by step; the Composer lets you define one or two elements yourself and try single-element moves and ways to combine two.</span></p>
+        <div class="seg" id="modeSeg"></div>
+      </div>
+      <div class="group" id="mixGroup" hidden>
+        <h2><span class="zh">组合台</span><span class="en">Composer</span> <small>COMPOSER</small></h2>
+        <p class="hint"><span class="zh">先定义元素（类型、内容、墨色、大小、角度和单元素手段），再选组合手段。左边画布上可以直接拖动元素，右边是所有手段的对照，点击就能切换。</span><span class="en">Define the elements (type, content, ink, size, angle and single-element moves), then pick a way to combine them. Drag the elements on the sheet; the panel beside it compares every option, click one to switch.</span></p>
+        <div class="row2"><span class="zh">元素数量</span><span class="en">Elements</span><div class="seg" id="mxN"></div></div>
+        <div class="row2" id="mxSelRow"><span class="zh">正在编辑</span><span class="en">Editing</span><div class="seg" id="mxSel"></div></div>
+        <div class="allrow"><button class="btn" type="button" id="mxSwap"><span class="zh">交换上下层</span><span class="en">Swap layers</span></button><button class="btn" type="button" id="mxCenter"><span class="zh">当前元素居中</span><span class="en">Centre this element</span></button></div>
+      </div>
+      <div class="group" id="mixElGroup" hidden>
+        <h2><span id="mxElTitle"></span> <small>ELEMENT</small></h2>
+        <div class="row2"><span class="zh">类型</span><span class="en">Type</span><div class="seg" id="mxType"></div></div>
+        <div class="row2" id="mxShapeRow"><span class="zh">形状</span><span class="en">Shape</span><div class="seg" id="mxShape"></div></div>
+        <div class="row2" id="mxTextRow"><label for="mxText"><span class="zh">文字</span><span class="en">Text</span></label><input type="text" id="mxText" maxlength="16" class="txtin" autocomplete="off"></div>
+        <div class="row2" id="mxFontRow"><span class="zh">字体</span><span class="en">Typeface</span><div class="seg" id="mxFont"></div></div>
+        <div class="row2" id="mxPhotoRow"><span class="zh">照片</span><span class="en">Photo</span><div class="seg"><button type="button" id="mxPhotoScene"><span class="zh">示例风景</span><span class="en">Sample scene</span></button><label class="btn" style="min-height:38px"><span class="zh">上传照片</span><span class="en">Upload photo</span><input type="file" id="mxFile" accept="image/*" hidden></label></div></div>
+        <div class="row2"><span class="zh">墨色</span><span class="en">Ink</span><div class="seg" id="mxInk"></div></div>
+        <div class="field"><label for="mxSize"><span class="zh">大小</span><span class="en">Size</span></label><input type="range" id="mxSize" min="25" max="220" step="5"><output id="mxSizeOut"></output></div>
+        <div class="field"><label for="mxRot"><span class="zh">角度</span><span class="en">Angle</span></label><input type="range" id="mxRot" min="-45" max="45" step="1"><output id="mxRotOut"></output></div>
+        <h3 class="subh"><span class="zh">单元素手段</span><span class="en">Single-element moves</span></h3>
+        <div class="row2"><span class="zh">裁切</span><span class="en">Crop</span><div class="seg" id="mvCrop"></div></div>
+        <div class="row2"><span class="zh">抠图</span><span class="en">Cut-out</span><div class="seg" id="mvCut"></div></div>
+        <div class="row2"><span class="zh">镜像</span><span class="en">Mirror</span><div class="seg" id="mvMirror"></div></div>
+        <div class="row2"><span class="zh">切条</span><span class="en">Slice</span><div class="seg" id="mvSlice"></div></div>
+        <div class="row2"><span class="zh">形式</span><span class="en">Form</span><div class="seg" id="mvForm"></div></div>
+        <div class="row2"><span class="zh">重复</span><span class="en">Repeat</span><div class="seg" id="mvRepeat"></div></div>
+        <div class="row2"><span class="zh">拖影</span><span class="en">Drag</span><div class="seg" id="mvDrag"></div></div>
+        <div class="row2"><span class="zh">浓度</span><span class="en">Tone</span><div class="seg" id="mvTone"></div></div>
+        <div class="row2"><span class="zh">网点</span><span class="en">Screen</span><div class="seg" id="mvDots"></div></div>
+        <div class="row2"><span class="zh">错位复制</span><span class="en">Echo</span><div class="seg" id="mvEcho"></div></div>
+        <p class="hint" id="mvNote"></p>
+      </div>
+      <div class="group" id="mixOpGroup" hidden>
+        <h2><span class="zh">组合手段</span><span class="en">Combine</span> <small>OPERATION</small></h2>
+        <p class="hint"><span class="zh">A 在下，B 在上。印刷里关键的问题是：两块版对不准时，结果还站得住吗？两个元素用同一种墨时，它们在同一块版上，不会互相错位。</span><span class="en">A is below, B on top. In print the key question is whether the result survives when the two plates miss. If both use the same ink they share one plate and cannot miss each other.</span></p>
+        <div class="row2"><span class="zh">手段</span><span class="en">Operation</span><div class="seg" id="mxOp"></div></div>
+        <div class="field"><label for="mxMis"><span class="zh">套色错位</span><span class="en">Misregister</span></label><input type="range" id="mxMis" min="0" max="3" step="0.5"><output id="mxMisOut"></output></div>
+        <p class="hint" id="mxOpNote"></p>
+      </div>
+      <div class="group" id="elGroup">
         <h2><span class="zh">元素</span><span class="en">Element</span> <small>ELEMENT</small></h2>
         <p class="hint"><span class="zh">网页组件来自软件界面，视觉元素来自数码绘图、3D 渲染和相机。两类“不搭”的原因不同，翻译步骤也不同。</span><span class="en">Web components come from software interfaces; visual elements come from digital drawing, 3D rendering and cameras. They look out of place for different reasons, so the steps differ.</span></p>
         <div class="row2"><span class="zh">网页组件</span><span class="en">Web components</span><div class="seg" id="elSeg"></div></div>
@@ -181,13 +233,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
         <div class="row2"><span class="zh">拖影</span><span class="en">Drag</span><div class="seg" id="imDrag"></div></div>
         <p class="hint" id="imNote"></p>
       </div>
-      <div class="group">
-        <h2><span class="zh">两个元素的运算</span><span class="en">Two elements</span> <small>OPERATIONS</small></h2>
-        <p class="hint"><span class="zh">两个元素放在一起时，可以叠印、镂空、反白，也可以做布尔运算。印刷里关键的问题是：两块版对不准时，结果还站得住吗？</span><span class="en">Two elements can overprint, knock out or reverse, or be combined with boolean operations. In print the key question is whether the result survives when the two plates miss.</span></p>
-        <div class="row2"><span class="zh">组合</span><span class="en">Pair</span><div class="seg" id="pairSeg"></div></div>
-        <div class="row2"><span class="zh">套色错位</span><span class="en">Misregister</span><div class="seg"><button type="button" id="misBtn"></button></div></div>
-      </div>
-      <div class="group">
+      <div class="group" id="schemeGroup">
         <h2><span class="zh">翻译方案</span><span class="en">Translation</span> <small>SCHEME</small></h2>
         <div id="schemeBox"><p class="hint" id="schemeHint"></p>
         <div class="seg" id="schemeSeg"></div></div>
@@ -279,7 +325,7 @@ const STEPS = [
 function VSTEPS_IDS(){ return ['v_spot','v_tone','v_contrast','v_screen','v_detail','v_angle','v_line','v_single','v_edge']; }
 const SRC_LBL = {c:L('印刷','Press'), m:L('系统','System'), o:L('本页','This page')};
 
-const S = {img:{crop:'none', mirror:'none', cut:'none', slice:'none', repeat:'1', echo:'none', rotate:'0', form:'photo', dots:'normal', drag:'none'}, pair:'shapes', mis:true, cat:'web', el:'nav', scheme:'swiss', inks:'orange', on:Object.fromEntries(STEPS.map(s => [s.id, true]).concat(VSTEPS_IDS().map(id => [id, true])))};
+const S = {img:{crop:'none', mirror:'none', cut:'none', slice:'none', repeat:'1', echo:'none', rotate:'0', form:'photo', dots:'normal', drag:'none'}, lastCat:'web', cat:'web', el:'nav', scheme:'swiss', inks:'orange', on:Object.fromEntries(STEPS.map(s => [s.id, true]).concat(VSTEPS_IDS().map(id => [id, true])))};
 
 /* ---------- specimen page ---------- */
 const NAV = [['01',L('索引','Index')],['02',L('作品','Works')],['03',L('工作坊','Workshops')],['04',L('关于','About')]];
@@ -613,10 +659,10 @@ function drawObj(g, f, sc, ink){
 
 /* photo: a procedural landscape (or an uploaded photo), low contrast and full colour */
 const photoCache = {};
-function photoSource(){
-  const key = vUpload ? vUpload.src.length : 'scene'; if (photoCache[key]) return photoCache[key];
+function photoSource(up = vUpload){
+  const key = up ? up.src.length : 'scene'; if (photoCache[key]) return photoCache[key];
   const c = document.createElement('canvas'); c.width = VW; c.height = VH; const g = c.getContext('2d');
-  if (vUpload){ const s = Math.max(VW/vUpload.width, VH/vUpload.height), w = vUpload.width*s, h = vUpload.height*s; g.drawImage(vUpload, (VW-w)/2, (VH-h)/2, w, h); }
+  if (up){ const s = Math.max(VW/up.width, VH/up.height), w = up.width*s, h = up.height*s; g.drawImage(up, (VW-w)/2, (VH-h)/2, w, h); }
   else {
     const sky = g.createLinearGradient(0, 0, 0, VH*.6); sky.addColorStop(0, '#9DB7CF'); sky.addColorStop(1, '#E9C9A8'); g.fillStyle = sky; g.fillRect(0, 0, VW, VH);
     const sun = g.createRadialGradient(470, 120, 4, 470, 120, 90); sun.addColorStop(0, 'rgba(255,240,210,1)'); sun.addColorStop(.25, 'rgba(255,225,180,.8)'); sun.addColorStop(1, 'rgba(255,225,180,0)'); g.fillStyle = sun; g.fillRect(0, 0, VW, VH);
@@ -819,6 +865,7 @@ function drawHand(g, f, sc, ink){
       else { g.fillStyle = f.v_spot ? ink.a : '#FFD166'; g.beginPath(); g.arc(x-1.5, y-1, 3.5, 0, Math.PI*2); g.fill(); g.fillStyle = f.v_spot ? ink.b : '#118AB2'; g.beginPath(); g.arc(x+1.5, y+1, 3.5, 0, Math.PI*2); g.fill(); } }
   }
   // the table line
+  if (f.noTable) return;
   g.beginPath(); g.moveTo(60, 272); g.lineTo(580, 272); stroke(f.v_line ? ink.k : '#B8B2A7', f.v_line ? 3 : 1);
   grain(g, ink, f.v_edge ? 1 : 0);
 }
@@ -829,107 +876,331 @@ function drawVisual(cv, kind, f, sc, ink){
   ({geo:drawGeo, obj:drawObj, photo:drawPhoto, hand:drawHand})[kind](g, f, sc, ink);
 }
 
-/* ---------- two elements: operations ---------- */
-const PAIRS = [['shapes',L('形状 + 形状','Shape + shape')],['text',L('色块 + 文字','Block + type')],['photo',L('形状 + 照片','Shape + photo')]];
-// safe: does the result survive misregistration? (one plate, or tolerant by design)
-const OPS = [
-  {id:'over', t:L('叠印','Overprint'), d:L('两块版都完整地印，重叠处叠出第三种颜色。','Both plates print in full; the overlap prints a third colour.'), safe:true, l:['Overprinting','https://en.wikipedia.org/wiki/Overprinting']},
-  {id:'knock', t:L('镂空','Knockout'), d:L('在 A 的版上把 B 的形状挖掉，B 印进这个洞里；数码印前默认就是这样。','B\'s shape is cut out of A\'s plate and B prints into the hole; the default in digital prepress.'), safe:false, l:['Overprinting','https://en.wikipedia.org/wiki/Overprinting']},
-  {id:'trap', t:L('镂空 + 补漏白','Knockout + trap'), d:L('镂空时让浅色稍微外扩，压到深色下面一点：错位时露出的是一条深色细边，不是白缝。','A knockout where the lighter colour spreads slightly under the darker one: a miss shows a thin dark line, not a white gap.'), safe:true, l:['Trap (printing)','https://en.wikipedia.org/wiki/Trap_(printing)']},
-  {id:'reverse', t:L('反白','Reverse'), d:L('只在 A 里挖掉 B，不印 B：B 留成纸色。只有一块版，不怕错位。','B is cut out of A and not printed: it stays paper. One plate, so misregistration cannot hurt it.'), safe:true},
-  {id:'union', t:L('合并','Union'), d:L('A 和 B 合成一个形状，印在同一块版上。','A and B merge into one shape on one plate.'), safe:true},
-  {id:'inter', t:L('相交','Intersect'), d:L('只印两者重叠的部分。','Only the part where they overlap prints.'), safe:true},
-  {id:'xor', t:L('异或','Exclude'), d:L('印两者不重叠的部分，重叠处留白。','The parts that do not overlap print; the overlap stays paper.'), safe:true},
-  {id:'opaque', t:L('不透明遮盖','Opaque cover'), d:L('上层直接盖住下层，不混色。需要不透明的墨或先垫一层白墨；大多数 Riso 墨是透明的，会叠出混色。','The top layer simply covers the one below, no mixing. It needs an opaque ink or a white underlay; most Riso inks are transparent and mix.'), safe:true, l:['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']},
-  {id:'shadow', t:L('硬阴影','Hard shadow'), d:L('同一个形状用另一种墨偏移一点垫在下面，当作阴影。错位只会让阴影偏多偏少。','The same shape, offset in the other ink, sits underneath as a shadow. A miss only makes the shadow a little bigger or smaller.'), safe:true},
-  {id:'keyline', t:L('留白描边','Paper keyline'), d:L('上层周围留一圈纸色，把两者隔开：错位被这圈空隙吃掉，图上压字时最常用。','A ring of paper around the top element separates the two: the gap absorbs the miss. The usual way to set type over an image.'), safe:true},
-  {id:'intext', t:L('图在字里','Image in type'), d:L('照片只出现在大字里面。字形和照片在同一块版上，所以不怕错位；和“照片装进圆形再描边”不同。','The photo appears only inside large letters. Letters and photo share one plate, so a miss cannot hurt it, unlike a photo in a circle with an outline on another plate.'), safe:true},
-  {id:'clip', t:L('蒙版','Clip'), d:L('B 只出现在 A 的形状里面，比如照片装进圆形；两块版之间仍然要对位。','B only appears inside A\'s shape, like a photo inside a circle; the two plates still have to line up.'), safe:false},
+/* ---------- composer: one or two custom elements, single-element moves, and ways to combine them ---------- */
+const CW = 640, CH = 400;
+const MX_TYPES = [['shape',L('形状','Shape')],['text',L('文字','Type')],['photo',L('照片','Photo')],['hand',L('手绘','Drawing')],['obj',L('拟物','Object')]];
+const MX_SHAPES = [['circle',L('圆','Circle')],['square',L('方','Square')],['tri',L('三角','Triangle')],['star',L('星','Star')],['arch',L('拱','Arch')],['ring',L('环','Ring')]];
+const MX_FONTS = [['sans',L('粗无衬线','Heavy sans')],['mono',L('等宽','Mono')],['serif',L('衬线','Serif')]];
+const MX_INKS = [['a',L('墨 A','Ink A')],['b',L('墨 B','Ink B')],['k',L('黑','Black')]];
+// single-element moves; `only` limits a move to some types
+const MV = {
+  mvCrop:['crop', [['none',L('原图','Full')],['tight',L('紧裁','Tight')],['strip',L('长条','Strip')]], ['photo','obj']],
+  mvCut:['cut', [['none',L('无','None')],['bg',L('去掉背景','Remove background')]], ['photo']],
+  mvMirror:['mirror', [['none',L('无','None')],['flip',L('水平翻转','Flip')],['sym',L('对称','Symmetric')]]],
+  mvSlice:['slice', [['none',L('无','None')],['strips',L('横条错开','Shifted strips')]]],
+  mvForm:['form', [['full',L('原样','As is')],['sil',L('剪影','Silhouette')],['line',L('线稿','Line art')]]],
+  mvRepeat:['repeat', [['1',L('×1','×1')],['2',L('×2','×2')],['3',L('×3','×3')]]],
+  mvDrag:['drag', [['none',L('无','None')],['drag',L('扫描拖影','Scanner drag')]]],
+  mvTone:['tone', [['100',L('100%','100%')],['60',L('60%','60%')],['30',L('30%','30%')]]],
+  mvDots:['dots', [['solid',L('实地 / 连续调','Solid / contone')],['dots',L('网点','Dots')],['giant',L('放大网点','Giant dots')]]],
+  mvEcho:['echo', [['none',L('无','None')],['ink',L('另一色错开','Offset in other ink')]]],
+};
+const MVNOTE = Object.assign({}, IMNOTE, {
+  form:L('剪影只留轮廓，线稿只留边缘：照片、拟物会被压成和几何、文字同一抽象程度的图形；形状和文字变成线框。','A silhouette keeps only the outline, line art only the edges: photos and objects are pressed down to the abstraction of geometry and type; shapes and type become outlines.'),
+  tone:L('浅色在 Riso 上靠网点或墨量实现；同一种墨的 30% 和 100% 放在一起，就是一种墨里的两种颜色。','On a Riso, light tones come from screening or ink coverage; 30% and 100% of one ink side by side give two colours from one drum.'),
+  dots:L('连续调是理想化的平滑灰阶；真实的 Riso 和胶印要把灰阶变成网点。放大网点让网点本身成为图形，像波普漫画。','Contone is an idealised smooth tone; a real Riso or offset press turns tone into dots. Giant dots make the dots the graphic, as in pop comics.'),
+  echo:L('用另一种墨把同一个元素错开再印一遍，是刻意放大的套色错位。','The same element printed again in the other ink, offset: misregistration on purpose.'),
+  crop:L('裁切决定主角和尺度：紧裁让局部变成图形，长条像电影画幅。只对照片和拟物有意义。','Cropping decides the subject and the scale: a tight crop turns a detail into a shape, a strip reads like a film frame. Only meaningful for photos and objects.'),
+});
+// ways to combine two elements; A is the lower element, B the upper one
+const MXOPS = [
+  {id:'over', t:L('叠印','Overprint'), d:L('两块版都完整地印，重叠处叠出第三种颜色。Riso 墨是透明的，这是它最自然的状态。','Both plates print in full; the overlap prints a third colour. Riso inks are transparent, so this is their natural state.'), safe:true, l:['Overprinting','https://en.wikipedia.org/wiki/Overprinting']},
+  {id:'opaque', t:L('不透明遮盖','Opaque cover'), d:L('B 直接盖住 A，不混色。需要不透明的墨或先垫一层白墨；大多数 Riso 墨做不到。','B simply covers A, no mixing. It needs an opaque ink or a white underlay; most Riso inks cannot do it.'), safe:true, l:['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']},
+  {id:'knock', t:L('镂空','Knockout'), d:L('在 A 的版上把 B 的形状挖掉，B 印进这个洞里；数码印前默认就是这样，一错位就露白缝。','B\'s shape is cut out of A\'s plate and B prints into the hole; the digital prepress default, and a miss shows a white gap.'), safe:false, l:['Overprinting','https://en.wikipedia.org/wiki/Overprinting']},
+  {id:'trap', t:L('镂空 + 补漏白','Knockout + trap'), d:L('镂空的洞缩小一点，让 A 压到 B 下面：错位时露出的是一条深色细边，不是白缝。','The hole is choked a little so A runs under B: a miss shows a thin dark line, not a white gap.'), safe:true, l:['Trap (printing)','https://en.wikipedia.org/wiki/Trap_(printing)']},
+  {id:'keyline', t:L('留白描边','Paper keyline'), d:L('B 周围留一圈纸色，把两者隔开：错位被这圈空隙吃掉，图上压字时最常用。','A ring of paper around B separates the two: the gap absorbs the miss. The usual way to set type over an image.'), safe:true},
+  {id:'shadow', t:L('硬阴影','Hard shadow'), d:L('B 的形状用另一种墨偏移一点垫在下面，当作阴影。错位只会让阴影偏多偏少。','B\'s shape, offset in the other ink, sits underneath as a shadow. A miss only makes the shadow a little bigger or smaller.'), safe:true},
+  {id:'reverse', t:L('反白','Reverse'), d:L('只在 A 里挖掉 B，不印 B：B 留成纸色。只有一块版，不怕错位。','B is cut out of A and not printed: it stays paper. One plate, so a miss cannot hurt it.'), safe:true},
+  {id:'weave', t:L('交织','Interweave'), d:L('一部分 B 在 A 上面，一部分在 A 下面，像穿过去一样；每一处都是镂空，需要对位。','B passes over A in some places and under it in others; every crossing is a knockout, so it needs register.'), safe:false},
+  {id:'union', t:L('合并','Union'), d:L('A 和 B 合成一个形状，都印在 A 的版上。','A and B merge into one shape on A\'s plate.'), safe:true},
+  {id:'inter', t:L('相交','Intersect'), d:L('只印两者重叠的部分，印在 A 的版上。','Only the overlap prints, on A\'s plate.'), safe:true},
+  {id:'xor', t:L('异或','Exclude'), d:L('印两者不重叠的部分，重叠处留白；一块版。','The parts that do not overlap print, the overlap stays paper; one plate.'), safe:true},
+  {id:'fill', t:L('装进形状 · 同版','Fill inside · one plate'), d:L('B 只出现在 A 的形状里面，并且用 A 的墨印在同一块版上：比如照片在大字里。一块版，不怕错位。','B appears only inside A\'s shape, printed in A\'s ink on the same plate, like a photo inside large letters. One plate, so a miss cannot hurt it.'), safe:true},
+  {id:'clip', t:L('蒙版 + 描边','Clip + outline'), d:L('B 只出现在 A 的形状里，A 的轮廓用另一块版描出来；两块版之间仍然要对位。','B appears only inside A\'s shape and A\'s outline prints on another plate; the two plates still have to line up.'), safe:false},
 ];
-const OPS_FOR = {shapes:['over','opaque','knock','trap','keyline','shadow','reverse','union','inter','xor'], text:['over','opaque','knock','trap','keyline','shadow','reverse','union','inter','xor'], photo:['over','opaque','knock','trap','keyline','shadow','reverse','clip','intext']};
-const OW = 320, OH = 210;
-const opCache = {};
-function opMasks(pair){
-  const key = pair + '|' + (vUpload ? vUpload.src.length : 0); if (opCache[key]) return opCache[key];
-  const mk = () => { const c = document.createElement('canvas'); c.width = OW; c.height = OH; return c; };
-  const a = mk(), b = mk(), ga = a.getContext('2d'), gb = b.getContext('2d');
-  ga.fillStyle = gb.fillStyle = '#000';
-  if (pair==='shapes'){ ga.beginPath(); ga.arc(130, 105, 78, 0, Math.PI*2); ga.fill(); gb.save(); gb.translate(205, 105); gb.rotate(Math.PI/4); gb.fillRect(-58, -58, 116, 116); gb.restore(); }
-  else if (pair==='text'){ ga.fillRect(30, 45, 260, 120); gb.font = '800 96px "Bricolage Grotesque", "Archivo", sans-serif'; gb.textAlign = 'center'; gb.textBaseline = 'middle'; gb.fillText('INK', 160, 110); }
-  else { ga.beginPath(); ga.arc(160, 105, 88, 0, Math.PI*2); ga.fill();
-    // B: the sample landscape, screened in one ink, filling the whole tile
-    const src = photoSource(), t = mk(), gt = t.getContext('2d'); gt.drawImage(src, 0, 0, OW, OH);
-    const d = gt.getImageData(0, 0, OW, OH).data, im = gb.createImageData(OW, OH), o = im.data, cell = 5, TAU = Math.PI*2;
-    for (let y=0;y<OH;y++) for (let x=0;x<OW;x++){ const i = (y*OW+x)*4, L0 = (.299*d[i]+.587*d[i+1]+.114*d[i+2])/255, dk = Math.min(1, Math.max(0, (1 - L0 - .1)*1.5));
-      const u = (x+y)/(cell*Math.SQRT2), w = (y-x)/(cell*Math.SQRT2), thr = (Math.cos(TAU*u) + Math.cos(TAU*w) + 2)/4; o[i+3] = thr > 1 - dk ? 255 : 0; }
-    gb.putImageData(im, 0, 0);
+const MVDEF = {crop:'none', cut:'none', mirror:'none', slice:'none', form:'full', repeat:'1', drag:'none', tone:'100', dots:'solid', echo:'none'};
+const mkEl = o => Object.assign({type:'shape', shape:'circle', text:'INK', font:'sans', photo:'scene', ink:'a', x:CW/2, y:CH/2, size:100, rot:0, mv:Object.assign({}, MVDEF)}, o);
+S.mix = {n:2, sel:'b', op:'over', mis:1.5, last:null, els:{
+  a:mkEl({type:'photo', ink:'a', x:270, y:205, size:110, mv:Object.assign({}, MVDEF, {dots:'dots'})}),
+  b:mkEl({type:'text', text:'INK', ink:'b', x:380, y:215, size:130}),
+}};
+let mxUpload = {a:null, b:null};
+const cnv = (w, h) => { const c = document.createElement('canvas'); c.width = Math.max(1, Math.round(w)); c.height = Math.max(1, Math.round(h)); return c; };
+
+// the element itself, before moves: an RGBA canvas whose alpha is the element's shape
+function mxRaw(e, slot){
+  if (e.type==='shape'){
+    const c = cnv(300, 300), g = c.getContext('2d'); g.fillStyle = '#000'; g.beginPath();
+    if (e.shape==='circle') g.arc(150, 150, 140, 0, Math.PI*2);
+    else if (e.shape==='square') g.rect(25, 25, 250, 250);
+    else if (e.shape==='tri'){ g.moveTo(150, 14); g.lineTo(290, 268); g.lineTo(10, 268); g.closePath(); }
+    else if (e.shape==='star'){ for (let k=0;k<10;k++){ const r = k%2 ? 58 : 145, a = -Math.PI/2 + k*Math.PI/5; g.lineTo(150 + r*Math.cos(a), 158 + r*Math.sin(a)); } g.closePath(); }
+    else if (e.shape==='arch'){ g.moveTo(30, 290); g.lineTo(30, 150); g.arc(150, 150, 120, Math.PI, 0); g.lineTo(270, 290); g.closePath(); }
+    else { g.arc(150, 150, 140, 0, Math.PI*2); g.arc(150, 150, 92, 0, Math.PI*2, true); }
+    g.fill(); return c;
   }
-  const A = ga.getImageData(0, 0, OW, OH).data, B = gb.getImageData(0, 0, OW, OH).data, N = OW*OH, ma = new Float32Array(N), mb = new Float32Array(N), mt = new Float32Array(N);
-  for (let i=0;i<N;i++){ ma[i] = A[i*4+3]/255; mb[i] = B[i*4+3]/255; }
-  const tc = mk(), gt2 = tc.getContext('2d'); gt2.font = '800 128px "Bricolage Grotesque", "Archivo", sans-serif'; gt2.textAlign = 'center'; gt2.textBaseline = 'middle'; gt2.fillText('INK', OW/2, OH/2 + 4);
-  const TD = gt2.getImageData(0, 0, OW, OH).data; for (let i=0;i<N;i++) mt[i] = TD[i*4+3]/255;
-  return (opCache[key] = {ma, mb, mt});
+  if (e.type==='text'){
+    const font = {sans:'800 150px "Bricolage Grotesque", "Archivo", sans-serif', mono:'600 130px "JetBrains Mono", monospace', serif:'700 150px Georgia, "Times New Roman", serif'}[e.font];
+    const t = (e.text || ' ').slice(0, 16), m = cnv(10, 10).getContext('2d'); m.font = font;
+    const w = Math.ceil(m.measureText(t).width) + 24, c = cnv(w, 180), g = c.getContext('2d');
+    g.font = font; g.fillStyle = '#000'; g.textBaseline = 'middle'; g.fillText(t, 12, 96); return c;
+  }
+  if (e.type==='photo'){ const s = photoSource(e.photo==='upload' && mxUpload[slot] ? mxUpload[slot] : null), c = cnv(VW, VH); c.getContext('2d').drawImage(s, 0, 0); return c; }
+  // drawing and object: the "before" versions from the translation lab, on white, trimmed to what was drawn
+  const W = {paper:'#FFFFFF', k:'#111111', a:'#8A8A8A', b:'#555555'}, c = cnv(VW, VH), g = c.getContext('2d', {willReadFrequently:true});
+  g.fillStyle = '#fff'; g.fillRect(0, 0, VW, VH);
+  if (e.type==='hand') drawHand(g, {v_spot:true, v_line:true, v_single:true, noTable:true}, 'riso', W); else drawObj(g, {}, 'swiss', W);
+  const im = g.getImageData(0, 0, VW, VH), d = im.data; let x0 = VW, y0 = VH, x1 = 0, y1 = 0;
+  for (let y=0;y<VH;y++) for (let x=0;x<VW;x++){ const i = (y*VW+x)*4; if (d[i]+d[i+1]+d[i+2] > 744) d[i+3] = 0; else { if (x<x0) x0 = x; if (x>x1) x1 = x; if (y<y0) y0 = y; if (y>y1) y1 = y; } }
+  g.putImageData(im, 0, 0);
+  const o = cnv(x1 - x0 + 9, y1 - y0 + 9); o.getContext('2d').drawImage(c, x0 - 4, y0 - 4, o.width, o.height, 0, 0, o.width, o.height); return o;
 }
-function dilate(m, r){
-  const out = new Float32Array(m.length);
-  for (let y=0;y<OH;y++) for (let x=0;x<OW;x++){ let v = 0; for (let dy=-r; dy<=r && v<1; dy++) for (let dx=-r; dx<=r; dx++){ if (dx*dx + dy*dy > r*r) continue; const xx = x+dx, yy = y+dy; if (xx<0||yy<0||xx>=OW||yy>=OH) continue; v = Math.max(v, m[yy*OW+xx]); } out[y*OW+x] = v; }
-  return out;
-}
-function erode(m, r){
-  const out = new Float32Array(m.length);
-  for (let y=0;y<OH;y++) for (let x=0;x<OW;x++){ let v = 1; for (let dy=-r; dy<=r && v>0; dy++) for (let dx=-r; dx<=r; dx++){ const xx = x+dx, yy = y+dy; if (xx<0||yy<0||xx>=OW||yy>=OH){ v = 0; break; } v = Math.min(v, m[yy*OW+xx]); } out[y*OW+x] = v; }
-  return out;
-}
-function drawOp(cv, op, pair, ink, mis){
-  const g = cv.getContext('2d'), {ma, mb, mt} = opMasks(pair), N = OW*OH, photoPair = pair==='photo';
-  // keyline: the top element (B, or the circle over the photo) gets a ring of paper around it
-  const ring = op==='keyline' ? dilate(photoPair ? ma : mb, 6) : null;
-  const dx = mis ? 5 : 0, dy = mis ? 3 : 0;                      // plate B slips by about 1–2 mm at print size
-  const mbE = op==='trap' ? erode(mb, 3) : null;                 // the hole in A is choked so A runs under B
-  const im = g.createImageData(OW, OH), d = im.data, P = hx(ink.paper), A = hx(ink.a), B = hx(ink.b), r = noise2(5);
-  for (let y=0;y<OH;y++) for (let x=0;x<OW;x++){
-    const i = y*OW + x, xs = x - dx, ys = y - dy, j = (xs>=0 && ys>=0 && xs<OW && ys<OH) ? ys*OW + xs : -1;
-    const a = ma[i], b0 = mb[i], bS = j>=0 ? mb[j] : 0, aS = j>=0 ? ma[j] : 0;
-    let cA = 0, cB = 0;
-    switch (op){
-      case 'over': cA = a; cB = bS; break;
-      case 'knock': cA = a*(1 - b0); cB = bS; break;
-      case 'trap': cA = a*(1 - mbE[i]); cB = bS; break;
-      case 'reverse': cA = a*(1 - b0); break;
-      case 'union': cA = Math.max(a, b0); break;
-      case 'inter': cA = a*b0; break;
-      case 'xor': cA = Math.abs(a - b0); break;
-      case 'clip': cB = bS*aS; break;
-      case 'opaque': cA = a; cB = bS; break;
-      case 'keyline': if (photoPair){ cA = a; cB = bS*(1 - ring[i]); } else { cA = a*(1 - ring[i]); cB = bS; } break;
-      case 'shadow': { const sx = x - 9, sy = y - 7, k = (sx>=0 && sy>=0 && sx<OW && sy<OH) ? sy*OW + sx : -1;
-        // the element prints in its own ink; its offset copy prints in the other ink, underneath
-        if (photoPair){ cA = a; cB = k>=0 ? ma[k]*(1 - a) : 0; } else { cB = bS; cA = k>=0 ? mb[k]*(1 - b0) : 0; } } break;
-      case 'intext': cB = bS*(j>=0 ? mt[j] : 0); break;
+// single-element moves, in a fixed order: crop, cut-out, mirror, slices, form, scanner drag, repeat
+const mxLocalCache = {};
+function mxLocal(e, slot){
+  const key = JSON.stringify([e.type, e.shape, e.text, e.font, e.photo, e.photo==='upload' && mxUpload[slot] ? mxUpload[slot].src.length : 0, e.mv]);
+  if (mxLocalCache[key]) return mxLocalCache[key];
+  const mv = e.mv, contone = e.type==='photo' || e.type==='obj';
+  let c = mxRaw(e, slot);
+  const sub = (x, y, w, h) => { const o = cnv(w, h); o.getContext('2d').drawImage(c, x, y, w, h, 0, 0, w, h); return o; };
+  if (mv.crop==='tight' && contone) c = sub(c.width*.12, c.height*.25, c.width*.5, c.height*.65);
+  if (mv.crop==='strip' && contone) c = sub(0, c.height*.32, c.width, c.height*.36);
+  let W = c.width, H = c.height, g = c.getContext('2d', {willReadFrequently:true}), im = g.getImageData(0, 0, W, H), d = im.data;
+  if (mv.cut==='bg' && e.type==='photo'){
+    let r = 0, gg = 0, b = 0, n = 0; for (let y=0;y<Math.max(2, H*.08);y++) for (let x=0;x<W;x++){ const i = (y*W+x)*4; r += d[i]; gg += d[i+1]; b += d[i+2]; n++; }
+    r /= n; gg /= n; b /= n;
+    for (let i=0;i<W*H;i++){ const dr = d[i*4]-r, dg = d[i*4+1]-gg, db = d[i*4+2]-b; if (Math.sqrt(dr*dr+dg*dg+db*db) < 48 || d[i*4]+d[i*4+1]+d[i*4+2] > 690) d[i*4+3] = 0; }
+  }
+  if (mv.mirror==='flip'){ const o = new Uint8ClampedArray(d.length); for (let y=0;y<H;y++) for (let x=0;x<W;x++) o.set(d.subarray((y*W+W-1-x)*4, (y*W+W-x)*4), (y*W+x)*4); d.set(o); }
+  if (mv.mirror==='sym') for (let y=0;y<H;y++) for (let x=Math.ceil(W/2);x<W;x++) d.set(d.subarray((y*W+W-1-x)*4, (y*W+W-x)*4), (y*W+x)*4);
+  if (mv.slice==='strips'){
+    const sh = Math.round(W*.04), band = Math.max(10, Math.round(H/9)), W2 = W + 2*sh, o = new Uint8ClampedArray(W2*H*4);
+    for (let y=0;y<H;y++){ const off = sh + (Math.floor(y/band) % 2 ? 1 : -1)*sh; o.set(d.subarray(y*W*4, (y+1)*W*4), (y*W2 + off)*4); }
+    c = cnv(W2, H); g = c.getContext('2d', {willReadFrequently:true}); im = new ImageData(o, W2, H); d = im.data; W = W2;
+  }
+  if (mv.form!=='full'){
+    // luminance over white, so the shape's own edge counts as an edge
+    const N = W*H, Lm = new Float32Array(N); let sum = 0, cnt = 0;
+    for (let i=0;i<N;i++){ const a = d[i*4+3]/255; Lm[i] = 1 - a*(1 - (.299*d[i*4] + .587*d[i*4+1] + .114*d[i*4+2])/255); if (a > .5){ sum += Lm[i]; cnt++; } }
+    const mean = cnt ? sum/cnt : .5, flatType = !contone || mv.cut==='bg';
+    for (let y=0;y<H;y++) for (let x=0;x<W;x++){
+      const i = y*W + x; let on;
+      if (mv.form==='sil') on = flatType ? d[i*4+3] > 128 : (d[i*4+3] > 128 && Lm[i] < mean);
+      else { const xl = Math.max(0,x-2), xr = Math.min(W-1,x+2), yu = Math.max(0,y-2), yd = Math.min(H-1,y+2); on = Math.hypot(Lm[y*W+xr] - Lm[y*W+xl], Lm[yd*W+x] - Lm[yu*W+x]) > .09; }
+      d[i*4] = d[i*4+1] = d[i*4+2] = 20; d[i*4+3] = on ? 255 : 0;
     }
-    let c = P.slice();
-    const s = .95 - .25*r();
-    if (cA) c = c.map((v,k) => v*(1 - cA*s*(1 - A[k]/255)));
-    if (cB) c = op==='opaque' ? c.map((v,k) => v + (B[k]*(.97 - .05*r()) - v)*cB) : c.map((v,k) => v*(1 - cB*s*(1 - B[k]/255)));
-    d[i*4] = c[0]; d[i*4+1] = c[1]; d[i*4+2] = c[2]; d[i*4+3] = 255;
+  }
+  if (mv.drag==='drag'){
+    for (let x=0;x<W;x++){ const y0 = Math.round(H*.42 + H*.06*Math.sin(x*.03) + H*.025*Math.sin(x*.13)), j0 = (y0*W + x)*4;
+      for (let y=y0+1;y<H;y++){ const i = (y*W + x)*4, t = Math.min(1, (y - y0)/(H*.6)); for (let k=0;k<4;k++) d[i+k] = d[j0+k]*(1 - t*.3) + d[i+k]*t*.3; } }
   }
   g.putImageData(im, 0, 0);
-  if (op==='clip'){ g.strokeStyle = ink.a; g.lineWidth = 3; g.beginPath(); g.arc(160, 105, 88, 0, Math.PI*2); g.stroke(); }
+  const n = +mv.repeat;
+  if (n > 1){ const gap = Math.round(W*.06), o = cnv(n*W + (n-1)*gap, H), og = o.getContext('2d'); for (let k=0;k<n;k++) og.drawImage(c, k*(W + gap), 0); c = o; }
+  return (mxLocalCache[key] = c);
 }
-function drawInputs(cv, pair, ink){
-  const g = cv.getContext('2d'), {ma, mb} = opMasks(pair), W2 = cv.width, im = g.createImageData(W2, OH), d = im.data, P = hx(ink.paper), A = hx(ink.a), B = hx(ink.b);
-  for (let y=0;y<OH;y++) for (let x=0;x<W2;x++){
-    const o = (y*W2 + x)*4, left = x < OW, i = y*OW + (left ? x : x - OW - 20), inside = left || (x >= OW + 20);
-    let c = P.slice();
-    if (inside){ const m = left ? ma[i] : mb[i], K = left ? A : B; if (m) c = c.map((v,k) => v*(1 - m*.95*(1 - K[k]/255))); }
-    d[o] = c[0]; d[o+1] = c[1]; d[o+2] = c[2]; d[o+3] = 255;
+const MX_BASE = {shape:300, text:0, photo:400, hand:280, obj:300};
+// an element placed on the sheet at resolution r: mask M (where it is) and darkness D (how much ink it asks for)
+const mxLayerCache = {};
+function mxLayer(e, slot, r){
+  const loc = mxLocal(e, slot), key = JSON.stringify([e, r, slot, e.photo==='upload' && mxUpload[slot] ? mxUpload[slot].src.length : 0]);
+  if (mxLayerCache[key]) return mxLayerCache[key];
+  if (Object.keys(mxLayerCache).length > 60) for (const k in mxLayerCache) delete mxLayerCache[k];
+  const W = Math.round(CW*r), H = Math.round(CH*r), c = cnv(W, H), g = c.getContext('2d', {willReadFrequently:true});
+  const base = e.type==='text' ? Math.min(1, 560/loc.width) : MX_BASE[e.type]/Math.max(loc.width/(+e.mv.repeat || 1), loc.height);
+  const s = base*e.size/100;
+  g.setTransform(r, 0, 0, r, 0, 0); g.translate(e.x, e.y); g.rotate(e.rot*Math.PI/180); g.scale(s, s); g.drawImage(loc, -loc.width/2, -loc.height/2);
+  const d = g.getImageData(0, 0, W, H).data, N = W*H, M = new Float32Array(N), D = new Float32Array(N);
+  const contone = (e.type==='photo' || e.type==='obj') && e.mv.form==='full', tone = +e.mv.tone/100;
+  let lo = 0, hi = 1;
+  if (contone){ const v = []; for (let i=0;i<N;i+=3) if (d[i*4+3] > 128) v.push((.299*d[i*4] + .587*d[i*4+1] + .114*d[i*4+2])/255); v.sort((a,b)=>a-b); if (v.length > 20){ lo = v[Math.floor(v.length*.02)]; hi = v[Math.floor(v.length*.98)]; } }
+  for (let i=0;i<N;i++){
+    const a = d[i*4+3]/255; M[i] = a; if (!a) continue;
+    let L0 = (.299*d[i*4] + .587*d[i*4+1] + .114*d[i*4+2])/255;
+    if (contone){ L0 = (L0 - lo)/Math.max(.05, hi - lo); L0 = L0 < 0 ? 0 : L0 > 1 ? 1 : Math.pow(L0, 1.1); }
+    D[i] = a*(1 - L0)*tone;
+  }
+  return (mxLayerCache[key] = {M, D, W, H, r});
+}
+// screening: how the darkness becomes ink on the plate
+function mxPrint(L, e, ang){
+  const {D, W, H, r} = L, P = new Float32Array(W*H), mode = e.mv.dots;
+  if (mode==='solid'){ P.set(D); return P; }
+  const cell = (mode==='giant' ? 18 : 6)*r, a = ang*Math.PI/180, ca = Math.cos(a), sa = Math.sin(a), TAU = Math.PI*2;
+  for (let y=0;y<H;y++) for (let x=0;x<W;x++){ const i = y*W + x, v = D[i]; if (!v) continue;
+    const u = (x*ca + y*sa)/cell, w = (-x*sa + y*ca)/cell; P[i] = (Math.cos(TAU*u) + Math.cos(TAU*w) + 2)/4 > 1 - v ? 1 : 0; }
+  return P;
+}
+// grow (dilate) or shrink (erode) a mask by r pixels: two separable passes with a square window
+function mxMorph(m, W, H, rad, grow){
+  const R = Math.max(1, Math.round(rad)), t = new Float32Array(m.length), out = new Float32Array(m.length), pick = grow ? Math.max : Math.min, edge = grow ? 0 : 0;
+  for (let y=0;y<H;y++) for (let x=0;x<W;x++){ let v = grow ? 0 : 1; for (let k=-R;k<=R;k++){ const xx = x+k; const s = (xx<0||xx>=W) ? edge : m[y*W+xx]; v = pick(v, s); } t[y*W+x] = v; }
+  for (let y=0;y<H;y++) for (let x=0;x<W;x++){ let v = grow ? 0 : 1; for (let k=-R;k<=R;k++){ const yy = y+k; const s = (yy<0||yy>=H) ? edge : t[yy*W+x]; v = pick(v, s); } out[y*W+x] = v; }
+  return out;
+}
+const mxShift = (m, W, H, dx, dy) => { const o = new Float32Array(m.length), ix = Math.round(dx), iy = Math.round(dy); for (let y=0;y<H;y++){ const ys = y - iy; if (ys<0||ys>=H) continue; for (let x=0;x<W;x++){ const xs = x - ix; if (xs>=0 && xs<W) o[y*W+x] = m[ys*W+xs]; } } return o; };
+const mxOther = k => k==='a' ? 'b' : 'a';
+const ANG = {a:15, b:75, k:45};
+// compose: returns plates keyed by ink colour (same colour = same drum = no misregistration between them)
+function mxCompose(r, op, mvOver){
+  const M = S.mix, ink = INKSETS[S.inks], N = Math.round(CW*r)*Math.round(CH*r), W = Math.round(CW*r), H = Math.round(CH*r);
+  const eA = mvOver && mvOver.slot==='a' ? mvOver.e : M.els.a, eB = mvOver && mvOver.slot==='b' ? mvOver.e : M.els.b;
+  const plates = [], plate = (k, opaque) => { const col = ink[k]; let p = plates.find(q => q.col===col && !!q.opaque===!!opaque); if (!p){ p = {col, k, cov:new Float32Array(N), opaque}; plates.push(p); } return p.cov; };
+  const add = (k, arr, f = 1, opaque) => { const t = plate(k, opaque); for (let i=0;i<N;i++){ const v = arr[i]*f; if (v > t[i]) t[i] = v > 1 ? 1 : v; } };
+  const LA = mxLayer(eA, 'a', r), pA = mxPrint(LA, eA, ANG[eA.ink]);
+  const echo = (L, e, p) => { if (e.mv.echo==='ink') add(mxOther(e.ink), mxShift(p, W, H, 16*r, 10*r)); };
+  if (M.n===1){ echo(LA, eA, pA); add(eA.ink, pA); return {plates, W, H, ia:eA.ink, ib:eA.ink}; }
+  const LB = mxLayer(eB, 'b', r), pB = mxPrint(LB, eB, ANG[eB.ink]), MA = LA.M, MB = LB.M, ia = eA.ink, ib = eB.ink;
+  echo(LA, eA, pA); echo(LB, eB, pB);
+  const prod = (x, y) => x.map((v,i) => v*y[i]), minus = (x, m) => x.map((v,i) => v*(1 - m[i]));
+  switch (op){
+    case 'over': add(ia, pA); add(ib, pB); break;
+    case 'opaque': add(ia, pA); add(ib, pB, 1, true); break;
+    case 'knock': add(ia, minus(pA, MB)); add(ib, pB); break;
+    case 'trap': add(ia, minus(pA, mxMorph(MB, W, H, 3*r, false))); add(ib, pB); break;
+    case 'keyline': add(ia, minus(pA, mxMorph(MB, W, H, 9*r, true))); add(ib, pB); break;
+    case 'shadow': { const sk = ia!==ib ? ia : mxOther(ib); add(ia, pA); add(sk, mxShift(MB, W, H, 11*r, 8*r)); add(ib, pB); } break;
+    case 'reverse': add(ia, minus(pA, MB)); break;
+    case 'weave': { const R = new Float32Array(N); for (let y=0;y<H;y++) for (let x=0;x<W;x++) R[y*W+x] = Math.floor((x + y*.6)/(70*r)) % 2; // stripes decide who is on top
+      add(ia, pA.map((v,i) => v*(1 - (R[i] ? MB[i] : 0)))); add(ib, pB.map((v,i) => v*(1 - (R[i] ? 0 : MA[i])))); } break;
+    case 'union': add(ia, pA.map((v,i) => Math.max(v, pB[i]))); break;
+    case 'inter': add(ia, prod(pA.map((v,i) => Math.max(v, pB[i])), prod(MA, MB))); break;
+    case 'xor': add(ia, pA.map((v,i) => v*(1 - MB[i]) + pB[i]*(1 - MA[i]))); break;
+    case 'fill': add(ia, prod(pB, MA)); break;
+    case 'clip': { const edge = mxMorph(MA, W, H, 2*r, true).map((v,i) => v*(1 - MA[i])); add(ia, edge); add(ib, prod(pB, MA)); } break;
+  }
+  return {plates, W, H, ia, ib};
+}
+// print: paper, then each plate multiplies in (or covers, if opaque), plates other than A's slipping by the misregistration
+function mxPaint(cv, r, op, mvOver){
+  const {plates, W, H, ia} = mxCompose(r, op, mvOver), ink = INKSETS[S.inks], P = hx(ink.paper), rn = noise2(5);
+  const mm = S.mix.mis*4*r, base = ink[ia], dirs = [[1, .6], [-.6, .8]];
+  let n = 0; plates.forEach(p => { p.off = p.col===base ? [0, 0] : (dirs[Math.min(n++, 1)].map(v => v*mm)); p.rgb = hx(p.col); });
+  plates.sort((a, b) => (a.opaque ? 1 : 0) - (b.opaque ? 1 : 0));
+  cv.width = W; cv.height = H; const g = cv.getContext('2d'), im = g.createImageData(W, H), d = im.data;
+  for (let y=0;y<H;y++) for (let x=0;x<W;x++){
+    const i = y*W + x, s = .95 - .22*rn(); let c0 = P[0], c1 = P[1], c2 = P[2];
+    for (const p of plates){ const xs = x - Math.round(p.off[0]), ys = y - Math.round(p.off[1]); if (xs<0||ys<0||xs>=W||ys>=H) continue; const v = p.cov[ys*W+xs]; if (!v) continue;
+      const K = p.rgb;
+      if (p.opaque){ const t = v*(.97 - .05*rn()); c0 += (K[0]-c0)*t; c1 += (K[1]-c1)*t; c2 += (K[2]-c2)*t; }
+      else { const t = v*s; c0 *= 1 - t*(1 - K[0]/255); c1 *= 1 - t*(1 - K[1]/255); c2 *= 1 - t*(1 - K[2]/255); } }
+    d[i*4] = c0; d[i*4+1] = c1; d[i*4+2] = c2; d[i*4+3] = 255;
   }
   g.putImageData(im, 0, 0);
-  g.fillStyle = ink.k; g.font = '600 13px "JetBrains Mono", monospace'; g.fillText('A', 10, 20); g.fillText('B', OW + 30, 20);
+}
+// tiles: every way to combine (two elements), or every single move applied on top of the current element (one element)
+const MXSINGLE = [['mirror','flip'],['mirror','sym'],['slice','strips'],['form','sil'],['form','line'],['drag','drag'],['repeat','3'],['dots','dots'],['dots','giant'],['tone','30'],['echo','ink'],['cut','bg'],['crop','tight']];
+function mxTiles(){
+  const M = S.mix, ink = INKSETS[S.inks], sameInk = M.n===2 && ink[M.els.a.ink]===ink[M.els.b.ink];
+  if (M.n===2) return MXOPS.map(o => ({id:o.id, t:o.t, on:M.op===o.id, tag:sameInk || o.safe ? (LANG==='zh' ? '不怕错位' : 'miss-proof') : (LANG==='zh' ? '怕错位' : 'needs register'), warn:!sameInk && !o.safe, paint:cv => mxPaint(cv, .5, o.id)}));
+  const e = M.els.a, type = e.type;
+  return MXSINGLE.filter(([k]) => !MV[Object.keys(MV).find(id => MV[id][0]===k)][2] || MV[Object.keys(MV).find(id => MV[id][0]===k)][2].includes(type)).map(([k, v]) => {
+    const opt = MV[Object.keys(MV).find(id => MV[id][0]===k)][1].find(x => x[0]===v), on = e.mv[k]===v;
+    const ne = JSON.parse(JSON.stringify(e)); ne.mv[k] = on ? MVDEF[k] : v;
+    return {id:k + ':' + v, t:opt[1], on, tag:on ? (LANG==='zh' ? '已用 · 点击取消' : 'on · click to undo') : T(MVNAME[k]), paint:cv => mxPaint(cv, .5, null, {slot:'a', e:ne})};
+  });
+}
+const MVNAME = {crop:L('裁切','Crop'), cut:L('抠图','Cut-out'), mirror:L('镜像','Mirror'), slice:L('切条','Slice'), form:L('形式','Form'), repeat:L('重复','Repeat'), drag:L('拖影','Drag'), tone:L('浓度','Tone'), dots:L('网点','Screen'), echo:L('错位复制','Echo')};
+
+let mxTileTimer = null;
+function renderMix(full = true){
+  const M = S.mix, ink = INKSETS[S.inks], e = M.els[M.sel];
+  let cv = $('before').querySelector('canvas.mixcv');
+  if (!cv){ $('before').innerHTML = `<div class="pg" style="--paper:${ink.paper};padding:0"><canvas class="vis mixcv" width="${CW}" height="${CH}"></canvas></div>`; cv = $('before').querySelector('canvas.mixcv'); mxBindDrag(cv); }
+  $('before').querySelector('.pg').style.setProperty('--paper', ink.paper);
+  mxPaint(cv, full ? 1 : .5, M.op);   // half resolution while dragging or sliding, full on release
+  const name = s => { const el = M.els[s], tp = T(MX_TYPES.find(t => t[0]===el.type)[1]); return s.toUpperCase() + ' ' + (el.type==='text' ? '“' + (el.text || '') + '”' : el.type==='shape' ? T(MX_SHAPES.find(t => t[0]===el.shape)[1]) : tp); };
+  $('beforeLbl').textContent = LANG==='zh' ? '组合台 · 可以拖动元素' : 'Composer · drag the elements';
+  $('beforeName').textContent = M.n===1 ? name('a') : name('a') + ' + ' + name('b') + ' · ' + T(MXOPS.find(o => o.id===M.op).t);
+  syncMixPanel();
+  if (!full) return;
+  clearTimeout(mxTileTimer);
+  const tiles = mxTiles();
+  $('afterLbl').textContent = M.n===2 ? (LANG==='zh' ? '所有组合手段' : 'All ways to combine') : (LANG==='zh' ? '单元素手段' : 'Single-element moves');
+  $('afterName').textContent = (M.n===2 ? (LANG==='zh' ? '点击切换 · ' : 'Click to switch · ') : (LANG==='zh' ? '点击叠加到当前元素 · ' : 'Click to add to the element · ')) + (M.mis ? (LANG==='zh' ? `错位 ${M.mis} mm` : `${M.mis} mm miss`) : (LANG==='zh' ? '完美对位' : 'perfect register'));
+  $('after').innerHTML = `<div class="pg" style="--paper:${ink.paper};padding:12px"><div class="optiles">${tiles.map(t => `<button type="button" class="optile${t.on ? ' on' : ''}" data-tile="${t.id}"><canvas width="${CW/2}" height="${CH/2}"></canvas><span class="cap2">${T(t.t)}<i class="${t.warn ? 'warn' : ''}">${t.tag}</i></span></button>`).join('')}</div></div>`;
+  const cvs = [...$('after').querySelectorAll('canvas')];
+  let k = 0; const step = () => { const t0 = performance.now(); while (k < tiles.length && performance.now() - t0 < 40){ tiles[k].paint(cvs[k]); k++; } if (k < tiles.length) mxTileTimer = setTimeout(step, 0); };
+  step();
+  $('after').querySelectorAll('[data-tile]').forEach(b => b.addEventListener('click', () => {
+    const id = b.dataset.tile;
+    if (M.n===2) M.op = id; else { const [key, v] = id.split(':'); const el = M.els.a; el.mv[key] = el.mv[key]===v ? MVDEF[key] : v; M.last = key; }
+    renderMix();
+  }));
+  mxChecks();
+}
+function mxChecks(){
+  const M = S.mix, ink = INKSETS[S.inks], li = [];
+  const els = M.n===1 ? ['a'] : ['a', 'b'];
+  const sameInk = M.n===2 && ink[M.els.a.ink]===ink[M.els.b.ink];
+  if (M.n===2){
+    const o = MXOPS.find(x => x.id===M.op), safe = sameInk || o.safe;
+    li.push({ok:safe, b:safe ? (LANG==='zh' ? '安全' : 'Safe') : (LANG==='zh' ? '注意' : 'Care'), t:o.t, w:sameInk ? L('两个元素用同一种墨，在同一块版上，不会互相错位。','Both elements use the same ink, so they sit on one plate and cannot miss each other.') : o.d, l:o.l});
+  }
+  els.forEach(s => { const e = M.els[s], tag = s.toUpperCase() + ' · ';
+    if ((e.type==='photo' || e.type==='obj') && e.mv.form==='full' && e.mv.dots==='solid') li.push({ok:false, b:LANG==='zh' ? '不适配' : 'Off', t:L(tag + '连续调要加网', tag + 'Contone needs a screen'), w:L('平滑的灰阶在 Riso 和胶印上都印不出来，要先变成网点。把“网点”设成网点或放大网点。','Smooth tone cannot print on a Riso or offset press; it has to become dots first. Set Screen to dots or giant dots.'), l:['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']});
+    if (e.type==='text' && e.size < 60 && (e.mv.echo==='ink' || (M.n===2 && !sameInk && ['over','knock'].includes(M.op)))) li.push({ok:false, b:LANG==='zh' ? '不适配' : 'Off', t:L(tag + '小字跨两块版', tag + 'Small type across two plates'), w:L('小字用两种墨会糊：只用一种墨，错位留给大字。','Small type in two inks blurs: keep it to one ink and leave the miss to big type.'), l:['Good Press','https://goodpress.co.uk/pages/file-preparation']});
+    Object.keys(MVDEF).filter(k => e.mv[k]!==MVDEF[k] && MVNOTE[k]).forEach(k => li.push({ok:true, b:LANG==='zh' ? '手段' : 'Move', t:L(tag + T(MVNAME[k]), tag + T(MVNAME[k])), w:MVNOTE[k]}));
+  });
+  const ok = li.filter(c => c.ok).length;
+  $('score').textContent = `${ok} / ${li.length}`;
+  $('checks').innerHTML = li.map(c => `<li class="${c.ok ? 'ok' : 'warn'}"><b>${c.b}</b><span>${T(c.t)} <em>· ${T(c.w)}${c.l ? ` <a href="${c.l[1]}" target="_blank" rel="noopener">${c.l[0]}</a>` : ''}</em></span></li>`).join('');
+}
+// dragging on the sheet moves whichever element is under the pointer (B first, it is on top)
+function mxBindDrag(cv){
+  let drag = null, raf = 0;
+  const pt = ev => { const b = cv.getBoundingClientRect(); return [(ev.clientX - b.left)/b.width*CW, (ev.clientY - b.top)/b.height*CH]; };
+  const hit = (x, y) => { const M = S.mix; for (const s of (M.n===2 ? ['b', 'a'] : ['a'])){ const Lr = mxLayer(M.els[s], s, 1); if (Lr.M[Math.round(y)*Lr.W + Math.round(x)] > .3) return s; } return null; };
+  cv.addEventListener('pointerdown', ev => { const [x, y] = pt(ev), s = hit(x, y); if (!s) return; const e = S.mix.els[s]; drag = {s, dx:e.x - x, dy:e.y - y}; S.mix.sel = s; cv.setPointerCapture(ev.pointerId); cv.style.cursor = 'grabbing'; ev.preventDefault(); });
+  cv.addEventListener('pointermove', ev => { const [x, y] = pt(ev);
+    if (!drag){ cv.style.cursor = hit(x, y) ? 'grab' : 'default'; return; }
+    const e = S.mix.els[drag.s]; e.x = Math.max(0, Math.min(CW, x + drag.dx)); e.y = Math.max(0, Math.min(CH, y + drag.dy));
+    if (!raf) raf = requestAnimationFrame(() => { raf = 0; renderMix(false); }); });
+  const end = () => { if (!drag) return; drag = null; cv.style.cursor = 'grab'; cancelAnimationFrame(raf); raf = 0; renderMix(); };
+  cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
+}
+// the panel: one editor bound to the selected element
+function buildMixPanel(){
+  const M = S.mix;
+  const seg = (id, items, get, set, full = true) => { const el = $(id); el.innerHTML = ''; items.forEach(([v, l]) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = T(l); b.dataset.v = v; b.addEventListener('click', () => { set(v); renderMix(full); if (!full) mxDeferTiles(); }); el.appendChild(b); }); el._get = get; };
+  seg('mxN', [['1',L('一个元素','One element')],['2',L('两个元素','Two elements')]], () => String(M.n), v => { M.n = +v; if (M.n===1) M.sel = 'a'; });
+  seg('mxSel', [['a',L('A · 下层','A · below')],['b',L('B · 上层','B · on top')]], () => M.sel, v => { M.sel = v; });
+  seg('mxType', MX_TYPES, () => M.els[M.sel].type, v => { const e = M.els[M.sel]; e.type = v; if ((v==='photo' || v==='obj') && e.mv.dots==='solid') e.mv.dots = 'dots'; });
+  seg('mxShape', MX_SHAPES, () => M.els[M.sel].shape, v => { M.els[M.sel].shape = v; });
+  seg('mxFont', MX_FONTS, () => M.els[M.sel].font, v => { M.els[M.sel].font = v; });
+  seg('mxInk', MX_INKS, () => M.els[M.sel].ink, v => { M.els[M.sel].ink = v; });
+  seg('mxOp', MXOPS.map(o => [o.id, o.t]), () => M.op, v => { M.op = v; });
+  Object.entries(MV).forEach(([id, [key, opts]]) => seg(id, opts, () => M.els[M.sel].mv[key], v => { M.els[M.sel].mv[key] = v; M.last = key; }));
+  $('mxPhotoScene').onclick = () => { M.els[M.sel].photo = 'scene'; renderMix(); };
+}
+function mxDeferTiles(){ clearTimeout(mxDeferTiles.t); mxDeferTiles.t = setTimeout(() => renderMix(), 250); }
+function syncMixPanel(){
+  const M = S.mix, e = M.els[M.sel];
+  ['mxN','mxSel','mxType','mxShape','mxFont','mxInk','mxOp', ...Object.keys(MV)].forEach(id => { const el = $(id); if (!el._get) return; const cur = el._get(); el.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===cur)); });
+  $('mxSelRow').hidden = M.n===1; $('mixOpGroup').hidden = M.n===1;
+  $('mxElTitle').textContent = (LANG==='zh' ? '元素 ' : 'Element ') + M.sel.toUpperCase() + (M.n===2 ? (M.sel==='a' ? (LANG==='zh' ? ' · 下层' : ' · below') : (LANG==='zh' ? ' · 上层' : ' · on top')) : '');
+  $('mxShapeRow').hidden = e.type!=='shape'; $('mxTextRow').hidden = $('mxFontRow').hidden = e.type!=='text'; $('mxPhotoRow').hidden = e.type!=='photo';
+  if (document.activeElement!==$('mxText')) $('mxText').value = e.text;
+  $('mxSize').value = e.size; $('mxSizeOut').textContent = e.size + '%';
+  $('mxRot').value = e.rot; $('mxRotOut').textContent = e.rot + '°';
+  $('mxMis').value = M.mis; $('mxMisOut').textContent = M.mis + ' mm';
+  Object.entries(MV).forEach(([id, [, , only]]) => { $(id).closest('.row2').hidden = !!only && !only.includes(e.type); });
+  $('mvNote').textContent = M.last && MVNOTE[M.last] ? T(MVNOTE[M.last]) : '';
+  const o = MXOPS.find(x => x.id===M.op); $('mxOpNote').textContent = T(o.d);
+  $('mxPhotoScene').setAttribute('aria-pressed', e.photo!=='upload');
+}
+function bindMixInputs(){
+  const M = S.mix;
+  $('mxText').addEventListener('input', ev => { M.els[M.sel].text = ev.target.value; renderMix(false); mxDeferTiles(); });
+  [['mxSize','size'],['mxRot','rot']].forEach(([id, k]) => { $(id).addEventListener('input', ev => { M.els[M.sel][k] = +ev.target.value; renderMix(false); }); $(id).addEventListener('change', () => renderMix()); });
+  $('mxMis').addEventListener('input', ev => { M.mis = +ev.target.value; renderMix(false); }); $('mxMis').addEventListener('change', () => renderMix());
+  $('mxSwap').addEventListener('click', () => { const t = M.els.a; M.els.a = M.els.b; M.els.b = t; const u = mxUpload.a; mxUpload.a = mxUpload.b; mxUpload.b = u; renderMix(); });
+  $('mxCenter').addEventListener('click', () => { const e = M.els[M.sel]; e.x = CW/2; e.y = CH/2; renderMix(); });
+  $('mxFile').addEventListener('change', ev => { const file = ev.target.files && ev.target.files[0]; if (!file) return; const rd = new FileReader(); rd.onload = () => { const im = new Image(); im.onload = () => { mxUpload[M.sel] = im; M.els[M.sel].photo = 'upload'; renderMix(); }; im.src = rd.result; }; rd.readAsDataURL(file); ev.target.value = ''; });
 }
 
 /* ---------- fit check ---------- */
-const curSteps = () => S.cat==='ops' ? [] : S.cat==='vis' ? VSTEPS.filter(v => VAPPLY[S.el].includes(v.id)) : STEPS;
+const curSteps = () => S.cat==='mix' ? [] : S.cat==='vis' ? VSTEPS.filter(v => VAPPLY[S.el].includes(v.id)) : STEPS;
 function checks(f, sc){
   const out = curSteps().map(s => ({ok:!!f[s.id], t:s.t, w:s.w, l:s.l}));
   // one derived check: large solid blocks in the Riso scheme should sit near 85%
@@ -945,42 +1216,29 @@ function segs(){
   mk($('visSeg'), VISUALS, 'el', 'vis');
   mk($('schemeSeg'), Object.entries(SCHEMES).map(([k, v]) => [k, v.n]), 'scheme');
   mk($('inkSeg'), Object.entries(INKSETS).map(([k, v]) => [k, v.n]), 'inks');
-  mk($('pairSeg'), PAIRS, 'pair', 'ops');
   buildImgSegs();
   buildSteps();
+  const ms = $('modeSeg'); ms.innerHTML = '';
+  [['tr',L('翻译一个元素','Translate an element')],['mix',L('组合台','Composer')]].forEach(([v, l]) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = T(l); b.dataset.v = v;
+    b.addEventListener('click', () => { if (v==='mix'){ if (S.cat!=='mix') S.lastCat = S.cat; S.cat = 'mix'; } else if (S.cat==='mix') S.cat = S.lastCat; buildSteps(); render(); }); ms.appendChild(b); });
+  buildMixPanel();
 }
 function buildSteps(){
   $('steps').innerHTML = curSteps().map(s => `<li><label><input type="checkbox" data-step="${s.id}"><span>${T(s.t)}<small>${T(s.w)}</small></span><span class="src ${s.s}" title="${s.l ? s.l[0] : ''}">${T(SRC_LBL[s.s])}</span></label></li>`).join('');
   $('steps').querySelectorAll('[data-step]').forEach(cb => cb.addEventListener('change', () => { S.on[cb.dataset.step] = cb.checked; render(); }));
 }
-function renderOps(){
-  const ink = INKSETS[S.inks], list = OPS.filter(o => OPS_FOR[S.pair].includes(o.id));
-  $('before').innerHTML = `<div class="pg" style="--paper:${ink.paper};--k:${ink.k};--a:${ink.a};--b:${ink.b}"><canvas class="vis" width="${OW*2+20}" height="${OH}"></canvas></div>`;
-  drawInputs($('before').querySelector('canvas'), S.pair, ink);
-  $('after').innerHTML = `<div class="pg" style="--paper:${ink.paper}"><div class="optiles">${list.map(o => `<figure class="optile"><canvas width="${OW}" height="${OH}" data-op="${o.id}"></canvas><figcaption>${T(o.t)}<i class="${o.safe ? '' : 'warn'}">${o.safe ? (LANG==='zh'?'不怕错位':'miss-proof') : (LANG==='zh'?'怕错位':'needs register')}</i></figcaption></figure>`).join('')}</div></div>`;
-  $('after').querySelectorAll('canvas[data-op]').forEach(cv => drawOp(cv, cv.dataset.op, S.pair, ink, S.mis));
-  $('beforeName').textContent = T(PAIRS.find(x => x[0]===S.pair)[1]);
-  $('afterName').textContent = (LANG==='zh' ? '运算结果' : 'Results') + (S.mis ? (LANG==='zh' ? ' · 版 B 错开约 1–2 mm' : ' · plate B off by about 1–2 mm') : (LANG==='zh' ? ' · 完美对位' : ' · perfect register'));
-  const ok = list.filter(o => o.safe).length;
-  $('score').textContent = `${ok} / ${list.length}`;
-  $('checks').innerHTML = list.map(o => `<li class="${o.safe ? 'ok' : 'warn'}"><b>${o.safe ? (LANG==='zh'?'安全':'Safe') : (LANG==='zh'?'注意':'Care')}</b><span>${T(o.t)} <em>· ${T(o.d)}${o.l ? ` <a href="${o.l[1]}" target="_blank" rel="noopener">${o.l[0]}</a>` : ` ${LANG==='zh'?'本页做法':'this page'}`}</em></span></li>`).join('');
-}
 function render(){
-  const opsMode = S.cat==='ops';
-  $('beforeLbl').textContent = opsMode ? (LANG==='zh' ? '两个元素' : 'Two elements') : (LANG==='zh' ? '改造前' : 'Before');
-  $('afterLbl').textContent = opsMode ? (LANG==='zh' ? '运算' : 'Operations') : (LANG==='zh' ? '改造后' : 'After');
-  $('imgGroup').hidden = !(S.cat==='vis' && S.el==='photo');
+  const mixMode = S.cat==='mix';
+  document.querySelectorAll('#modeSeg button').forEach(b => b.setAttribute('aria-pressed', (b.dataset.v==='mix')===mixMode));
+  ['mixGroup','mixElGroup','mixOpGroup'].forEach(id => $(id).hidden = !mixMode);
+  ['elGroup','stepsGroup','schemeBox'].forEach(id => $(id).hidden = mixMode);
+  $('imgGroup').hidden = mixMode || !(S.cat==='vis' && S.el==='photo');
+  document.querySelector('.stage .cap:last-of-type span').innerHTML = mixMode ? (LANG==='zh' ? '组合检查' : 'Check') : (LANG==='zh' ? '适配检查（改造后）' : 'Fit check (after)');
+  document.querySelectorAll('#inkSeg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===S.inks));
+  if (mixMode){ renderMix(); return; }
+  $('beforeLbl').textContent = LANG==='zh' ? '改造前' : 'Before';
+  $('afterLbl').textContent = LANG==='zh' ? '改造后' : 'After';
   syncImgSegs();
-  $('stepsGroup').hidden = opsMode; $('schemeBox').hidden = opsMode;
-  document.querySelector('.stage .cap:last-of-type span').innerHTML = opsMode ? (LANG==='zh' ? '错位下是否站得住' : 'Does it survive a miss?') : (LANG==='zh' ? '适配检查（改造后）' : 'Fit check (after)');
-  $('misBtn').textContent = S.mis ? (LANG==='zh'?'开':'On') : (LANG==='zh'?'关':'Off'); $('misBtn').setAttribute('aria-pressed', S.mis);
-  document.querySelectorAll('#pairSeg button').forEach(b => b.setAttribute('aria-pressed', opsMode && b.dataset.v===S.pair));
-  if (opsMode){
-    renderOps(); $('upRow').hidden = $('upHint').hidden = true;
-    document.querySelectorAll('#elSeg button, #visSeg button').forEach(b => b.setAttribute('aria-pressed', false));
-    document.querySelectorAll('#inkSeg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===S.inks));
-    return;
-  }
   const ink = INKSETS[S.inks], none = Object.fromEntries(STEPS.map(s => [s.id, false]).concat(VSTEPS.map(s => [s.id, false])));
   const vis = S.cat==='vis';
   // steps that do not apply to this element stay off in "after" too
@@ -1008,7 +1266,7 @@ function render(){
 $('allOn').addEventListener('click', () => { curSteps().forEach(s => S.on[s.id] = true); render(); });
 $('allOff').addEventListener('click', () => { curSteps().forEach(s => S.on[s.id] = false); render(); });
 $('upScene').addEventListener('click', () => { vUpload = null; render(); });
-$('misBtn').addEventListener('click', () => { S.mis = !S.mis; render(); });
+bindMixInputs();
 $('upFile').addEventListener('change', e => { const file = e.target.files && e.target.files[0]; if (!file) return; const rd = new FileReader(); rd.onload = () => { const im = new Image(); im.onload = () => { vUpload = im; render(); }; im.src = rd.result; }; rd.readAsDataURL(file); });
 
 function applyLang(l){

@@ -104,6 +104,28 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
 .refs li > *{display:block}
 .refs a{color:var(--ink);text-decoration-color:var(--pink);text-decoration-thickness:2px;text-underline-offset:3px}
 .refs li > span{font-size:12.5px;color:var(--muted)}
+
+/* pages, ink layers, motion */
+.pages{display:grid;gap:14px}
+.pages.multi{grid-template-columns:repeat(2,minmax(0,1fr))}
+.pagebox{position:relative;width:100%;overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,.04),0 10px 30px -12px rgba(28,27,34,.25)}
+.plabel{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+.poster{--o1x:var(--b1x,0px);--o1y:var(--b1y,0px);--o2x:var(--b2x,0px);--o2y:var(--b2y,0px)}
+.poster.shift{--o1x:calc(var(--b1x,0px) + 8px);--o1y:calc(var(--b1y,0px) + 5px);--o2x:calc(var(--b2x,0px) - 7px);--o2y:calc(var(--b2y,0px) + 6px)}
+.poster .ink1{translate:var(--o1x) var(--o1y)}
+.poster .ink2{translate:var(--o2x) var(--o2y)}
+.poster g.gink1{transform:translate(var(--o1x),var(--o1y))}
+.poster g.gink2{transform:translate(var(--o2x),var(--o2y))}
+.poster.motion .ink1,.poster.motion .ink2{transition:translate .35s cubic-bezier(.2,.8,.2,1)}
+.poster.motion g.gink1,.poster.motion g.gink2{transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.poster .plx-back{translate:calc(var(--px,0) * -6px) calc(var(--py,0) * -6px)}
+.poster .plx-mid{translate:calc(var(--px,0) * 3px) calc(var(--py,0) * 3px)}
+.poster .plx-front{translate:calc(var(--px,0) * 11px) calc(var(--py,0) * 11px)}
+.poster.motion .plx-back,.poster.motion .plx-mid,.poster.motion .plx-front{transition:translate .25s ease-out}
+@media (prefers-reduced-motion:reduce){.poster.motion *{transition:none!important}}
+.status{font-size:12.5px;color:var(--muted);margin:0;min-height:1.2em}
+.status a{color:var(--ink);text-decoration-color:var(--pink);text-underline-offset:3px}
+.field.off,.row2.off{opacity:.4}
 </style>
 
 </head>
@@ -111,14 +133,14 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
 <div class="wrap">
   <header class="mast">
     <div class="mast-top">
-      <div class="eyebrow"><span>Layout lab · <span class="zh">网格 / 字体 / 构图</span><span class="en">Grid / Type / Composition</span></span><a id="toPrint" href="index.html"><span class="zh">← 印痕实验室</span><span class="en">← Print Texture Lab</span></a></div>
+      <div class="eyebrow"><span>Layout lab · <span class="zh">网格 / 字体 / 构图 / 动线</span><span class="en">Grid / Type / Composition / Flow</span></span><a id="toPrint" href="index.html"><span class="zh">← 印痕实验室</span><span class="en">← Print Texture Lab</span></a></div>
       <div class="langsw" role="group" aria-label="Language / 语言">
         <button type="button" data-setlang="zh" lang="zh-CN">中文</button>
         <button type="button" data-setlang="en" lang="en">EN</button>
       </div>
     </div>
     <h1 class="mis" id="title"><span aria-hidden="true"><span class="zh">版式实验室</span><span class="en">Layout Lab</span></span><span aria-hidden="true"><span class="zh">版式实验室</span><span class="en">Layout Lab</span></span></h1>
-    <p class="lede"><span class="zh">把 Swiss、半调海报和 Riso zine 的版式拆成参数：网格、字号比例、破格强度、留白、形状、引导线和印刷标记。换一个随机种子，同一套规则会生成另一张海报。</span><span class="en">The layouts of Swiss posters, halftone posters and Riso zines, broken into parameters: grid, type scale, rule-breaking, whitespace, shapes, guides and print marks. Change the seed and the same rules produce another poster.</span></p>
+    <p class="lede"><span class="zh">把 Swiss、半调海报、Riso zine 和杂志的版式拆成参数：网格、字体、构图、动线、形状、油墨、印刷质感、约束规则、多页节奏和动效。换一个随机种子，同一套规则会生成另一张海报。</span><span class="en">The layouts of Swiss posters, halftone posters, Riso zines and magazines, broken into parameters: grid, type, composition, reading flow, shapes, inks, print texture, constraint rules, multi-page rhythm and motion. Change the seed and the same rules produce another poster.</span></p>
   </header>
 
   <main class="lab">
@@ -126,16 +148,25 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
       <div class="toolbar">
         <div class="row">
           <button class="btn" type="button" id="shuffle"><span class="zh">换一张</span><span class="en">Shuffle</span></button>
+          <button class="btn" type="button" id="play"><span class="zh">播放入场</span><span class="en">Play intro</span></button>
           <span class="seedtag" id="seedtag"></span>
         </div>
         <div class="row">
           <button class="btn" type="button" id="tGrid"><span class="zh">网格线</span><span class="en">Grid</span></button>
           <button class="btn" type="button" id="tMass"><span class="zh">重心</span><span class="en">Balance</span></button>
+          <button class="btn" type="button" id="tPath"><span class="zh">阅读顺序</span><span class="en">Reading order</span></button>
         </div>
       </div>
-      <div class="proof"><div class="posterwrap" id="posterwrap"><div class="poster" id="poster" role="img"></div></div></div>
+      <div class="proof"><div class="pages" id="pages"></div></div>
+      <div class="toolbar">
+        <div class="row">
+          <button class="btn" type="button" id="exPng"><span class="zh">导出 PNG</span><span class="en">Export PNG</span></button>
+          <button class="btn" type="button" id="exSvg"><span class="zh">导出 SVG</span><span class="en">Export SVG</span></button>
+        </div>
+      </div>
+      <p class="status" id="status" aria-live="polite"></p>
       <div class="metrics" id="metrics"></div>
-      <p class="note"><span class="zh">指标按元素外框近似计算：留白率 = 未被元素覆盖的面积；对齐度 = 左边缘落在栏线上的比例；重心以页面中心为 50% / 50%。</span><span class="en">Metrics are approximated from element bounding boxes: whitespace is the area no element covers; alignment is the share of left edges that land on column lines; balance puts the page centre at 50% / 50%.</span></p>
+      <p class="note"><span class="zh">指标针对第 1 页、按元素外框近似计算：留白率 = 未被元素覆盖的面积；对齐度 = 左边缘落在栏线上的比例；重心以页面中心为 50 / 50；对比度按正文的实际颜色计算。</span><span class="en">Metrics describe page 1 and are approximated from element bounding boxes: whitespace is the area no element covers; alignment is the share of left edges on column lines; balance puts the page centre at 50 / 50; contrast uses the body text's actual colour.</span></p>
     </section>
 
     <aside class="panel" id="panel" data-aria-zh="参数" data-aria-en="Settings"></aside>
@@ -144,13 +175,17 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
   <section class="refs" data-aria-zh="参考资料" data-aria-en="References">
     <h2><span class="zh">参考资料</span><span class="en">References</span></h2>
     <ol>
-      <li><span><i>Designing Programmes</i> · Karl Gerstner, 1964</span><span><span class="zh">把设计看作规则与变量的“程序”，参数化版式的源头</span><span class="en">Design as a programme of rules and variables; the origin of parametric layout</span></span></li>
+      <li><a href="https://www.lars-mueller-publishers.com/designing-programmes" target="_blank" rel="noopener"><i>Designing Programmes</i> · Karl Gerstner, 1964</a><span><span class="zh">出版社介绍为“计算机时代开端的系统化设计模型”；把它读作设计规则集的解读见下一条</span><span class="en">Described by its publisher as a model for systematic design at the dawn of the computer era; the rule-set reading is in the next entry</span></span></li>
+      <li><a href="https://runemadsen.com/blog/karl-gerstner-designing-programmes/" target="_blank" rel="noopener">Karl Gerstner – Designing Programmes</a><span><span class="zh">Rune Madsen · 把设计程序解释为由设计者定义、生成审美决定的规则集</span><span class="en">Rune Madsen · reads a design programme as a designer-defined rule set that shapes aesthetic decisions</span></span></li>
       <li><span><i>Grid Systems in Graphic Design</i> · Josef Müller-Brockmann, 1981</span><span><span class="zh">栏、模块、基线网格与页边距的经典方法</span><span class="en">The classic method for columns, modules, baseline grids and margins</span></span></li>
       <li><span><i>Making and Breaking the Grid</i> · Timothy Samara, 2002</span><span><span class="zh">网格的建立与有意识的破格</span><span class="en">Building a grid, and breaking it on purpose</span></span></li>
       <li><a href="https://en.wikipedia.org/wiki/International_Typographic_Style" target="_blank" rel="noopener">International Typographic Style</a><span><span class="zh">Wikipedia · 瑞士风格：网格、无衬线字体、左对齐、不对称构图</span><span class="en">Wikipedia · Swiss style: grids, sans-serif type, flush-left text, asymmetric layouts</span></span></li>
+      <li><a href="https://en.wikipedia.org/wiki/Constructivism_(art)" target="_blank" rel="noopener">Constructivism</a><span><span class="zh">Wikipedia · 构成主义：斜向构图与几何形</span><span class="en">Wikipedia · diagonal composition and geometric form</span></span></li>
+      <li><a href="https://www.nngroup.com/articles/f-shaped-pattern-reading-web-content/" target="_blank" rel="noopener">F-Shaped Pattern of Reading on the Web</a><span><span class="zh">Nielsen Norman Group · 网页文本的 F 型阅读路径</span><span class="en">Nielsen Norman Group · the F-shaped scanning pattern</span></span></li>
       <li><a href="https://en.wikipedia.org/wiki/Paper_size#A_series" target="_blank" rel="noopener">Paper size · A series</a><span><span class="zh">Wikipedia · √2 纸张比例</span><span class="en">Wikipedia · the √2 page ratio</span></span></li>
       <li><a href="https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html" target="_blank" rel="noopener">WCAG 2.1 · Contrast (Minimum)</a><span><span class="zh">W3C · 正文对比度 4.5:1 的依据</span><span class="en">W3C · the basis for the 4.5:1 text contrast check</span></span></li>
     </ol>
+    <p class="note" style="margin-top:14px"><span class="zh">说明：参数清单是根据设计实践综合整理的，并非出自某一本书。留白率、对齐度、重心等指标是本页定义的近似算法。</span><span class="en">Note: the parameter list is a synthesis of common design practice, not taken from any single book. Whitespace, alignment and balance are approximations defined for this page.</span></p>
   </section>
 </div>
 
@@ -176,65 +211,87 @@ const PAPERS = [
   {id:'mint', zh:'薄荷', en:'Mint', c:'#DCE7D0'},
   {id:'blush', zh:'浅粉', en:'Blush', c:'#F6E0E4'},
 ];
-const FORMATS = { poster:{W:840,H:1188}, square:{W:840,H:840}, web:{W:840,H:525} };
 const PAIRS = {
-  swiss:{d:'"Archivo","Noto Sans SC",sans-serif', dw:800, ds:'115%', b:'"Archivo","Noto Sans SC",sans-serif', bw:400, bs:'100%'},
-  editorial:{d:'"Instrument Serif","Noto Serif SC",serif', dw:400, ds:'100%', b:'"Instrument Sans","Noto Sans SC",sans-serif', bw:400, bs:'100%'},
-  zine:{d:'"Bricolage Grotesque","Noto Sans SC",sans-serif', dw:800, ds:'100%', b:'"Space Mono","Noto Sans SC",monospace', bw:400, bs:'100%'},
+  swiss:{d:'"Archivo","Noto Sans SC",sans-serif', b:'"Archivo","Noto Sans SC",sans-serif', bw:400, italicSub:false},
+  editorial:{d:'"Instrument Serif","Noto Serif SC",serif', b:'"Instrument Sans","Noto Sans SC",sans-serif', bw:400, italicSub:true},
+  zine:{d:'"Bricolage Grotesque","Noto Sans SC",sans-serif', b:'"Space Mono","Noto Sans SC",monospace', bw:400, italicSub:false},
 };
 const MONO = '"JetBrains Mono",ui-monospace,monospace';
-
 const DEFAULT_TEXT = {
   title:{zh:'网点', en:'Halftone'},
   subtitle:{zh:'关于网点、油墨与网格的一次印刷研究', en:'Dots, inks and grids: a study in print'},
   body:{zh:'在数字化之前，报纸上的每一张照片都要经过玻璃网屏，被拆成大小不一的网点。点的大小承载明暗，网角让颜色彼此错开，网格让整页保持秩序。', en:'Before screens went digital, every photograph in a newspaper passed through a glass screen and was broken into dots. Their size carried the tone, the screen angle kept the colours apart, and the grid held the page together.'},
   body2:{zh:'网格是一组提前做好的决定，让之后的每一个决定都能很快做出。', en:'A grid is a set of decisions made once, so that every later decision can be made quickly.'},
+  body3:{zh:'破格之所以有力量，是因为它周围的一切都还守着规则。', en:'Breaking the grid only works because everything around the break still keeps to it.'},
   caption:{zh:'图 1 — 测试画面', en:'Fig. 1 — Test scene'},
   issue:{zh:'第 02 期 · 版式实验室', en:'No. 02 · Layout Lab'},
 };
 
-/* presets: each one is a full set of layout parameters */
-const BASE = {format:'poster', cols:6, margin:.07, gutter:.02, baseline:12, ratio:1.414, titleScale:.22, track:-.03, upper:true, vertical:false, align:'left',
-  pair:'swiss', breakS:.2, white:.5, asym:.8, jitter:0, layers:1, bleed:false, focal:'thirds',
-  vocab:{circle:true, rect:true, line:true, tri:false}, nShapes:3, sizeExp:2, snap:true, angles:'ortho', fill:.7,
-  inks:2, inkA:'fpink', inkB:'blue', inkC:'yellow', paper:'white', accent:2, overprint:true, textInk:'black',
-  img:true, treat:'am', imgSpan:.6, mask:'rect', crop:'tight', cell:7,
-  furn:{reg:true, crop:false, bar:true, folio:true}, guide:true, numbers:true, seed:7, grid:false, mass:false};
+/* ---------- parameters ---------- */
+const BASE = {format:'poster', vw:1280, cols:6, margin:.07, gutter:.02, baseline:12,
+  pair:'swiss', ratio:1.414, levels:4, titleScale:.22, tWeight:800, tWidth:110, tLead:.88, track:-.03, measure:55, align:'left', upper:true, vertical:false, titleStyle:'solid',
+  breakS:.2, white:.5, asym:.8, jitter:0, layers:1, axis:0, focal:'thirds', bleed:false, titleCrop:0,
+  path:'auto', guide:true, sizeSeq:false, frame:'none', ladder:false, numbers:true,
+  vocab:{circle:true, rect:true, line:true, tri:false}, nShapes:3, sizeExp:2, fill:.7, radius:0, strokeW:.006, angles:'ortho', snap:true,
+  inks:2, inkA:'fpink', inkB:'blue', inkC:'yellow', paper:'white', textInk:'black', colorRatio:'even', accent:2, overprint:true,
+  tMisX:0, tMisY:0, tGrain:0, tStarve:0, tPaper:0,
+  img:true, treat:'am', cell:7, imgSpan:.6, mask:'rect', crop:'tight',
+  rules:{grid:false, avoid:false, max3:false}, strict:1,
+  pages:1, rhythm:'alternate',
+  hoverShift:false, parallax:false, dur:700, ease:'out',
+  furn:{reg:true, crop:false, bar:true, folio:true},
+  seed:7, grid:false, mass:false, showPath:false};
 const PRESETS = {
-  swiss:{name:{zh:'Swiss',en:'Swiss'}, tag:{zh:'严格网格',en:'strict grid'}, p:{cols:12, margin:.065, gutter:.016, ratio:1.5, titleScale:.15, track:-.035, upper:false, vertical:false, align:'left', pair:'swiss',
-    breakS:0, white:.62, asym:.9, jitter:0, layers:0, bleed:false, focal:'thirds', vocab:{circle:false, rect:true, line:true, tri:false}, nShapes:2, sizeExp:2, snap:true, angles:'ortho', fill:1,
-    inks:1, inkA:'red', inkB:'blue', inkC:'yellow', paper:'white', accent:1, overprint:false, textInk:'black', img:true, treat:'am', imgSpan:.5, mask:'rect', crop:'loose', cell:5,
-    furn:{reg:false, crop:false, bar:false, folio:true}, guide:false, numbers:true, seed:12}},
-  halftone:{name:{zh:'半调海报',en:'Halftone'}, tag:{zh:'大图出血',en:'big bleed'}, p:{cols:6, margin:.05, gutter:.02, ratio:1.8, titleScale:.3, track:-.04, upper:true, vertical:false, align:'left', pair:'swiss',
-    breakS:.45, white:.38, asym:.8, jitter:0, layers:1, bleed:true, focal:'edge', vocab:{circle:true, rect:false, line:false, tri:false}, nShapes:2, sizeExp:3, snap:true, angles:'ortho', fill:1,
-    inks:2, inkA:'orange', inkB:'fedblue', inkC:'yellow', paper:'recycled', accent:2, overprint:true, textInk:'black', img:true, treat:'am', imgSpan:.95, mask:'circle', crop:'tight', cell:12,
-    furn:{reg:true, crop:false, bar:true, folio:true}, guide:true, numbers:false, seed:3}},
-  zine:{name:{zh:'Riso zine',en:'Riso zine'}, tag:{zh:'拼贴叠印',en:'collage'}, p:{cols:8, margin:.05, gutter:.02, ratio:1.6, titleScale:.24, track:-.02, upper:true, vertical:false, align:'left', pair:'zine',
-    breakS:.85, white:.22, asym:.6, jitter:4, layers:3, bleed:true, focal:'center', vocab:{circle:true, rect:true, line:true, tri:true}, nShapes:7, sizeExp:2.4, snap:false, angles:'free', fill:.55,
-    inks:3, inkA:'fpink', inkB:'blue', inkC:'yellow', paper:'white', accent:6, overprint:true, textInk:'ink', img:true, treat:'fs', imgSpan:.62, mask:'rect', crop:'tight', cell:7,
-    furn:{reg:true, crop:true, bar:true, folio:true}, guide:true, numbers:true, seed:21}},
-  editorial:{name:{zh:'杂志',en:'Editorial'}, tag:{zh:'衬线留白',en:'serif & air'}, p:{cols:6, margin:.085, gutter:.022, ratio:1.333, titleScale:.17, track:-.01, upper:false, vertical:false, align:'left', pair:'editorial',
-    breakS:.12, white:.58, asym:.75, jitter:0, layers:0, bleed:false, focal:'golden', vocab:{circle:false, rect:false, line:true, tri:false}, nShapes:1, sizeExp:2, snap:true, angles:'ortho', fill:1,
-    inks:2, inkA:'teal', inkB:'black', inkC:'yellow', paper:'recycled', accent:1, overprint:true, textInk:'black', img:true, treat:'duo', imgSpan:.66, mask:'rect', crop:'loose', cell:7,
-    furn:{reg:false, crop:false, bar:false, folio:true}, guide:false, numbers:true, seed:5}},
+  swiss:{name:{zh:'Swiss',en:'Swiss'}, tag:{zh:'严格网格',en:'strict grid'}, p:{cols:12, margin:.065, gutter:.016, pair:'swiss', ratio:1.5, levels:4, titleScale:.15, tWeight:700, tWidth:100, tLead:.92, track:-.035, measure:50, upper:false, align:'left', titleStyle:'solid',
+    breakS:0, white:.62, asym:.95, jitter:0, layers:0, axis:0, focal:'thirds', bleed:false, titleCrop:0, path:'f', guide:false, sizeSeq:false, frame:'none', ladder:true, numbers:true,
+    vocab:{circle:false, rect:true, line:true, tri:false}, nShapes:2, sizeExp:2, fill:1, radius:0, strokeW:.005, angles:'ortho', snap:true,
+    inks:1, inkA:'red', paper:'white', textInk:'black', colorRatio:'9010', accent:1, overprint:false, tMisX:0, tMisY:0, tGrain:0, tStarve:0, tPaper:.1,
+    img:true, treat:'am', cell:5, imgSpan:.5, mask:'rect', crop:'loose', rules:{grid:true, avoid:true, max3:true}, strict:1,
+    furn:{reg:false, crop:false, bar:false, folio:true}, seed:12}},
+  halftone:{name:{zh:'半调海报',en:'Halftone'}, tag:{zh:'大图出血',en:'big bleed'}, p:{cols:6, margin:.05, gutter:.02, pair:'swiss', ratio:1.8, levels:3, titleScale:.3, tWeight:900, tWidth:125, tLead:.82, track:-.04, measure:45, upper:true, align:'left', titleStyle:'solid',
+    breakS:.45, white:.38, asym:.85, jitter:0, layers:1, axis:0, focal:'edge', bleed:true, titleCrop:.12, path:'z', guide:true, sizeSeq:false, frame:'none', ladder:false, numbers:false,
+    vocab:{circle:true, rect:false, line:false, tri:false}, nShapes:2, sizeExp:3, fill:1, radius:0, strokeW:.006, angles:'ortho', snap:true,
+    inks:2, inkA:'orange', inkB:'fedblue', paper:'recycled', textInk:'black', colorRatio:'603010', accent:2, overprint:true, tMisX:3, tMisY:2, tGrain:.25, tStarve:.15, tPaper:.35,
+    img:true, treat:'am', cell:12, imgSpan:.95, mask:'circle', crop:'tight', rules:{grid:false, avoid:true, max3:true}, strict:.8,
+    furn:{reg:true, crop:false, bar:true, folio:true}, seed:3}},
+  zine:{name:{zh:'Riso zine',en:'Riso zine'}, tag:{zh:'拼贴叠印',en:'collage'}, p:{cols:8, margin:.05, gutter:.02, pair:'zine', ratio:1.6, levels:5, titleScale:.24, tWeight:800, tWidth:100, tLead:.86, track:-.02, measure:40, upper:true, align:'left', titleStyle:'outline',
+    breakS:.85, white:.22, asym:.6, jitter:4, layers:3, axis:-8, focal:'center', bleed:true, titleCrop:.05, path:'radial', guide:true, sizeSeq:true, frame:'block', ladder:false, numbers:true,
+    vocab:{circle:true, rect:true, line:true, tri:true}, nShapes:7, sizeExp:2.4, fill:.55, radius:0, strokeW:.008, angles:'free', snap:false,
+    inks:3, inkA:'fpink', inkB:'blue', inkC:'yellow', paper:'white', textInk:'ink', colorRatio:'even', accent:6, overprint:true, tMisX:6, tMisY:4, tGrain:.55, tStarve:.4, tPaper:.45,
+    img:true, treat:'fs', cell:7, imgSpan:.62, mask:'cutout', crop:'tight', rules:{grid:false, avoid:false, max3:false}, strict:.3,
+    furn:{reg:true, crop:true, bar:true, folio:true}, seed:21}},
+  editorial:{name:{zh:'杂志',en:'Editorial'}, tag:{zh:'衬线留白',en:'serif & air'}, p:{cols:6, margin:.085, gutter:.022, pair:'editorial', ratio:1.333, levels:5, titleScale:.17, tWeight:400, tWidth:100, tLead:.95, track:-.01, measure:60, upper:false, align:'left', titleStyle:'solid',
+    breakS:.12, white:.58, asym:.75, jitter:0, layers:0, axis:0, focal:'golden', bleed:false, titleCrop:0, path:'auto', guide:false, sizeSeq:false, frame:'none', ladder:true, numbers:true,
+    vocab:{circle:false, rect:false, line:true, tri:false}, nShapes:1, sizeExp:2, fill:1, radius:0, strokeW:.004, angles:'ortho', snap:true,
+    inks:2, inkA:'teal', inkB:'black', paper:'recycled', textInk:'black', colorRatio:'9010', accent:1, overprint:true, tMisX:0, tMisY:0, tGrain:.1, tStarve:.05, tPaper:.3,
+    img:true, treat:'duo', cell:7, imgSpan:.66, mask:'arch', crop:'loose', rules:{grid:true, avoid:true, max3:false}, strict:.9,
+    furn:{reg:false, crop:false, bar:false, folio:true}, seed:5}},
+  constructivist:{name:{zh:'构成主义',en:'Constructivist'}, tag:{zh:'斜向主轴',en:'diagonal axis'}, p:{cols:6, margin:.06, gutter:.02, pair:'swiss', ratio:1.7, levels:3, titleScale:.2, tWeight:900, tWidth:80, tLead:.85, track:0, measure:42, upper:true, align:'left', titleStyle:'knock',
+    breakS:.35, white:.45, asym:.9, jitter:0, layers:2, axis:-20, focal:'thirds', bleed:true, titleCrop:0, path:'z', guide:true, sizeSeq:true, frame:'circle', ladder:false, numbers:true,
+    vocab:{circle:true, rect:true, line:true, tri:false}, nShapes:4, sizeExp:2.2, fill:.85, radius:0, strokeW:.01, angles:'d45', snap:false,
+    inks:2, inkA:'red', inkB:'black', paper:'recycled', textInk:'black', colorRatio:'603010', accent:3, overprint:true, tMisX:2, tMisY:1, tGrain:.2, tStarve:.2, tPaper:.4,
+    img:true, treat:'thresh', cell:7, imgSpan:.5, mask:'cutout', crop:'tight', rules:{grid:false, avoid:true, max3:true}, strict:.7,
+    furn:{reg:false, crop:false, bar:false, folio:true}, seed:44}},
 };
 
-/* ---------- language ---------- */
+/* ---------- language & state ---------- */
 let LANG = 'zh';
 try { const s = localStorage.getItem('printlab-lang'); LANG = s==='en'||s==='zh' ? s : ((navigator.language||'').toLowerCase().startsWith('zh') ? 'zh' : 'en'); }
 catch(e){ LANG = (navigator.language||'').toLowerCase().startsWith('zh') ? 'zh' : 'en'; }
 const T = o => (o && typeof o==='object' && 'zh' in o) ? o[LANG] : o;
-
-/* ---------- state ---------- */
-const P = JSON.parse(JSON.stringify(Object.assign({}, BASE, PRESETS.zine.p)));
+const clone = o => JSON.parse(JSON.stringify(o));
+const P = clone(Object.assign({}, BASE, PRESETS.zine.p));
 let activePreset = 'zine';
-const TEXT = {title:null, subtitle:null, body:null};   // null = use language default
+const TEXT = {title:null, subtitle:null, body:null};
 let uploaded = null;
 const $ = id => document.getElementById(id);
 const hex = c => [1,3,5].map(i => parseInt(c.slice(i,i+2),16)/255);
 const ink = id => INKS.find(x => x.id===id);
 const paper = id => PAPERS.find(x => x.id===id);
 const txt = k => TEXT[k]!=null ? TEXT[k] : T(DEFAULT_TEXT[k]);
+const host = location.hostname;
+const LOCAL = host.endsWith('github.io') || location.protocol==='file:' || host==='localhost' || host==='127.0.0.1';
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ---------- control schema ---------- */
 const pct = v => Math.round(v*100)+'%';
@@ -245,73 +302,118 @@ const GROUPS = [
     {type:'text', key:'subtitle', label:L('副标题','Subtitle')},
     {type:'textarea', key:'body', label:L('正文','Body')},
   ]},
-  {t:L('网格','Grid'), s:'GRID', hint:L('网格是底座：栏数、页边距、栏间距和基线决定所有元素能落在哪里。','The grid is the base: columns, margins, gutters and the baseline decide where anything can land.'), items:[
+  {t:L('网格','Grid'), s:'GRID', hint:L('网格是底座：栏数、页边距、栏间距和基线决定所有元素能落在哪里。网页首屏会按屏幕宽度折叠栏数。','The grid is the base: columns, margins, gutters and the baseline decide where anything can land. The web hero folds its columns with the screen width.'), items:[
     {type:'seg', key:'format', label:L('画幅','Format'), opts:[['poster',L('海报 √2','Poster √2')],['square',L('方形','Square')],['web',L('网页首屏','Web hero')]]},
+    {type:'range', key:'vw', label:L('屏幕宽度','Screen width'), min:360, max:1440, step:10, fmt:v=>v+' px', when:()=>P.format==='web'},
     {type:'range', key:'cols', label:L('栏数','Columns'), min:4, max:12, step:1, fmt:v=>v},
     {type:'range', key:'margin', label:L('页边距','Margin'), min:.03, max:.14, step:.005, fmt:pct},
     {type:'range', key:'gutter', label:L('栏间距','Gutter'), min:0, max:.05, step:.002, fmt:pct},
     {type:'range', key:'baseline', label:L('基线','Baseline'), min:6, max:24, step:1, fmt:v=>v+' px'},
   ]},
-  {t:L('字体排印','Typography'), s:'TYPE', hint:L('最大与最小字号之比，是画报感最主要的来源。','The ratio between the largest and smallest type is the main source of a poster look.'), items:[
+  {t:L('字体排印','Typography'), s:'TYPE', hint:L('最大与最小字号之比是画报感最主要的来源；行宽控制正文的可读性。','The ratio between the largest and smallest type is the main source of a poster look; the measure controls how readable the body is.'), items:[
     {type:'seg', key:'pair', label:L('字体搭配','Pairing'), opts:[['swiss',L('Swiss 怪诞体','Swiss grotesk')],['editorial',L('杂志衬线','Editorial serif')],['zine',L('Zine 等宽','Zine mono')]]},
     {type:'range', key:'ratio', label:L('字号比例','Type scale'), min:1.125, max:2, step:.001, fmt:v=>(+v).toFixed(3)},
+    {type:'range', key:'levels', label:L('层级数','Hierarchy levels'), min:2, max:5, step:1, fmt:v=>v},
     {type:'range', key:'titleScale', label:L('标题大小','Title size'), min:.08, max:.4, step:.005, fmt:pct},
+    {type:'range', key:'tWeight', label:L('标题字重','Title weight'), min:300, max:900, step:50, fmt:v=>v, when:()=>P.pair!=='editorial'},
+    {type:'range', key:'tWidth', label:L('标题字宽','Title width'), min:62, max:125, step:1, fmt:v=>v+'%', when:()=>P.pair==='swiss'},
+    {type:'range', key:'tLead', label:L('标题行距','Title leading'), min:.75, max:1.3, step:.01, fmt:v=>(+v).toFixed(2)},
     {type:'range', key:'track', label:L('标题字距','Title tracking'), min:-.08, max:.1, step:.005, fmt:v=>(v>0?'+':'')+(+v).toFixed(3)+'em'},
+    {type:'range', key:'measure', label:L('正文行宽','Body measure'), min:25, max:80, step:1, fmt:v=>v+(LANG==='zh'?' 字':' ch')},
+    {type:'seg', key:'titleStyle', label:L('标题处理','Title treatment'), opts:[['solid',L('实心','Solid')],['ink',L('油墨色','In ink')],['outline',L('描边','Outline')],['knock',L('镂空','Knockout')]]},
     {type:'seg', key:'align', label:L('对齐','Alignment'), opts:[['left',L('左对齐','Flush left')],['center',L('居中','Centred')]]},
     {type:'toggle', key:'upper', label:L('标题全大写','Uppercase title')},
     {type:'toggle', key:'vertical', label:L('标题竖排','Vertical title')},
   ]},
-  {t:L('构图','Composition'), s:'LAYOUT', hint:L('破格强度从 0（纯 Swiss）到 1（Zine 拼贴）：越界、出血、旋转和叠压都随它增加。','Rule-breaking runs from 0 (pure Swiss) to 1 (zine collage): bleed, rotation and overlap all grow with it.'), items:[
+  {t:L('构图','Composition'), s:'LAYOUT', hint:L('破格强度从 0（纯 Swiss）到 1（Zine 拼贴）。主轴把标题、副标题和图像整体转成斜向构图。','Rule-breaking runs from 0 (pure Swiss) to 1 (zine collage). The axis tilts title, subtitle and image together into a diagonal composition.'), items:[
     {type:'range', key:'breakS', label:L('破格强度','Rule-breaking'), min:0, max:1, step:.01, fmt:pct},
     {type:'range', key:'white', label:L('留白倾向','Whitespace'), min:0, max:1, step:.01, fmt:pct},
     {type:'range', key:'asym', label:L('不对称度','Asymmetry'), min:0, max:1, step:.01, fmt:pct},
     {type:'range', key:'jitter', label:L('旋转扰动','Rotation jitter'), min:0, max:10, step:.5, fmt:v=>'±'+v+'°'},
     {type:'range', key:'layers', label:L('叠压层数','Overlap layers'), min:0, max:3, step:1, fmt:v=>v},
+    {type:'range', key:'axis', label:L('主轴角度','Axis angle'), min:-45, max:45, step:1, fmt:v=>v+'°'},
+    {type:'range', key:'titleCrop', label:L('标题裁切','Title crop'), min:0, max:.5, step:.01, fmt:pct},
     {type:'seg', key:'focal', label:L('视觉焦点','Focal point'), opts:[['thirds',L('三分点','Thirds')],['golden',L('黄金分割','Golden')],['center',L('中心','Centre')],['edge',L('边缘','Edge')]]},
     {type:'toggle', key:'bleed', label:L('允许出血','Allow bleed')},
+  ]},
+  {t:L('动线与引导','Flow & guides'), s:'FLOW', hint:L('动线决定元素的排布顺序；引导手段把视线从入口带到下一个重点。工具栏的“阅读顺序”会标出编号。','The reading path decides how elements are arranged; guides carry the eye from the entry point to the next focus. “Reading order” in the toolbar numbers them.'), items:[
+    {type:'seg', key:'path', label:L('阅读路径','Reading path'), opts:[['auto',L('自由','Free')],['z',L('Z 型','Z')],['f',L('F 型','F')],['radial',L('中心放射','Radial')]]},
+    {type:'toggle', key:'guide', label:L('引导箭头','Guide arrow')},
+    {type:'toggle', key:'sizeSeq', label:L('尺寸渐变','Size progression')},
+    {type:'seg', key:'frame', label:L('框定重点','Framing'), opts:[['none',L('无','None')],['circle',L('圆','Circle')],['block',L('色块','Block')]]},
+    {type:'toggle', key:'ladder', label:L('对比度阶梯','Contrast ladder')},
+    {type:'toggle', key:'numbers', label:L('编号 01 / 02','Numbering 01 / 02')},
   ]},
   {t:L('形状','Shapes'), s:'SHAPES', hint:L('选 2–3 种基本形并全局统一，形状才像一个系统。','Pick two or three basic shapes and use them everywhere so they read as a system.'), items:[
     {type:'checks', key:'vocab', label:L('形状词汇','Vocabulary'), opts:[['circle',L('圆','Circle')],['rect',L('矩形','Rectangle')],['line',L('粗线','Rule')],['tri',L('三角','Triangle')]]},
     {type:'range', key:'nShapes', label:L('数量','Count'), min:0, max:10, step:1, fmt:v=>v},
     {type:'range', key:'sizeExp', label:L('大小分布','Size spread'), min:1, max:4, step:.1, fmt:v=>'u^'+(+v).toFixed(1)},
     {type:'range', key:'fill', label:L('实心比例','Filled'), min:0, max:1, step:.05, fmt:pct},
+    {type:'range', key:'radius', label:L('圆角','Corner radius'), min:0, max:.5, step:.01, fmt:pct},
+    {type:'range', key:'strokeW', label:L('描边粗细','Stroke width'), min:.002, max:.02, step:.001, fmt:v=>(v*840).toFixed(0)+' px'},
     {type:'seg', key:'angles', label:L('角度','Angles'), opts:[['ortho',L('0° / 90°','0° / 90°')],['d45',L('含 45°','With 45°')],['free',L('自由','Free')]]},
     {type:'toggle', key:'snap', label:L('吸附网格','Snap to grid')},
   ]},
-  {t:L('油墨','Ink'), s:'INK', hint:L('油墨数量本身就是风格。强调色只给少数元素，视线会被它们吸过去。','The number of inks is a style in itself. Give the accent to only a few elements and the eye goes straight to them.'), items:[
+  {t:L('油墨','Ink'), s:'INK', hint:L('油墨数量本身就是风格。面积比例决定主色和辅色各占多少。','The number of inks is a style in itself. The area ratio decides how much of the page each ink gets.'), items:[
     {type:'seg', key:'inks', label:L('油墨数','Inks'), opts:[[1,L('1 色','1')],[2,L('2 色','2')],[3,L('3 色','3')]]},
     {type:'swatch', key:'inkA', label:L('油墨 A','Ink A'), list:'inks'},
     {type:'swatch', key:'inkB', label:L('油墨 B','Ink B'), list:'inks', need:2},
     {type:'swatch', key:'inkC', label:L('油墨 C','Ink C'), list:'inks', need:3},
     {type:'swatch', key:'paper', label:L('纸张','Paper'), list:'papers'},
     {type:'seg', key:'textInk', label:L('文字油墨','Text ink'), opts:[['black',L('黑','Black')],['ink',L('用油墨','An ink')]]},
+    {type:'seg', key:'colorRatio', label:L('面积比例','Area ratio'), opts:[['even',L('均分','Even')],['603010',L('60 / 30 / 10','60 / 30 / 10')],['9010',L('主色 90 / 10','90 / 10')]]},
     {type:'range', key:'accent', label:L('强调色元素','Accent elements'), min:0, max:8, step:1, fmt:v=>v},
     {type:'toggle', key:'overprint', label:L('叠印混色','Overprint')},
   ]},
-  {t:L('图像','Image'), s:'IMAGE', hint:L('图像用印痕实验室里的同一套网点算法处理。','The image is screened with the same algorithms as the print lab.'), items:[
+  {t:L('印刷质感','Print texture'), s:'PRESS', hint:L('和印痕实验室同一组瑕疵，这里作用在整张海报上：每种油墨按自己的版位错开，墨层带颗粒和缺墨。','The same flaws as the print lab, applied to the whole poster: each ink shifts on its own plate, and the ink layer gets grain and starvation.'), items:[
+    {type:'range', key:'tMisX', label:L('套色错位 X','Misregister X'), min:-12, max:12, step:1, fmt:v=>v+' px'},
+    {type:'range', key:'tMisY', label:L('套色错位 Y','Misregister Y'), min:-12, max:12, step:1, fmt:v=>v+' px'},
+    {type:'range', key:'tGrain', label:L('墨色颗粒','Ink grain'), min:0, max:1, step:.01, fmt:pct},
+    {type:'range', key:'tStarve', label:L('缺墨漏白','Ink starvation'), min:0, max:1, step:.01, fmt:pct},
+    {type:'range', key:'tPaper', label:L('纸张纹理','Paper texture'), min:0, max:1, step:.01, fmt:pct},
+  ]},
+  {t:L('图像','Image'), s:'IMAGE', hint:L('图像用印痕实验室的同一套网点算法处理。去背会把接近白色的背景去掉。','The image is screened with the print lab\'s algorithms. Cutout removes a near-white background.'), items:[
     {type:'toggle', key:'img', label:L('显示图像','Show image')},
     {type:'seg', key:'treat', label:L('处理','Treatment'), opts:[['am',L('AM 圆点','AM dots')],['line',L('线条网','Lines')],['fs',L('误差扩散','Dither')],['thresh',L('阈值','Threshold')],['duo',L('双色调','Duotone')]]},
     {type:'range', key:'cell', label:L('网点尺寸','Dot size'), min:3, max:18, step:1, fmt:v=>v+' px'},
     {type:'range', key:'imgSpan', label:L('图像宽度','Image width'), min:.25, max:1, step:.01, fmt:pct},
-    {type:'seg', key:'mask', label:L('外形','Shape'), opts:[['rect',L('矩形','Rectangle')],['circle',L('圆形','Circle')]]},
+    {type:'seg', key:'mask', label:L('外形','Shape'), opts:[['rect',L('矩形','Rectangle')],['circle',L('圆形','Circle')],['arch',L('拱形','Arch')],['cutout',L('去背','Cutout')]]},
     {type:'seg', key:'crop', label:L('裁切','Crop'), opts:[['tight',L('紧裁','Tight')],['loose',L('宽裁','Loose')]]},
     {type:'upload', label:L('原图','Source')},
   ]},
-  {t:L('引导与印刷标记','Guides & marks'), s:'MARKS', hint:L('引导线把视线从入口带到下一个重点；印刷标记是被当成装饰的工艺元素。','Guide lines carry the eye from the entry point to the next focus; print marks are production details reused as ornament.'), items:[
-    {type:'toggle', key:'guide', label:L('引导箭头','Guide arrow')},
-    {type:'toggle', key:'numbers', label:L('编号 01 / 02','Numbering 01 / 02')},
+  {t:L('约束规则','Rules'), s:'RULES', hint:L('Gerstner 式的“设计程序”：规则加上严格度。严格度是每个元素遵守规则的概率。','A Gerstner-style design programme: rules plus a strictness. Strictness is the chance that each element obeys.'), items:[
+    {type:'checks', key:'rules', label:L('规则','Rules'), opts:[['grid',L('一切贴网格','Everything on the grid')],['avoid',L('形状不压文字','Shapes avoid text')],['max3',L('最多 3 种字号','At most 3 sizes')]]},
+    {type:'range', key:'strict', label:L('严格度','Strictness'), min:0, max:1, step:.05, fmt:pct},
+  ]},
+  {t:L('页面与节奏','Pages & rhythm'), s:'PAGES', hint:L('多页时，“交替”会轮流生成封面、满版图、密集文字和留白页，“重复”只换随机种子。','With several pages, Alternate cycles cover, full image, dense text and an airy page; Repeat only changes the seed.'), items:[
+    {type:'range', key:'pages', label:L('页数','Pages'), min:1, max:4, step:1, fmt:v=>v},
+    {type:'seg', key:'rhythm', label:L('节奏','Rhythm'), opts:[['alternate',L('交替','Alternate')],['repeat',L('重复','Repeat')]]},
+  ]},
+  {t:L('动效','Motion'), s:'MOTION', hint:L('悬停时油墨版位继续错开，鼠标移动时各层以不同速度位移。系统设置了“减少动态效果”时会自动关闭。','On hover the ink plates drift further apart; as the pointer moves, layers shift at different speeds. Turned off automatically when the system asks for reduced motion.'), items:[
+    {type:'toggle', key:'hoverShift', label:L('悬停错位','Hover misregister')},
+    {type:'toggle', key:'parallax', label:L('视差','Parallax')},
+    {type:'range', key:'dur', label:L('入场时长','Intro duration'), min:200, max:1600, step:50, fmt:v=>v+' ms'},
+    {type:'seg', key:'ease', label:L('缓动','Easing'), opts:[['out',L('减速','Ease out')],['linear',L('匀速','Linear')],['steps',L('逐帧','Steps')]]},
+  ]},
+  {t:L('印刷标记','Print marks'), s:'MARKS', hint:L('印刷生产流程里的功能性元素，现在常被当作装饰。','Production details from the print process, often reused as ornament.'), items:[
     {type:'checks', key:'furn', label:L('印刷家具','Print furniture'), opts:[['reg',L('套准标记','Registration')],['crop',L('裁切线','Crop marks')],['bar',L('色彩控制条','Colour bar')],['folio',L('期号页码','Folio')]]},
   ]},
 ];
 
-/* ---------- panel builder ---------- */
+/* ---------- panel ---------- */
 function buildPanel(){
   const panel = $('panel'); panel.innerHTML = '';
   const pb = document.createElement('div'); pb.className = 'presetbar'; pb.setAttribute('role','group');
+  pb.style.gridTemplateColumns = 'repeat(auto-fill,minmax(110px,1fr))';
   Object.entries(PRESETS).forEach(([id,pr]) => {
     const b = document.createElement('button'); b.type='button'; b.dataset.preset=id;
     b.innerHTML = `${T(pr.name)}<small>${T(pr.tag)}</small>`;
-    b.addEventListener('click', () => { Object.assign(P, JSON.parse(JSON.stringify(Object.assign({}, BASE, pr.p))), {format:P.format, grid:P.grid, mass:P.mass}); activePreset=id; syncPanel(); render(); });
+    b.addEventListener('click', () => {
+      const keep = {format:P.format, vw:P.vw, grid:P.grid, mass:P.mass, showPath:P.showPath, pages:P.pages, rhythm:P.rhythm, hoverShift:P.hoverShift, parallax:P.parallax, dur:P.dur, ease:P.ease};
+      Object.keys(P).forEach(k => delete P[k]);
+      Object.assign(P, clone(Object.assign({}, BASE, pr.p)), keep);
+      activePreset = id; syncPanel(); render();
+    });
     pb.appendChild(b);
   });
   panel.appendChild(pb);
@@ -325,75 +427,78 @@ function buildPanel(){
 }
 function control(it){
   const id = 'c_'+(it.key||it.type);
+  let d;
   if (it.type==='range'){
-    const d = document.createElement('div'); d.className='field'; d.dataset.key=it.key;
-    d.innerHTML = `<label for="${id}">${T(it.label)}</label><input type="range" id="${id}" min="${it.min}" max="${it.max}" step="${it.step}"><output id="${id}o"></output>`;
-    const inp = d.querySelector('input');
-    inp.addEventListener('input', () => { P[it.key] = parseFloat(inp.value); d.querySelector('output').textContent = it.fmt(P[it.key]); manual(); render(); });
-    d._sync = () => { inp.value = P[it.key]; d.querySelector('output').textContent = it.fmt(P[it.key]); };
-    return d;
-  }
-  if (it.type==='seg' || it.type==='checks'){
-    const d = document.createElement('div'); d.className='row2'; d.dataset.key=it.key;
+    d = document.createElement('div'); d.className='field';
+    d.innerHTML = `<label for="${id}">${T(it.label)}</label><input type="range" id="${id}" min="${it.min}" max="${it.max}" step="${it.step}"><output></output>`;
+    const inp = d.querySelector('input'), o = d.querySelector('output');
+    inp.addEventListener('input', () => { P[it.key] = parseFloat(inp.value); o.textContent = it.fmt(P[it.key]); manual(); render(); });
+    d._sync = () => { inp.value = P[it.key]; o.textContent = it.fmt(P[it.key]); };
+  } else if (it.type==='seg' || it.type==='checks'){
+    d = document.createElement('div'); d.className='row2';
     d.innerHTML = `<span>${T(it.label)}</span><div class="seg" role="group"></div>`;
     const s = d.querySelector('.seg');
     it.opts.forEach(([v,lab]) => { const b = document.createElement('button'); b.type='button'; b.textContent=T(lab); b.dataset.v=v;
-      b.addEventListener('click', () => { if (it.type==='seg') P[it.key] = typeof v==='number' ? v : v; else P[it.key][v] = !P[it.key][v]; manual(); syncPanel(); render(); });
+      b.addEventListener('click', () => { if (it.type==='seg') P[it.key] = v; else P[it.key][v] = !P[it.key][v]; manual(); syncPanel(); render(); });
       s.appendChild(b); });
     d._sync = () => s.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', it.type==='seg' ? String(P[it.key])===b.dataset.v : !!P[it.key][b.dataset.v]));
-    return d;
-  }
-  if (it.type==='toggle'){
-    const d = document.createElement('div'); d.className='row2'; d.dataset.key=it.key;
+  } else if (it.type==='toggle'){
+    d = document.createElement('div'); d.className='row2';
     d.innerHTML = `<span>${T(it.label)}</span><div class="seg"><button type="button" id="${id}"></button></div>`;
     const b = d.querySelector('button');
     b.addEventListener('click', () => { P[it.key] = !P[it.key]; manual(); syncPanel(); render(); });
     d._sync = () => { b.setAttribute('aria-pressed', !!P[it.key]); b.textContent = P[it.key] ? (LANG==='zh'?'开':'On') : (LANG==='zh'?'关':'Off'); };
-    return d;
-  }
-  if (it.type==='swatch'){
-    const d = document.createElement('div'); d.className='row2'; d.dataset.key=it.key;
+  } else if (it.type==='swatch'){
+    d = document.createElement('div'); d.className='row2';
     const list = it.list==='inks' ? INKS : PAPERS;
     d.innerHTML = `<span>${T(it.label)}</span><div class="sw"></div>`;
     const s = d.querySelector('.sw');
     list.forEach(x => { const b = document.createElement('button'); b.type='button'; b.style.background=x.c; b.dataset.v=x.id; b.title = LANG==='zh' ? `${x.zh} · ${x.en}` : x.en; b.setAttribute('aria-label', b.title);
       b.addEventListener('click', () => { P[it.key]=x.id; manual(); syncPanel(); render(); }); s.appendChild(b); });
-    d._sync = () => { s.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===P[it.key])); if (it.need) d.classList.toggle('off', P.inks < it.need); };
-    return d;
-  }
-  if (it.type==='text' || it.type==='textarea'){
-    const d = document.createElement('div'); d.className='row2';
+    d._sync = () => s.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===P[it.key]));
+  } else if (it.type==='text' || it.type==='textarea'){
+    d = document.createElement('div'); d.className='row2';
     const tag = it.type==='text' ? 'input' : 'textarea';
     d.innerHTML = `<label for="${id}">${T(it.label)}</label><${tag} class="txt" id="${id}"${it.type==='text'?' type="text"':''}></${tag}>`;
     const inp = d.querySelector(tag);
     inp.addEventListener('input', () => { TEXT[it.key] = inp.value; render(); });
     d._sync = () => { if (document.activeElement!==inp) inp.value = txt(it.key); };
-    return d;
-  }
-  if (it.type==='upload'){
-    const d = document.createElement('div'); d.className='row2';
-    d.innerHTML = `<span>${T(it.label)}</span><div class="seg"><button type="button" id="srcScene"></button><label class="btn" style="min-height:34px;padding:6px 9px;font-size:12.5px">${LANG==='zh'?'上传照片':'Upload photo'}<input type="file" id="upload" accept="image/*" hidden></label></div>`;
-    const sb = d.querySelector('#srcScene');
-    sb.textContent = LANG==='zh' ? '测试画面' : 'Test scene';
-    sb.addEventListener('click', () => { uploaded = null; imgKey=''; render(); syncPanel(); });
-    d.querySelector('#upload').addEventListener('change', e => {
+  } else if (it.type==='upload'){
+    d = document.createElement('div'); d.className='row2';
+    d.innerHTML = `<span>${T(it.label)}</span><div class="seg"><button type="button" class="srcScene"></button><label class="btn" style="min-height:34px;padding:6px 9px;font-size:12.5px">${LANG==='zh'?'上传照片':'Upload photo'}<input type="file" accept="image/*" hidden></label></div>`;
+    const sb = d.querySelector('.srcScene'); sb.textContent = LANG==='zh' ? '测试画面' : 'Test scene';
+    sb.addEventListener('click', () => { uploaded = null; imgCache.clear(); render(); syncPanel(); });
+    d.querySelector('input').addEventListener('change', e => {
       const f = e.target.files && e.target.files[0]; if (!f) return;
-      const rd = new FileReader(); rd.onload = () => { const im = new Image(); im.onload = () => { uploaded = im; imgKey=''; render(); syncPanel(); }; im.src = rd.result; }; rd.readAsDataURL(f);
+      const rd = new FileReader(); rd.onload = () => { const im = new Image(); im.onload = () => { uploaded = im; imgCache.clear(); render(); syncPanel(); }; im.onerror = () => status(LANG==='zh'?'这张图片读不出来，换一张 JPG 或 PNG 试试。':'This image could not be read. Try a JPG or PNG.'); im.src = rd.result; }; rd.readAsDataURL(f);
     });
     d._sync = () => sb.setAttribute('aria-pressed', !uploaded);
-    return d;
   }
+  const base = d._sync;
+  d._sync = () => { base(); if (it.when) d.classList.toggle('off', !it.when()); if (it.need) d.classList.toggle('off', P.inks < it.need); };
+  return d;
 }
 function manual(){ activePreset = null; }
 function syncPanel(){
   document.querySelectorAll('#panel .field, #panel .row2').forEach(d => d._sync && d._sync());
   document.querySelectorAll('.presetbar button').forEach(b => b.setAttribute('aria-pressed', b.dataset.preset===activePreset));
-  $('tGrid').setAttribute('aria-pressed', !!P.grid); $('tMass').setAttribute('aria-pressed', !!P.mass);
-  $('seedtag').textContent = 'seed ' + String(P.seed).padStart(4,'0');
+  $('tGrid').setAttribute('aria-pressed', !!P.grid); $('tMass').setAttribute('aria-pressed', !!P.mass); $('tPath').setAttribute('aria-pressed', !!P.showPath);
+  let tag = 'seed ' + String(P.seed).padStart(4,'0');
+  if (P.format==='web') tag += ' · ' + bpName(P) + ' · ' + colsEff(P) + (LANG==='zh'?' 栏':' cols');
+  $('seedtag').textContent = tag;
 }
+function status(msg){ $('status').innerHTML = msg; }
 
-/* ---------- image screening (same algorithms as the print lab, trimmed) ---------- */
-let imgKey = '', imgCanvas = null;
+/* ---------- formats & breakpoints ---------- */
+function dims(Q){
+  if (Q.format==='web'){ const w = Q.vw; return {W:w, H:Math.round(w>=900 ? w*.6 : w>=600 ? w*.85 : w*1.7)}; }
+  return Q.format==='square' ? {W:840, H:840} : {W:840, H:1188};
+}
+function colsEff(Q){ if (Q.format!=='web') return Q.cols; return Q.vw<600 ? Math.min(Q.cols,4) : Q.vw<1000 ? Math.min(Q.cols,8) : Q.cols; }
+function bpName(Q){ const w = Q.vw; return w<600 ? (LANG==='zh'?'手机':'mobile') : w<1000 ? (LANG==='zh'?'平板':'tablet') : (LANG==='zh'?'桌面':'desktop'); }
+
+/* ---------- image screening (print-lab algorithms, trimmed) ---------- */
+const imgCache = new Map();
 function sourceCanvas(n, tight){
   const c = document.createElement('canvas'); c.width = c.height = n; const g = c.getContext('2d');
   g.fillStyle='#fff'; g.fillRect(0,0,n,n);
@@ -401,9 +506,8 @@ function sourceCanvas(n, tight){
   g.save(); g.translate(n/2,n/2); g.scale(z,z); g.translate(-n/2,-n/2);
   if (uploaded){ const s = Math.max(n/uploaded.width, n/uploaded.height); const w = uploaded.width*s, h = uploaded.height*s; g.drawImage(uploaded,(n-w)/2,(n-h)/2,w,h); }
   else {
-    const bg = g.createLinearGradient(0,0,0,n); bg.addColorStop(0,'#ffffff'); bg.addColorStop(1,'#e8eef5'); g.fillStyle=bg; g.fillRect(0,0,n,n);
     const sl = g.createLinearGradient(0,n*.55,n,n); sl.addColorStop(0,'#cfe0f2'); sl.addColorStop(.6,'#2f78c6'); sl.addColorStop(1,'#0b2c66');
-    g.fillStyle=sl; g.beginPath(); g.moveTo(0,n*.7); g.lineTo(n,n*.55); g.lineTo(n,n); g.lineTo(0,n); g.closePath(); g.fill();
+    g.fillStyle=sl; g.beginPath(); g.moveTo(n*.08,n*.78); g.lineTo(n*.92,n*.62); g.lineTo(n*.92,n*.9); g.lineTo(n*.08,n*.9); g.closePath(); g.fill();
     const cx=n*.46, cy=n*.44, r=n*.3, rg=g.createRadialGradient(cx-r*.38,cy-r*.42,r*.05,cx,cy,r);
     rg.addColorStop(0,'#fff2f8'); rg.addColorStop(.35,'#f06aa9'); rg.addColorStop(.8,'#b0185f'); rg.addColorStop(1,'#5a0a30');
     g.fillStyle=rg; g.beginPath(); g.arc(cx,cy,r,0,Math.PI*2); g.fill();
@@ -412,27 +516,29 @@ function sourceCanvas(n, tight){
   g.restore();
   return c;
 }
-function screenImage(n, inks, paperC, darkC){
-  const key = [n,P.treat,P.cell,P.crop,P.inks,P.inkA,P.inkB,P.paper,P.textInk,!!uploaded,uploaded&&uploaded.src.length].join('|');
-  if (key===imgKey && imgCanvas) return imgCanvas;
-  const src = sourceCanvas(n, P.crop==='tight'); const d = src.getContext('2d').getImageData(0,0,n,n).data;
+function screenImage(Q, inks, paperC, darkC){
+  const n = 420;
+  const key = [Q.treat,Q.cell,Q.crop,Q.mask,inks.join(),paperC,darkC,uploaded?uploaded.src.length:0].join('|');
+  if (imgCache.has(key)) return imgCache.get(key);
+  const src = sourceCanvas(n, Q.crop==='tight'); const d = src.getContext('2d').getImageData(0,0,n,n).data;
   const out = document.createElement('canvas'); out.width = out.height = n; const ctx = out.getContext('2d');
   const od = ctx.createImageData(n,n), o = od.data, N = n*n;
   const pp = hex(paperC), cA = hex(inks[0]), cB = hex(inks[1]||darkC), cD = hex(darkC);
-  const two = inks.length>=2 && P.treat!=='duo';
-  const A = new Float32Array(N), B = new Float32Array(N);
+  const two = inks.length>=2 && Q.treat!=='duo', cut = Q.mask==='cutout';
+  const A = new Float32Array(N), B = new Float32Array(N), alpha = new Uint8Array(N);
   for (let i=0;i<N;i++){
-    const r=d[i*4]/255, g=d[i*4+1]/255, b=d[i*4+2]/255, dk = 1-(.299*r+.587*g+.114*b);
+    const r=d[i*4]/255, g=d[i*4+1]/255, b=d[i*4+2]/255, Lm=.299*r+.587*g+.114*b, dk = 1-Lm;
+    alpha[i] = cut && Lm > .9 && Math.max(r,g,b)-Math.min(r,g,b) < .12 ? 0 : 255;
     if (two){ A[i]=Math.min(1,Math.max(0,(1-g)-(1-r)*.6)*1.1); B[i]=Math.min(1,(1-r)*1.05); } else A[i]=Math.min(1,dk*1.1);
   }
-  const cell = P.cell*n/400, TAU = Math.PI*2;
-  const mask = (pl, ang, idx) => {
+  const cell = Q.cell*n/400, TAU = Math.PI*2;
+  const mask = (pl, ang) => {
     const m = new Uint8Array(N), a = ang*Math.PI/180, c = Math.cos(a), s = Math.sin(a);
-    if (P.treat==='am' || P.treat==='line'){
+    if (Q.treat==='am' || Q.treat==='line'){
       for (let y=0;y<n;y++) for (let x=0;x<n;x++){ const i=y*n+x, v=pl[i], u=(x*c+y*s)/cell, w=(-x*s+y*c)/cell;
-        m[i] = P.treat==='am' ? (v > 1-(Math.cos(TAU*u)+Math.cos(TAU*w)+2)/4) : (v > (1-Math.cos(TAU*w))/2); }
-    } else if (P.treat==='thresh'){ for (let i=0;i<N;i++) m[i]=pl[i]>.5; }
-    else { // error diffusion on blocks
+        m[i] = Q.treat==='am' ? (v > 1-(Math.cos(TAU*u)+Math.cos(TAU*w)+2)/4) : (v > (1-Math.cos(TAU*w))/2); }
+    } else if (Q.treat==='thresh'){ for (let i=0;i<N;i++) m[i]=pl[i]>.5; }
+    else {
       const bs = Math.max(1, Math.round(cell/3.5)), bw = Math.ceil(n/bs), bv = new Float32Array(bw*bw), bit = new Uint8Array(bw*bw);
       for (let by=0;by<bw;by++) for (let bx=0;bx<bw;bx++){ const xx=Math.min(n-1,bx*bs+(bs>>1)), yy=Math.min(n-1,by*bs+(bs>>1)); bv[by*bw+bx]=pl[yy*n+xx]; }
       for (let by=0;by<bw;by++) for (let bx=0;bx<bw;bx++){ const i=by*bw+bx, q=bv[i]>.5?1:0, e=bv[i]-q; bit[i]=q;
@@ -441,286 +547,531 @@ function screenImage(n, inks, paperC, darkC){
     }
     return m;
   };
-  if (P.treat==='duo'){
-    for (let i=0;i<N;i++){ const v=A[i]; let r=pp[0], g=pp[1], b=pp[2];
-      const a1=Math.pow(v,.75), a2=Math.pow(v,1.9);
-      r*=1-a1*(1-cA[0]); g*=1-a1*(1-cA[1]); b*=1-a1*(1-cA[2]);
-      r*=1-a2*(1-cD[0]); g*=1-a2*(1-cD[1]); b*=1-a2*(1-cD[2]);
-      o[i*4]=r*255; o[i*4+1]=g*255; o[i*4+2]=b*255; o[i*4+3]=255; }
+  if (Q.treat==='duo'){
+    for (let i=0;i<N;i++){ const v=A[i]; let r=pp[0], g=pp[1], b=pp[2]; const a1=Math.pow(v,.75), a2=Math.pow(v,1.9);
+      r*=1-a1*(1-cA[0]); g*=1-a1*(1-cA[1]); b*=1-a1*(1-cA[2]); r*=1-a2*(1-cD[0]); g*=1-a2*(1-cD[1]); b*=1-a2*(1-cD[2]);
+      o[i*4]=r*255; o[i*4+1]=g*255; o[i*4+2]=b*255; o[i*4+3]=alpha[i]; }
   } else {
-    const mA = mask(A, 15, 0), mB = two ? mask(B, 45, 1) : null, off = Math.round(n*.006);
-    const monoC = inks.length>=2 ? cA : cD;
+    const mA = mask(A, 15), mB = two ? mask(B, 45) : null, off = Math.round(n*.006), monoC = inks.length>=2 ? cA : cD;
     for (let y=0;y<n;y++) for (let x=0;x<n;x++){ const i=y*n+x; let r=pp[0], g=pp[1], b=pp[2];
       if (mA[i]){ const k = two ? cA : monoC; r*=1-.95*(1-k[0]); g*=1-.95*(1-k[1]); b*=1-.95*(1-k[2]); }
       if (mB){ const xs=x-off, ys=y-off; if (xs>=0&&ys>=0&&mB[ys*n+xs]){ r*=1-.95*(1-cB[0]); g*=1-.95*(1-cB[1]); b*=1-.95*(1-cB[2]); } }
-      o[i*4]=r*255; o[i*4+1]=g*255; o[i*4+2]=b*255; o[i*4+3]=255; }
+      o[i*4]=r*255; o[i*4+1]=g*255; o[i*4+2]=b*255; o[i*4+3]=alpha[i]; }
   }
   ctx.putImageData(od,0,0);
-  imgKey = key; imgCanvas = out; return out;
+  if (imgCache.size > 24) imgCache.clear();
+  imgCache.set(key, out); return out;
 }
 
-/* ---------- poster generator ---------- */
+/* ---------- helpers ---------- */
 function rngOf(seed){ let s = seed>>>0 || 1; return () => { s |= 0; s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 const SVGNS = 'http://www.w3.org/2000/svg';
-let lastLayout = null;
+const svgEl = (tag, attrs={}) => { const e = document.createElementNS(SVGNS, tag); Object.entries(attrs).forEach(([k,v]) => e.setAttribute(k, v)); return e; };
+function mulHex(a,b){ const x=hex(a), y=hex(b); return '#'+x.map((v,i)=>Math.round(v*y[i]*255).toString(16).padStart(2,'0')).join(''); }
+function mixHex(a,b,t){ const x=hex(a), y=hex(b); return '#'+x.map((v,i)=>Math.round((v*t+y[i]*(1-t))*255).toString(16).padStart(2,'0')).join(''); }
+const inter = (a,b,pad=0) => a.x < b.x+b.w+pad && b.x < a.x+a.w+pad && a.y < b.y+b.h+pad && b.y < a.y+a.h+pad;
 
-function render(){
-  const F = FORMATS[P.format], W = F.W, H = F.H, rng = rngOf(P.seed*7919 + 13);
-  const poster = $('poster'); poster.innerHTML = '';
-  const paperC = paper(P.paper).c;
-  poster.style.cssText = `width:${W}px;height:${H}px;background:${paperC}`;
-  fit();
-  const pair = PAIRS[P.pair];
-  const inkList = [P.inkA, P.inkB, P.inkC].slice(0, P.inks).map(id => ink(id).c);
-  const textC = P.textInk==='ink' ? (P.inks>=2 ? ink(P.inkB).c : ink(P.inkA).c) : '#161616';
-  const blend = P.overprint ? 'multiply' : 'normal';
+/* page parameters: the rhythm turns one set of settings into a sequence of page roles */
+function pageParams(i){
+  const Q = clone(P); Q.seed = P.seed + i*101; Q.role = 'cover';
+  if (P.pages > 1 && P.rhythm==='alternate'){
+    Q.role = ['cover','image','text','air'][i % 4];
+    if (Q.role==='image'){ Q.img = true; Q.imgSpan = 1; Q.layers = Math.max(1, Q.layers); Q.titleScale *= .55; if (Q.mask!=='cutout') Q.mask = 'rect'; Q.crop = 'tight'; Q.levels = Math.min(Q.levels, 3); }
+    if (Q.role==='text'){ Q.img = false; Q.white = .08; Q.levels = 5; Q.titleScale *= .45; Q.nShapes = Math.min(Q.nShapes, 2); Q.sizeSeq = false; }
+    if (Q.role==='air'){ Q.img = false; Q.white = .95; Q.nShapes = 1; Q.titleScale *= .7; Q.levels = Math.min(Q.levels, 3); Q.sizeSeq = false; Q.frame = 'none'; }
+  }
+  return Q;
+}
+const ROLE_NAME = {cover:L('封面','Cover'), image:L('满版图','Full image'), text:L('密集文字','Dense text'), air:L('留白页','Airy page')};
+
+/* ---------- one page ---------- */
+function renderPage(poster, Q, pageIdx){
+  const {W, H} = dims(Q), cols = colsEff(Q), rng = rngOf(Q.seed*7919 + 13), pid = 'pg'+pageIdx;
+  const paperC = paper(Q.paper).c, pair = PAIRS[Q.pair];
+  poster.innerHTML = ''; poster.className = 'poster' + ((Q.hoverShift||Q.parallax) && !REDUCED ? ' motion' : '');
+  poster.style.cssText = `position:absolute;left:0;top:0;transform-origin:0 0;overflow:hidden;width:${W}px;height:${H}px;background:${paperC}`;
+  poster.style.setProperty('--b1x', Q.tMisX+'px'); poster.style.setProperty('--b1y', Q.tMisY+'px');
+  poster.style.setProperty('--b2x', (-Q.tMisY*.7)+'px'); poster.style.setProperty('--b2y', (Q.tMisX*.7)+'px');
+
+  const inkList = [Q.inkA, Q.inkB, Q.inkC].slice(0, Q.inks).map(id => ink(id).c);
+  const textIdx = Q.textInk==='ink' ? (Q.inks>=2 ? 1 : 0) : -1;
+  const textC = textIdx>=0 ? inkList[textIdx] : '#161616';
+  const textCls = textIdx>=1 ? 'ink'+textIdx : '';
+  const blend = Q.overprint ? 'multiply' : 'normal';
+  const S = Q.strict, obey = () => rng() < S;
+  const lockAll = Q.rules.grid && obey();             // decided once for the type and image
+  const jit = () => lockAll ? 0 : (rng()*2-1) * Q.jitter;
+  const bleedOK = Q.bleed && !lockAll;
 
   // grid
-  const m = P.margin*W, g = P.gutter*W, cols = P.cols;
+  const m = Q.margin*W, g = Q.gutter*W;
   const colW = (W - 2*m - (cols-1)*g) / cols;
   const nRows = Math.max(3, Math.round((H - 2*m + g) / (colW*1.15 + g)));
   const rowH = (H - 2*m - (nRows-1)*g) / nRows;
-  const colX = i => m + i*(colW+g), rowY = j => m + j*(rowH+g), spanW = k => k*colW + (k-1)*g;
-  const snapB = y => Math.round(y / P.baseline) * P.baseline;
-  const base = Math.max(10, W*.0155), cap = base / P.ratio, sub = base*P.ratio*P.ratio, titleSize = P.titleScale*W;
-  const boxes = [];   // for metrics: elements to measure
+  const colX = i => m + i*(colW+g), rowY = j => m + j*(rowH+g), spanW = k => k*colW + Math.max(0,k-1)*g;
+  const snapB = y => Math.round(y / Q.baseline) * Q.baseline;
+  const nearestCol = x => { let best = 0; for (let i=0;i<cols;i++) if (Math.abs(colX(i)-x) < Math.abs(colX(best)-x)) best = i; return best; };
 
-  const back = document.createElementNS(SVGNS,'svg'), front = document.createElementNS(SVGNS,'svg');
-  [back, front].forEach(s => { s.setAttribute('class','layer'); s.setAttribute('width',W); s.setAttribute('height',H); s.setAttribute('viewBox',`0 0 ${W} ${H}`); });
-  const content = document.createElement('div'); content.style.cssText = 'position:absolute;inset:0';
-  poster.append(back, content, front);
+  // type sizes (levels and the max-3 rule decide how many distinct sizes exist)
+  const base = Math.max(12, W*.0155);
+  let cap = base/Q.ratio, sub = base*Q.ratio*Q.ratio, quote = base*Math.pow(Q.ratio,3);
+  const titleSize = Q.titleScale*W*(Q.format==='web' && W<600 ? 1.4 : 1);
+  if (Q.rules.max3){ cap = base; quote = sub; }
+  const gap = base*(.6 + Q.white*1.8);
+  const tertiaryOp = Q.ladder ? .55 : 1, bodyOp = Q.ladder ? .82 : 1;
 
-  const addText = (str, css, measure=true) => {
-    const e = document.createElement('div'); e.className='el'; e.textContent = str;
-    e.style.cssText = css + `;color:${textC};mix-blend-mode:${blend}`;
-    content.appendChild(e); if (measure) boxes.push(e); return e;
+  // layers: an isolated ink group (so overprint works and the texture filter can bite), then marks and overlays on top
+  const defs = svgEl('svg', {width:0, height:0}); defs.style.position = 'absolute';
+  const tg = .84 - Q.tGrain*.24, ts = .8 - Q.tStarve*.2;
+  defs.innerHTML = `<defs>
+    <filter id="${pid}-ink" filterUnits="userSpaceOnUse" x="0" y="0" width="${W}" height="${H}" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="1" seed="${Q.seed%97}" result="f"/>
+      <feColorMatrix in="f" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1 0 0 0 0" result="fa"/>
+      <feComponentTransfer in="fa" result="holeF"><feFuncA type="linear" slope="14" intercept="${Q.tGrain>0 ? (-14*tg).toFixed(3) : -40}"/></feComponentTransfer>
+      <feTurbulence type="fractalNoise" baseFrequency="${(0.9/W*6).toFixed(5)}" numOctaves="3" seed="${(Q.seed*3)%97}" result="c"/>
+      <feColorMatrix in="c" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1 0 0 0 0" result="ca"/>
+      <feComponentTransfer in="ca" result="holeC"><feFuncA type="linear" slope="7" intercept="${Q.tStarve>0 ? (-7*ts).toFixed(3) : -40}"/></feComponentTransfer>
+      <feComposite in="SourceGraphic" in2="holeF" operator="out" result="r1"/>
+      <feComposite in="r1" in2="holeC" operator="out"/>
+    </filter>
+    <filter id="${pid}-paper" filterUnits="userSpaceOnUse" x="0" y="0" width="${W}" height="${H}">
+      <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="2" seed="5" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 .42  0 0 0 0 .38  0 0 0 0 .32  1.4 0 0 0 -.62"/>
+    </filter></defs>`;
+  poster.appendChild(defs);
+  const inkGroup = document.createElement('div');
+  inkGroup.style.cssText = `position:absolute;inset:0;isolation:isolate;${(Q.tGrain>0||Q.tStarve>0) ? `filter:url(#${pid}-ink);` : ''}`;
+  const paperRect = document.createElement('div'); paperRect.style.cssText = `position:absolute;inset:0;background:${paperC}`;
+  const mkLayer = cls => { const s = svgEl('svg', {class:'layer '+cls, width:W, height:H, viewBox:`0 0 ${W} ${H}`}); s.style.cssText = 'position:absolute;left:0;top:0;overflow:visible;pointer-events:none';
+    s._g = [0,1,2].map(i => { const gg = svgEl('g', i ? {class:'gink'+i} : {}); s.appendChild(gg); return gg; }); return s; };
+  const back = mkLayer('plx-back'), front = mkLayer('plx-front');
+  const content = document.createElement('div'); content.className = 'plx-mid'; content.style.cssText = 'position:absolute;inset:0';
+  const flat = document.createElement('div'); flat.style.cssText = 'position:absolute;inset:0';
+  const hero = document.createElement('div'); hero.style.cssText = `position:absolute;inset:0;${Q.axis ? `transform:rotate(${Q.axis}deg);transform-origin:50% 45%;` : ''}`;
+  content.append(hero, flat);
+  inkGroup.append(paperRect, back, content, front);
+  poster.appendChild(inkGroup);
+
+  const boxes = [], order = [], textRects = [];
+  const colourOf = idx => idx<0 ? '#161616' : inkList[idx];
+  const addText = (parent, str, css, opts={}) => {
+    const e = document.createElement('div'); e.className = 'el ' + (opts.cls!=null ? opts.cls : textCls); e.textContent = str;
+    e.style.cssText = `position:absolute;margin:0;${css};color:${opts.color||textC};mix-blend-mode:${opts.blend||blend}`;
+    if (opts.op!=null && opts.op<1) e.style.opacity = opts.op;
+    parent.appendChild(e); if (opts.measure!==false) boxes.push(e); return e;
   };
-  const rot = (deg) => deg ? `transform:rotate(${deg.toFixed(2)}deg);transform-origin:0 0` : '';
-  const jitter = () => (rng()*2-1) * P.jitter;
+  const rot = deg => deg ? `transform:rotate(${deg.toFixed(2)}deg);transform-origin:0 0;` : '';
 
-  // focal point
-  const FOC = {thirds:[1/3,1/3], golden:[.382,.382], center:[.5,.42], edge:[.08,.22]}[P.focal];
-  const flip = P.align!=='center' && P.asym > .55 && rng() < .3;
+  // composition anchors from focal point, asymmetry and reading path
+  const path = Q.path;
+  const align = path==='radial' ? 'center' : Q.align;
+  const FOC = {thirds:[1/3,1/3], golden:[.382,.382], center:[.5,.42], edge:[.08,.2]}[Q.focal];
+  const flip = align!=='center' && Q.asym > .55 && rng() < .3 && path==='auto';
+  let k = Math.max(2, Math.min(cols, Math.round(cols*(.5 + Q.titleScale*1.6))));
+  if (path==='z') k = Math.max(2, Math.min(cols, Math.round(cols*.62)));
+  let startCol = align==='center' ? Math.round((cols-k)/2) : Math.round((cols-k)*(1-Q.asym)*.5);
+  if (flip) startCol = cols - k - startCol;
+  if (Q.focal==='center' && align!=='center' && path==='auto') startCol = Math.max(0, Math.min(cols-k, Math.round(cols*FOC[0] - k/2)));
+  const titleRow = (Q.focal==='edge' || path==='z' || path==='f') ? 0 : Math.max(0, Math.min(nRows-2, Math.round(FOC[1]*nRows) - 1));
+  const tx0 = colX(startCol), ty = snapB(rowY(titleRow));
+  const bleedX = bleedOK ? -Q.breakS*(.05 + .08*rng())*W : 0;
+  const cropX = -Q.titleCrop*spanW(k);                 // pushes the title off the page edge on purpose
 
   // title
-  let k = Math.max(2, Math.min(cols, Math.round(cols*(.5 + P.titleScale*1.6))));
-  let startCol = P.align==='center' ? Math.round((cols-k)/2) : (flip ? cols-k : 0);
-  if (P.focal==='center' && P.align!=='center') startCol = Math.max(0, Math.min(cols-k, Math.round(cols*FOC[0] - k/2)));
-  const titleRow = P.focal==='edge' ? 0 : Math.max(0, Math.min(nRows-2, Math.round(FOC[1]*nRows) - 1));
-  let tx = colX(startCol), ty = snapB(rowY(titleRow) + (P.focal==='edge' ? 0 : 0));
-  const bleedX = P.bleed ? -P.breakS*(.06 + .1*rng())*W : 0;
-  const titleCss = `font-family:${pair.d};font-weight:${pair.dw};font-stretch:${pair.ds};font-size:${titleSize}px;line-height:${P.pair==='editorial'?.95:.86};letter-spacing:${P.track}em;${P.upper?'text-transform:uppercase;':''}text-align:${P.align};text-wrap:balance`;
+  const tStyle = Q.titleStyle;
+  const titleCss = `font-family:${pair.d};font-weight:${Q.pair==='editorial'?400:Q.tWeight};font-stretch:${Q.pair==='swiss'?Q.tWidth:100}%;font-size:${titleSize}px;line-height:${Q.tLead};letter-spacing:${Q.track}em;${Q.upper?'text-transform:uppercase;':''}text-align:${align};text-wrap:balance`
+    + (tStyle==='outline' ? `;-webkit-text-stroke:${Math.max(1.5, titleSize*.016).toFixed(1)}px ${textC};color:transparent` : '');
+  const titleColour = tStyle==='ink' ? inkList[0] : tStyle==='knock' ? paperC : tStyle==='outline' ? 'transparent' : textC;
+  const titleOpts = {color:titleColour, cls: tStyle==='ink' || tStyle==='knock' ? '' : textCls, blend: tStyle==='knock' ? 'normal' : blend};
   let title;
-  if (P.vertical){
-    const vx = flip ? W - m - titleSize*1.05 : m + bleedX*.5;
-    title = addText(txt('title'), `${titleCss};writing-mode:vertical-rl;left:${vx}px;top:${m}px;height:${H-2*m}px;white-space:nowrap`);
+  if (Q.vertical){
+    const vx = flip ? W - m - titleSize*1.05 : m + bleedX*.5 + cropX*.3;
+    title = addText(hero, txt('title'), `${titleCss};writing-mode:vertical-rl;left:${vx}px;top:${m}px;height:${H-2*m}px;white-space:nowrap`, titleOpts);
   } else {
-    title = addText(txt('title'), `${titleCss};left:${tx + (flip ? -bleedX : bleedX)}px;top:${ty}px;width:${spanW(k) + (P.bleed ? Math.abs(bleedX) : 0)}px;${rot(jitter())}`);
+    const shift = (flip ? -1 : 1) * Math.max(bleedX + cropX, -.32*spanW(k));   // never push more than about a third of the title off the page
+    title = addText(hero, txt('title'), `${titleCss};left:${tx0 + shift}px;top:${ty}px;width:${spanW(k) + Math.abs(shift)}px;${rot(jit())}`, titleOpts);
   }
-  title.dataset.role='title';
-  const tH = title.offsetHeight;
+  if (tStyle==='outline') title.style.webkitTextStroke = `${Math.max(1.5, titleSize*.016).toFixed(1)}px ${textC}`;
+  const tR = {x:title.offsetLeft, y:title.offsetTop, w:title.offsetWidth, h:title.offsetHeight};
+  // knockout: a solid ink block under the title, the letters left in paper colour
+  if (tStyle==='knock'){
+    const pad = titleSize*.08, blk = document.createElement('div');
+    blk.style.cssText = `position:absolute;left:${tR.x-pad}px;top:${tR.y-pad*.4}px;width:${tR.w+pad*2}px;height:${tR.h+pad*.8}px;background:${inkList[0]};mix-blend-mode:${blend};${title.style.transform?`transform:${title.style.transform};transform-origin:${pad}px ${pad*.4}px;`:''}`;
+    hero.insertBefore(blk, title); boxes.push(blk);
+  }
+  order.push(title); textRects.push(tR);
+  // the main axis pivots around the title's centre so the title itself stays on the page
+  const pivot = [tR.x + tR.w/2, tR.y + tR.h/2];
+  if (Q.axis) hero.style.transformOrigin = `${pivot[0]}px ${pivot[1]}px`;
 
-  // subtitle
-  let cursorY = P.vertical ? m + rowH*.2 : ty + tH + base*1.2;
-  const subCol = P.vertical ? (flip ? 0 : Math.min(cols-1, Math.ceil(titleSize/(colW+g))+0)) : startCol;
-  const subK = Math.max(2, Math.min(cols - subCol, Math.round(cols*.55)));
-  const subtitle = addText(txt('subtitle'), `font-family:${pair.d};font-weight:${P.pair==='editorial'?400:700};font-style:${P.pair==='editorial'?'italic':'normal'};font-size:${sub}px;line-height:1.1;left:${colX(P.align==='center'?Math.round((cols-subK)/2):subCol)}px;top:${snapB(cursorY)}px;width:${spanW(subK)}px;text-align:${P.align};text-wrap:balance;${rot(jitter()*.6)}`);
-  cursorY = snapB(cursorY) + subtitle.offsetHeight;
+  // subtitle (level 3+)
+  let cursorY = Q.vertical ? m + rowH*.2 : ty + tR.h + gap*.8;
+  let subtitle = null, subK = Math.max(2, Math.min(cols, Math.round(cols*.55)));
+  if (Q.levels >= 3){
+    let subCol = Q.vertical ? (flip ? 0 : Math.min(cols-subK, Math.ceil(titleSize/(colW+g)))) : Math.min(startCol, cols-subK);
+    if (align==='center') subCol = Math.round((cols-subK)/2);
+    let sy = snapB(cursorY);
+    if (path==='z') sy = snapB(H*.58);
+    subtitle = addText(hero, txt('subtitle'), `font-family:${pair.d};font-weight:${Q.pair==='editorial'?400:700};font-style:${pair.italicSub?'italic':'normal'};font-size:${sub}px;line-height:1.1;left:${colX(subCol)}px;top:${sy}px;width:${spanW(subK)}px;text-align:${align};text-wrap:balance;${rot(jit()*.6)}`);
+    if (path!=='z') cursorY = sy + subtitle.offsetHeight;
+    textRects.push({x:subtitle.offsetLeft, y:subtitle.offsetTop, w:subtitle.offsetWidth, h:subtitle.offsetHeight});
+  }
 
-  // meta labels (top margin)
+  // meta labels (level 4+)
   const metaCss = `font-family:${MONO};font-size:${Math.max(9,cap*.95)}px;letter-spacing:.12em;text-transform:uppercase;line-height:1`;
-  if (P.furn.folio){
-    addText(T(DEFAULT_TEXT.issue), `${metaCss};left:${m}px;top:${m*.42}px`);
-    addText('2026 · 10', `${metaCss};right:${m}px;top:${m*.42}px;text-align:right`);
+  if (Q.levels >= 4 && Q.furn.folio){
+    addText(flat, T(DEFAULT_TEXT.issue), `${metaCss};left:${m}px;top:${m*.42}px`, {op:tertiaryOp});
+    addText(flat, '2026 · 10', `${metaCss};right:${m}px;top:${m*.42}px;text-align:right`, {op:tertiaryOp});
   }
 
-  // body blocks, bottom-aligned
-  const nBlocks = 1 + (P.white < .45 ? 1 : 0);
-  const bk = Math.max(2, Math.round(cols/3));
-  const bottomY = H - m - (P.furn.bar || P.furn.folio ? base*1.6 : 0);
-  const bodyCss = `font-family:${pair.b};font-weight:${pair.bw};font-size:${base}px;line-height:${(P.baseline*Math.max(1,Math.round(base*1.45/P.baseline))/base).toFixed(3)}`;
+  // body blocks: the measure sets their width in columns; F stacks them on the left, others sit bottom-aligned
+  const nBlocks = Q.role==='text' ? 3 : 1 + (Q.white < .45 ? 1 : 0);
+  const charW = LANG==='zh' ? base : base*.52;
+  const bk = Math.max(1, Math.min(cols, Math.ceil((Q.measure*charW + g) / (colW + g))));
+  const bottomY = H - m - (Q.furn.bar || Q.furn.folio ? base*1.6 : 0);
+  const lineH = Q.baseline*Math.max(1, Math.round(base*1.45/Q.baseline));
+  const bodyCss = `font-family:${pair.b};font-weight:${pair.bw};font-size:${base}px;line-height:${lineH}px`;
+  const texts = [txt('body'), T(DEFAULT_TEXT.body2), T(DEFAULT_TEXT.body3)];
   let bodyTop = bottomY;
-  const blockCols = [];
-  for (let b=0;b<nBlocks;b++){
-    const c0 = P.align==='center' ? Math.round((cols - bk*nBlocks)/2) + b*bk : (flip ? b*bk : cols - bk*(nBlocks-b));
-    blockCols.push(Math.max(0, c0));
+  const blocks = [];
+  if (path==='f'){
+    let y = snapB(cursorY + gap*1.4);
+    for (let b=0;b<nBlocks;b++){
+      const e = addText(flat, texts[b], `${bodyCss};left:${colX(0)}px;width:${spanW(Math.min(bk, Math.ceil(cols*.5)))}px;top:0`, {op:bodyOp});
+      let top = y + (Q.numbers ? cap*2.4 : 0);
+      if (top + e.offsetHeight > bottomY){ e.remove(); boxes.pop(); break; }
+      e.style.top = top+'px'; blocks.push({e, c0:0, top}); y = snapB(top + e.offsetHeight + gap);
+    }
+    bodyTop = blocks.length ? blocks[0].top - (Q.numbers ? cap*2.4 : 0) : bottomY;
+  } else {
+    const fits = Math.max(1, Math.floor(cols / bk));
+    const nb = Math.min(nBlocks, fits);
+    for (let b=0;b<nb;b++){
+      let c0 = align==='center' ? Math.round((cols - bk*nb)/2) + b*bk : (flip ? b*bk : cols - bk*(nb-b));
+      if (path==='z') c0 = cols - bk*(nb-b);
+      const e = addText(flat, texts[b], `${bodyCss};left:${colX(Math.max(0,c0))}px;width:${spanW(bk)}px;top:0`, {op:bodyOp});
+      const top = snapB(bottomY - e.offsetHeight); e.style.top = top+'px';
+      blocks.push({e, c0:Math.max(0,c0), top});
+      bodyTop = Math.min(bodyTop, top - (Q.numbers ? cap*2.4 : 0));
+    }
   }
-  blockCols.forEach((c0, b) => {
-    const e = addText(b===0 ? txt('body') : T(DEFAULT_TEXT.body2), `${bodyCss};left:${colX(c0)}px;width:${spanW(bk)}px;top:0`);
-    const h = e.offsetHeight; const top = snapB(bottomY - h); e.style.top = top+'px';
-    if (P.numbers){
-      const n = addText(String(b+1).padStart(2,'0'), `font-family:${MONO};font-weight:600;font-size:${cap*1.1}px;letter-spacing:.06em;left:${colX(c0)}px;top:${top - cap*2.2}px`);
-      n.style.color = inkList[0]; n.style.mixBlendMode = blend;
-      bodyTop = Math.min(bodyTop, top - cap*2.4);
-    } else bodyTop = Math.min(bodyTop, top);
+  // Z path: the subtitle sits low-left, but never on top of the body text
+  if (path==='z' && subtitle){
+    const sh = subtitle.offsetHeight, minY = snapB(ty + tR.h + gap*.8), want = Math.min(subtitle.offsetTop, snapB(bodyTop - gap - sh));
+    subtitle.style.top = Math.max(minY, want) + 'px';
+    textRects[1] = {x:subtitle.offsetLeft, y:subtitle.offsetTop, w:subtitle.offsetWidth, h:sh};
+  }
+  blocks.forEach((bl, b) => {
+    if (Q.numbers){ const nEl = addText(flat, String(b+1).padStart(2,'0'), `font-family:${MONO};font-weight:600;font-size:${cap*1.1}px;letter-spacing:.06em;left:${colX(bl.c0)}px;top:${bl.top - cap*2.2}px`, {color:inkList[0], cls:'', op:tertiaryOp}); }
+    textRects.push({x:bl.e.offsetLeft, y:bl.e.offsetTop, w:bl.e.offsetWidth, h:bl.e.offsetHeight});
   });
 
   // image
   let imgBox = null;
-  if (P.img){
-    let ki = Math.max(2, Math.min(cols, Math.round(cols*P.imgSpan)));
-    let iw = spanW(ki), ih = P.mask==='circle' ? iw : iw*(P.crop==='tight' ? .92 : .72);
+  if (Q.img){
+    let ki = Math.max(2, Math.min(cols, Math.round(cols*Q.imgSpan)));
+    if (path==='z') ki = Math.max(2, Math.min(cols, Math.round(cols*Math.min(Q.imgSpan,.55))));
+    let iw = spanW(ki), ih = (Q.mask==='circle' || Q.mask==='cutout') ? iw : iw*(Q.crop==='tight' ? .92 : .74);
+    if (Q.mask==='arch') ih = iw*1.18;
     let ic, iy;
-    if (P.layers===0){
-      ic = P.align==='center' ? Math.round((cols-ki)/2) : (P.asym>.5 ? (flip ? 0 : cols-ki) : startCol);
-      iy = snapB(cursorY + base*2);
-      const room = bodyTop - base*2 - iy;
-      if (ih > room){ const s = Math.max(.35, room/ih); iw*=s; ih*=s; }
-    } else {
-      ic = Math.max(0, Math.min(cols-ki, startCol + Math.round((k-ki)*rng()) + (flip?-1:1)));
-      iy = ty + tH*(.25 + .3*rng());
-      if (iy + ih > bodyTop + (P.layers>=2 ? ih*.3 : 0)) iy = Math.max(m*.5, bodyTop + (P.layers>=2?ih*.3:0) - ih);
-    }
-    let ix = colX(ic);
-    if (P.bleed && P.breakS > .3){ const push = P.breakS*.14*W; ix += (ic + ki >= cols ? push : (ic===0 ? -push : 0)); }
-    const n = 420, cv = screenImage(n, inkList, paperC, P.textInk==='ink' ? textC : '#161616');
+    if (path==='z'){ ic = cols - ki; iy = ty + tR.h*.6; }
+    else if (path==='f'){ ic = cols - ki; iy = snapB(cursorY + gap*1.4); }
+    else if (path==='radial'){ ic = Math.round((cols-ki)/2); iy = Math.max(m, ty + tR.h*.5 - ih*.45); }
+    else if (Q.layers===0){ ic = align==='center' ? Math.round((cols-ki)/2) : (Q.asym>.5 ? (flip ? 0 : cols-ki) : startCol); iy = snapB(cursorY + gap); }
+    else { ic = Math.max(0, Math.min(cols-ki, startCol + Math.round((k-ki)*rng()) + (flip?-1:1))); iy = ty + tR.h*(.25 + .3*rng()); }
+    // in the F path the body runs down the left half, so an image in the right columns can use the full height
+    const fCols = Math.min(bk, Math.ceil(cols*.5));
+    const freeBelow = path==='f' && (cols - ki) >= fCols;
+    const limit = (freeBelow ? bottomY : bodyTop) - gap - (Q.numbers && Q.layers===0 ? cap*3 : 0);
+    if (Q.layers===0 || path==='f'){ const room = limit - iy; if (ih > room){ const s = Math.max(.3, room/ih); iw*=s; ih*=s; } }
+    else if (iy + ih > limit + (Q.layers>=2 ? ih*.3 : 0)) iy = Math.max(m*.5, limit + (Q.layers>=2 ? ih*.3 : 0) - ih);
+    let ix = colX(ic) + (ic + ki >= cols && Q.layers===0 ? spanW(ki) - iw : 0);
+    if (bleedOK && Q.breakS > .3){ const push = Q.breakS*.14*W; ix += (ic + ki >= cols ? push : (ic===0 ? -push : 0)); }
+    const cv = screenImage(Q, inkList, paperC, textIdx>=0 ? textC : '#161616');
     const holder = document.createElement('div'); holder.className = 'el';
-    holder.style.cssText = `left:${ix}px;top:${iy}px;width:${iw}px;height:${ih}px;overflow:hidden;mix-blend-mode:${blend};${P.mask==='circle'?'border-radius:50%;':''}${rot(jitter())}`;
-    const img = document.createElement('canvas'); img.width = cv.width; img.height = cv.height; img.getContext('2d').drawImage(cv,0,0);
-    img.style.cssText = `position:absolute;width:${Math.max(iw,ih)}px;height:${Math.max(iw,ih)}px;left:${(iw-Math.max(iw,ih))/2}px;top:${(ih-Math.max(iw,ih))/2}px`;
+    const radius = Q.mask==='circle' ? 'border-radius:50%;' : Q.mask==='arch' ? `border-radius:${iw/2}px ${iw/2}px 0 0;` : '';
+    holder.style.cssText = `position:absolute;left:${ix}px;top:${iy}px;width:${iw}px;height:${ih}px;overflow:hidden;mix-blend-mode:${blend};${radius}${rot(jit())}`;
+    const side = Math.max(iw, ih), img = document.createElement('canvas'); img.width = cv.width; img.height = cv.height; img.getContext('2d').drawImage(cv,0,0);
+    img.style.cssText = `position:absolute;width:${side}px;height:${side}px;left:${(iw-side)/2}px;top:${(ih-side)/2}px`;
     holder.appendChild(img);
-    content.insertBefore(holder, content.firstChild);   // image sits under the type
-    boxes.push(holder); imgBox = {x:ix, y:iy, w:iw, h:ih};
-    if (P.numbers && P.layers===0){
-      addText(T(DEFAULT_TEXT.caption), `font-family:${MONO};font-size:${Math.max(9,cap*.9)}px;letter-spacing:.06em;left:${ix}px;top:${iy+ih+cap*.8}px`);
+    hero.insertBefore(holder, hero.firstChild);
+    boxes.push(holder); imgBox = {x:ix, y:iy, w:iw, h:ih}; order.push(holder);
+    if (Q.levels >= 4 && Q.layers===0){
+      addText(flat, T(DEFAULT_TEXT.caption), `font-family:${MONO};font-size:${Math.max(9,cap*.9)}px;letter-spacing:.06em;left:${ix}px;top:${iy+ih+cap*.8}px`, {op:tertiaryOp});
+    }
+  }
+  if (subtitle) order.push(subtitle);
+  // swap so Z reads title → image → subtitle, everything else title → subtitle → image
+  if (path!=='z' && imgBox && subtitle){ const i1 = order.indexOf(subtitle), i0 = order.length-2; [order[i0], order[i1]] = [order[i1], order[i0]]; }
+
+  // pull quote (level 5)
+  if (Q.levels >= 5 && Q.role!=='air'){
+    const qk = Math.max(2, Math.min(cols, Math.round(cols*.5)));
+    const qc = imgBox ? (imgBox.x + imgBox.w/2 > W/2 ? 0 : cols - qk) : (flip ? 0 : cols - qk);
+    const qy = snapB(imgBox && Q.layers===0 ? Math.max(cursorY + gap, imgBox.y) : cursorY + gap*1.5);
+    const q = addText(flat, '“' + T(DEFAULT_TEXT.body3).replace(/[。.]$/,'') + '”', `font-family:${pair.d};font-weight:${Q.pair==='editorial'?400:700};font-style:${pair.italicSub?'italic':'normal'};font-size:${quote}px;line-height:1.08;left:${colX(qc)}px;top:${qy}px;width:${spanW(qk)}px;text-wrap:balance`);
+    const qr = {x:q.offsetLeft, y:q.offsetTop, w:q.offsetWidth, h:q.offsetHeight};
+    if (qr.y + qr.h > bodyTop - gap*.5 || (imgBox && Q.layers===0 && inter(qr, imgBox))){ q.remove(); boxes.pop(); }
+    else { order.push(q); textRects.push(qr); }
+  }
+  blocks.forEach(bl => order.push(bl.e));
+
+  // colour choice for accents: area ratio weights across the available inks
+  const W3 = {even:[1,1,1], '603010':[.6,.3,.1], '9010':[.9,.1,0]}[Q.colorRatio].slice(0, inkList.length);
+  const pickInk = () => { const tot = W3.reduce((a,b)=>a+b,0) || 1; let r = rng()*tot; for (let i=0;i<W3.length;i++){ r -= W3[i]; if (r<=0) return i; } return 0; };
+
+  // framing behind the title
+  const cX = tR.x + tR.w/2, cY = tR.y + tR.h/2;
+  if (Q.frame!=='none'){
+    const fi = inkList.length>1 ? 1 : 0;
+    const el = Q.frame==='circle'
+      ? svgEl('circle', {cx:cX, cy:cY, r:Math.max(tR.w, tR.h)*.52, fill:inkList[fi]})
+      : svgEl('rect', {x:tR.x + W*.018, y:tR.y + W*.018, width:tR.w, height:tR.h, fill:inkList[fi]});
+    el.style.mixBlendMode = blend;
+    if (Q.axis) el.setAttribute('transform', `rotate(${Q.axis} ${pivot[0]} ${pivot[1]})`);
+    back._g[fi].appendChild(el);
+  }
+
+  // size progression toward the title
+  if (Q.sizeSeq){
+    const fromX = flip ? W - m : m, fromY = H - m - base*4, n = 5, s0 = W*.018;
+    for (let i=0;i<n;i++){
+      const t = i/(n-1), x = fromX + (cX - fromX)*t*.75, y = fromY + (cY - fromY)*t*.75, s = s0*Math.pow(1.55, i);
+      const shape = Q.vocab.circle || !Q.vocab.rect ? svgEl('circle', {cx:x, cy:y, r:s/2}) : svgEl('rect', {x:x-s/2, y:y-s/2, width:s, height:s});
+      shape.setAttribute('fill', inkList[0]); shape.style.mixBlendMode = blend; back._g[0].appendChild(shape);
     }
   }
 
   // shapes
-  const vocab = Object.keys(P.vocab).filter(k => P.vocab[k]); if (!vocab.length) vocab.push('rect');
-  const nS = Math.round(P.nShapes * (1.35 - P.white*.7));
+  const vocab = Object.keys(Q.vocab).filter(k => Q.vocab[k]); if (!vocab.length) vocab.push('rect');
+  const nS = Math.round(Q.nShapes * (1.35 - Q.white*.7));
   const shapeBoxes = [];
   for (let i=0;i<nS;i++){
     const type = vocab[Math.floor(rng()*vocab.length)];
-    const colour = i < P.accent ? inkList[i % inkList.length] : textC;
-    const u = Math.pow(rng(), P.sizeExp);
-    let x, y, s;
-    if (P.snap){
-      const spanK = 1 + Math.floor(u * Math.max(1, Math.ceil(cols*.7)));
-      s = spanW(Math.min(cols, spanK));
-      x = colX(Math.floor(rng()*Math.max(1, cols - spanK + 1)));
-      y = rowY(Math.floor(rng()*nRows));
-    } else {
-      s = (.05 + .55*u) * W;
-      x = rng()*(W - s*(P.bleed?.4:1)) - (P.bleed ? s*.3*rng() : 0);
-      y = rng()*(H - s*(P.bleed?.4:1)) - (P.bleed ? s*.3*rng() : 0);
-    }
-    let ang = P.angles==='ortho' ? (rng()<.5?0:90) : P.angles==='d45' ? [0,45,90][Math.floor(rng()*3)] : rng()*360;
-    ang += jitter();
-    const filled = rng() < P.fill, sw = Math.max(2, W*.006);
-    const layer = (P.layers>=2 && rng() < .45) ? front : back;
-    const el = document.createElementNS(SVGNS, type==='circle'?'circle':type==='tri'?'polygon':'rect');
-    let bx, by, bw, bh;
-    if (type==='circle'){ const r = s/2; el.setAttribute('cx', x+r); el.setAttribute('cy', y+r); el.setAttribute('r', filled ? r : r - sw/2); bx=x; by=y; bw=bh=s; }
-    else if (type==='rect'){ const h = P.snap ? rowH*(1 + Math.floor(rng()*2)) : s*(.4+.6*rng()); el.setAttribute('x', x); el.setAttribute('y', y); el.setAttribute('width', s); el.setAttribute('height', h); bx=x; by=y; bw=s; bh=h; }
-    else if (type==='line'){ const t = Math.max(4, W*(.006 + .014*rng())); const len = s*(P.snap?1:1.4); el.setAttribute('x', x); el.setAttribute('y', P.snap ? snapB(y) : y); el.setAttribute('width', len); el.setAttribute('height', t); bx=x; by=y; bw=len; bh=t; }
-    else { el.setAttribute('points', `${x},${y+s} ${x+s/2},${y} ${x+s},${y+s}`); bx=x; by=y; bw=bh=s; }
-    if (type==='line') ang = P.angles==='free' ? ang : (rng()<.75 ? 0 : 90) + jitter();
-    el.setAttribute('transform', `rotate(${ang.toFixed(2)} ${bx+bw/2} ${by+bh/2})`);
+    const accentShape = i < Q.accent, inkIdx = accentShape ? pickInk() : -1;
+    const colour = accentShape ? inkList[inkIdx] : textC;
+    const grp = accentShape ? Math.min(inkIdx, 2) : Math.max(0, textIdx);
+    const snapThis = Q.snap || (Q.rules.grid && obey());
+    const avoidThis = Q.rules.avoid && obey();
+    const sw = Math.max(1.5, Q.strokeW*W);
+    let x, y, s, h, tries = 0, box;
+    do {
+      const u = Math.pow(rng(), Q.sizeExp);
+      if (snapThis){
+        const spanK = 1 + Math.floor(u * Math.max(1, Math.ceil(cols*.7)));
+        s = spanW(Math.min(cols, spanK)); x = colX(Math.floor(rng()*Math.max(1, cols - spanK + 1))); y = rowY(Math.floor(rng()*nRows));
+      } else if (path==='radial'){
+        s = (.05 + .4*u)*W; const a = rng()*Math.PI*2, rr = (.28 + .22*rng())*Math.min(W,H);
+        x = cX + Math.cos(a)*rr - s/2; y = cY + Math.sin(a)*rr - s/2;
+      } else {
+        s = (.05 + .55*u)*W;
+        x = rng()*(W - s*(bleedOK?.4:1)) - (bleedOK ? s*.3*rng() : 0);
+        y = rng()*(H - s*(bleedOK?.4:1)) - (bleedOK ? s*.3*rng() : 0);
+      }
+      h = type==='rect' ? (snapThis ? rowH*(1 + Math.floor(rng()*2)) : s*(.4+.6*rng())) : type==='line' ? Math.max(4, W*(.006 + .014*rng())) : s;
+      if (type==='line' && !snapThis) s *= 1.4;
+      box = {x, y, w:s, h};
+    } while (avoidThis && textRects.some(r => inter(r, box, 6)) && ++tries < 40);
+    if (avoidThis && tries >= 40) continue;
+    let ang = Q.angles==='ortho' || snapThis ? (rng()<.5?0:90) : Q.angles==='d45' ? [0,45,90][Math.floor(rng()*3)] : rng()*360;
+    if (type==='line') ang = (Q.angles==='free' && !snapThis) ? ang : (rng()<.75 ? 0 : (Q.angles==='d45' ? 45 : 90));
+    if (type==='circle') ang = 0;
+    if (!snapThis) ang += jit();
+    if (snapThis && type==='line' && ang===90){ box = {x:x + s/2 - h/2, y:y - s/2 + h/2, w:h, h:s}; }
+    const filled = rng() < Q.fill;
+    const r = Math.min(box.w, box.h)*Q.radius;
+    let el;
+    if (type==='circle') el = svgEl('circle', {cx:x+s/2, cy:y+s/2, r: filled ? s/2 : s/2 - sw/2});
+    else if (type==='tri') el = svgEl('polygon', {points:`${x},${y+s} ${x+s/2},${y} ${x+s},${y+s}`, 'stroke-linejoin': Q.radius>.05 ? 'round' : 'miter'});
+    else el = svgEl('rect', {x, y, width:s, height:h, rx:r, ry:r});
+    if (ang) el.setAttribute('transform', `rotate(${ang.toFixed(2)} ${x+s/2} ${y+h/2})`);
     el.setAttribute('fill', filled || type==='line' ? colour : 'none');
     if (!filled && type!=='line'){ el.setAttribute('stroke', colour); el.setAttribute('stroke-width', sw); }
     el.style.mixBlendMode = blend;
-    layer.appendChild(el);
-    shapeBoxes.push({x:bx, y:by, w:bw, h:bh});
+    const layer = (Q.layers>=2 && rng() < .45 && !avoidThis) ? front : back;
+    layer._g[grp].appendChild(el);
+    shapeBoxes.push(box);
   }
 
-  // guide arrow: from the end of the subtitle toward the image (or the first body block)
-  if (P.guide){
-    const tgt = imgBox ? {x:imgBox.x + imgBox.w*.5, y:imgBox.y + imgBox.h*.35} : {x:colX(blockCols[0]) + spanW(bk)*.2, y:bodyTop};
-    const sb = {x: subtitle.offsetLeft + Math.min(subtitle.offsetWidth, spanW(subK))*.9, y: subtitle.offsetTop + subtitle.offsetHeight + base};
-    const dx = tgt.x - sb.x, dy = tgt.y - sb.y, len = Math.hypot(dx,dy);
+  // guide arrow toward the next element in the reading order
+  if (Q.guide && order.length >= 2){
+    const a = order[0], b = order[1];
+    const ra = {x:a.offsetLeft, y:a.offsetTop, w:a.offsetWidth, h:a.offsetHeight}, rb = {x:b.offsetLeft, y:b.offsetTop, w:b.offsetWidth, h:b.offsetHeight};
+    const sx = ra.x + ra.w*.85, sy = ra.y + ra.h + base*.6, tx = rb.x + rb.w*.5, tyy = rb.y + Math.min(rb.h*.3, base*4);
+    const dx = tx - sx, dy = tyy - sy, len = Math.hypot(dx, dy);
     if (len > W*.08){
-      const ux = dx/len, uy = dy/len, endX = tgt.x - ux*W*.03, endY = tgt.y - uy*W*.03, hw = W*.018, sw = Math.max(3, W*.005);
-      const col = inkList[inkList.length>1 ? 1 : 0];
-      const ln = document.createElementNS(SVGNS,'line');
-      ln.setAttribute('x1', sb.x); ln.setAttribute('y1', sb.y); ln.setAttribute('x2', endX - ux*hw); ln.setAttribute('y2', endY - uy*hw);
-      ln.setAttribute('stroke', col); ln.setAttribute('stroke-width', sw); ln.style.mixBlendMode = blend;
-      const hd = document.createElementNS(SVGNS,'polygon');
-      hd.setAttribute('points', `${endX},${endY} ${endX - ux*hw*1.6 - uy*hw},${endY - uy*hw*1.6 + ux*hw} ${endX - ux*hw*1.6 + uy*hw},${endY - uy*hw*1.6 - ux*hw}`);
-      hd.setAttribute('fill', col); hd.style.mixBlendMode = blend;
-      front.append(ln, hd);
+      const ux = dx/len, uy = dy/len, ex = tx - ux*W*.025, ey = tyy - uy*W*.025, hw = W*.017, sw2 = Math.max(3, W*.005), ai = inkList.length>1 ? 1 : 0;
+      const ln = svgEl('line', {x1:sx, y1:sy, x2:ex - ux*hw, y2:ey - uy*hw, stroke:inkList[ai], 'stroke-width':sw2});
+      const hd = svgEl('polygon', {points:`${ex},${ey} ${ex-ux*hw*1.6-uy*hw},${ey-uy*hw*1.6+ux*hw} ${ex-ux*hw*1.6+uy*hw},${ey-uy*hw*1.6-ux*hw}`, fill:inkList[ai]});
+      [ln, hd].forEach(e => { e.style.mixBlendMode = blend; if (Q.axis) e.setAttribute('transform', `rotate(${Q.axis} ${pivot[0]} ${pivot[1]})`); front._g[ai].appendChild(e); });
     }
   }
 
+  // paper texture on top of everything printed
+  if (Q.tPaper > 0){
+    const pt = svgEl('svg', {width:W, height:H}); pt.style.cssText = `position:absolute;left:0;top:0;pointer-events:none;mix-blend-mode:multiply;opacity:${(Q.tPaper*.55).toFixed(2)}`;
+    pt.appendChild(svgEl('rect', {x:0, y:0, width:W, height:H, filter:`url(#${pid}-paper)`}));
+    poster.appendChild(pt);
+  }
+
   // print furniture
-  const furn = document.createElementNS(SVGNS,'svg'); furn.setAttribute('class','layer'); furn.setAttribute('width',W); furn.setAttribute('height',H);
-  const mk = (tag, attrs) => { const e = document.createElementNS(SVGNS, tag); Object.entries(attrs).forEach(([a,v]) => e.setAttribute(a,v)); furn.appendChild(e); return e; };
+  const furn = svgEl('svg', {width:W, height:H}); furn.style.cssText = 'position:absolute;left:0;top:0;pointer-events:none';
+  const mk = (tag, a) => furn.appendChild(svgEl(tag, a));
   const fc = '#161616';
-  if (P.furn.reg){ const r = Math.min(9, m*.22); [[m*.5,m*.5],[W-m*.5,m*.5],[m*.5,H-m*.5],[W-m*.5,H-m*.5]].forEach(([x,y]) => {
+  if (Q.furn.reg){ const r = Math.min(9, m*.22); [[m*.5,m*.5],[W-m*.5,m*.5],[m*.5,H-m*.5],[W-m*.5,H-m*.5]].forEach(([x,y]) => {
     mk('circle',{cx:x,cy:y,r:r*.62,fill:'none',stroke:fc,'stroke-width':1}); mk('path',{d:`M${x-r} ${y}H${x+r}M${x} ${y-r}V${y+r}`,stroke:fc,'stroke-width':1}); }); }
-  if (P.furn.crop){ const o = m*.25, l = m*.5; [[0,0,1,1],[W,0,-1,1],[0,H,1,-1],[W,H,-1,-1]].forEach(([x,y,sx,sy]) => {
+  if (Q.furn.crop){ const o = m*.25, l = m*.5; [[0,0,1,1],[W,0,-1,1],[0,H,1,-1],[W,H,-1,-1]].forEach(([x,y,sx,sy]) => {
     mk('path',{d:`M${x+sx*o} ${y+sy*(o+l)}V${y+sy*(o+l*.35)}M${x+sx*(o+l)} ${y+sy*o}H${x+sx*(o+l*.35)}`,stroke:fc,'stroke-width':1,fill:'none'}); }); }
-  if (P.furn.bar){ const sq = Math.min(14, m*.32), y0 = H - m*.5 - sq/2; const cs = inkList.slice();
+  if (Q.furn.bar){ const sq = Math.min(14, m*.32), y0 = H - m*.5 - sq/2, cs = inkList.slice();
     if (inkList.length>=2) cs.push(mulHex(inkList[0], inkList[1])); if (inkList.length>=3) cs.push(mulHex(inkList[1], inkList[2])); cs.push(fc);
     cs.forEach((c,i) => mk('rect',{x:W - m - (cs.length-i)*sq*1.1, y:y0, width:sq, height:sq, fill:c})); }
-  if (P.furn.folio){ const t = mk('text',{x:m, y:H - m*.5 + 3, fill:fc, 'font-family':'JetBrains Mono, monospace', 'font-size':Math.max(9,cap*.85), 'letter-spacing':'1.5'}); t.textContent = `— 01 / 24 —   ${LANG==='zh'?'印痕实验室':'PRINT TEXTURE LAB'}`; }
+  if (Q.furn.folio){ const t = svgEl('text',{x:m, y:H - m*.5 + 3, fill:fc, 'font-family':'JetBrains Mono, monospace', 'font-size':Math.max(9,cap*.85), 'letter-spacing':'1.5'});
+    t.textContent = `— ${String(pageIdx+1).padStart(2,'0')} / ${String(Math.max(P.pages,1)*6).padStart(2,'0')} —   ${LANG==='zh'?'版式实验室':'LAYOUT LAB'}`; furn.appendChild(t); }
   poster.appendChild(furn);
 
-  // overlays
+  // grid overlay
   if (P.grid){
-    const ov = document.createElementNS(SVGNS,'svg'); ov.setAttribute('class','layer'); ov.setAttribute('width',W); ov.setAttribute('height',H);
-    const add = (tag,a) => { const e = document.createElementNS(SVGNS,tag); Object.entries(a).forEach(([k,v]) => e.setAttribute(k,v)); ov.appendChild(e); };
-    for (let i=0;i<cols;i++) add('rect',{x:colX(i), y:m, width:colW, height:H-2*m, fill:'rgba(255,72,176,.10)', stroke:'rgba(255,72,176,.55)', 'stroke-width':.8});
-    for (let j=1;j<nRows;j++) add('line',{x1:m, x2:W-m, y1:rowY(j)-g/2, y2:rowY(j)-g/2, stroke:'rgba(0,120,191,.5)', 'stroke-width':.8, 'stroke-dasharray':'4 4'});
-    for (let y=P.baseline; y<H; y+=P.baseline) add('line',{x1:0, x2:W, y1:y, y2:y, stroke:'rgba(0,120,191,.14)', 'stroke-width':.6});
-    add('rect',{x:m, y:m, width:W-2*m, height:H-2*m, fill:'none', stroke:'rgba(255,72,176,.8)', 'stroke-width':1.2});
+    const ov = svgEl('svg', {width:W, height:H}); ov.style.cssText = 'position:absolute;left:0;top:0;pointer-events:none';
+    for (let i=0;i<cols;i++) ov.appendChild(svgEl('rect',{x:colX(i), y:m, width:colW, height:H-2*m, fill:'rgba(255,72,176,.10)', stroke:'rgba(255,72,176,.55)', 'stroke-width':.8}));
+    for (let j=1;j<nRows;j++) ov.appendChild(svgEl('line',{x1:m, x2:W-m, y1:rowY(j)-g/2, y2:rowY(j)-g/2, stroke:'rgba(0,120,191,.5)', 'stroke-width':.8, 'stroke-dasharray':'4 4'}));
+    for (let y=Q.baseline; y<H; y+=Q.baseline) ov.appendChild(svgEl('line',{x1:0, x2:W, y1:y, y2:y, stroke:'rgba(0,120,191,.14)', 'stroke-width':.6}));
+    ov.appendChild(svgEl('rect',{x:m, y:m, width:W-2*m, height:H-2*m, fill:'none', stroke:'rgba(255,72,176,.8)', 'stroke-width':1.2}));
     poster.appendChild(ov);
   }
-  lastLayout = {W, H, m, cols, colX, colW, g, boxes, shapeBoxes, textC, paperC, titleSize, cap, nRows};
-  computeMetrics();
-  syncPanel();
+  order.forEach((e,i) => e.dataset.order = i);
+  return {W, H, m, cols, colX, colW, g, boxes, shapeBoxes, order, textC, paperC, titleSize, cap: Q.rules.max3 ? base : cap, bodyOp, poster, pid};
 }
-function mulHex(a,b){ const x=hex(a), y=hex(b); return '#'+x.map((v,i)=>Math.round(v*y[i]*255).toString(16).padStart(2,'0')).join(''); }
 
-/* ---------- metrics ---------- */
+/* ---------- render all pages ---------- */
+let layouts = [];
+function render(){
+  const wrap = $('pages'); wrap.innerHTML = '';
+  wrap.className = 'pages' + (P.pages > 1 ? ' multi' : '');
+  layouts = [];
+  for (let i=0;i<P.pages;i++){
+    const Q = pageParams(i), box = document.createElement('div'), cell = document.createElement('div');
+    box.className = 'pagebox'; const poster = document.createElement('div');
+    poster.setAttribute('role','img'); poster.setAttribute('aria-label', (LANG==='zh'?'生成的海报，第 ':'Generated poster, page ') + (i+1) + (LANG==='zh'?' 页':''));
+    box.appendChild(poster); cell.appendChild(box);
+    if (P.pages > 1){ const lab = document.createElement('div'); lab.className = 'plabel'; lab.textContent = `${String(i+1).padStart(2,'0')} · ${T(ROLE_NAME[Q.role])}`; cell.appendChild(lab); }
+    wrap.appendChild(cell);
+    const Ly = renderPage(poster, Q, i); Ly.box = box; Ly.Q = Q; layouts.push(Ly);
+    attachMotion(poster, Q);
+  }
+  fit(); computeMetrics(); syncPanel();
+}
+function fit(){
+  layouts.forEach(Ly => { const s = Ly.box.clientWidth / Ly.W; Ly.poster.style.transform = `scale(${s})`; Ly.box.style.height = (Ly.H*s)+'px'; });
+}
+if (window.ResizeObserver) new ResizeObserver(() => { fit(); computeMetrics(); }).observe($('pages'));
+
+/* ---------- motion ---------- */
+function attachMotion(poster, Q){
+  if (REDUCED) return;
+  if (Q.hoverShift){ poster.addEventListener('pointerenter', () => poster.classList.add('shift')); poster.addEventListener('pointerleave', () => poster.classList.remove('shift')); }
+  if (Q.parallax){
+    poster.addEventListener('pointermove', e => { const r = poster.getBoundingClientRect(); poster.style.setProperty('--px', ((e.clientX-r.left)/r.width*2-1).toFixed(3)); poster.style.setProperty('--py', ((e.clientY-r.top)/r.height*2-1).toFixed(3)); });
+    poster.addEventListener('pointerleave', () => { poster.style.setProperty('--px', 0); poster.style.setProperty('--py', 0); });
+  }
+}
+function play(){
+  if (REDUCED){ status(LANG==='zh'?'系统设置了“减少动态效果”，入场动画已跳过。':'Your system asks for reduced motion, so the intro is skipped.'); return; }
+  const ease = {out:'cubic-bezier(.2,.8,.2,1)', linear:'linear', steps:'steps(5, end)'}[P.ease];
+  layouts.forEach((Ly, pi) => {
+    const els = Ly.order.slice(), rest = Ly.boxes.filter(e => !els.includes(e));
+    els.forEach((e,i) => {
+      const isImg = e.querySelector && e.querySelector('canvas');
+      e.animate(isImg ? [{opacity:0, filter:'blur(8px) contrast(.4)'},{opacity:1, filter:'blur(0) contrast(1)'}] : [{opacity:0, translate:'0 18px'},{opacity:1, translate:'0 0'}],
+        {duration:P.dur, delay:pi*120 + i*P.dur*.35, easing:ease, fill:'backwards'});
+    });
+    rest.forEach(e => e.animate([{opacity:0},{opacity:1}], {duration:P.dur*.8, delay:pi*120 + els.length*P.dur*.35, easing:ease, fill:'backwards'}));
+    Ly.poster.querySelectorAll('svg g > *').forEach((e,i) => e.animate([{opacity:0},{opacity:1}], {duration:P.dur*.6, delay:pi*120 + i*40, easing:ease, fill:'backwards'}));
+  });
+}
+
+/* ---------- metrics (page 1) ---------- */
 function lum(c){ return hex(c).map(v => v<=.03928 ? v/12.92 : Math.pow((v+.055)/1.055, 2.4)).reduce((s,v,i)=>s+v*[.2126,.7152,.0722][i],0); }
+function rectOf(e, pr, sc){ const r = e.getBoundingClientRect(); return {x:(r.left-pr.left)/sc, y:(r.top-pr.top)/sc, w:r.width/sc, h:r.height/sc}; }
 function computeMetrics(){
-  const Ly = lastLayout; if (!Ly) return;
-  const poster = $('poster'), pr = poster.getBoundingClientRect(), sc = pr.width / Ly.W || 1;
-  const rects = Ly.boxes.map(e => { const r = e.getBoundingClientRect(); return {x:(r.left-pr.left)/sc, y:(r.top-pr.top)/sc, w:r.width/sc, h:r.height/sc}; }).concat(Ly.shapeBoxes);
-  // coverage + centre of mass on a coarse grid
+  const Ly = layouts[0]; if (!Ly) return;
+  const pr = Ly.poster.getBoundingClientRect(), sc = pr.width / Ly.W || 1;
+  const rects = Ly.boxes.map(e => rectOf(e, pr, sc)).concat(Ly.shapeBoxes);
   const GX = 84, GY = Math.round(84*Ly.H/Ly.W); let cov = 0, sx = 0, sy = 0;
   for (let j=0;j<GY;j++) for (let i=0;i<GX;i++){
     const x = (i+.5)*Ly.W/GX, y = (j+.5)*Ly.H/GY;
     if (rects.some(r => x>=r.x && x<=r.x+r.w && y>=r.y && y<=r.y+r.h)){ cov++; sx += x; sy += y; }
   }
   const white = 1 - cov/(GX*GY), cx = cov ? sx/cov/Ly.W : .5, cy = cov ? sy/cov/Ly.H : .5;
-  // alignment: left/right edges of type and image on column lines
   const lines = []; for (let i=0;i<Ly.cols;i++){ lines.push(Ly.colX(i)); lines.push(Ly.colX(i)+Ly.colW); }
-  const edges = []; Ly.boxes.forEach(e => { const r = e.getBoundingClientRect(); edges.push((r.left-pr.left)/sc); });
-  const aligned = edges.filter(x => lines.some(l => Math.abs(l-x) < 3)).length;
-  const align = edges.length ? aligned/edges.length : 1;
-  const contrast = (Math.max(lum(Ly.textC), lum(Ly.paperC)) + .05) / (Math.min(lum(Ly.textC), lum(Ly.paperC)) + .05);
-  const scale = Ly.titleSize / Ly.cap;
+  const edges = Ly.boxes.map(e => rectOf(e, pr, sc).x);
+  const align = edges.length ? edges.filter(x => lines.some(l => Math.abs(l-x) < 3)).length / edges.length : 1;
+  const bodyC = mixHex(Ly.textC, Ly.paperC, Ly.bodyOp);
+  const contrast = (Math.max(lum(bodyC), lum(Ly.paperC)) + .05) / (Math.min(lum(bodyC), lum(Ly.paperC)) + .05);
+  const scale = Ly.titleSize / Ly.cap, zh = LANG==='zh';
   const M = (k, v, sub, ok) => `<div class="metric ${ok===false?'bad':'ok'}"><span>${k}</span><b>${v}</b><i>${sub}</i></div>`;
-  const zh = LANG==='zh';
   $('metrics').innerHTML =
     M(zh?'留白率':'Whitespace', Math.round(white*100)+'%', zh?'未被元素覆盖':'not covered') +
-    M(zh?'对齐度':'Alignment', Math.round(align*100)+'%', zh?'边缘落在栏线上':'edges on columns') +
+    M(zh?'对齐度':'Alignment', Math.round(align*100)+'%', zh?'左边缘落在栏线上':'left edges on columns') +
     M(zh?'视觉重心':'Balance', `${Math.round(cx*100)} / ${Math.round(cy*100)}`, zh?'中心为 50 / 50':'centre is 50 / 50') +
     M(zh?'字号比':'Type ratio', Math.round(scale)+':1', zh?'标题 : 最小字':'title : smallest') +
-    M(zh?'文字对比度':'Text contrast', contrast.toFixed(1)+':1', contrast>=4.5 ? (zh?'达到 WCAG AA':'passes WCAG AA') : (zh?'低于 4.5:1':'below 4.5:1'), contrast>=4.5);
-  // centre-of-mass overlay
-  const old = $('massLayer'); if (old) old.remove();
+    M(zh?'正文对比度':'Body contrast', contrast.toFixed(1)+':1', contrast>=4.5 ? (zh?'达到 WCAG AA':'passes WCAG AA') : (zh?'低于 4.5:1':'below 4.5:1'), contrast>=4.5);
+  layouts.forEach(L2 => L2.poster.querySelectorAll('.ovl').forEach(e => e.remove()));
   if (P.mass){
-    const s = document.createElementNS(SVGNS,'svg'); s.id='massLayer'; s.setAttribute('class','layer'); s.setAttribute('width',Ly.W); s.setAttribute('height',Ly.H);
+    const s = svgEl('svg', {class:'ovl', width:Ly.W, height:Ly.H}); s.style.cssText = 'position:absolute;left:0;top:0;pointer-events:none';
     const X = cx*Ly.W, Y = cy*Ly.H, R = Ly.W*.03;
     s.innerHTML = `<line x1="${Ly.W/2}" y1="${Ly.H/2}" x2="${X}" y2="${Y}" stroke="#161616" stroke-width="1.5" stroke-dasharray="5 4"/><circle cx="${Ly.W/2}" cy="${Ly.H/2}" r="${R*.35}" fill="none" stroke="#161616" stroke-width="1.5"/><circle cx="${X}" cy="${Y}" r="${R}" fill="none" stroke="#C2183C" stroke-width="3"/><path d="M${X-R*1.6} ${Y}H${X+R*1.6}M${X} ${Y-R*1.6}V${Y+R*1.6}" stroke="#C2183C" stroke-width="2"/>`;
-    $('poster').appendChild(s);
+    Ly.poster.appendChild(s);
+  }
+  if (P.showPath){
+    layouts.forEach(L2 => {
+      const p2 = L2.poster.getBoundingClientRect(), s2 = p2.width / L2.W || 1;
+      const pts = L2.order.map(e => { const r = rectOf(e, p2, s2); return [r.x + Math.min(r.w, L2.W*.08), r.y + Math.min(r.h, L2.W*.05)]; });
+      const s = svgEl('svg', {class:'ovl', width:L2.W, height:L2.H}); s.style.cssText = 'position:absolute;left:0;top:0;pointer-events:none';
+      const R = L2.W*.022;
+      s.innerHTML = `<polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="#161616" stroke-width="2.5" stroke-dasharray="7 5"/>` +
+        pts.map((p,i) => `<circle cx="${p[0]}" cy="${p[1]}" r="${R}" fill="#161616"/><text x="${p[0]}" y="${p[1]+R*.38}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600" font-size="${R*1.05}" fill="#FBFBF8">${i+1}</text>`).join('');
+      L2.poster.appendChild(s);
+    });
   }
 }
 
-/* ---------- fitting the poster to the proof ---------- */
-function fit(){
-  const F = FORMATS[P.format], wrap = $('posterwrap'), s = wrap.clientWidth / F.W;
-  $('poster').style.transform = `scale(${s})`; wrap.style.height = (F.H*s)+'px';
+/* ---------- export ---------- */
+let h2iLoading = null;
+function loadH2I(){
+  if (window.htmlToImage) return Promise.resolve();
+  if (!h2iLoading) h2iLoading = new Promise((res, rej) => { const s = document.createElement('script'); s.src = 'https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js'; s.onload = res; s.onerror = rej; document.head.appendChild(s); });
+  return h2iLoading;
 }
-if (window.ResizeObserver) new ResizeObserver(() => { fit(); computeMetrics(); }).observe($('posterwrap'));
+async function doExport(kind){
+  const zh = LANG==='zh';
+  if (!LOCAL){
+    status(zh ? '在 claude.ai 的预览里，浏览器会拦截下载。请在 GitHub Pages 版本里导出：<a href="https://gengyuanmax.github.io/print-lab/layout.html" target="_blank" rel="noopener">gengyuanmax.github.io/print-lab/layout.html</a>'
+              : 'Downloads are blocked inside the claude.ai preview. Export from the GitHub Pages version: <a href="https://gengyuanmax.github.io/print-lab/layout.html" target="_blank" rel="noopener">gengyuanmax.github.io/print-lab/layout.html</a>');
+    return;
+  }
+  const Ly = layouts[0]; if (!Ly) return;
+  status(zh ? '正在导出第 1 页…' : 'Exporting page 1…');
+  try {
+    await loadH2I();
+    const hadOv = Ly.poster.querySelectorAll('.ovl'); hadOv.forEach(e => e.style.display = 'none');
+    const opts = {width:Ly.W, height:Ly.H, pixelRatio: kind==='png' ? 2 : 1, style:{transform:'none'}, cacheBust:true};
+    const url = kind==='png' ? await htmlToImage.toPng(Ly.poster, opts) : await htmlToImage.toSvg(Ly.poster, opts);
+    hadOv.forEach(e => e.style.display = '');
+    const a = document.createElement('a'); a.href = url; a.download = `layout-lab-${P.seed}.${kind}`; document.body.appendChild(a); a.click(); a.remove();
+    status(zh ? `已导出 layout-lab-${P.seed}.${kind}` : `Exported layout-lab-${P.seed}.${kind}`);
+  } catch(e){
+    status(zh ? '导出失败，可能是字体或图片无法读取。刷新页面后再试一次。' : 'Export failed, probably because a font or image could not be read. Reload the page and try again.');
+  }
+}
 
 /* ---------- toolbar ---------- */
 $('shuffle').addEventListener('click', () => { P.seed = Math.floor(Math.random()*9999)+1; render(); });
+$('play').addEventListener('click', play);
 $('tGrid').addEventListener('click', () => { P.grid = !P.grid; render(); });
 $('tMass').addEventListener('click', () => { P.mass = !P.mass; computeMetrics(); syncPanel(); });
+$('tPath').addEventListener('click', () => { P.showPath = !P.showPath; computeMetrics(); syncPanel(); });
+$('exPng').addEventListener('click', () => doExport('png'));
+$('exSvg').addEventListener('click', () => doExport('svg'));
 
 /* ---------- language ---------- */
 function applyLang(l){
@@ -728,18 +1079,14 @@ function applyLang(l){
   const root = document.documentElement; root.dataset.lang = l; root.lang = l==='zh' ? 'zh-CN' : 'en';
   document.title = l==='zh' ? '版式实验室' : 'Layout Lab';
   $('title').setAttribute('aria-label', document.title);
-  $('poster').setAttribute('aria-label', l==='zh' ? '生成的海报' : 'Generated poster');
   document.querySelectorAll('[data-aria-zh]').forEach(el => el.setAttribute('aria-label', l==='zh' ? el.dataset.ariaZh : el.dataset.ariaEn));
   document.querySelectorAll('[data-setlang]').forEach(b => b.setAttribute('aria-pressed', b.dataset.setlang===l));
   try { localStorage.setItem('printlab-lang', l); } catch(e){}
-  buildPanel(); render();
+  status(''); buildPanel(); render();
 }
 document.querySelectorAll('[data-setlang]').forEach(b => b.addEventListener('click', () => { if (b.dataset.setlang!==LANG) applyLang(b.dataset.setlang); }));
 
-// link back to the print lab: relative on GitHub Pages / local files, the published artifact elsewhere
-const host = location.hostname;
-if (!(host.endsWith('github.io') || location.protocol==='file:' || host==='localhost' || host==='127.0.0.1')) $('toPrint').href = 'https://claude.ai/artifact/BEBGEYAVkseDmEd78EbxS4';
-if (!(host.endsWith('github.io') || location.protocol==='file:' || host==='localhost' || host==='127.0.0.1')){ $('toPrint').target = '_blank'; $('toPrint').rel = 'noopener'; }
+if (!LOCAL){ $('toPrint').href = 'https://claude.ai/artifact/BEBGEYAVkseDmEd78EbxS4'; $('toPrint').target = '_blank'; $('toPrint').rel = 'noopener'; }
 
 applyLang(LANG);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => render());

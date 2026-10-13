@@ -113,7 +113,7 @@ textarea.txt{min-height:76px;resize:vertical;line-height:1.45}
 <div class="wrap">
   <header class="mast">
     <div class="mast-top">
-      <div class="eyebrow"><a data-page="home" href="index.html"><span class="zh">← 印刷实验室</span><span class="en">← Print Labs</span></a><span>02 · Layout lab · <span class="zh">网格 / 字体 / 构图 / 动线</span><span class="en">Grid / Type / Composition / Flow</span></span><a data-page="print" href="print.html"><span class="zh">← 印痕实验室</span><span class="en">← Print Texture Lab</span></a></div>
+      <div class="eyebrow"><a data-page="home" href="index.html"><span class="zh">← 印刷实验室</span><span class="en">← Print Labs</span></a><span>02 · Layout lab · <span class="zh">网格 / 字体 / 构图 / 动线</span><span class="en">Grid / Type / Composition / Flow</span></span><a data-page="print" href="print.html"><span class="zh">← 印痕实验室</span><span class="en">← Print Texture Lab</span></a><a href="https://github.com/gengyuanmax/print-lab" target="_blank" rel="noopener"><span class="zh">GitHub 源码</span><span class="en">GitHub code</span> <span aria-hidden="true">↗</span></a></div>
       <div class="langsw" role="group" aria-label="Language / 语言">
         <button type="button" data-setlang="zh" lang="zh-CN">中文</button>
         <button type="button" data-setlang="en" lang="en">EN</button>
@@ -263,7 +263,7 @@ const PRESETS = {
     inks:2, inkA:'red', inkB:'black', paper:'recycled', textInk:'black', colorRatio:'603010', accent:3, overprint:true, tMisX:2, tMisY:1, tGrain:.2, tStarve:.2, tPaper:.4,
     img:true, treat:'thresh', cell:7, imgSpan:.5, mask:'cutout', crop:'tight', rules:{grid:false, avoid:true, max3:true, scale:true, tiers:true}, strict:.7,
     furn:{reg:false, crop:false, bar:false, folio:true}, seed:44}},
-  woodtype:{name:{zh:'木活字海报',en:'Wood-type poster'}, tag:{zh:'撑满整行',en:'set to measure'}, p:{cols:6, margin:.05, gutter:.015, pair:'swiss', ratio:1.6, levels:4, titleScale:.3, tWeight:900, tWidth:125, tLead:.9, track:0, measure:50, upper:true, align:'fill', titleStyle:'solid',
+  woodtype:{name:{zh:'木活字海报',en:'Wood-type poster'}, tag:{zh:'逐行满排',en:'set to measure'}, p:{cols:6, margin:.05, gutter:.015, pair:'swiss', ratio:1.6, levels:4, titleScale:.3, tWeight:900, tWidth:125, tLead:.9, track:0, measure:50, upper:true, align:'fill', titleStyle:'solid',
     breakS:0, white:.18, asym:.5, jitter:0, layers:1, axis:0, focal:'edge', bleed:false, titleCrop:0, path:'auto', guide:false, sizeSeq:false, frame:'none', ladder:false, numbers:false,
     vocab:{circle:false, rect:false, line:true, tri:false, star:true, burst:true}, nShapes:4, sizeExp:2.4, fill:1, radius:0, strokeW:.012, angles:'ortho', snap:false,
     inks:2, inkA:'red', inkB:'fedblue', paper:'recycled', textInk:'ink', colorRatio:'603010', accent:3, overprint:true, tMisX:2, tMisY:1, tGrain:.35, tStarve:.35, tPaper:.55, handset:.6,
@@ -318,8 +318,8 @@ const GROUPS = [
     {type:'range', key:'track', label:L('标题字距','Title tracking'), min:-.08, max:.1, step:.005, fmt:v=>(v>0?'+':'')+(+v).toFixed(3)+'em'},
     {type:'range', key:'measure', label:L('正文行宽','Body measure'), min:25, max:80, step:1, fmt:v=>v+(LANG==='zh'?' 字':' ch')},
     {type:'seg', key:'titleStyle', label:L('标题处理','Title treatment'), opts:[['solid',L('实心','Solid')],['ink',L('油墨色','In ink')],['outline',L('描边','Outline')],['knock',L('反白','Knockout')],['double',L('双版叠印','Two plates')]]},
-    {type:'seg', key:'align', label:L('对齐','Alignment'), opts:[['left',L('左对齐','Flush left')],['center',L('居中','Centred')],['fill',L('撑满整行','Set to measure')]]},
-    {type:'range', key:'handset', label:L('手排误差','Hand-set wobble'), min:0, max:1, step:.05, fmt:pct, when:()=>P.align==='fill'},
+    {type:'seg', key:'align', label:L('对齐','Alignment'), opts:[['left',L('左对齐','Flush left')],['center',L('居中','Centred')],['fill',L('逐行满排','Set to measure')]]},
+    {type:'range', key:'handset', label:L('手工排字偏差','Hand-set wobble'), min:0, max:1, step:.05, fmt:pct, when:()=>P.align==='fill'},
     {type:'toggle', key:'upper', label:L('标题全大写','Uppercase title')},
     {type:'toggle', key:'vertical', label:L('标题竖排','Vertical title')},
     {type:'toggle', key:'cjk', label:L('中文排印','CJK typesetting')},
@@ -345,7 +345,7 @@ const GROUPS = [
     {type:'toggle', key:'numbers', label:L('编号 01 / 02','Numbering 01 / 02')},
   ]},
   {t:L('形状','Shapes'), s:'SHAPES', hint:L('选择 2–3 种基本形状，在页面中重复使用，更容易形成统一的视觉效果。','Pick two or three basic shapes and use them everywhere so they read as a system.'), items:[
-    {type:'checks', key:'vocab', label:L('形状类型','Vocabulary'), opts:[['circle',L('圆','Circle')],['rect',L('矩形','Rectangle')],['line',L('粗线','Rule')],['tri',L('三角','Triangle')],['star',L('星','Star')],['burst',L('放射光芒','Sunburst')]]},
+    {type:'checks', key:'vocab', label:L('形状类型','Vocabulary'), opts:[['circle',L('圆','Circle')],['rect',L('矩形','Rectangle')],['line',L('粗线','Rule')],['tri',L('三角','Triangle')],['star',L('星形','Star')],['burst',L('放射纹','Sunburst')]]},
     {type:'range', key:'nShapes', label:L('数量','Count'), min:0, max:10, step:1, fmt:v=>v},
     {type:'range', key:'sizeExp', label:L('大小分布','Size spread'), min:1, max:4, step:.1, fmt:v=>'u^'+(+v).toFixed(1)},
     {type:'range', key:'fill', label:L('实心比例','Filled'), min:0, max:1, step:.05, fmt:pct},
@@ -427,7 +427,7 @@ const TIPS = {
   track:{t:L('字距（tracking）是统一调整一段文字的字母间距。大标题常收紧，全大写的小标签常放宽。','Tracking adjusts the letter spacing of a whole run of text. Large titles are often tightened; small all-caps labels are often opened up.'), l:[['Letter spacing',WK('Letter_spacing')]]},
   measure:{t:L('Robert Bringhurst 在《The Elements of Typographic Style》中建议西文印刷正文每行约 45–75 个字符，以 66 个为参考。本页中文行宽按汉字数估算，不能直接套用西文的字符数建议。','Robert Bringhurst\'s The Elements of Typographic Style recommends 45–75 characters per line for printed text, with 66 as the ideal. Chinese is approximated by counting characters.'), l:[['Line length',WK('Line_length')]]},
   titleStyle:{t:L('“反白”会从底色中挖空字形，露出纸色；“描边”只保留字形轮廓；“双版叠印”将同一标题分别印在两块色版上，略微错位，重叠处产生混色。挖空（knockout）是移除下层油墨的处理方式，叠印（overprint）则保留下层油墨。','Overprinting puts one colour directly on top of another; a knockout removes the colour underneath so the paper shows through. PostScript creates knockouts by default. Outline type keeps only the letter contours. Two plates prints the title on both ink plates, slightly offset, so the overlap becomes a third colour.'), l:[['Overprinting',WK('Overprinting')]]},
-  align:{t:L('左对齐、右侧不齐的文字，是瑞士风格的标志之一；它的其他标志还有不对称版面、网格和无衬线字体。“撑满整行”是木活字海报的做法：每行单独选字号和字宽，排满整个版心；剧院海报甚至按名气决定字的大小。','Flush-left, ragged-right text is one of the hallmarks of the International Typographic Style, alongside asymmetric layouts, grids and sans-serif type. “Set to measure” is the wood-type poster way: each line gets its own size and width so it fills the measure; theatre bills even sized names by fame.'), l:[['International Typographic Style',WK('International_Typographic_Style')],['Wood type',WK('Wood_type')]]},
+  align:{t:L('左对齐、右侧自然错落，是瑞士风格常见的排字方式。“逐行满排”参考木活字演出海报：分别调整每行的字号和字宽，让文字占满设定行宽，以突出信息层级。','Flush-left, ragged-right text is one of the hallmarks of the International Typographic Style, alongside asymmetric layouts, grids and sans-serif type. “Set to measure” is the wood-type poster way: each line gets its own size and width so it fills the measure; theatre bills even sized names by fame.'), l:[['International Typographic Style',WK('International_Typographic_Style')],['Wood type',WK('Wood_type')]]},
   upper:{t:L('Miles Tinker 的研究发现，全大写会明显降低阅读速度，他建议连续阅读的文字不要用全大写。所以全大写只适合标题和短标签。','Miles Tinker\'s research found that all-capital text slows reading noticeably, and he advised against it for continuous reading. Keep all caps for titles and short labels.'), l:[['All caps',WK('All_caps')]]},
   vertical:{t:L('中文、日文可以竖排，传统上从右往左排列；CSS 的 writing-mode: vertical-rl 对应这种排法，拉丁字母在其中会旋转 90°。','Chinese and Japanese can be set vertically, traditionally right to left; CSS writing-mode: vertical-rl does the same, and Latin letters inside it turn 90°.'), l:[['Horizontal and vertical writing',WK('Horizontal_and_vertical_writing_in_East_Asian_scripts')]]},
   breakS:{t:L('Timothy Samara 的《Making and Breaking the Grid》讨论先建立网格、再有意识地打破它。本页把越界、出血、旋转和叠压合并成一个“破格强度”。','Timothy Samara\'s Making and Breaking the Grid covers building a grid and then breaking it on purpose. This page folds overshoot, bleed, rotation and overlap into a single rule-breaking strength.'), l:[['Samara, Making and Breaking the Grid (2002)','']]},
@@ -445,8 +445,8 @@ const TIPS = {
   frame:{t:L('图底关系指主体与背景之间的视觉关系。在重点内容后面放置圆形或色块，可以将它与周围内容区分开。','Figure–ground: we read one region as the figure and the rest as background. A circle or block behind the key element lifts it out of the background.'), l:[['Figure–ground',WK('Figure%E2%80%93ground_(perception)')]]},
   ladder:{t:L('让重点内容与背景形成较强对比，次要信息适当减淡，使主次更清楚。正文仍需达到 WCAG 4.5:1 的对比度。','A contrast ladder gives the most important element the highest contrast and fades secondary and supporting text step by step, reinforcing the hierarchy. Body text still needs WCAG\'s 4.5:1.'), l:[['Visual hierarchy',WK('Visual_hierarchy')],['WCAG 2.1 contrast','https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html']]},
   numbers:{t:L('编号让读者看到内容的先后和数量。适合用于有明确先后关系的内容。','Numbering shows the order and count of the content. Use it only when the content really has an order.'), own:true},
-  handset:{t:L('手工排的活字不会完全对齐：每个字的基线上下差一点、略微歪斜，字距也不均匀。只在“撑满整行”时生效。','Hand-set type never lines up perfectly: each letter sits a little above or below the baseline, tilts slightly, and the spacing is uneven. Works with “Set to measure”.'), own:true},
-  vocab:{t:L('选用少量基本形状，在整页重复使用，有助于统一画面。星、横条和放射光芒是美国凸版演出海报的常见装饰。','Choose a few basic shapes and repeat them across the page so they read as one system. Stars, bars and sunbursts are stock ornaments of American letterpress show posters.'), l:[['Nashville Scene · Fine Print','https://www.nashvillescene.com/arts_culture/coverstory/fine-print-the-letterpress-artists-visually-defining-nashville/article_4842e4ae-1ce5-11ed-b75e-83816f4dfa1a.html']]},
+  handset:{t:L('模拟手工排字的轻微偏差：字的位置上下浮动、角度略有变化，字距不完全均匀。仅在“逐行满排”时生效。','Hand-set type never lines up perfectly: each letter sits a little above or below the baseline, tilts slightly, and the spacing is uneven. Works with “Set to measure”.'), own:true},
+  vocab:{t:L('选用少量基本形状并重复使用，有助于统一画面。星形、横条和放射纹常见于美国凸版演出海报。','Choose a few basic shapes and repeat them across the page so they read as one system. Stars, bars and sunbursts are stock ornaments of American letterpress show posters.'), l:[['Nashville Scene · Fine Print','https://www.nashvillescene.com/arts_culture/coverstory/fine-print-the-letterpress-artists-visually-defining-nashville/article_4842e4ae-1ce5-11ed-b75e-83816f4dfa1a.html']]},
   nShapes:{t:L('形状数量还会受“留白倾向”影响：留白越多，形状越少。','The shape count also follows the whitespace setting: more white space, fewer shapes.'), own:true},
   sizeExp:{t:L('形状大小由随机数 u 的 k 次方决定。k 越大，小形状越多，大形状越少，大小对比也越明显。','Shape sizes follow a power law u^k: the larger k is, the more a few shapes are big and most are small, which reads as more tension than an even spread.'), own:true},
   fill:{t:L('实心形状形成色块，视觉分量较重；描边形状只保留轮廓，显得更轻。','Filled shapes act as colour fields; outlined shapes are lighter and more diagrammatic.'), own:true},
@@ -550,12 +550,12 @@ const STYLE = {
         [ 'zine', L('两者都会重叠元素、使用斜线；构成主义的几何形通常围绕明确的方向组织，小志拼贴则更自由。','Both overlap elements and break the horizontal, but Constructivist geometry is directed composition, while zine collage is looser.')]],
     keys:['axis','titleStyle','frame','angles','inks','layers'],
     l:[['Constructivism',WK('Constructivism_(art)')],['Beat the Whites with the Red Wedge',WK('Beat_the_Whites_with_the_Red_Wedge')]]},
-  woodtype:{kind:'production', era:L('1828 年 Darius Wells 在纽约出版第一本机制木活字目录；19 世纪木活字因为比大号金属字轻便便宜，成为海报大字的主流；二战后被胶印和照相排版取代，如今由凸版工作室延续','1828: Darius Wells publishes the first known catalogue of machine-cut wood type in New York; in the 19th century wood, lighter and cheaper than large metal type, carries the big letters of posters; after the war offset and phototypesetting displace it, and letterpress studios keep it alive'),
-    essence:L('用现成的木活字和手刻木版，把演出信息排得又大又清楚：每行字撑满版心，字号由行宽和重要程度决定。','Big, clear show information set from stock wood type and carved blocks: every line fills the measure, its size set by the line\'s length and importance.'),
-    traits:[L('每行撑满整个版心，粗细宽窄不同的字混排','Every line fills the measure, mixing weights and widths'), L('星、横条、放射光芒等现成装饰','Stock ornaments: stars, bars, sunbursts'), L('只用几种鲜艳的颜色；有图也只是一张简单清楚的木刻图','A few bright colours; at most one simple, clear carved image'), L('凸版的压痕、墨色不匀和木纹','Letterpress impression, uneven ink and wood grain')],
+  woodtype:{kind:'production', era:L('19 世纪，木活字因轻便、成本较低而广泛用于大字海报。1828 年 Darius Wells 在纽约出版木活字样本册；后来胶印和照相排版逐渐普及，部分凸版工作室仍延续这一传统','1828: Darius Wells publishes the first known catalogue of machine-cut wood type in New York; in the 19th century wood, lighter and cheaper than large metal type, carries the big letters of posters; after the war offset and phototypesetting displace it, and letterpress studios keep it alive'),
+    essence:L('用木活字和手刻木版制作醒目的演出海报。逐行调整字号与字宽，让文字占满版心，并突出最重要的信息。','Big, clear show information set from stock wood type and carved blocks: every line fills the measure, its size set by the line\'s length and importance.'),
+    traits:[L('逐行满排，搭配不同字重与字宽','Every line fills the measure, mixing weights and widths'), L('星形、横条和放射纹装饰','Stock ornaments: stars, bars, sunbursts'), L('少量鲜明配色，搭配简洁的木刻图像','A few bright colours; at most one simple, clear carved image'), L('凸版的压痕、墨色不匀和木纹','Letterpress impression, uneven ink and wood grain')],
     people:L('Hatch Show Print（纳什维尔，1879 年起）：至今仍用老木活字和手刻木版印演出海报','Hatch Show Print (Nashville, since 1879), still printing show posters from vintage wood type and hand-carved blocks'),
-    vs:[[ 'swiss', L('两者都追求一眼读清；瑞士风格靠网格和留白，木活字海报靠把每一行都撑满。','Both want to be read at a glance; Swiss uses the grid and white space, the wood-type poster fills every line.')],
-        [ 'halftone', L('半色调海报靠一张大图；木活字海报的主角是字本身。','The halftone poster leans on one big image; in the wood-type poster the letters are the image.')]],
+    vs:[[ 'swiss', L('两者都强调信息清晰。瑞士风格以网格和留白组织版面；木活字海报通过逐行满排和醒目的大字突出内容。','Both want to be read at a glance; Swiss uses the grid and white space, the wood-type poster fills every line.')],
+        [ 'halftone', L('半色调海报以大幅图像吸引视线，木活字海报则以文字造型为视觉中心。','The halftone poster leans on one big image; in the wood-type poster the letters are the image.')]],
     keys:['align','handset','vocab','white','inks','img'],
     l:[['Wood type',WK('Wood_type')],['Letterpress printing',WK('Letterpress_printing')],['Hatch Show Print',WK('Hatch_Show_Print')],['Nashville Scene · Fine Print','https://www.nashvillescene.com/arts_culture/coverstory/fine-print-the-letterpress-artists-visually-defining-nashville/article_4842e4ae-1ce5-11ed-b75e-83816f4dfa1a.html']]},
 };

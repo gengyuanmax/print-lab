@@ -166,12 +166,13 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
 (() => {
   const h = location.hostname;
   const local = h.endsWith('github.io') || location.protocol === 'file:' || h === 'localhost' || h === '127.0.0.1';
-  const FILE = {home:'index.html', print:'print.html', layout:'layout.html', object:'object.html'};
+  const FILE = {home:'index.html', print:'print.html', layout:'layout.html', object:'object.html', element:'element.html'};
   const ART = {
     home:'https://claude.ai/artifact/PeE1kDmTykEsa3FWtq1ujK',
     print:'https://claude.ai/artifact/BEBGEYAVkseDmEd78EbxS4',
     layout:'https://claude.ai/artifact/3kpSy3NxXfTr8N6h2EhqAB',
     object:'https://claude.ai/artifact/MDsc8WCa1yWzZArUPnWvAo',
+    element:'https://claude.ai/artifact/42e7hhVJtn6MSQRErAsAqR',
   };
   const wire = () => document.querySelectorAll('a[data-page]').forEach(a => {
     const k = a.dataset.page;

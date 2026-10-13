@@ -1,0 +1,343 @@
+<title>元素实验室</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@400;700;900&display=swap">
+<style>
+/*@shared*/
+/* Element lab: one element, before and after, on the same paper; the steps that translate it, each with its source. */
+@media (max-width:900px){.lab{grid-template-columns:minmax(0,1fr)}}
+@media (min-width:901px){.stage{position:sticky;top:calc(16px + env(safe-area-inset-top, 0px))}}
+.row2{display:grid;grid-template-columns:8em minmax(0,1fr);gap:10px;align-items:start;font-size:13.5px}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{flex:1 1 auto}
+.seg button:disabled{opacity:.4;cursor:not-allowed}
+.cap{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.cap b{font-family:var(--display);font-size:15px;letter-spacing:0;text-transform:none;color:var(--ink)}
+.sheetbox{border:1px solid var(--rule);background:var(--sheet);padding:14px;display:flex;flex-direction:column;gap:8px}
+.sheet{position:relative;overflow:hidden;min-height:250px;container-type:inline-size}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.steps li label{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:baseline;cursor:pointer;font-size:13.5px;padding:6px 0;border-top:1px solid var(--rule)}
+.steps li label small{display:block;color:var(--muted);font-size:12px;margin-top:2px;text-wrap:pretty}
+.steps input{accent-color:var(--ink);transform:translateY(2px)}
+.src{font-family:var(--mono);font-size:10px;letter-spacing:.06em;padding:2px 6px;border:1.5px solid var(--ink);white-space:nowrap}
+.src.c{background:var(--ink);color:var(--sheet)}
+.src.m{border-style:solid}
+.src.o{border-style:dashed;color:var(--muted)}
+.allrow{display:flex;gap:6px}
+.checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.checks li{display:grid;grid-template-columns:4.4em minmax(0,1fr);gap:10px;align-items:baseline;font-size:13.5px;border-top:1px solid var(--rule);padding-top:6px}
+.checks li b{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;padding:2px 6px;border:1.5px solid var(--ink);justify-self:start}
+.checks li.ok b{background:var(--ink);color:var(--sheet)}
+.checks li.warn b{border-color:#C2183C;color:#C2183C}
+.checks li span{text-wrap:pretty}
+.checks li em{font-style:normal;color:var(--muted);font-size:12px}
+.checks a{color:var(--ink);text-decoration-color:var(--blue);text-underline-offset:3px}
+.score{font-family:var(--display);font-weight:800;font-size:22px}
+.refs h2{margin:0 0 14px;font-family:var(--display);font-weight:800;font-size:28px;letter-spacing:-.01em}
+.refs h3{margin:18px 0 8px;font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.refs ol{margin:0;padding-left:1.6em;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px 32px;font-size:14px}
+.refs li > span{font-size:12.5px;color:var(--muted)}
+
+/* ---------- the specimen page the element is shown on ---------- */
+.pg{--paper:#F3EFE6;--k:#1A1A1A;--a:#FF6C2F;--b:#3D5588;background:var(--paper);color:var(--k);padding:18px 22px 22px;min-height:250px;display:flex;flex-direction:column;gap:16px;font-family:"IBM Plex Sans",sans-serif}
+.pg.frame{outline:14px solid #DEDAD2;outline-offset:-14px;padding:30px 34px 30px}
+.pg .hero{display:flex;justify-content:space-between;align-items:flex-end;gap:16px}
+.pg .ttl{display:grid;font-family:"Bricolage Grotesque","Archivo",sans-serif;font-weight:800;font-size:clamp(30px,8.5cqi,58px);line-height:.9;letter-spacing:-.03em}
+.pg .ttl span{grid-area:1/1}
+.pg .ttl .p1{color:var(--a);transform:translate(-2px,-1px)}
+.pg .ttl .p2{color:var(--b);transform:translate(2px,1px);mix-blend-mode:multiply}
+.pg .ttl .p3{color:var(--k)}
+.pg .disc{flex:none;width:clamp(56px,16cqi,110px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle, var(--b) 0 34%, transparent 36%) 0 0/7px 7px;mix-blend-mode:multiply;box-shadow:inset 0 0 0 0 transparent}
+.pg .gridx{padding-left:0}
+.pg .lede{font-size:13px;max-width:36em;color:color-mix(in srgb, var(--k) 75%, transparent)}
+</style>
+
+<div class="wrap">
+  <header class="mast">
+    <div class="mast-top">
+      <div class="eyebrow"><a data-page="home" href="index.html"><span class="zh">← 印刷实验室</span><span class="en">← Print Labs</span></a><span>04 · Element lab · <span class="zh">翻译 / 适配 / 统一</span><span class="en">Translate / Fit / Unify</span></span><a data-page="layout" href="layout.html"><span class="zh">版式实验室 →</span><span class="en">Layout Lab →</span></a></div>
+      <div class="langsw" role="group" aria-label="Language / 语言">
+        <button type="button" data-setlang="zh" lang="zh-CN">中文</button>
+        <button type="button" data-setlang="en" lang="en">EN</button>
+      </div>
+    </div>
+    <h1 class="mis"><span aria-hidden="true"><span class="zh">元素实验室</span><span class="en">Element Lab</span></span><span><span class="zh">元素实验室</span><span class="en">Element Lab</span></span></h1>
+    <p class="lede"><span class="zh">一个元素放进 Swiss / Riso / 半调风格里总觉得“不搭”，通常是因为它没有走同一条印刷管线。这里把一个元素拆成几步翻译：每一步可以单独开关，看改造前后放在同一张纸上的样子，并逐条检查哪里还不适配、规则出自哪里。</span><span class="en">When an element feels out of place in a Swiss / Riso / halftone design, it usually has not gone through the same print pipeline. This lab translates one element step by step: switch each step on or off, compare before and after on the same paper, and check what still does not fit and where each rule comes from.</span></p>
+  </header>
+
+  <main class="lab">
+    <section class="stage" data-aria-zh="改造前后" data-aria-en="Before and after">
+      <div class="sheetbox">
+        <div class="cap"><span><span class="zh">改造前</span><span class="en">Before</span></span><b id="beforeName"></b></div>
+        <div class="sheet" id="before"></div>
+      </div>
+      <div class="sheetbox">
+        <div class="cap"><span><span class="zh">改造后</span><span class="en">After</span></span><b id="afterName"></b></div>
+        <div class="sheet" id="after"></div>
+      </div>
+      <div class="cap"><span><span class="zh">适配检查（改造后）</span><span class="en">Fit check (after)</span></span><span class="score" id="score"></span></div>
+      <ul class="checks" id="checks" aria-live="polite"></ul>
+    </section>
+
+    <aside class="panel" id="panel" data-aria-zh="参数" data-aria-en="Settings">
+      <div class="group">
+        <h2><span class="zh">元素</span><span class="en">Element</span> <small>ELEMENT</small></h2>
+        <p class="hint"><span class="zh">先从网页组件开始：它们来自软件界面，是最容易“不搭”的一类。几何、拟物、摄影、手绘四类视觉元素是下一步。</span><span class="en">Web components come first: they come from software interfaces and are the easiest to get wrong. Geometry, objects, photos and drawings come next.</span></p>
+        <div class="row2"><span class="zh">网页组件</span><span class="en">Web components</span><div class="seg" id="elSeg"></div></div>
+        <div class="row2"><span class="zh">视觉元素</span><span class="en">Visual elements</span><div class="seg" id="visSeg"></div></div>
+      </div>
+      <div class="group">
+        <h2><span class="zh">翻译方案</span><span class="en">Translation</span> <small>SCHEME</small></h2>
+        <p class="hint" id="schemeHint"></p>
+        <div class="seg" id="schemeSeg"></div>
+        <div class="row2"><span class="zh">配色</span><span class="en">Inks</span><div class="seg" id="inkSeg"></div></div>
+      </div>
+      <div class="group">
+        <h2><span class="zh">翻译步骤</span><span class="en">Steps</span> <small>STEPS</small></h2>
+        <p class="hint"><span class="zh">每一步右边标着来源：<b>印刷</b> = 印厂的文件规范，<b>系统</b> = Isotype、IBM 等统一视觉语言的方法，<b>本页</b> = 这里的综合做法。</span><span class="en">Each step is tagged with its source: <b>Press</b> = print-shop file specs, <b>System</b> = methods from Isotype, IBM and other unified visual languages, <b>This page</b> = this lab's own synthesis.</span></p>
+        <div class="allrow"><button class="btn" type="button" id="allOn"><span class="zh">全部打开</span><span class="en">All on</span></button><button class="btn" type="button" id="allOff"><span class="zh">全部关闭</span><span class="en">All off</span></button></div>
+        <ul class="steps" id="steps"></ul>
+      </div>
+    </aside>
+  </main>
+
+  <section class="refs" data-aria-zh="参考资料" data-aria-en="References">
+    <h2><span class="zh">参考资料</span><span class="en">References</span></h2>
+    <h3><span class="zh">印刷约束：哪些东西印得好</span><span class="en">Press constraints: what prints well</span></h3>
+    <ol>
+      <li><a href="https://goodpress.co.uk/pages/file-preparation" target="_blank" rel="noopener">Preparing your files for Risograph</a><span><span class="zh">Good Press · 多层细线和小字会糊；文字只用一种墨、不小于 8pt；大面积平涂效果不好；低反差照片印不好</span><span class="en">Good Press · thin lines and small text across layers blur; one ink and at least 8 pt for text; large flat areas print badly; low-contrast photos suffer</span></span></li>
+      <li><a href="https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/" target="_blank" rel="noopener">Risograph file prep</a><span><span class="zh">MICA · 每种墨一张灰度图；100% 大色块降到 85%；中间调印成该墨的浅色；不建议多色文字</span><span class="en">MICA · one greyscale image per ink; drop large 100% areas to 85%; midtones print as tints of the ink; multi-colour text is discouraged</span></span></li>
+      <li><a href="https://oxfordgreenprint.com/home/design-for-riso/" target="_blank" rel="noopener">Design for Riso</a><span><span class="zh">Oxford Greenprint · 颜色之间会无法避免地错开 1–2 mm</span><span class="en">Oxford Greenprint · colours miss by 1–2 mm, unavoidably</span></span></li>
+      <li><a href="https://www.counter-print.co.uk/products/riso-art" target="_blank" rel="noopener"><i>Riso Art: A Creative's Guide to Mastering Risography</i></a><span><span class="zh">Vivian Toh、Jay Lim，2023 · 专色、叠印与镂空、文件准备、纸张</span><span class="en">Vivian Toh and Jay Lim, 2023 · spot colour, overprints and knockouts, file prep, paper</span></span></li>
+    </ol>
+    <h3><span class="zh">系统方法：把万物翻成一种视觉语言</span><span class="en">Systems: one visual language for everything</span></h3>
+    <ol>
+      <li><a href="https://en.wikipedia.org/wiki/Isotype_(picture_language)" target="_blank" rel="noopener">Isotype</a><span><span class="zh">Neurath、Arntz，1925–1934 · 标准化、抽象的图形，几乎不用透视</span><span class="en">Neurath and Arntz, 1925–1934 · standardised, abstracted pictograms, almost never in perspective</span></span></li>
+      <li><a href="https://en.wikipedia.org/wiki/Otl_Aicher" target="_blank" rel="noopener">Otl Aicher</a><span><span class="zh">1972 年慕尼黑奥运图标用一套网格系统画成，影响了 1974 年美国交通部标识</span><span class="en">The 1972 Munich pictograms, drawn on a series of grid systems, shaped the 1974 US DOT signs</span></span></li>
+      <li><a href="https://standardsmanual.com/products/nasa-graphics-standards-manual" target="_blank" rel="noopener">NASA Graphics Standards Manual (1975)</a><span><span class="zh">Danne & Blackburn · 一套规范管住所有应用场合</span><span class="en">Danne & Blackburn · one standard for every application</span></span></li>
+      <li><a href="https://www.ibm.com/design/language/illustration/overview" target="_blank" rel="noopener">IBM Design Language · Illustration</a><span><span class="zh">统一靠网格和一致的形状、角度、圆角；只保留必要、非装饰的元素</span><span class="en">Consistency comes from the grid and consistent shapes, angles and radii; only essential, non-decorative elements</span></span></li>
+    </ol>
+    <p class="note" style="margin-top:14px"><span class="zh">把网页组件翻译成 Riso / 半调语言，目前没有现成的指南；标着“本页”的步骤是这里根据上面两类来源做的综合。</span><span class="en">There is no existing guide to translating web components into Riso / halftone language; steps tagged “This page” are this lab's synthesis of the two groups of sources above.</span></p>
+  </section>
+</div>
+
+<script>/*@links*/</script>
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+const L = (zh, en) => ({zh, en});
+let LANG = 'zh';
+try { const v = localStorage.getItem('printlab-lang'); LANG = v==='en'||v==='zh' ? v : ((navigator.language||'').toLowerCase().startsWith('zh') ? 'zh' : 'en'); }
+catch(e){ LANG = (navigator.language||'').toLowerCase().startsWith('zh') ? 'zh' : 'en'; }
+const T = o => (o && typeof o==='object' && 'zh' in o) ? o[LANG] : o;
+
+/* ---------- data ---------- */
+const ELEMENTS = [['nav',L('导航','Navigation')],['button',L('按钮','Buttons')],['card',L('卡片','Card')],['icon',L('图标','Icons')],['divider',L('分隔线','Dividers')]];
+const VISUALS = [['geo',L('几何','Geometry')],['obj',L('拟物','Objects')],['photo',L('摄影','Photo')],['hand',L('手绘','Drawing')]];
+const SCHEMES = {
+  swiss:{n:L('Swiss · 线与字','Swiss · rules & type'), h:L('只用字、编号和油墨线：当前状态是一根粗墨线或一块实底，像杂志的目录和索引。','Type, numbers and ink rules only: the current state is a heavy rule or a solid bar, like a magazine contents page.')},
+  riso:{n:L('Riso · 色块','Riso · ink blocks'), h:L('用平涂的油墨块和网点浅色：当前状态是一块油墨，字镂空成纸色；只有大色块才带套色错位。','Flat ink blocks and screened tints: the current state is a block of ink with the label knocked out; only large blocks show misregistration.')},
+  object:{n:L('印刷物件','Print objects'), h:L('借用印刷品本身的形式：书边的拇指索引、票根、剪下的纸片、裁切标记。','Borrow forms from printed objects: thumb-index tabs, ticket stubs, cut paper scraps, crop marks.')},
+};
+const INKSETS = {
+  orange:{n:L('Riso 橙 + 联邦蓝','Riso orange + federal blue'), paper:'#F3EFE6', k:'#1A1A1A', a:'#FF6C2F', b:'#3D5588'},
+  riso:{n:L('Riso 粉蓝','Riso pink & blue'), paper:'#F4F1EA', k:'#1A1A1A', a:'#FF48B0', b:'#0078BF'},
+  mono:{n:L('单色黑','Black only'), paper:'#F1EEE6', k:'#1A1A1A', a:'#1A1A1A', b:'#1A1A1A'},
+};
+// translation steps: id, label, why, source kind (c = press constraint, m = systems method, o = this page), source link
+const STEPS = [
+  {id:'spot', t:L('收成专色','Spot inks only'), w:L('灰色、半透明的白、渐变底都换成版里的几种墨和一种纸色。','Greys, translucent whites and gradient fills become the few inks on the plates and one paper colour.'), s:'c', l:['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']},
+  {id:'flat', t:L('去掉拟物','Drop the skeuomorphism'), w:L('文件夹标签、折角、圆角、投影、高光都去掉：平面，不用透视和光影。','Folder tabs, dog-ears, rounded corners, shadows and highlights go: flat, without perspective or lighting.'), s:'m', l:['Isotype','https://en.wikipedia.org/wiki/Isotype_(picture_language)']},
+  {id:'ink', t:L('线是油墨线','Rules are ink'), w:L('灰色细线、虚线换成油墨色的实线，至少 2 px，在套色错位下也立得住。','Grey hairlines and dotted lines become solid ink rules, at least 2 px, so they survive misregistration.'), s:'c', l:['Good Press','https://goodpress.co.uk/pages/file-preparation']},
+  {id:'single', t:L('小元素只用一种墨','Small things in one ink'), w:L('图标、小字、细线不做双色错位：错位 1–2 mm 对它们来说太大了。错位只留给大标题和大色块。','Icons, small text and thin lines stay one ink: a 1–2 mm miss is too big for them. Misregistration is kept for big titles and large blocks.'), s:'c', l:['Oxford Greenprint','https://oxfordgreenprint.com/home/design-for-riso/']},
+  {id:'screen', t:L('浅色用网点','Tints are screened'), w:L('不用透明度和渐变，浅色用网点做；大色块降到 85% 左右。','No opacity or gradients: light tones are screened, and large solids drop to about 85%.'), s:'c', l:['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']},
+  {id:'grid', t:L('对齐页面网格','On the page grid'), w:L('组件和标题共用同一套栏和左边缘，不另起一套等分。','The component shares the title\'s columns and left edge instead of its own equal split.'), s:'m', l:['IBM Design Language','https://www.ibm.com/design/language/illustration/overview']},
+  {id:'type', t:L('字体同一家族','One type family'), w:L('标签用标题同一家族或等宽字，不用默认的界面字体。','Labels use the title\'s family or the monospace, not a default UI font.'), s:'m', l:['NASA Standards Manual','https://standardsmanual.com/products/nasa-graphics-standards-manual']},
+  {id:'active', t:L('状态用版里的墨','States use plate inks'), w:L('当前项、悬停这些状态用版里本来就有的墨来表示，不用“链接蓝”。','Current and hover states use an ink that is already on the plates, not a hyperlink blue.'), s:'o'},
+];
+const SRC_LBL = {c:L('印刷','Press'), m:L('系统','System'), o:L('本页','This page')};
+
+const S = {el:'nav', scheme:'swiss', inks:'orange', on:Object.fromEntries(STEPS.map(s => [s.id, true]))};
+
+/* ---------- specimen page ---------- */
+const NAV = [['01',L('索引','Index')],['02',L('作品','Works')],['03',L('工作坊','Workshops')],['04',L('关于','About')]];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const dots = (c, r=.36, cell=6) => `radial-gradient(circle, ${c} 0 ${Math.round(r*100)}%, transparent ${Math.round(r*100)+2}%) 0 0/${cell}px ${cell}px`;
+function hero(f, small){
+  const sz = small ? 'font-size:clamp(26px,6.5cqi,44px)' : '';
+  return `<div class="hero"><div class="ttl" style="${sz}" aria-hidden="true"><span class="p1">Specimen</span><span class="p2">Specimen</span><span class="p3">Specimen</span></div><div class="disc"></div></div>`;
+}
+// f: flags (all false = before); sc: scheme; ink: palette
+function page(el, f, sc, ink, before){
+  const v = `--paper:${f.spot ? ink.paper : ink.paper};--k:${ink.k};--a:${ink.a};--b:${ink.b}`;
+  const frame = !f.spot;                                     // a second "paper" around the page and a different tab-bar tone
+  const body = {nav, button, card, icon, divider}[el](f, sc, ink);
+  const order = el==='nav' ? body + hero(f) : hero(f, true) + body;
+  return `<div class="pg${frame ? ' frame' : ''}" style="${v}">${order}</div>`;
+}
+const lineC = (f, ink) => f.ink ? ink.k : '#BDB8AE';
+const lineW = f => f.ink ? 2.5 : 1;
+const lineS = f => f.ink ? 'solid' : 'dotted';
+// single quotes only: these strings go inside style="…" attributes
+const labelFont = f => f.type ? `font-family:'Bricolage Grotesque',sans-serif;font-weight:700;letter-spacing:-.005em` : `font-family:Inter,'IBM Plex Sans',sans-serif;font-weight:400`;
+const numFont = `font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em`;
+const activeC = (f, ink) => f.active ? ink.a : '#2563EB';
+const misreg = (f, big) => (!f.single || big) ? `text-shadow:-1.5px -1px 0 ${'var(--a)'}, 1.5px 1px 0 var(--b)` : '';
+function iconSVG(i, f, ink, size=22){
+  // before: two-colour blobs, slightly off register; after: one ink, a shape from the circle / rectangle / rule vocabulary
+  if (!f.single){
+    const glyph = [
+      'M4 10.5 11 4.5l7 6V18H4z', 'M4 4h6v6H4zM12 4h6v6h-6zM4 12h6v6H4zM12 12h6v6h-6z',
+      'M4 6h14v12H4zM4 9.5h14M8 3.5v4M14 3.5v4', 'M11 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM4.5 18.5c1.2-3.2 3.6-4.8 6.5-4.8s5.3 1.6 6.5 4.8'][i];
+    return `<svg width="${size}" height="${size}" viewBox="0 0 22 22" aria-hidden="true"><path d="${glyph}" transform="translate(1.6 1.4)" fill="#2563EB" fill-opacity=".22" stroke="none"/><path d="${glyph}" fill="none" stroke="#5B6170" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  }
+  const c = f.active ? ink.k : ink.k, sw = 2.5;
+  const shapes = [`<rect x="3" y="3" width="16" height="16" fill="${c}"/>`, `<circle cx="11" cy="11" r="8" fill="none" stroke="${c}" stroke-width="${sw}"/><circle cx="11" cy="11" r="2.5" fill="${c}"/>`, `<rect x="3" y="4" width="16" height="${sw}" fill="${c}"/><rect x="3" y="10" width="16" height="${sw}" fill="${c}"/><rect x="3" y="16" width="10" height="${sw}" fill="${c}"/>`, `<circle cx="11" cy="11" r="8" fill="${c}"/>`][i];
+  return `<svg width="${size}" height="${size}" viewBox="0 0 22 22" aria-hidden="true">${shapes}</svg>`;
+}
+
+function nav(f, sc, ink){
+  const lc = lineC(f, ink), lw = lineW(f), ls = lineS(f);
+  const offset = f.grid ? 0 : 58;                            // before: the tabs run on their own equal split, indented from the title
+  if (!f.flat){
+    // the usual web version: a pill-shaped segmented control with a floating, shadowed active item
+    const items = NAV.map(([n, l], i) => {
+      const act = i===0;
+      const pill = act ? `background:${f.screen ? dots(ink.k, .12, 5) : 'linear-gradient(#FFFFFF,#F4F4F6)'};box-shadow:0 2px 6px rgba(20,20,40,.14), 0 0 0 ${lw}px ${lc};` : '';
+      const sep = i>0 && i!==1 ? `border-left:${lw}px ${ls} ${lc};` : '';
+      return `<div style="display:flex;gap:8px;align-items:center;padding:9px 16px;border-radius:999px;${pill}${act ? '' : sep}">${iconSVG(i, f, ink, 18)}<span style="${labelFont(f)};font-size:14px;color:${act ? activeC(f, ink) : '#4B5060'}">${esc(T(l))}</span></div>`;
+    }).join('');
+    return `<nav style="align-self:flex-start;display:flex;gap:2px;padding:4px;margin-left:${offset}px;border-radius:999px;background:${f.spot ? 'transparent' : 'rgba(20,20,40,.06)'};box-shadow:inset 0 1px 2px rgba(20,20,40,.08);border:${lw}px ${ls} ${lc}">${items}</nav>`;
+  }
+  if (sc==='swiss'){
+    const items = NAV.map(([n, l], i) => {
+      const act = i===0;
+      return `<div style="display:flex;flex-direction:column;gap:6px;padding-top:${act ? 0 : 6}px;border-top:${act ? 6 : lw}px solid ${act ? activeC(f, ink) : (f.ink ? ink.k : lc)}">${f.single ? '' : ''}<span style="${numFont};color:${ink.k};opacity:${f.spot ? 1 : .55}">${n}</span><span style="${labelFont(f)};font-size:15px;color:${act && !f.active ? '#2563EB' : ink.k}">${esc(T(l))}</span></div>`;
+    }).join('');
+    return `<nav style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-left:${offset}px">${items}</nav>`;
+  }
+  if (sc==='riso'){
+    const items = NAV.map(([n, l], i) => {
+      const act = i===0, blockBg = f.screen ? ink.a + 'D9' : ink.a;          // 85% solid
+      const blk = act ? `background:${f.active ? blockBg : '#2563EB'};color:${ink.paper};box-shadow:${f.single ? '' : ''}3px 2px 0 ${f.screen ? 'transparent' : 'transparent'};` : `color:${ink.k};`;
+      return `<div style="position:relative;padding:10px 12px;display:flex;align-items:baseline;gap:10px;${blk}">${act && !f.single ? `<span style="position:absolute;inset:0;transform:translate(3px,2px);background:${ink.b};mix-blend-mode:multiply;opacity:.9;z-index:0"></span>` : ''}${act ? `<span style="position:absolute;inset:0;background:${f.active ? blockBg : '#2563EB'};z-index:0"></span>` : ''}<span style="position:relative;${numFont};${act ? '' : `color:${ink.k}`}">${n}</span><span style="position:relative;${labelFont(f)};font-size:15px">${esc(T(l))}</span></div>`;
+    }).join('');
+    return `<nav style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-left:${offset}px;border-bottom:${lw}px ${ls} ${lc};${f.screen ? `background:${dots(ink.k, .1, 5)}` : ''}">${items}</nav>`;
+  }
+  // print objects: a thumb index cut into the top edge of the sheet, one ink per section
+  const cols = [ink.a, ink.b, ink.k, ink.a];
+  const items = NAV.map(([n, l], i) => {
+    const act = i===0, c = f.active ? cols[i] : (act ? '#2563EB' : cols[i]);
+    return `<div style="display:flex;flex-direction:column;gap:6px"><span style="display:block;height:${act ? 22 : 12}px;background:${f.screen && !act ? dots(c, .38, 5) : c}"></span><span style="${numFont};color:${ink.k}">${n}</span><span style="${labelFont(f)};font-size:15px;color:${ink.k};${act ? 'text-decoration:underline;text-decoration-thickness:2.5px;text-underline-offset:4px' : ''}">${esc(T(l))}</span></div>`;
+  }).join('');
+  return `<nav style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:-18px 0 0 ${offset}px">${items}</nav>`;
+}
+
+function button(f, sc, ink){
+  const lab1 = LANG==='zh' ? '报名' : 'Sign up', lab2 = LANG==='zh' ? '日程' : 'Schedule';
+  const off = f.grid ? 0 : 40;
+  if (!f.flat){
+    const p = `display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:999px;${labelFont(f)};font-size:14px;color:#fff;background:${f.spot ? (f.active ? ink.a : '#2563EB') : 'linear-gradient(180deg,#6676F2,#2563EB)'};box-shadow:0 6px 16px rgba(59,73,184,.35);border:${lineW(f)}px solid rgba(255,255,255,.5);${misreg(f, false)}`;
+    const s2 = `display:inline-flex;align-items:center;padding:10px 18px;border-radius:999px;${labelFont(f)};font-size:14px;color:${ink.k};background:${f.screen ? dots(ink.k, .12, 5) : 'rgba(255,255,255,.55)'};border:${lineW(f)}px ${lineS(f)} ${lineC(f, ink)};box-shadow:0 2px 6px rgba(0,0,0,.08)`;
+    return `<div style="display:flex;gap:12px;flex-wrap:wrap;margin-left:${off}px"><span style="${p}">${esc(lab1)} →</span><span style="${s2}">${esc(lab2)}</span></div>`;
+  }
+  const fill = f.active ? ink.a : '#2563EB', solid = f.screen ? fill + 'D9' : fill;
+  if (sc==='swiss'){
+    return `<div style="display:flex;gap:18px;align-items:center;margin-left:${off}px"><span style="display:inline-block;padding:10px 16px;background:${ink.k};color:${ink.paper};${labelFont(f)};font-size:14px">${esc(lab1)} →</span><span style="${labelFont(f)};font-size:14px;color:${ink.k};border-bottom:${lineW(f)}px ${lineS(f)} ${f.active ? ink.a : lineC(f, ink)};padding-bottom:3px">${esc(lab2)}</span></div>`;
+  }
+  if (sc==='riso'){
+    return `<div style="display:flex;gap:12px;align-items:center;margin-left:${off}px"><span style="position:relative;display:inline-block;padding:11px 18px;${labelFont(f)};font-size:14px;color:${ink.paper}"><span style="position:absolute;inset:0;background:${solid}"></span><span style="position:relative">${esc(lab1)} →</span></span><span style="display:inline-block;padding:9px 16px;${labelFont(f)};font-size:14px;color:${ink.k};background:${f.screen ? dots(ink.b, .3, 5) : ink.b + '33'}">${esc(lab2)}</span></div>`;
+  }
+  // print objects: ticket stubs with a perforated edge
+  const perf = `radial-gradient(circle at 0 50%, ${ink.paper} 0 4px, transparent 4.5px) 0 0/8px 10px repeat-y`;
+  return `<div style="display:flex;gap:12px;align-items:center;margin-left:${off}px"><span style="display:inline-flex;align-items:center;gap:14px;padding:10px 16px 10px 20px;background:${perf}, ${solid};color:${ink.paper};${labelFont(f)};font-size:14px"><span style="${numFont}">No.01</span>${esc(lab1)}</span><span style="display:inline-flex;gap:10px;padding:8px 14px;border:${lineW(f)}px dashed ${ink.k};${labelFont(f)};font-size:14px;color:${ink.k}"><span style="${numFont}">No.02</span>${esc(lab2)}</span></div>`;
+}
+
+function card(f, sc, ink){
+  const off = f.grid ? 0 : 40, t = LANG==='zh' ? '双色 Riso 工作坊' : 'Two-colour Riso workshop', meta = LANG==='zh' ? '周六 · 14:00 · 6 个名额' : 'Sat · 14:00 · 6 places';
+  const imgBefore = `background:linear-gradient(135deg,#7F5AF0,#2CB1BC 55%,#F6C177);`;
+  const imgAfter = sc==='swiss' ? `background:${dots(ink.k, .42, 6)};` : sc==='riso' ? `background:${dots(ink.b, .42, 6)}, ${f.screen ? dots(ink.a, .3, 7) : ink.a + '55'};` : `background:${dots(ink.k, .4, 6)};`;
+  const img = (f.spot ? imgAfter : imgBefore) + (f.flat ? '' : 'border-radius:10px;');
+  if (!f.flat){
+    return `<div style="margin-left:${off}px;max-width:340px;display:flex;gap:14px;padding:14px;border-radius:14px;background:${f.spot ? ink.paper : 'rgba(255,255,255,.6)'};border:${lineW(f)}px ${lineS(f)} ${lineC(f, ink)};box-shadow:0 10px 24px rgba(0,0,0,.10)"><div style="flex:none;width:84px;height:84px;${img}"></div><div style="display:flex;flex-direction:column;gap:6px"><span style="${labelFont(f)};font-size:15px;color:${ink.k}">${esc(t)}</span><span style="${numFont};color:#8a8794">${esc(meta)}</span><span style="align-self:flex-start;padding:2px 8px;border-radius:999px;font-size:11px;background:${f.active ? ink.a + '33' : '#2563EB33'};color:${f.active ? ink.a : '#2563EB'}">${LANG==='zh'?'报名中':'Open'}</span></div></div>`;
+  }
+  if (sc==='swiss') return `<div style="margin-left:${off}px;max-width:360px;display:grid;grid-template-columns:90px 1fr;gap:14px;border-top:${f.ink ? 6 : 1}px solid ${ink.k};padding-top:10px"><div style="height:90px;${img}"></div><div style="display:flex;flex-direction:column;gap:6px"><span style="${numFont};color:${ink.k}">${esc(meta)}</span><span style="${labelFont(f)};font-size:17px;line-height:1.1;color:${ink.k}">${esc(t)}</span><span style="${numFont};color:${f.active ? ink.a : '#2563EB'}">${LANG==='zh'?'报名中 ·':'OPEN ·'}</span></div></div>`;
+  if (sc==='riso') return `<div style="margin-left:${off}px;max-width:360px;display:grid;grid-template-columns:90px 1fr;gap:14px;padding:12px;background:${f.screen ? dots(ink.a, .28, 5) : ink.a + '40'}"><div style="height:90px;${img}"></div><div style="display:flex;flex-direction:column;gap:6px"><span style="${labelFont(f)};font-size:17px;line-height:1.1;color:${ink.k}">${esc(t)}</span><span style="${numFont};color:${ink.k}">${esc(meta)}</span><span style="align-self:flex-start;padding:2px 8px;${numFont};background:${ink.k};color:${ink.paper}">${LANG==='zh'?'报名中':'OPEN'}</span></div></div>`;
+  // print objects: a cut paper scrap with crop marks
+  const cm = `linear-gradient(${ink.k},${ink.k}) 0 0/12px 1.5px no-repeat, linear-gradient(${ink.k},${ink.k}) 0 0/1.5px 12px no-repeat, linear-gradient(${ink.k},${ink.k}) 100% 100%/12px 1.5px no-repeat, linear-gradient(${ink.k},${ink.k}) 100% 100%/1.5px 12px no-repeat`;
+  return `<div style="margin-left:${off}px;max-width:360px;padding:10px;background:${cm}"><div style="display:grid;grid-template-columns:90px 1fr;gap:14px;padding:12px;background:#FBFAF5;transform:rotate(-1.2deg);clip-path:polygon(0 2%,99% 0,100% 97%,1% 100%)"><div style="height:90px;${img}"></div><div style="display:flex;flex-direction:column;gap:6px"><span style="${labelFont(f)};font-size:17px;line-height:1.1;color:${ink.k}">${esc(t)}</span><span style="${numFont};color:${ink.k}">${esc(meta)}</span><span style="${numFont};color:${f.active ? ink.a : '#2563EB'}">✂ ${LANG==='zh'?'报名中':'OPEN'}</span></div></div></div>`;
+}
+
+function icon(f, sc, ink){
+  const off = f.grid ? 0 : 40;
+  const labels = NAV.map(x => T(x[1]));
+  const box = (i) => {
+    let svg = iconSVG(i, f, ink, 30);
+    if (f.flat && f.single && sc==='object') svg = `<span style="display:inline-flex;padding:5px;border:2.5px solid ${ink.k}">${iconSVG(i, f, ink, 26)}</span>`;
+    if (f.flat && f.single && sc==='riso') svg = `<span style="display:inline-flex;padding:6px;background:${i===0 ? (f.screen ? ink.a + 'D9' : ink.a) : (f.screen ? dots(ink.k, .2, 5) : ink.k + '22')}">${iconSVG(i, f, ink, 26)}</span>`;
+    return `<div style="display:flex;flex-direction:column;gap:6px;align-items:flex-start">${svg}<span style="${labelFont(f)};font-size:12.5px;color:${ink.k}">${esc(labels[i])}</span></div>`;
+  };
+  const bg = f.flat ? '' : `padding:14px;border-radius:12px;background:${f.spot ? 'transparent' : 'rgba(255,255,255,.5)'};box-shadow:0 4px 12px rgba(0,0,0,.06);border:${lineW(f)}px ${lineS(f)} ${lineC(f, ink)}`;
+  return `<div style="margin-left:${off}px;display:grid;grid-template-columns:repeat(4,minmax(0,90px));gap:16px;${bg}">${[0,1,2,3].map(box).join('')}</div>`;
+}
+
+function divider(f, sc, ink){
+  const off = f.grid ? 0 : 40, txt = `<p class="lede" style="margin:0">${LANG==='zh'?'每次工作坊只用两种油墨：先印浅色，再印深色。':'Each workshop uses just two inks: the light one first, then the dark.'}</p>`;
+  let rule;
+  if (!f.flat || !f.ink) rule = `<div style="height:${lineW(f)}px;border-top:${lineW(f)}px ${lineS(f)} ${lineC(f, ink)};${f.flat ? '' : `background:linear-gradient(90deg,transparent,${lineC(f, ink)},transparent);border:0;height:1px;box-shadow:0 1px 2px rgba(0,0,0,.12)`}"></div>`;
+  else if (sc==='swiss') rule = `<div style="height:5px;background:${ink.k}"></div>`;
+  else if (sc==='riso') rule = `<div style="height:10px;background:${f.screen ? dots(ink.a, .42, 5) : ink.a}"></div>`;
+  else rule = `<div style="display:flex;align-items:center;gap:8px;color:${ink.k};${numFont}"><span>✂</span><span style="flex:1;border-top:2.5px dashed ${ink.k}"></span><span>${LANG==='zh'?'沿虚线剪开':'cut here'}</span></div>`;
+  return `<div style="margin-left:${off}px;display:flex;flex-direction:column;gap:12px">${txt}${rule}${txt}</div>`;
+}
+
+/* ---------- fit check ---------- */
+function checks(f, sc){
+  const out = STEPS.map(s => ({ok:!!f[s.id], t:s.t, w:s.w, l:s.l}));
+  // one derived check: large solid blocks in the Riso scheme should sit near 85%
+  if (sc==='riso' && f.flat) out.push({ok:!!f.screen, t:L('大面积实地约 85%','Large solids near 85%'), w:L('Riso 的大块 100% 实地容易卡纸、蹭脏，降到 85% 看起来依然很深。','Large 100% solids on a Riso can jam and smudge; at 85% they still look dark.'), l:['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']});
+  return out;
+}
+
+/* ---------- UI ---------- */
+function segs(){
+  const mk = (el, items, key, dis) => { el.innerHTML = ''; items.forEach(([v, l]) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = T(l); b.dataset.v = v; if (dis){ b.disabled = true; b.title = LANG==='zh' ? '下一步' : 'Coming next'; } else b.addEventListener('click', () => { S[key] = v; render(); }); el.appendChild(b); }); };
+  mk($('elSeg'), ELEMENTS, 'el');
+  mk($('visSeg'), VISUALS, null, true);
+  mk($('schemeSeg'), Object.entries(SCHEMES).map(([k, v]) => [k, v.n]), 'scheme');
+  mk($('inkSeg'), Object.entries(INKSETS).map(([k, v]) => [k, v.n]), 'inks');
+  $('steps').innerHTML = STEPS.map(s => `<li><label><input type="checkbox" data-step="${s.id}"><span>${T(s.t)}<small>${T(s.w)}</small></span><span class="src ${s.s}" title="${s.l ? s.l[0] : ''}">${T(SRC_LBL[s.s])}</span></label></li>`).join('');
+  $('steps').querySelectorAll('[data-step]').forEach(cb => cb.addEventListener('change', () => { S.on[cb.dataset.step] = cb.checked; render(); }));
+}
+function render(){
+  const ink = INKSETS[S.inks], none = Object.fromEntries(STEPS.map(s => [s.id, false]));
+  $('before').innerHTML = page(S.el, none, S.scheme, ink, true);
+  $('after').innerHTML = page(S.el, S.on, S.scheme, ink, false);
+  const elName = T(ELEMENTS.find(e => e[0]===S.el)[1]);
+  $('beforeName').textContent = elName + (LANG==='zh' ? ' · 常见的网页写法' : ' · the usual web version');
+  $('afterName').textContent = elName + ' · ' + T(SCHEMES[S.scheme].n);
+  $('schemeHint').textContent = T(SCHEMES[S.scheme].h);
+  const C = checks(S.on, S.scheme), ok = C.filter(c => c.ok).length;
+  $('score').textContent = `${ok} / ${C.length}`;
+  $('checks').innerHTML = C.map(c => `<li class="${c.ok ? 'ok' : 'warn'}"><b>${c.ok ? (LANG==='zh'?'通过':'OK') : (LANG==='zh'?'不适配':'Off')}</b><span>${T(c.t)} <em>· ${T(c.w)}${c.l ? ` <a href="${c.l[1]}" target="_blank" rel="noopener">${c.l[0]}</a>` : ` ${LANG==='zh'?'本页做法':'this page'}`}</em></span></li>`).join('');
+  document.querySelectorAll('#elSeg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===S.el));
+  document.querySelectorAll('#schemeSeg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===S.scheme));
+  document.querySelectorAll('#inkSeg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===S.inks));
+  document.querySelectorAll('[data-step]').forEach(cb => cb.checked = !!S.on[cb.dataset.step]);
+}
+$('allOn').addEventListener('click', () => { STEPS.forEach(s => S.on[s.id] = true); render(); });
+$('allOff').addEventListener('click', () => { STEPS.forEach(s => S.on[s.id] = false); render(); });
+
+function applyLang(l){
+  LANG = l; const r = document.documentElement;
+  r.dataset.lang = l; r.lang = l==='zh' ? 'zh-CN' : 'en';
+  document.title = l==='zh' ? '元素实验室' : 'Element Lab';
+  document.querySelectorAll('[data-setlang]').forEach(b => b.setAttribute('aria-pressed', b.dataset.setlang===l));
+  document.querySelectorAll('[data-aria-zh]').forEach(e => e.setAttribute('aria-label', e.dataset['aria' + (l==='zh' ? 'Zh' : 'En')]));
+  try { localStorage.setItem('printlab-lang', l); } catch(e){}
+  segs(); render();
+}
+document.querySelectorAll('[data-setlang]').forEach(b => b.addEventListener('click', () => { if (b.dataset.setlang!==LANG) applyLang(b.dataset.setlang); }));
+applyLang(LANG);
+})();
+</script>

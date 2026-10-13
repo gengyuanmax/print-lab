@@ -295,7 +295,7 @@
         <h3><span class="zh">Riso 印刷特性</span><span class="en">Riso printing</span></h3>
         <ol>
           <li><a href="https://en.wikipedia.org/wiki/Risograph" target="_blank" rel="noopener">Risograph</a><span><span class="zh">Wikipedia · 孔版印刷原理与历史</span><span class="en">Wikipedia · how stencil duplicating works, and its history</span></span></li>
-          <li><a href="https://oxfordgreenprint.com/?p=223" target="_blank" rel="noopener">Design for Riso</a><span><span class="zh">Oxford Greenprint · 套色错位 1–2mm、浅色调易丢失</span><span class="en">Oxford Greenprint · 1–2 mm misregistration, light tones dropping out</span></span></li>
+          <li><a href="https://oxfordgreenprint.com/?p=223" target="_blank" rel="noopener">Design for Riso</a><span><span class="zh">Oxford Greenprint · 约 1–2 mm 的套色偏差，浅色细节可能丢失</span><span class="en">Oxford Greenprint · 1–2 mm misregistration, light tones dropping out</span></span></li>
           <li><a href="https://creativemarket.com/blog/risograph-printing" target="_blank" rel="noopener">The Fascinating World of Risograph Printing</a><span><span class="zh">Creative Market · 风格特征与制版建议</span><span class="en">Creative Market · style traits and file-prep tips</span></span></li>
           <li><a href="https://icons8.com/clipart/textured/print" target="_blank" rel="noopener">Print Style Illustrations</a><span><span class="zh">Icons8 · 数字化 riso 风格：少量配色、网点纹理与套色错位</span><span class="en">Icons8 · digital riso style: limited palette, dot textures, misregistration</span></span></li>
           <li><a href="https://en.wikipedia.org/wiki/Dot_gain" target="_blank" rel="noopener">Dot gain</a><span><span class="zh">Wikipedia · 网点扩大及其对中间调的影响</span><span class="en">Wikipedia · ink spread and dot gain, strongest in the midtones</span></span></li>
@@ -386,7 +386,7 @@ const PROCESSES = [
   {id:'letter', zh:'凸版', en:'Letterpress',
     d:{zh:'凸版印刷：凸起的图文部分着墨后压印到纸上。实地中间墨色斑驳，边缘因为挤墨颜色更深，纸面留下轻微压痕。提高纸张纹理强度，可加强粗面纸的质感。', en:'Letterpress: the raised plate is pressed into the paper. Solids are mottled in the middle and darker at the edges where ink squeezes out, and the paper shows a slight impression. Looks best with more paper texture.'}},
   {id:'wood', zh:'木刻', en:'Woodcut',
-    d:{zh:'木刻 / 麻胶版：暗部是实地，亮部是留白，中间调用刻刀留下的弯曲线条表现，实地里有顺着刀向的崩口，墨色带木纹。', en:'Woodcut / linocut: shadows are solid, highlights are bare paper and midtones are carved as curving gouge lines. Solids show chips along the cut, and the ink carries wood grain.'}},
+    d:{zh:'木刻 / 麻胶版模拟：暗部以实色块表现，亮部留白，中间调以弯曲的刀痕线条表现。本页还加入色块边缘的缺口与木纹效果。', en:'Woodcut / linocut: shadows are solid, highlights are bare paper and midtones are carved as curving gouge lines. Solids show chips along the cut, and the ink carries wood grain.'}},
   {id:'stamp', zh:'印章', en:'Seal stamp', d:{zh:'印章是一种很小的凸版：凸起处沾印泥按到纸上。按压不均会让一侧发淡，边缘积墨，局部印不全。朱文印出红字，白文把底印红、字留白。', en:'A seal is a tiny relief print: the raised parts take the ink paste and press it onto paper. Uneven pressure fades one side, ink pools at the edges and parts fail to print. Zhuwen prints the characters red; baiwen prints the ground red and leaves the characters white.'}},
   {id:'rub', zh:'拓印', en:'Rubbing', d:{zh:'把纸覆在有起伏的表面上拍墨或摩擦：高处着墨，低处留白。照片的暗部被当作刻痕，所以结果像碑拓一样是黑底白字。', en:'Paper over a raised surface is dabbed or rubbed with ink: high points take ink, low points stay white. Dark areas of the photo are treated as carving, so the result reads like a stele rubbing, white on black.'}},
   {id:'xerox', zh:'复印', en:'Photocopy', d:{zh:'静电复印的高反差黑白。翻印次数越多，细节越少，黑色越重，噪点和碳粉斑也越明显。', en:'High-contrast xerographic black and white. Raise the copy generation for a copy of a copy: detail drops out, blacks grow heavier, and noise and toner specks pile up.'}},
@@ -396,10 +396,10 @@ PROCESSES.push(
   {id:'gram', zh:'物影摄影', en:'Photogram', d:{zh:'物影摄影（photogram）：不用相机，将物体放在感光相纸上曝光。本页模拟黑白相纸效果：受光处变黑，遮挡处留白，半透明物体留下灰色影调；物体离纸越远，轮廓越模糊。', en:'Photogram: a photograph made without a camera, objects placed straight on photographic paper and exposed. Fully exposed areas go black, shaded areas stay white, translucent parts turn grey, and the further an object sits from the paper the softer its shadow.'}});
 const PATTERNS = [
   {id:'none', zh:'无', en:'None'},
-  {id:'grid', zh:'坐标纸', en:'Graph paper'},
+  {id:'grid', zh:'方格纸', en:'Graph paper'},
   {id:'dots', zh:'点阵', en:'Dot grid'},
-  {id:'lined', zh:'横线本', en:'Ruled'},
-  {id:'ledger', zh:'账本', en:'Ledger'},
+  {id:'lined', zh:'横线纸', en:'Ruled'},
+  {id:'ledger', zh:'账本格线', en:'Ledger'},
   {id:'security', zh:'防窥纹', en:'Security tint'},
 ];
 const TRANS = [
@@ -496,10 +496,10 @@ const PROV = {
     l:[['Cyanotype',W('Cyanotype')],['Anna Atkins',W('Anna_Atkins')]]},
   gram:{o:{zh:'Talbot 早年把树叶、蕾丝放在感光纸上晒，称为“photogenic drawing”。1922 年 12 月，Man Ray 出版了物影摄影集《Champs délicieux》，Tzara 把这类作品叫作 rayograph；Moholy-Nagy 同一时期也在做。', en:'Talbot laid leaves and lace on sensitised paper in sunlight and called the results “photogenic drawings”. In December 1922 Man Ray published the rayograph collection Champs délicieux (Tzara named them rayographs), and Moholy-Nagy was experimenting with photograms at the same time.'},
     l:[['Photogram',W('Photogram')],['Rayograph',W('Rayograph')]]},
-  grid:{o:{zh:'坐标纸是印着规则方格的书写纸。欧洲常见 5 mm 方格，线是浅蓝或灰色；最早的商业坐标纸通常归于 1794 年取得专利的英国 Buxton 博士。', en:'Graph paper is writing paper printed with a fine regular grid. European quad paper usually has 5 mm squares in light blue or grey; the first commercially published coordinate paper is usually credited to a Dr Buxton of England, patented in 1794.'}, l:[['Graph paper',W('Graph_paper')]]},
+  grid:{o:{zh:'方格纸印有规则的细线网格，便于书写、绘图和对齐。本页模拟浅色方格印在纸面上的效果。', en:'Graph paper is writing paper printed with a fine regular grid. European quad paper usually has 5 mm squares in light blue or grey; the first commercially published coordinate paper is usually credited to a Dr Buxton of England, patented in 1794.'}, l:[['Graph paper',W('Graph_paper')]]},
   dots:{o:{zh:'点阵纸只在网格交点处印小点，便于定位，又不像完整格线那样显眼。', en:'Dot-grid paper prints only the grid intersections: it keeps the grid for alignment but sits quieter than full squares.'}, own:true},
-  lined:{o:{zh:'横线本：等距的浅蓝横线，左侧一条红色页边线。', en:'Ruled paper: evenly spaced light-blue lines with a red margin rule on the left.'}, own:true},
-  ledger:{o:{zh:'账本纸：浅绿横线加竖向分栏线，用来对齐数字。', en:'Ledger paper: pale green rows with vertical column rules for lining up figures.'}, own:true},
+  lined:{o:{zh:'横线纸：等距排列的浅蓝横线，左侧带一条红色页边线。', en:'Ruled paper: evenly spaced light-blue lines with a red margin rule on the left.'}, own:true},
+  ledger:{o:{zh:'账本格线：浅绿色横线配合竖向分栏线，便于填写和对齐数字。', en:'Ledger paper: pale green rows with vertical column rules for lining up figures.'}, own:true},
   security:{o:{zh:'防窥纹印在信封内侧，用密集的线条和形状挡住里面的内容，常见于账单、银行和工资单信封。', en:'A security tint is printed on the inside of an envelope: busy lines and shapes screen the contents, typical for bills, bank statements and payslips.'},
     l:[['Envelope security patterns (Loughborough)','https://lbas.lboro.ac.uk/pattern/envelope-security-pattern.html']]},
   split:{o:{zh:'分墨渐变（split-fount）：在一个墨槽里同时放两种以上的油墨，墨辊把它们混成连续渐变，不用分色就能印出彩虹般的过渡。至少从 1870 年代就有人用，1960 年代的迷幻海报很常见。', en:'Split-fount inking: two or more inks in one ink tray, blended by the rollers into a continuous gradient, without colour separation. Used since at least the 1870s and common on 1960s psychedelic posters.'},
@@ -569,9 +569,9 @@ const PRESETS = [
   {name:{zh:'丝网海报', en:'Screen-print poster'}, tag:{zh:'丝网 · 橙 + 紫 · 不透明', en:'Screen print · orange + purple · opaque'}, p:{screen:'am',process:'silk',cell:12,angle:0,contrast:1.3,mode:'sep',blend:'opaque',inkA:'orange',inkB:'purple',paper:'white',mx:6,my:4,grain:.12,starve:.08,band:0,tex:.25},
     f:[F('e','p','简化成干净的平涂色块','Simplified into clean flat shapes',{process:'none'}), F('e','p','厚而不透明的油墨','Thick, opaque ink',{blend:'multiply'}), F('r','p','套色错位','Misregistration',{mx:0,my:0})]},
   {name:{zh:'凸版印刷', en:'Letterpress'}, tag:{zh:'凸版 · 亮红 · 再生纸', en:'Letterpress · bright red · recycled'}, p:{screen:'am',process:'letter',cell:10,angle:0,contrast:1.35,mode:'mono',inkA:'red',inkB:'black',paper:'recycled',mx:0,my:0,grain:.25,starve:.25,band:0,tex:.65},
-    f:[F('e','p','实地中间斑驳、边缘挤墨、纸面压痕','Mottled solids, squeezed edges, a pressed impression',{process:'none'}), F('r','m','明显的纸张纹理','Heavy paper texture',{tex:0}), F('r','p','墨色不匀','Uneven ink',{grain:0,starve:0})]},
+    f:[F('e','p','色块内部斑驳、边缘积墨，纸面带压痕','Mottled solids, squeezed edges, a pressed impression',{process:'none'}), F('r','m','明显的纸张纹理','Heavy paper texture',{tex:0}), F('r','p','墨色不匀','Uneven ink',{grain:0,starve:0})]},
   {name:{zh:'木刻版画', en:'Woodcut print'}, tag:{zh:'木刻 · 黑 · 再生纸', en:'Woodcut · black · recycled'}, p:{screen:'am',process:'wood',cell:8,angle:10,contrast:1.3,mode:'mono',inkA:'black',inkB:'black',paper:'recycled',mx:0,my:0,grain:.2,starve:.15,band:0,tex:.5},
-    f:[F('e','p','刀痕线条与实地崩口','Gouged lines and chipped solids',{process:'none'}), F('r','m','再生纸','Recycled paper',{paper:'white'}), F('o','p','墨色带木纹','Wood grain in the ink',{grain:0,starve:0})]},
+    f:[F('e','p','刀痕线条与色块边缘的缺口','Gouged lines and chipped solids',{process:'none'}), F('r','m','再生纸','Recycled paper',{paper:'white'}), F('o','p','墨色带木纹','Wood grain in the ink',{grain:0,starve:0})]},
   {name:{zh:'连续调双色', en:'Continuous duotone'}, tag:{zh:'连续调 · 橙 + 黑 双色调', en:'Continuous · orange + black duotone'}, p:{screen:'cont',cell:8,angle:0,contrast:1.15,mode:'duo',inkA:'orange',inkB:'black',paper:'recycled',mx:2,my:1,grain:.2,starve:.1,band:0,tex:.4},
     f:[F('e','d','两种油墨分担明暗层次','A two-ink duotone',{mode:'mono'}), F('e','d','没有网点的平滑过渡','Smooth tone with no visible dots',{screen:'am'}), F('o','m','纸纹','Paper texture',{tex:0})]},
   {name:{zh:'数字双色调', en:'Digital duotone'}, tag:{zh:'渐变映射 · 粉 → 联邦蓝', en:'Gradient map · pink → federal blue'}, p:{screen:'cont',cell:8,angle:0,contrast:1.2,mode:'grad',inkA:'fpink',inkB:'fedblue',paper:'white',mx:0,my:0,grain:0,starve:0,band:0,tex:0},

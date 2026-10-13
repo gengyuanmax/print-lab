@@ -55,14 +55,14 @@
 <div class="wrap">
   <header class="mast">
     <div class="mast-top">
-      <div class="eyebrow"><a data-page="home" href="index.html"><span class="zh">← 印刷实验室</span><span class="en">← Print Labs</span></a><span>04 · Element lab · <span class="zh">翻译 / 适配 / 统一</span><span class="en">Translate / Fit / Unify</span></span><a data-page="layout" href="layout.html"><span class="zh">版式实验室 →</span><span class="en">Layout Lab →</span></a></div>
+      <div class="eyebrow"><a data-page="home" href="index.html"><span class="zh">← 印刷实验室</span><span class="en">← Print Labs</span></a><span>04 · Element lab · <span class="zh">改造 / 对比 / 统一</span><span class="en">Translate / Fit / Unify</span></span><a data-page="layout" href="layout.html"><span class="zh">版式实验室 →</span><span class="en">Layout Lab →</span></a></div>
       <div class="langsw" role="group" aria-label="Language / 语言">
         <button type="button" data-setlang="zh" lang="zh-CN">中文</button>
         <button type="button" data-setlang="en" lang="en">EN</button>
       </div>
     </div>
     <h1 class="mis"><span aria-hidden="true"><span class="zh">元素实验室</span><span class="en">Element Lab</span></span><span><span class="zh">元素实验室</span><span class="en">Element Lab</span></span></h1>
-    <p class="lede"><span class="zh">一个元素放进 Swiss / Riso / 半调风格里总觉得“不搭”，通常是因为它没有走同一条印刷管线。这里把一个元素拆成几步翻译：每一步可以单独开关，看改造前后放在同一张纸上的样子，并逐条检查哪里还不适配、规则出自哪里。</span><span class="en">When an element feels out of place in a Swiss / Riso / halftone design, it usually has not gone through the same print pipeline. This lab translates one element step by step: switch each step on or off, compare before and after on the same paper, and check what still does not fit and where each rule comes from.</span></p>
+    <p class="lede"><span class="zh">网页组件怎样融入瑞士风格、Riso 和半色调设计？从配色、字体、线条和对齐方式入手，逐项开关效果，对照改造前后的变化。下方列出各项规则的启用状态及参考来源，方便理解每一步的作用。</span><span class="en">When an element feels out of place in a Swiss / Riso / halftone design, it usually has not gone through the same print pipeline. This lab translates one element step by step: switch each step on or off, compare before and after on the same paper, and check what still does not fit and where each rule comes from.</span></p>
   </header>
 
   <main class="lab">
@@ -75,27 +75,27 @@
         <div class="cap"><span><span class="zh">改造后</span><span class="en">After</span></span><b id="afterName"></b></div>
         <div class="sheet" id="after"></div>
       </div>
-      <div class="cap"><span><span class="zh">适配检查（改造后）</span><span class="en">Fit check (after)</span></span><span class="score" id="score"></span></div>
+      <div class="cap"><span><span class="zh">规则启用情况</span><span class="en">Fit check (after)</span></span><span class="score" id="score"></span></div>
       <ul class="checks" id="checks" aria-live="polite"></ul>
     </section>
 
     <aside class="panel" id="panel" data-aria-zh="参数" data-aria-en="Settings">
       <div class="group">
         <h2><span class="zh">元素</span><span class="en">Element</span> <small>ELEMENT</small></h2>
-        <p class="hint"><span class="zh">先从网页组件开始：它们来自软件界面，是最容易“不搭”的一类。几何、拟物、摄影、手绘四类视觉元素是下一步。</span><span class="en">Web components come first: they come from software interfaces and are the easiest to get wrong. Geometry, objects, photos and drawings come next.</span></p>
+        <p class="hint"><span class="zh">选择导航、按钮、卡片、图标或分隔线，尝试不同的改造方案。几何图形、实物、照片和手绘暂未开放。</span><span class="en">Web components come first: they come from software interfaces and are the easiest to get wrong. Geometry, objects, photos and drawings come next.</span></p>
         <div class="row2"><span class="zh">网页组件</span><span class="en">Web components</span><div class="seg" id="elSeg"></div></div>
         <div class="row2"><span class="zh">视觉元素</span><span class="en">Visual elements</span><div class="seg" id="visSeg"></div></div>
       </div>
       <div class="group">
-        <h2><span class="zh">翻译方案</span><span class="en">Translation</span> <small>SCHEME</small></h2>
+        <h2><span class="zh">改造方案</span><span class="en">Translation</span> <small>SCHEME</small></h2>
         <p class="hint" id="schemeHint"></p>
         <div class="seg" id="schemeSeg"></div>
         <div class="row2"><span class="zh">配色</span><span class="en">Inks</span><div class="seg" id="inkSeg"></div></div>
       </div>
       <div class="group">
-        <h2><span class="zh">翻译步骤</span><span class="en">Steps</span> <small>STEPS</small></h2>
-        <p class="hint"><span class="zh">每一步右边标着来源：<b>印刷</b> = 印厂的文件规范，<b>系统</b> = Isotype、IBM 等统一视觉语言的方法，<b>本页</b> = 这里的综合做法。</span><span class="en">Each step is tagged with its source: <b>Press</b> = print-shop file specs, <b>System</b> = methods from Isotype, IBM and other unified visual languages, <b>This page</b> = this lab's own synthesis.</span></p>
-        <div class="allrow"><button class="btn" type="button" id="allOn"><span class="zh">全部打开</span><span class="en">All on</span></button><button class="btn" type="button" id="allOff"><span class="zh">全部关闭</span><span class="en">All off</span></button></div>
+        <h2><span class="zh">调整步骤</span><span class="en">Steps</span> <small>STEPS</small></h2>
+        <p class="hint"><span class="zh">步骤右侧标注参考来源：<b>印前</b>是印厂或工作室的文件准备建议，<b>设计</b>是 Isotype、IBM 等视觉系统的设计方法，<b>本页</b>是为本实验设计的做法。</span><span class="en">Each step is tagged with its source: <b>Press</b> = print-shop file specs, <b>System</b> = methods from Isotype, IBM and other unified visual languages, <b>This page</b> = this lab's own synthesis.</span></p>
+        <div class="allrow"><button class="btn" type="button" id="allOn"><span class="zh">全部启用</span><span class="en">All on</span></button><button class="btn" type="button" id="allOff"><span class="zh">全部停用</span><span class="en">All off</span></button></div>
         <ul class="steps" id="steps"></ul>
       </div>
     </aside>
@@ -103,21 +103,21 @@
 
   <section class="refs" data-aria-zh="参考资料" data-aria-en="References">
     <h2><span class="zh">参考资料</span><span class="en">References</span></h2>
-    <h3><span class="zh">印刷约束：哪些东西印得好</span><span class="en">Press constraints: what prints well</span></h3>
+    <h3><span class="zh">印前要求与建议</span><span class="en">Press constraints: what prints well</span></h3>
     <ol>
-      <li><a href="https://goodpress.co.uk/pages/file-preparation" target="_blank" rel="noopener">Preparing your files for Risograph</a><span><span class="zh">Good Press · 多层细线和小字会糊；文字只用一种墨、不小于 8pt；大面积平涂效果不好；低反差照片印不好</span><span class="en">Good Press · thin lines and small text across layers blur; one ink and at least 8 pt for text; large flat areas print badly; low-contrast photos suffer</span></span></li>
-      <li><a href="https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/" target="_blank" rel="noopener">Risograph file prep</a><span><span class="zh">MICA · 每种墨一张灰度图；100% 大色块降到 85%；中间调印成该墨的浅色；不建议多色文字</span><span class="en">MICA · one greyscale image per ink; drop large 100% areas to 85%; midtones print as tints of the ink; multi-colour text is discouraged</span></span></li>
-      <li><a href="https://oxfordgreenprint.com/home/design-for-riso/" target="_blank" rel="noopener">Design for Riso</a><span><span class="zh">Oxford Greenprint · 颜色之间会无法避免地错开 1–2 mm</span><span class="en">Oxford Greenprint · colours miss by 1–2 mm, unavoidably</span></span></li>
-      <li><a href="https://www.counter-print.co.uk/products/riso-art" target="_blank" rel="noopener"><i>Riso Art: A Creative's Guide to Mastering Risography</i></a><span><span class="zh">Vivian Toh、Jay Lim，2023 · 专色、叠印与镂空、文件准备、纸张</span><span class="en">Vivian Toh and Jay Lim, 2023 · spot colour, overprints and knockouts, file prep, paper</span></span></li>
+      <li><a href="https://goodpress.co.uk/pages/file-preparation" target="_blank" rel="noopener">Preparing your files for Risograph</a><span><span class="zh">Good Press · 建议小字与细线使用单色，字号不小于 8 pt；避免大面积满墨色块和反差过低的照片</span><span class="en">Good Press · thin lines and small text across layers blur; one ink and at least 8 pt for text; large flat areas print badly; low-contrast photos suffer</span></span></li>
+      <li><a href="https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/" target="_blank" rel="noopener">Risograph file prep</a><span><span class="zh">MICA · 每种油墨单独提交灰度稿；建议将大面积满墨色块降至 85%；中间调呈现为该油墨的浅色；不建议文字多色套印</span><span class="en">MICA · one greyscale image per ink; drop large 100% areas to 85%; midtones print as tints of the ink; multi-colour text is discouraged</span></span></li>
+      <li><a href="https://oxfordgreenprint.com/home/design-for-riso/" target="_blank" rel="noopener">Design for Riso</a><span><span class="zh">Oxford Greenprint · 提醒设计时考虑约 1–2 mm 的套色偏差</span><span class="en">Oxford Greenprint · colours miss by 1–2 mm, unavoidably</span></span></li>
+      <li><a href="https://www.counter-print.co.uk/products/riso-art" target="_blank" rel="noopener"><i>Riso Art: A Creative's Guide to Mastering Risography</i></a><span><span class="zh">Vivian Toh、Jay Lim，2023 · 专色、叠印与挖空、印前文件准备、纸张</span><span class="en">Vivian Toh and Jay Lim, 2023 · spot colour, overprints and knockouts, file prep, paper</span></span></li>
     </ol>
-    <h3><span class="zh">系统方法：把万物翻成一种视觉语言</span><span class="en">Systems: one visual language for everything</span></h3>
+    <h3><span class="zh">统一视觉风格的方法</span><span class="en">Systems: one visual language for everything</span></h3>
     <ol>
-      <li><a href="https://en.wikipedia.org/wiki/Isotype_(picture_language)" target="_blank" rel="noopener">Isotype</a><span><span class="zh">Neurath、Arntz，1925–1934 · 标准化、抽象的图形，几乎不用透视</span><span class="en">Neurath and Arntz, 1925–1934 · standardised, abstracted pictograms, almost never in perspective</span></span></li>
+      <li><a href="https://en.wikipedia.org/wiki/Isotype_(picture_language)" target="_blank" rel="noopener">Isotype</a><span><span class="zh">Neurath、Arntz，1925–1934 · 用简化、规范的图形传达信息，通常不使用透视</span><span class="en">Neurath and Arntz, 1925–1934 · standardised, abstracted pictograms, almost never in perspective</span></span></li>
       <li><a href="https://en.wikipedia.org/wiki/Otl_Aicher" target="_blank" rel="noopener">Otl Aicher</a><span><span class="zh">1972 年慕尼黑奥运图标用一套网格系统画成，影响了 1974 年美国交通部标识</span><span class="en">The 1972 Munich pictograms, drawn on a series of grid systems, shaped the 1974 US DOT signs</span></span></li>
-      <li><a href="https://standardsmanual.com/products/nasa-graphics-standards-manual" target="_blank" rel="noopener">NASA Graphics Standards Manual (1975)</a><span><span class="zh">Danne & Blackburn · 一套规范管住所有应用场合</span><span class="en">Danne & Blackburn · one standard for every application</span></span></li>
-      <li><a href="https://www.ibm.com/design/language/illustration/overview" target="_blank" rel="noopener">IBM Design Language · Illustration</a><span><span class="zh">统一靠网格和一致的形状、角度、圆角；只保留必要、非装饰的元素</span><span class="en">Consistency comes from the grid and consistent shapes, angles and radii; only essential, non-decorative elements</span></span></li>
+      <li><a href="https://standardsmanual.com/products/nasa-graphics-standards-manual" target="_blank" rel="noopener">NASA Graphics Standards Manual (1975)</a><span><span class="zh">Danne & Blackburn · 通过统一的视觉规范保持不同应用场景中的一致性</span><span class="en">Danne & Blackburn · one standard for every application</span></span></li>
+      <li><a href="https://www.ibm.com/design/language/illustration/overview" target="_blank" rel="noopener">IBM Design Language · Illustration</a><span><span class="zh">通过网格、形状、角度和圆角规范统一插画风格，减少无助于表达的装饰</span><span class="en">Consistency comes from the grid and consistent shapes, angles and radii; only essential, non-decorative elements</span></span></li>
     </ol>
-    <p class="note" style="margin-top:14px"><span class="zh">把网页组件翻译成 Riso / 半调语言，目前没有现成的指南；标着“本页”的步骤是这里根据上面两类来源做的综合。</span><span class="en">There is no existing guide to translating web components into Riso / halftone language; steps tagged “This page” are this lab's synthesis of the two groups of sources above.</span></p>
+    <p class="note" style="margin-top:14px"><span class="zh">本页参考印前建议与视觉设计方法，并做了适合网页演示的简化。“规则启用情况”只反映当前开关设置，不评判设计优劣，也不代表文件已通过印前检查。实际制作请以承印方要求为准。</span><span class="en">There is no existing guide to translating web components into Riso / halftone language; steps tagged “This page” are this lab's synthesis of the two groups of sources above.</span></p>
   </section>
 </div>
 
@@ -133,29 +133,29 @@ const T = o => (o && typeof o==='object' && 'zh' in o) ? o[LANG] : o;
 
 /* ---------- data ---------- */
 const ELEMENTS = [['nav',L('导航','Navigation')],['button',L('按钮','Buttons')],['card',L('卡片','Card')],['icon',L('图标','Icons')],['divider',L('分隔线','Dividers')]];
-const VISUALS = [['geo',L('几何','Geometry')],['obj',L('拟物','Objects')],['photo',L('摄影','Photo')],['hand',L('手绘','Drawing')]];
+const VISUALS = [['geo',L('几何图形','Geometry')],['obj',L('实物','Objects')],['photo',L('照片','Photo')],['hand',L('手绘','Drawing')]];
 const SCHEMES = {
-  swiss:{n:L('Swiss · 线与字','Swiss · rules & type'), h:L('只用字、编号和油墨线：当前状态是一根粗墨线或一块实底，像杂志的目录和索引。','Type, numbers and ink rules only: the current state is a heavy rule or a solid bar, like a magazine contents page.')},
-  riso:{n:L('Riso · 色块','Riso · ink blocks'), h:L('用平涂的油墨块和网点浅色：当前状态是一块油墨，字镂空成纸色；只有大色块才带套色错位。','Flat ink blocks and screened tints: the current state is a block of ink with the label knocked out; only large blocks show misregistration.')},
-  object:{n:L('印刷物件','Print objects'), h:L('借用印刷品本身的形式：书边的拇指索引、票根、剪下的纸片、裁切标记。','Borrow forms from printed objects: thumb-index tabs, ticket stubs, cut paper scraps, crop marks.')},
+  swiss:{n:L('瑞士风格 · 线条与文字','Swiss · rules & type'), h:L('以文字、编号和实线组织信息，用粗线或实色块突出选中项，参考杂志目录和索引的编排。','Type, numbers and ink rules only: the current state is a heavy rule or a solid bar, like a magazine contents page.')},
+  riso:{n:L('Riso · 色块','Riso · ink blocks'), h:L('用色块与网点表现油墨效果。选中项以色块突出，文字反白；开关可控制配色、线条和错位等细节。','Flat ink blocks and screened tints: the current state is a block of ink with the label knocked out; only large blocks show misregistration.')},
+  object:{n:L('纸品造型','Print objects'), h:L('借鉴书页边缘的分区索引、票根和裁切标记，让组件带有纸质印刷品的外观。','Borrow forms from printed objects: thumb-index tabs, ticket stubs, cut paper scraps, crop marks.')},
 };
 const INKSETS = {
   orange:{n:L('Riso 橙 + 联邦蓝','Riso orange + federal blue'), paper:'#F3EFE6', k:'#1A1A1A', a:'#FF6C2F', b:'#3D5588'},
-  riso:{n:L('Riso 粉蓝','Riso pink & blue'), paper:'#F4F1EA', k:'#1A1A1A', a:'#FF48B0', b:'#0078BF'},
+  riso:{n:L('Riso 粉 + 蓝','Riso pink & blue'), paper:'#F4F1EA', k:'#1A1A1A', a:'#FF48B0', b:'#0078BF'},
   mono:{n:L('单色黑','Black only'), paper:'#F1EEE6', k:'#1A1A1A', a:'#1A1A1A', b:'#1A1A1A'},
 };
 // translation steps: id, label, why, source kind (c = press constraint, m = systems method, o = this page), source link
 const STEPS = [
-  {id:'spot', t:L('收成专色','Spot inks only'), w:L('灰色、半透明的白、渐变底都换成版里的几种墨和一种纸色。','Greys, translucent whites and gradient fills become the few inks on the plates and one paper colour.'), s:'c', l:['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']},
-  {id:'flat', t:L('去掉拟物','Drop the skeuomorphism'), w:L('文件夹标签、折角、圆角、投影、高光都去掉：平面，不用透视和光影。','Folder tabs, dog-ears, rounded corners, shadows and highlights go: flat, without perspective or lighting.'), s:'m', l:['Isotype','https://en.wikipedia.org/wiki/Isotype_(picture_language)']},
-  {id:'ink', t:L('线是油墨线','Rules are ink'), w:L('灰色细线、虚线换成油墨色的实线，至少 2 px，在套色错位下也立得住。','Grey hairlines and dotted lines become solid ink rules, at least 2 px, so they survive misregistration.'), s:'c', l:['Good Press','https://goodpress.co.uk/pages/file-preparation']},
-  {id:'single', t:L('小元素只用一种墨','Small things in one ink'), w:L('图标、小字、细线不做双色错位：错位 1–2 mm 对它们来说太大了。错位只留给大标题和大色块。','Icons, small text and thin lines stay one ink: a 1–2 mm miss is too big for them. Misregistration is kept for big titles and large blocks.'), s:'c', l:['Oxford Greenprint','https://oxfordgreenprint.com/home/design-for-riso/']},
-  {id:'screen', t:L('浅色用网点','Tints are screened'), w:L('不用透明度和渐变，浅色用网点做；大色块降到 85% 左右。','No opacity or gradients: light tones are screened, and large solids drop to about 85%.'), s:'c', l:['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']},
-  {id:'grid', t:L('对齐页面网格','On the page grid'), w:L('组件和标题共用同一套栏和左边缘，不另起一套等分。','The component shares the title\'s columns and left edge instead of its own equal split.'), s:'m', l:['IBM Design Language','https://www.ibm.com/design/language/illustration/overview']},
-  {id:'type', t:L('字体同一家族','One type family'), w:L('标签用标题同一家族或等宽字，不用默认的界面字体。','Labels use the title\'s family or the monospace, not a default UI font.'), s:'m', l:['NASA Standards Manual','https://standardsmanual.com/products/nasa-graphics-standards-manual']},
-  {id:'active', t:L('状态用版里的墨','States use plate inks'), w:L('当前项、悬停这些状态用版里本来就有的墨来表示，不用“链接蓝”。','Current and hover states use an ink that is already on the plates, not a hyperlink blue.'), s:'o'},
+  {id:'spot', t:L('限定专色','Spot inks only'), w:L('将额外的灰色、半透明白和渐变背景，改为当前配色中的油墨色与纸色。','Greys, translucent whites and gradient fills become the few inks on the plates and one paper colour.'), s:'c', l:['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']},
+  {id:'flat', t:L('简化立体装饰','Drop the skeuomorphism'), w:L('将网页组件的圆角、投影和高光，改为所选方案中的线条、色块或纸品造型。','Folder tabs, dog-ears, rounded corners, shadows and highlights go: flat, without perspective or lighting.'), s:'m', l:['Isotype','https://en.wikipedia.org/wiki/Isotype_(picture_language)']},
+  {id:'ink', t:L('统一线条','Rules are ink'), w:L('将浅灰细线和虚线改为较粗的油墨色实线，增强轮廓。实际印刷所需的最小线宽请与印厂确认。','Grey hairlines and dotted lines become solid ink rules, at least 2 px, so they survive misregistration.'), s:'c', l:['Good Press','https://goodpress.co.uk/pages/file-preparation']},
+  {id:'single', t:L('小字与图标用单色','Small things in one ink'), w:L('去掉小字和图标上的双色错位，减少套印不准对辨识度的影响；大标题可保留错位效果。','Icons, small text and thin lines stay one ink: a 1–2 mm miss is too big for them. Misregistration is kept for big titles and large blocks.'), s:'c', l:['Oxford Greenprint','https://oxfordgreenprint.com/home/design-for-riso/']},
+  {id:'screen', t:L('网点与浅色块','Tints are screened'), w:L('用网点表现浅色，并减淡大色块。本页也用透明度模拟部分浅色效果，实际制版需按印厂要求处理。','No opacity or gradients: light tones are screened, and large solids drop to about 85%.'), s:'c', l:['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']},
+  {id:'grid', t:L('统一对齐基准','On the page grid'), w:L('让组件与标题的左边缘对齐，减少与整体版面脱节的缩进。','The component shares the title\'s columns and left edge instead of its own equal split.'), s:'m', l:['IBM Design Language','https://www.ibm.com/design/language/illustration/overview']},
+  {id:'type', t:L('统一字体搭配','One type family'), w:L('文字标签沿用标题的字体系列，编号等辅助信息使用等宽字体。','Labels use the title\'s family or the monospace, not a default UI font.'), s:'m', l:['NASA Standards Manual','https://standardsmanual.com/products/nasa-graphics-standards-manual']},
+  {id:'active', t:L('统一状态用色','States use plate inks'), w:L('用当前配色中的油墨色标示选中项，替换额外的链接蓝。','Current and hover states use an ink that is already on the plates, not a hyperlink blue.'), s:'o'},
 ];
-const SRC_LBL = {c:L('印刷','Press'), m:L('系统','System'), o:L('本页','This page')};
+const SRC_LBL = {c:L('印前','Press'), m:L('设计','System'), o:L('本页','This page')};
 
 const S = {el:'nav', scheme:'swiss', inks:'orange', on:Object.fromEntries(STEPS.map(s => [s.id, true]))};
 
@@ -295,13 +295,13 @@ function divider(f, sc, ink){
 function checks(f, sc){
   const out = STEPS.map(s => ({ok:!!f[s.id], t:s.t, w:s.w, l:s.l}));
   // one derived check: large solid blocks in the Riso scheme should sit near 85%
-  if (sc==='riso' && f.flat) out.push({ok:!!f.screen, t:L('大面积实地约 85%','Large solids near 85%'), w:L('Riso 的大块 100% 实地容易卡纸、蹭脏，降到 85% 看起来依然很深。','Large 100% solids on a Riso can jam and smudge; at 85% they still look dark.'), l:['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']});
+  if (sc==='riso' && f.flat) out.push({ok:!!f.screen, t:L('大色块适当减淡','Large solids near 85%'), w:L('MICA 建议将大面积满墨色块降至 85%，以减少卡纸和蹭脏。本页以约 85% 不透明度模拟部分色块，并非通用制版标准。','Large 100% solids on a Riso can jam and smudge; at 85% they still look dark.'), l:['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']});
   return out;
 }
 
 /* ---------- UI ---------- */
 function segs(){
-  const mk = (el, items, key, dis) => { el.innerHTML = ''; items.forEach(([v, l]) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = T(l); b.dataset.v = v; if (dis){ b.disabled = true; b.title = LANG==='zh' ? '下一步' : 'Coming next'; } else b.addEventListener('click', () => { S[key] = v; render(); }); el.appendChild(b); }); };
+  const mk = (el, items, key, dis) => { el.innerHTML = ''; items.forEach(([v, l]) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = T(l); b.dataset.v = v; if (dis){ b.disabled = true; b.title = LANG==='zh' ? '尚未开放' : 'Coming next'; } else b.addEventListener('click', () => { S[key] = v; render(); }); el.appendChild(b); }); };
   mk($('elSeg'), ELEMENTS, 'el');
   mk($('visSeg'), VISUALS, null, true);
   mk($('schemeSeg'), Object.entries(SCHEMES).map(([k, v]) => [k, v.n]), 'scheme');
@@ -314,12 +314,12 @@ function render(){
   $('before').innerHTML = page(S.el, none, S.scheme, ink, true);
   $('after').innerHTML = page(S.el, S.on, S.scheme, ink, false);
   const elName = T(ELEMENTS.find(e => e[0]===S.el)[1]);
-  $('beforeName').textContent = elName + (LANG==='zh' ? ' · 常见的网页写法' : ' · the usual web version');
+  $('beforeName').textContent = elName + (LANG==='zh' ? ' · 常见网页样式' : ' · the usual web version');
   $('afterName').textContent = elName + ' · ' + T(SCHEMES[S.scheme].n);
   $('schemeHint').textContent = T(SCHEMES[S.scheme].h);
   const C = checks(S.on, S.scheme), ok = C.filter(c => c.ok).length;
   $('score').textContent = `${ok} / ${C.length}`;
-  $('checks').innerHTML = C.map(c => `<li class="${c.ok ? 'ok' : 'warn'}"><b>${c.ok ? (LANG==='zh'?'通过':'OK') : (LANG==='zh'?'不适配':'Off')}</b><span>${T(c.t)} <em>· ${T(c.w)}${c.l ? ` <a href="${c.l[1]}" target="_blank" rel="noopener">${c.l[0]}</a>` : ` ${LANG==='zh'?'本页做法':'this page'}`}</em></span></li>`).join('');
+  $('checks').innerHTML = C.map(c => `<li class="${c.ok ? 'ok' : 'warn'}"><b>${c.ok ? (LANG==='zh'?'已启用':'OK') : (LANG==='zh'?'未启用':'Off')}</b><span>${T(c.t)} <em>· ${T(c.w)}${c.l ? ` <a href="${c.l[1]}" target="_blank" rel="noopener">${c.l[0]}</a>` : ` ${LANG==='zh'?'本页示例':'this page'}`}</em></span></li>`).join('');
   document.querySelectorAll('#elSeg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===S.el));
   document.querySelectorAll('#schemeSeg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===S.scheme));
   document.querySelectorAll('#inkSeg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===S.inks));

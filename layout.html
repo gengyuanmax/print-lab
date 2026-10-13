@@ -251,7 +251,7 @@ const BASE = {format:'poster', vw:1280, cols:6, margin:.07, gutter:.02, baseline
   inks:2, inkA:'fpink', inkB:'blue', inkC:'yellow', paper:'white', textInk:'black', colorRatio:'even', accent:2, overprint:true,
   tMisX:0, tMisY:0, tGrain:0, tStarve:0, tPaper:0,
   img:true, treat:'am', cell:7, imgSpan:.6, mask:'rect', crop:'tight',
-  rules:{grid:false, avoid:false, max3:false}, strict:1,
+  rules:{grid:false, avoid:false, max3:false, scale:false, tiers:false}, strict:1,
   pages:1, rhythm:'alternate',
   hoverShift:false, parallax:false, dur:700, ease:'out',
   furn:{reg:true, crop:false, bar:true, folio:true},
@@ -261,31 +261,31 @@ const PRESETS = {
     breakS:0, white:.62, asym:.95, jitter:0, layers:0, axis:0, focal:'thirds', bleed:false, titleCrop:0, path:'f', guide:false, sizeSeq:false, frame:'none', ladder:true, numbers:true,
     vocab:{circle:false, rect:true, line:true, tri:false}, nShapes:2, sizeExp:2, fill:1, radius:0, strokeW:.005, angles:'ortho', snap:true,
     inks:1, inkA:'red', paper:'white', textInk:'black', colorRatio:'9010', accent:1, overprint:false, tMisX:0, tMisY:0, tGrain:0, tStarve:0, tPaper:.1,
-    img:true, treat:'am', cell:5, imgSpan:.5, mask:'rect', crop:'loose', rules:{grid:true, avoid:true, max3:true}, strict:1,
+    img:true, treat:'am', cell:5, imgSpan:.5, mask:'rect', crop:'loose', rules:{grid:true, avoid:true, max3:true, scale:true, tiers:true}, strict:1,
     furn:{reg:false, crop:false, bar:false, folio:true}, seed:12}},
   halftone:{name:{zh:'半调海报',en:'Halftone'}, tag:{zh:'大图出血',en:'big bleed'}, p:{cols:6, margin:.05, gutter:.02, pair:'swiss', ratio:1.8, levels:3, titleScale:.3, tWeight:900, tWidth:125, tLead:.82, track:-.04, measure:45, upper:true, align:'left', titleStyle:'solid',
     breakS:.45, white:.38, asym:.85, jitter:0, layers:1, axis:0, focal:'edge', bleed:true, titleCrop:.12, path:'z', guide:true, sizeSeq:false, frame:'none', ladder:false, numbers:false,
     vocab:{circle:true, rect:false, line:false, tri:false}, nShapes:2, sizeExp:3, fill:1, radius:0, strokeW:.006, angles:'ortho', snap:true,
     inks:2, inkA:'orange', inkB:'fedblue', paper:'recycled', textInk:'black', colorRatio:'603010', accent:2, overprint:true, tMisX:3, tMisY:2, tGrain:.25, tStarve:.15, tPaper:.35,
-    img:true, treat:'am', cell:12, imgSpan:.95, mask:'circle', crop:'tight', rules:{grid:false, avoid:true, max3:true}, strict:.8,
+    img:true, treat:'am', cell:12, imgSpan:.95, mask:'circle', crop:'tight', rules:{grid:false, avoid:true, max3:true, scale:true, tiers:true}, strict:.8,
     furn:{reg:true, crop:false, bar:true, folio:true}, seed:3}},
   zine:{name:{zh:'Riso zine',en:'Riso zine'}, tag:{zh:'拼贴叠印',en:'collage'}, p:{cols:8, margin:.05, gutter:.02, pair:'zine', ratio:1.6, levels:5, titleScale:.24, tWeight:800, tWidth:100, tLead:.86, track:-.02, measure:40, upper:true, align:'left', titleStyle:'outline',
     breakS:.85, white:.22, asym:.6, jitter:4, layers:3, axis:-8, focal:'center', bleed:true, titleCrop:.05, path:'radial', guide:true, sizeSeq:true, frame:'block', ladder:false, numbers:true,
     vocab:{circle:true, rect:true, line:true, tri:true}, nShapes:7, sizeExp:2.4, fill:.55, radius:0, strokeW:.008, angles:'free', snap:false,
     inks:3, inkA:'fpink', inkB:'blue', inkC:'yellow', paper:'white', textInk:'ink', colorRatio:'even', accent:6, overprint:true, tMisX:6, tMisY:4, tGrain:.55, tStarve:.4, tPaper:.45,
-    img:true, treat:'fs', cell:7, imgSpan:.62, mask:'cutout', crop:'tight', rules:{grid:false, avoid:false, max3:false}, strict:.3,
+    img:true, treat:'fs', cell:7, imgSpan:.62, mask:'cutout', crop:'tight', rules:{grid:false, avoid:false, max3:false, scale:false, tiers:false}, strict:.3,
     furn:{reg:true, crop:true, bar:true, folio:true}, seed:21}},
   editorial:{name:{zh:'杂志',en:'Editorial'}, tag:{zh:'衬线留白',en:'serif & air'}, p:{cols:6, margin:.085, gutter:.022, pair:'editorial', ratio:1.333, levels:5, titleScale:.17, tWeight:400, tWidth:100, tLead:.95, track:-.01, measure:60, upper:false, align:'left', titleStyle:'solid',
     breakS:.12, white:.58, asym:.75, jitter:0, layers:0, axis:0, focal:'golden', bleed:false, titleCrop:0, path:'auto', guide:false, sizeSeq:false, frame:'none', ladder:true, numbers:true,
     vocab:{circle:false, rect:false, line:true, tri:false}, nShapes:1, sizeExp:2, fill:1, radius:0, strokeW:.004, angles:'ortho', snap:true,
     inks:2, inkA:'teal', inkB:'black', paper:'recycled', textInk:'black', colorRatio:'9010', accent:1, overprint:true, tMisX:0, tMisY:0, tGrain:.1, tStarve:.05, tPaper:.3,
-    img:true, treat:'duo', cell:7, imgSpan:.66, mask:'arch', crop:'loose', rules:{grid:true, avoid:true, max3:false}, strict:.9,
+    img:true, treat:'duo', cell:7, imgSpan:.66, mask:'arch', crop:'loose', rules:{grid:true, avoid:true, max3:false, scale:true, tiers:true}, strict:.9,
     furn:{reg:false, crop:false, bar:false, folio:true}, seed:5}},
   constructivist:{name:{zh:'构成主义',en:'Constructivist'}, tag:{zh:'斜向主轴',en:'diagonal axis'}, p:{cols:6, margin:.06, gutter:.02, pair:'swiss', ratio:1.7, levels:3, titleScale:.2, tWeight:900, tWidth:80, tLead:.85, track:0, measure:42, upper:true, align:'left', titleStyle:'knock',
     breakS:.35, white:.45, asym:.9, jitter:0, layers:2, axis:-20, focal:'thirds', bleed:true, titleCrop:0, path:'z', guide:true, sizeSeq:true, frame:'circle', ladder:false, numbers:true,
     vocab:{circle:true, rect:true, line:true, tri:false}, nShapes:4, sizeExp:2.2, fill:.85, radius:0, strokeW:.01, angles:'d45', snap:false,
     inks:2, inkA:'red', inkB:'black', paper:'recycled', textInk:'black', colorRatio:'603010', accent:3, overprint:true, tMisX:2, tMisY:1, tGrain:.2, tStarve:.2, tPaper:.4,
-    img:true, treat:'thresh', cell:7, imgSpan:.5, mask:'cutout', crop:'tight', rules:{grid:false, avoid:true, max3:true}, strict:.7,
+    img:true, treat:'thresh', cell:7, imgSpan:.5, mask:'cutout', crop:'tight', rules:{grid:false, avoid:true, max3:true, scale:true, tiers:true}, strict:.7,
     furn:{reg:false, crop:false, bar:false, folio:true}, seed:44}},
 };
 
@@ -396,8 +396,8 @@ const GROUPS = [
     {type:'seg', key:'crop', label:L('裁切','Crop'), opts:[['tight',L('紧裁','Tight')],['loose',L('宽裁','Loose')]]},
     {type:'upload', label:L('原图','Source')},
   ]},
-  {t:L('约束规则','Rules'), s:'RULES', hint:L('Gerstner 式的“设计程序”：规则加上严格度。严格度是每个元素遵守规则的概率。','A Gerstner-style design programme: rules plus a strictness. Strictness is the chance that each element obeys.'), items:[
-    {type:'checks', key:'rules', label:L('规则','Rules'), opts:[['grid',L('一切贴网格','Everything on the grid')],['avoid',L('形状不压文字','Shapes avoid text')],['max3',L('最多 3 种字号','At most 3 sizes')]]},
+  {t:L('约束规则','Rules'), s:'RULES', hint:L('和谐不只是约束：共同的比例和线宽让元素彼此呼应，明确的主角提供对比，破格强度留出少量有意的例外。严格度是每个元素遵守规则的概率。','Harmony is more than constraint: a shared scale and line weights make elements relate, one clear hero supplies contrast, and rule-breaking leaves room for a few deliberate exceptions. Strictness is the chance that each element obeys.'), items:[
+    {type:'checks', key:'rules', label:L('规则','Rules'), opts:[['grid',L('一切贴网格','Everything on the grid')],['avoid',L('形状不压文字','Shapes avoid text')],['max3',L('最多 3 种字号','At most 3 sizes')],['scale',L('比例和谐','Harmonic scale')],['tiers',L('一个主角','One hero')]]},
     {type:'range', key:'strict', label:L('严格度','Strictness'), min:0, max:1, step:.05, fmt:pct},
   ]},
   {t:L('页面与节奏','Pages & rhythm'), s:'PAGES', hint:L('多页时，“交替”会轮流生成封面、满版图、密集文字和留白页，“重复”只换随机种子。','With several pages, Alternate cycles cover, full image, dense text and an airy page; Repeat only changes the seed.'), items:[
@@ -471,7 +471,7 @@ const TIPS = {
   img:{t:L('图像使用印痕实验室的加网算法；每种加网方式的历史和来源，见印痕实验室里的溯源。','The image uses the print lab\'s screening algorithms; see the print lab\'s provenance notes for each screen\'s history and sources.'), own:true},
   mask:{t:L('印前流程里的去背通常用剪切路径实现：只保留路径以内的图像。本页用亮度阈值近似去掉接近白色的背景，所以只适合白底图片。','In prepress, cutouts are usually made with a clipping path that keeps only the image inside it. This page approximates it by removing near-white pixels, so it works best on images with a white background.'), l:[['Clipping path',WK('Clipping_path')]]},
   crop:{t:L('紧裁只留局部，更有冲击力；宽裁保留环境，更像记录。','A tight crop keeps a detail and hits harder; a loose crop keeps the context and reads more like a record.'), own:true},
-  rules:{t:L('Gerstner 1964 年的《Designing Programmes》被出版社介绍为“计算机时代开端的系统化设计模型”；Rune Madsen 把其中的“设计程序”解读为由设计者定义、用来生成审美决定的规则集。严格度是每个元素遵守规则的概率。','Gerstner\'s Designing Programmes (1964) is described by its publisher as a model for systematic design at the dawn of the computer era; Rune Madsen reads a design programme as a designer-defined rule set that shapes aesthetic decisions. Strictness is the chance that each element obeys.'), l:[['Designing Programmes (Lars Müller)','https://www.lars-mueller-publishers.com/designing-programmes'],['Rune Madsen on Gerstner','https://runemadsen.com/blog/karl-gerstner-designing-programmes/']]},
+  rules:{t:L('Gerstner 1964 年的《Designing Programmes》被出版社介绍为“计算机时代开端的系统化设计模型”；Rune Madsen 把其中的“设计程序”解读为由设计者定义、用来生成审美决定的规则集。严格度是每个元素遵守规则的概率。“比例和谐”和“一个主角”是本页的规则：前者让形状、间距、线宽和角度都取自字号比例与主轴，后者让形状和图像始终明显小于最大的两个元素。','Gerstner\'s Designing Programmes (1964) is described by its publisher as a model for systematic design at the dawn of the computer era; Rune Madsen reads a design programme as a designer-defined rule set that shapes aesthetic decisions. Strictness is the chance that each element obeys. Harmonic scale and One hero are this page\'s own rules: the first takes shape sizes, spacing, line weights and angles from the type scale and the main axis; the second keeps shapes and the image clearly smaller than the two largest elements.'), l:[['Designing Programmes (Lars Müller)','https://www.lars-mueller-publishers.com/designing-programmes'],['Rune Madsen on Gerstner','https://runemadsen.com/blog/karl-gerstner-designing-programmes/']]},
   pages:{t:L('多页时，页与页之间的变化形成翻阅节奏：满版图、密集文字和留白页交替出现。','Across several pages, changes from page to page create a reading rhythm: full-bleed images, dense text and airy pages alternate.'), own:true},
   hoverShift:{t:L('悬停时油墨版位继续错开，模拟 Riso 的套色错位。','On hover the ink plates drift further apart, imitating Riso misregistration.'), own:true},
   parallax:{t:L('视差源自传统动画的多平面摄影机技术（1930 年代起），后来用于游戏和网页：各层以不同速度移动，产生纵深感。','Parallax grew out of the multiplane camera of traditional animation (from the 1930s) and later spread to games and the web: layers move at different speeds to create depth.'), l:[['Parallax scrolling',WK('Parallax_scrolling')]]},
@@ -622,9 +622,10 @@ function sourceCanvas(n, tight){
   g.restore();
   return c;
 }
-function screenImage(Q, inks, paperC, darkC){
-  const n = 420;
-  const key = [Q.treat,Q.cell,Q.crop,Q.mask,inks.join(),paperC,darkC,uploaded?uploaded.src.length:0].join('|');
+// screened at the size it is shown on the poster, so the dot size is in poster pixels and does not grow with the image
+function screenImage(Q, inks, paperC, darkC, side){
+  const n = Math.max(120, Math.min(1100, Math.round(side)));
+  const key = [n,Q.treat,Q.cell,Q.crop,Q.mask,inks.join(),paperC,darkC,uploaded?uploaded.src.length:0].join('|');
   if (imgCache.has(key)) return imgCache.get(key);
   const src = sourceCanvas(n, Q.crop==='tight'); const d = src.getContext('2d').getImageData(0,0,n,n).data;
   const out = document.createElement('canvas'); out.width = out.height = n; const ctx = out.getContext('2d');
@@ -637,7 +638,7 @@ function screenImage(Q, inks, paperC, darkC){
     alpha[i] = cut && Lm > .9 && Math.max(r,g,b)-Math.min(r,g,b) < .12 ? 0 : 255;
     if (two){ A[i]=Math.min(1,Math.max(0,(1-g)-(1-r)*.6)*1.1); B[i]=Math.min(1,(1-r)*1.05); } else A[i]=Math.min(1,dk*1.1);
   }
-  const cell = Q.cell*n/400, TAU = Math.PI*2;
+  const cell = Math.max(2, Q.cell * n/side), TAU = Math.PI*2;
   const mask = (pl, ang) => {
     const m = new Uint8Array(N), a = ang*Math.PI/180, c = Math.cos(a), s = Math.sin(a);
     if (Q.treat==='am' || Q.treat==='line'){
@@ -658,7 +659,7 @@ function screenImage(Q, inks, paperC, darkC){
       r*=1-a1*(1-cA[0]); g*=1-a1*(1-cA[1]); b*=1-a1*(1-cA[2]); r*=1-a2*(1-cD[0]); g*=1-a2*(1-cD[1]); b*=1-a2*(1-cD[2]);
       o[i*4]=r*255; o[i*4+1]=g*255; o[i*4+2]=b*255; o[i*4+3]=alpha[i]; }
   } else {
-    const mA = mask(A, 15), mB = two ? mask(B, 45) : null, off = Math.round(n*.006), monoC = inks.length>=2 ? cA : cD;
+    const mA = mask(A, 15), mB = two ? mask(B, 45) : null, off = Math.max(1, Math.round(cell*.3)), monoC = inks.length>=2 ? cA : cD;
     for (let y=0;y<n;y++) for (let x=0;x<n;x++){ const i=y*n+x; let r=pp[0], g=pp[1], b=pp[2];
       if (mA[i]){ const k = two ? cA : monoC; r*=1-.95*(1-k[0]); g*=1-.95*(1-k[1]); b*=1-.95*(1-k[2]); }
       if (mB){ const xs=x-off, ys=y-off; if (xs>=0&&ys>=0&&mB[ys*n+xs]){ r*=1-.95*(1-cB[0]); g*=1-.95*(1-cB[1]); b*=1-.95*(1-cB[2]); } }
@@ -723,7 +724,14 @@ function renderPage(poster, Q, pageIdx){
   let cap = base/Q.ratio, sub = base*Q.ratio*Q.ratio, quote = base*Math.pow(Q.ratio,3);
   const titleSize = Q.titleScale*W*(Q.format==='web' && W<600 ? 1.4 : 1);
   if (Q.rules.max3){ cap = base; quote = sub; }
-  const gap = base*(.6 + Q.white*1.8);
+  // harmonic scale: one modular scale (body size × ratio^k) for type, shapes and spacing, and one set of line weights
+  const harm = !!Q.rules.scale;
+  const SCALE = []; for (let kk=-3; kk<=12; kk++) SCALE.push(base*Math.pow(Q.ratio, kk));
+  const toScale = v => SCALE.reduce((b,s) => Math.abs(Math.log(s/v)) < Math.abs(Math.log(b/v)) ? s : b, SCALE[0]);
+  const floorScale = v => SCALE.filter(s => s <= v*1.0001).pop() || SCALE[0];
+  const stem = Math.max(1.5, base*.09);                       // roughly the stroke of the body text
+  const WEIGHTS = [stem, stem*Q.ratio, stem*Q.ratio*Q.ratio, stem*Math.pow(Q.ratio,3)];
+  const gap = harm ? toScale(base*(.6 + Q.white*1.8)) : base*(.6 + Q.white*1.8);
   const tertiaryOp = Q.ladder ? .55 : 1, bodyOp = Q.ladder ? .82 : 1;
 
   // layers: an isolated ink group (so overprint works and the texture filter can bite), then marks and overlays on top
@@ -893,7 +901,12 @@ function renderPage(poster, Q, pageIdx){
     else if (iy + ih > limit + (Q.layers>=2 ? ih*.3 : 0)) iy = Math.max(m*.5, limit + (Q.layers>=2 ? ih*.3 : 0) - ih);
     let ix = colX(ic) + (ic + ki >= cols && Q.layers===0 ? spanW(ki) - iw : 0);
     if (bleedOK && Q.breakS > .3){ const push = Q.breakS*.14*W; ix += (ic + ki >= cols ? push : (ic===0 ? -push : 0)); }
-    const cv = screenImage(Q, inkList, paperC, textIdx>=0 ? textC : '#161616');
+    // one hero: an image that is close to the title in size competes with it, so it steps down one scale step
+    if (Q.rules.tiers && obey()){
+      const tLin = Math.sqrt(tR.w*tR.h), iLin = Math.sqrt(iw*ih);
+      if (iLin < tLin*1.3 && iLin > tLin/1.3){ iw /= Q.ratio; ih /= Q.ratio; }
+    }
+    const cv = screenImage(Q, inkList, paperC, textIdx>=0 ? textC : '#161616', Math.max(iw, ih));
     const holder = document.createElement('div'); holder.className = 'el';
     const radius = Q.mask==='circle' ? 'border-radius:50%;' : Q.mask==='arch' ? `border-radius:${iw/2}px ${iw/2}px 0 0;` : '';
     holder.style.cssText = `position:absolute;left:${ix}px;top:${iy}px;width:${iw}px;height:${ih}px;overflow:hidden;mix-blend-mode:${blend};${radius}${rot(jit())}`;
@@ -940,9 +953,9 @@ function renderPage(poster, Q, pageIdx){
 
   // size progression toward the title
   if (Q.sizeSeq){
-    const fromX = flip ? W - m : m, fromY = H - m - base*4, n = 5, s0 = W*.018;
+    const fromX = flip ? W - m : m, fromY = H - m - base*4, n = 5, s0 = harm ? toScale(W*.018) : W*.018, step = harm ? Q.ratio : 1.55;
     for (let i=0;i<n;i++){
-      const t = i/(n-1), x = fromX + (cX - fromX)*t*.75, y = fromY + (cY - fromY)*t*.75, s = s0*Math.pow(1.55, i);
+      const t = i/(n-1), x = fromX + (cX - fromX)*t*.75, y = fromY + (cY - fromY)*t*.75, s = s0*Math.pow(step, i);
       const shape = Q.vocab.circle || !Q.vocab.rect ? svgEl('circle', {cx:x, cy:y, r:s/2}) : svgEl('rect', {x:x-s/2, y:y-s/2, width:s, height:s});
       shape.setAttribute('fill', inkList[0]); shape.style.mixBlendMode = blend; back._g[0].appendChild(shape);
     }
@@ -952,6 +965,11 @@ function renderPage(poster, Q, pageIdx){
   const vocab = Object.keys(Q.vocab).filter(k => Q.vocab[k]); if (!vocab.length) vocab.push('rect');
   const nS = Math.round(Q.nShapes * (1.35 - Q.white*.7));
   const shapeBoxes = [];
+  // one hero: shapes stay clearly below the two largest elements. The first shape may reach one scale step below
+  // the second-largest element, every other shape two steps below.
+  const tLin = Math.sqrt(tR.w*tR.h), iLin = imgBox ? Math.sqrt(imgBox.w*imgBox.h) : 0;
+  const secondLin = imgBox ? Math.min(tLin, iLin) : tLin/Q.ratio;
+  let bigUsed = false;
   for (let i=0;i<nS;i++){
     const type = vocab[Math.floor(rng()*vocab.length)];
     const accentShape = i < Q.accent, inkIdx = accentShape ? pickInk() : -1;
@@ -959,7 +977,9 @@ function renderPage(poster, Q, pageIdx){
     const grp = accentShape ? Math.min(inkIdx, 2) : Math.max(0, textIdx);
     const snapThis = Q.snap || (Q.rules.grid && obey());
     const avoidThis = Q.rules.avoid && obey();
-    const sw = Math.max(1.5, Q.strokeW*W);
+    const harmThis = harm && obey(), tierThis = Q.rules.tiers && obey();
+    const sw = harmThis ? WEIGHTS[1] : Math.max(1.5, Q.strokeW*W);
+    const cap1 = secondLin/Q.ratio, cap2 = secondLin/(Q.ratio*Q.ratio);
     let x, y, s, h, tries = 0, box;
     do {
       const u = Math.pow(rng(), Q.sizeExp);
@@ -976,11 +996,22 @@ function renderPage(poster, Q, pageIdx){
       }
       h = type==='rect' ? (snapThis ? rowH*(1 + Math.floor(rng()*2)) : s*(.4+.6*rng())) : type==='line' ? Math.max(4, W*(.006 + .014*rng())) : s;
       if (type==='line' && !snapThis) s *= 1.4;
+      if (tierThis){
+        const lim = bigUsed ? cap2 : cap1, lin = type==='line' ? s/2 : Math.max(Math.sqrt(s*h), Math.max(s,h)*.6);   // long thin bars count by their length too
+        if (lin > lim){ const f = lim/lin; s *= f; if (type!=='line') h *= f; }
+      }
+      if (harmThis && !snapThis){
+        s = floorScale(s);
+        if (type==='rect') h = floorScale(h); else if (type==='line') h = WEIGHTS[2 + Math.floor(rng()*2)]; else h = s;
+      }
       box = {x, y, w:s, h};
     } while (avoidThis && textRects.some(r => inter(r, box, 6)) && ++tries < 40);
     if (avoidThis && tries >= 40) continue;
+    if (tierThis && (type==='line' ? s/2 : Math.max(Math.sqrt(s*h), Math.max(s,h)*.6)) > cap2) bigUsed = true;
     let ang = Q.angles==='ortho' || snapThis ? (rng()<.5?0:90) : Q.angles==='d45' ? [0,45,90][Math.floor(rng()*3)] : rng()*360;
     if (type==='line') ang = (Q.angles==='free' && !snapThis) ? ang : (rng()<.75 ? 0 : (Q.angles==='d45' ? 45 : 90));
+    // harmonic angles: free and 45° shapes take their angles from the main axis instead of anywhere on the dial
+    if (harmThis && !snapThis && Q.angles!=='ortho') ang = Q.axis + [0, 90, 45, -45][Math.floor(rng()*(Q.angles==='d45' ? 4 : 2))];
     if (type==='circle') ang = 0;
     if (!snapThis) ang += jit();
     if (snapThis && type==='line' && ang===90){ box = {x:x + s/2 - h/2, y:y - s/2 + h/2, w:h, h:s}; }
@@ -1006,7 +1037,8 @@ function renderPage(poster, Q, pageIdx){
     const sx = ra.x + ra.w*.85, sy = ra.y + ra.h + base*.6, tx = rb.x + rb.w*.5, tyy = rb.y + Math.min(rb.h*.3, base*4);
     const dx = tx - sx, dy = tyy - sy, len = Math.hypot(dx, dy);
     if (len > W*.08){
-      const ux = dx/len, uy = dy/len, ex = tx - ux*W*.025, ey = tyy - uy*W*.025, hw = W*.017, sw2 = Math.max(3, W*.005), ai = inkList.length>1 ? 1 : 0;
+      const sw2 = harm ? WEIGHTS[1] : Math.max(3, W*.005), hw = harm ? sw2*3.4 : W*.017;
+      const ux = dx/len, uy = dy/len, ex = tx - ux*W*.025, ey = tyy - uy*W*.025, ai = inkList.length>1 ? 1 : 0;
       const ln = svgEl('line', {x1:sx, y1:sy, x2:ex - ux*hw, y2:ey - uy*hw, stroke:inkList[ai], 'stroke-width':sw2});
       const hd = svgEl('polygon', {points:`${ex},${ey} ${ex-ux*hw*1.6-uy*hw},${ey-uy*hw*1.6+ux*hw} ${ex-ux*hw*1.6+uy*hw},${ey-uy*hw*1.6-ux*hw}`, fill:inkList[ai]});
       [ln, hd].forEach(e => { e.style.mixBlendMode = blend; if (Q.axis) e.setAttribute('transform', `rotate(${Q.axis} ${pivot[0]} ${pivot[1]})`); front._g[ai].appendChild(e); });

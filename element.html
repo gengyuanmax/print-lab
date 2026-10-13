@@ -264,6 +264,18 @@ canvas.mixcv{touch-action:none;cursor:grab}
       <li><a href="https://standardsmanual.com/products/nasa-graphics-standards-manual" target="_blank" rel="noopener">NASA Graphics Standards Manual (1975)</a><span><span class="zh">Danne & Blackburn · 通过统一的视觉规范保持不同应用场景中的一致性</span><span class="en">Danne & Blackburn · one standard for every application</span></span></li>
       <li><a href="https://www.ibm.com/design/language/illustration/overview" target="_blank" rel="noopener">IBM Design Language · Illustration</a><span><span class="zh">通过网格、形状、角度和圆角规范统一插画风格，减少无助于表达的装饰</span><span class="en">Consistency comes from the grid and consistent shapes, angles and radii; only essential, non-decorative elements</span></span></li>
     </ol>
+    <h3><span class="zh">组合与单元素处理</span><span class="en">Combining and single-element moves</span></h3>
+    <ol>
+      <li><a href="https://en.wikipedia.org/wiki/Overprinting" target="_blank" rel="noopener">Overprinting</a><span><span class="zh">Wikipedia · 叠印是把一种颜色印在另一种颜色上；PostScript 默认挖空</span><span class="en">Wikipedia · printing one colour on top of another; PostScript knocks out by default</span></span></li>
+      <li><a href="https://en.wikipedia.org/wiki/Trap_(printing)" target="_blank" rel="noopener">Trap (printing)</a><span><span class="zh">Wikipedia · 错位会留下白缝，用外扩（spread）或内缩（choke）让相邻颜色略微重叠</span><span class="en">Wikipedia · misregistration leaves gaps; spreads and chokes overlap adjacent colours slightly</span></span></li>
+      <li><a href="https://en.wikipedia.org/wiki/Clipping_path" target="_blank" rel="noopener">Clipping path</a><span><span class="zh">Wikipedia · 用一条闭合路径裁出图像，剪切蒙版和同版填充都基于它</span><span class="en">Wikipedia · a closed path that cuts out an image; clip and fill-inside both build on it</span></span></li>
+      <li><a href="https://en.wikipedia.org/wiki/Boolean_operations_on_polygons" target="_blank" rel="noopener">Boolean operations on polygons</a><span><span class="zh">Wikipedia · 图形的 AND / OR / XOR 运算，对应交集、并集和排除重叠</span><span class="en">Wikipedia · AND / OR / XOR on shapes, i.e. intersect, union and exclude</span></span></li>
+      <li><a href="https://en.wikipedia.org/wiki/Halftone" target="_blank" rel="noopener">Halftone</a><span><span class="zh">Wikipedia · 用网点模拟连续调图像</span><span class="en">Wikipedia · simulating continuous-tone images with dots</span></span></li>
+      <li><a href="https://en.wikipedia.org/wiki/Ben-Day_dots" target="_blank" rel="noopener">Ben-Day dots</a><span><span class="zh">Wikipedia · 等大等距的网点；Lichtenstein 把它们放大夸张，用在绘画和雕塑里</span><span class="en">Wikipedia · dots of equal size and spacing; Lichtenstein enlarged and exaggerated them in his paintings and sculptures</span></span></li>
+      <li><a href="https://en.wikipedia.org/wiki/Copy_art" target="_blank" rel="noopener">Copy art</a><span><span class="zh">Wikipedia · Copy Motion：扫描过程中移动原稿制造的效果</span><span class="en">Wikipedia · Copy Motion: moving the original on the platen during scanning</span></span></li>
+      <li><a href="https://en.wikipedia.org/wiki/Marilyn_Diptych" target="_blank" rel="noopener">Marilyn Diptych</a><span><span class="zh">Warhol，1962 · 丝网，同一张照片重复 50 次</span><span class="en">Warhol, 1962 · silkscreen, one photo repeated 50 times</span></span></li>
+    </ol>
+    <p class="note" style="margin-top:14px"><span class="zh">硬阴影、交织、镜像、条带错位和去底没有找到可靠的单一出处，组合台里标为“本页做法”。</span><span class="en">Hard shadow, interweave, mirror, shifted strips and background removal have no reliable single source; the Composer marks them “this page”.</span></p>
     <p class="note" style="margin-top:14px"><span class="zh">本页参考印前建议与视觉设计方法，并做了适合网页演示的简化。“规则启用情况”只显示开关状态；“套色偏差提示”依据预设的组合方式给出说明，不能替代实际印前检查。实际制作请以承印方要求为准。</span><span class="en">There is no existing guide to translating web components into Riso / halftone language; steps tagged “This page” are this lab's synthesis of the two groups of sources above.</span></p>
   </section>
 </div>
@@ -898,26 +910,36 @@ const MV = {
 const MVNOTE = Object.assign({}, IMNOTE, {
   form:L('剪影只留轮廓，线稿只留边缘：照片、拟物会被压成和几何、文字同一抽象程度的图形；形状和文字变成线框。','A silhouette keeps only the outline, line art only the edges: photos and objects are pressed down to the abstraction of geometry and type; shapes and type become outlines.'),
   tone:L('浅色在 Riso 上靠网点或墨量实现；同一种墨的 30% 和 100% 放在一起，就是一种墨里的两种颜色。','On a Riso, light tones come from screening or ink coverage; 30% and 100% of one ink side by side give two colours from one drum.'),
-  dots:L('连续调是理想化的平滑灰阶；真实的 Riso 和胶印要把灰阶变成网点。放大网点让网点本身成为图形，像波普漫画。','Contone is an idealised smooth tone; a real Riso or offset press turns tone into dots. Giant dots make the dots the graphic, as in pop comics.'),
+  dots:L('连续调是理想化的平滑灰阶，印刷要用网点模拟它（半色调）。放大网点让网点本身成为图形，Lichtenstein 就把漫画里的 Ben-Day 网点放大成画面的主角。','Contone is an idealised smooth tone; print simulates it with dots (halftone). Giant dots make the dots the graphic: Lichtenstein enlarged the Ben-Day dots of comics into the subject of his paintings.'),
   echo:L('用另一种墨把同一个元素错开再印一遍，是刻意放大的套色错位。','The same element printed again in the other ink, offset: misregistration on purpose.'),
-  crop:L('裁切决定主角和尺度：紧裁让局部变成图形，长条像电影画幅。只对照片和拟物有意义。','Cropping decides the subject and the scale: a tight crop turns a detail into a shape, a strip reads like a film frame. Only meaningful for photos and objects.'),
+  repeat:L('并排重复同一个元素，形成节奏。Warhol 1962 年的《Marilyn Diptych》用丝网把同一张照片重复了 50 次，左半彩色、右半渐淡的黑白。','Repeating one element side by side sets up a rhythm. Warhol\'s Marilyn Diptych (1962) silkscreens one photo 50 times, colour on the left, fading black and white on the right.'),
+  drag:L('复印或扫描时移动原稿，画面会被拉出拖痕；Copy art 把这种做法叫 Copy Motion。','Moving the original while it is copied or scanned drags the image into streaks; copy art calls this Copy Motion.'),
+  crop:L('裁切决定主角和尺度：局部特写让细节变成图形，横向窄幅像电影画幅。只对照片和实物有意义。','Cropping decides the subject and the scale: a tight crop turns a detail into a shape, a strip reads like a film frame. Only meaningful for photos and objects.'),
 });
 // ways to combine two elements; A is the lower element, B the upper one
 const MXOPS = [
-  {id:'over', t:L('叠印','Overprint'), d:L('两块色版分别完整印刷，在重叠区域形成混色。Riso 油墨是透明的，这是它最自然的状态。','Both plates print in full; the overlap prints a third colour. Riso inks are transparent, so this is their natural state.'), safe:true, l:['Overprinting','https://en.wikipedia.org/wiki/Overprinting']},
-  {id:'opaque', t:L('不透明遮盖','Opaque cover'), d:L('B 直接盖住 A，不混色。需要不透明的墨或先垫一层白墨；大多数 Riso 墨做不到。','B simply covers A, no mixing. It needs an opaque ink or a white underlay; most Riso inks cannot do it.'), safe:true, l:['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']},
-  {id:'knock', t:L('挖空','Knockout'), d:L('从 A 版中移除 B 图形所占的区域，再印上 B 版。这是数码印前的默认做法，两版错位时，交界处会出现白缝。','B\'s shape is cut out of A\'s plate and B prints into the hole; the digital prepress default, and a miss shows a white gap.'), safe:false, l:['Overprinting','https://en.wikipedia.org/wiki/Overprinting']},
-  {id:'trap', t:L('挖空 + 陷印','Knockout + trap'), d:L('让相邻色块的边缘略微重叠，减少套印不准造成的白缝。本页通过缩小 A 版的挖空区域来模拟；偏差过大时仍可能露白。','The hole is choked a little so A runs under B: a miss shows a thin dark line, not a white gap.'), safe:true, l:['Trap (printing)','https://en.wikipedia.org/wiki/Trap_(printing)']},
-  {id:'keyline', t:L('留白描边','Paper keyline'), d:L('B 周围留一圈纸色，把两者隔开：错位被这圈空隙吃掉，图上压字时最常用。','A ring of paper around B separates the two: the gap absorbs the miss. The usual way to set type over an image.'), safe:true},
+  {id:'over', t:L('叠印','Overprint'), d:L('两块色版分别完整印刷，在重叠区域形成混色。MICA 和 Oxford Greenprint 都指出 Riso 油墨是透明的，叠在一起会混出新颜色，这是它最自然的状态。','Both plates print in full; the overlap prints a third colour. MICA and Oxford Greenprint both note that Riso inks are translucent and mix where they overlap, so this is their natural state.'), safe:true, l:[['Overprinting','https://en.wikipedia.org/wiki/Overprinting'], ['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/'], ['Oxford Greenprint','https://oxfordgreenprint.com/home/design-for-riso/']]},
+  {id:'opaque', t:L('不透明遮盖','Opaque cover'), d:L('B 直接盖住 A，不混色。MICA 指出 Riso 油墨是透明的，只是透明程度不同：100% 红叠在 100% 黄上只得到红色。要真正盖住，需要较不透明的墨，或先在 B 下面垫一层白墨。','B simply covers A, no mixing. MICA notes that Riso inks are transparent, some less than others: 100% red over 100% yellow just makes red. A real cover needs a less transparent ink, or a white underlay under B.'), safe:true, l:[['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']]},
+  {id:'knock', t:L('挖空','Knockout'), d:L('从 A 版中移除 B 图形所占的区域，再印上 B 版。这是数码印前的默认做法，两版错位时，交界处会出现白缝。','B\'s shape is cut out of A\'s plate and B prints into the hole; the digital prepress default, and a miss shows a white gap.'), safe:false, l:[['Overprinting','https://en.wikipedia.org/wiki/Overprinting'], ['Trap (printing)','https://en.wikipedia.org/wiki/Trap_(printing)']]},
+  {id:'trap', t:L('挖空 + 陷印','Knockout + trap'), d:L('让相邻色块的边缘略微重叠，减少套印不准造成的白缝。本页通过缩小 A 版的挖空区域来模拟；偏差过大时仍可能露白。','The hole is choked a little so A runs under B: a miss shows a thin dark line, not a white gap.'), safe:true, l:[['Trap (printing)','https://en.wikipedia.org/wiki/Trap_(printing)']]},
+  {id:'keyline', t:L('留白描边','Paper keyline'), d:L('B 周围留一圈纸色，把两者隔开：错位被这圈空隙吃掉，图上压字时最常用。Oxford Greenprint 建议不同颜色的文字和色框之间至少留 5 mm，让它们永远碰不到。','A ring of paper around B separates the two: the gap absorbs the miss. The usual way to set type over an image. Oxford Greenprint advises at least 5 mm between text and a box in another colour so they never touch.'), safe:true, l:[['Oxford Greenprint','https://oxfordgreenprint.com/home/design-for-riso/']]},
   {id:'shadow', t:L('硬阴影','Hard shadow'), d:L('B 的形状用另一种墨偏移一点垫在下面，当作阴影。错位只会让阴影偏多偏少。','B\'s shape, offset in the other ink, sits underneath as a shadow. A miss only makes the shadow a little bigger or smaller.'), safe:true},
-  {id:'reverse', t:L('反白','Reverse'), d:L('从 A 版中挖空 B 图形所在区域，不再印 B 版，让图形呈现纸色。只用一块色版，无需两版套准。','B is cut out of A and not printed: it stays paper. One plate, so a miss cannot hurt it.'), safe:true},
+  {id:'reverse', t:L('反白','Reverse'), d:L('从 A 版中挖空 B 图形所在区域，不再印 B 版，让图形呈现纸色。只用一块色版，无需两版套准。','B is cut out of A and not printed: it stays paper. One plate, so a miss cannot hurt it.'), safe:true, l:[['Oxford Greenprint','https://oxfordgreenprint.com/home/design-for-riso/']]},
   {id:'weave', t:L('交织','Interweave'), d:L('一部分 B 在 A 上面，一部分在 A 下面，像穿过去一样；每一处交叉都是挖空，需要套准。','B passes over A in some places and under it in others; every crossing is a knockout, so it needs register.'), safe:false},
-  {id:'union', t:L('并集','Union'), d:L('将 A 与 B 的覆盖区域合为一个图形，用 A 的色版印刷。','A and B merge into one shape on A\'s plate.'), safe:true},
-  {id:'inter', t:L('交集','Intersect'), d:L('只印两者重叠的部分，印在 A 的版上。','Only the overlap prints, on A\'s plate.'), safe:true},
-  {id:'xor', t:L('排除重叠','Exclude'), d:L('印两者不重叠的部分，重叠处留白；一块版。','The parts that do not overlap print, the overlap stays paper; one plate.'), safe:true},
-  {id:'fill', t:L('同版填充','Fill inside · one plate'), d:L('B 只出现在 A 的形状里面，并且用 A 的墨印在同一块版上：比如照片在大字里。一块版，不怕错位。','B appears only inside A\'s shape, printed in A\'s ink on the same plate, like a photo inside large letters. One plate, so a miss cannot hurt it.'), safe:true},
-  {id:'clip', t:L('剪切蒙版 + 描边','Clip + outline'), d:L('只保留 B 落在 A 图形内部的部分，A 的轮廓用另一块色版描出，因此两版仍需套准。','B appears only inside A\'s shape and A\'s outline prints on another plate; the two plates still have to line up.'), safe:false},
+  {id:'union', t:L('并集','Union'), d:L('将 A 与 B 的覆盖区域合为一个图形，用 A 的色版印刷。','A and B merge into one shape on A\'s plate.'), safe:true, l:[['Boolean operations on polygons','https://en.wikipedia.org/wiki/Boolean_operations_on_polygons']]},
+  {id:'inter', t:L('交集','Intersect'), d:L('只印两者重叠的部分，印在 A 的版上。','Only the overlap prints, on A\'s plate.'), safe:true, l:[['Boolean operations on polygons','https://en.wikipedia.org/wiki/Boolean_operations_on_polygons']]},
+  {id:'xor', t:L('排除重叠','Exclude'), d:L('印两者不重叠的部分，重叠处留白；一块版。','The parts that do not overlap print, the overlap stays paper; one plate.'), safe:true, l:[['Boolean operations on polygons','https://en.wikipedia.org/wiki/Boolean_operations_on_polygons']]},
+  {id:'fill', t:L('同版填充','Fill inside · one plate'), d:L('B 只出现在 A 的形状里面，并且用 A 的墨印在同一块版上：比如照片在大字里。一块版，不怕错位。','B appears only inside A\'s shape, printed in A\'s ink on the same plate, like a photo inside large letters. One plate, so a miss cannot hurt it.'), safe:true, l:[['Clipping path','https://en.wikipedia.org/wiki/Clipping_path'], ['Oxford Greenprint','https://oxfordgreenprint.com/home/design-for-riso/']]},
+  {id:'clip', t:L('剪切蒙版 + 描边','Clip + outline'), d:L('只保留 B 落在 A 图形内部的部分，A 的轮廓用另一块色版描出，因此两版仍需套准。','B appears only inside A\'s shape and A\'s outline prints on another plate; the two plates still have to line up.'), safe:false, l:[['Clipping path','https://en.wikipedia.org/wiki/Clipping_path'], ['Oxford Greenprint','https://oxfordgreenprint.com/home/design-for-riso/']]},
 ];
+const MVSRC = {
+  form:[['Isotype','https://en.wikipedia.org/wiki/Isotype_(picture_language)']],
+  repeat:[['Marilyn Diptych','https://en.wikipedia.org/wiki/Marilyn_Diptych']],
+  drag:[['Copy art','https://en.wikipedia.org/wiki/Copy_art']],
+  tone:[['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']],
+  dots:[['Halftone','https://en.wikipedia.org/wiki/Halftone'], ['Ben-Day dots','https://en.wikipedia.org/wiki/Ben-Day_dots']],
+  echo:[['Oxford Greenprint','https://oxfordgreenprint.com/home/design-for-riso/']],
+};
 const MVDEF = {crop:'none', cut:'none', mirror:'none', slice:'none', form:'full', repeat:'1', drag:'none', tone:'100', dots:'solid', echo:'none'};
 const mkEl = o => Object.assign({type:'shape', shape:'circle', text:'INK', font:'sans', photo:'scene', ink:'a', x:CW/2, y:CH/2, size:100, rot:0, mv:Object.assign({}, MVDEF)}, o);
 S.mix = {n:2, sel:'b', op:'over', mis:1.5, last:null, els:{
@@ -1135,16 +1157,16 @@ function mxChecks(){
   const sameInk = M.n===2 && ink[M.els.a.ink]===ink[M.els.b.ink];
   if (M.n===2){
     const o = MXOPS.find(x => x.id===M.op), safe = sameInk || o.safe;
-    li.push({ok:safe, b:safe ? (LANG==='zh' ? '安全' : 'Safe') : (LANG==='zh' ? '注意' : 'Care'), t:o.t, w:sameInk ? L('两个元素用同一种墨，在同一块版上，不会互相错位。','Both elements use the same ink, so they sit on one plate and cannot miss each other.') : o.d, l:o.l});
+    li.push({ok:safe, b:safe ? (LANG==='zh' ? '安全' : 'Safe') : (LANG==='zh' ? '注意' : 'Care'), t:o.t, w:sameInk ? L('两个元素用同一种墨，在同一块版上，不会互相错位；Oxford Greenprint 也建议用同一种颜色来避开错位。','Both elements use the same ink, so they sit on one plate and cannot miss each other; Oxford Greenprint also suggests one colour as the way around misregistration.') : o.d, l:sameInk ? [['Oxford Greenprint','https://oxfordgreenprint.com/home/design-for-riso/']] : o.l});
   }
   els.forEach(s => { const e = M.els[s], tag = s.toUpperCase() + ' · ';
-    if ((e.type==='photo' || e.type==='obj') && e.mv.form==='full' && e.mv.dots==='solid') li.push({ok:false, b:LANG==='zh' ? '不适配' : 'Off', t:L(tag + '连续调要加网', tag + 'Contone needs a screen'), w:L('平滑的灰阶在 Riso 和胶印上都印不出来，要先变成网点。把“网点”设成网点或放大网点。','Smooth tone cannot print on a Riso or offset press; it has to become dots first. Set Screen to dots or giant dots.'), l:['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']});
-    if (e.type==='text' && e.size < 60 && (e.mv.echo==='ink' || (M.n===2 && !sameInk && ['over','knock'].includes(M.op)))) li.push({ok:false, b:LANG==='zh' ? '不适配' : 'Off', t:L(tag + '小字跨两块版', tag + 'Small type across two plates'), w:L('小字用两种墨会糊：只用一种墨，错位留给大字。','Small type in two inks blurs: keep it to one ink and leave the miss to big type.'), l:['Good Press','https://goodpress.co.uk/pages/file-preparation']});
-    Object.keys(MVDEF).filter(k => e.mv[k]!==MVDEF[k] && MVNOTE[k]).forEach(k => li.push({ok:true, b:LANG==='zh' ? '处理' : 'Move', t:L(tag + T(MVNAME[k]), tag + T(MVNAME[k])), w:MVNOTE[k]}));
+    if ((e.type==='photo' || e.type==='obj') && e.mv.form==='full' && e.mv.dots==='solid') li.push({ok:false, b:LANG==='zh' ? '不适配' : 'Off', t:L(tag + '连续调要加网', tag + 'Contone needs a screen'), w:L('印刷用网点模拟连续调（半色调），平滑的灰阶要先变成网点。把“网点”设成网点或放大网点。','Print simulates continuous tone with dots (halftone): smooth tone has to become dots first. Set Screen to dots or giant dots.'), l:[['Halftone','https://en.wikipedia.org/wiki/Halftone']]});
+    if (e.type==='text' && e.size < 60 && (e.mv.echo==='ink' || (M.n===2 && !sameInk && ['over','knock'].includes(M.op)))) li.push({ok:false, b:LANG==='zh' ? '不适配' : 'Off', t:L(tag + '小字跨两块版', tag + 'Small type across two plates'), w:L('小字用两种墨会糊：只用一种墨，错位留给大字。','Small type in two inks blurs: keep it to one ink and leave the miss to big type.'), l:[['Good Press','https://goodpress.co.uk/pages/file-preparation']]});
+    Object.keys(MVDEF).filter(k => e.mv[k]!==MVDEF[k] && MVNOTE[k]).forEach(k => li.push({ok:true, b:LANG==='zh' ? '处理' : 'Move', t:L(tag + T(MVNAME[k]), tag + T(MVNAME[k])), w:MVNOTE[k], l:MVSRC[k]}));
   });
   const ok = li.filter(c => c.ok).length;
   $('score').textContent = `${ok} / ${li.length}`;
-  $('checks').innerHTML = li.map(c => `<li class="${c.ok ? 'ok' : 'warn'}"><b>${c.b}</b><span>${T(c.t)} <em>· ${T(c.w)}${c.l ? ` <a href="${c.l[1]}" target="_blank" rel="noopener">${c.l[0]}</a>` : ''}</em></span></li>`).join('');
+  $('checks').innerHTML = li.map(c => `<li class="${c.ok ? 'ok' : 'warn'}"><b>${c.b}</b><span>${T(c.t)} <em>· ${T(c.w)}${c.l ? ' ' + c.l.map(x => `<a href="${x[1]}" target="_blank" rel="noopener">${x[0]}</a>`).join(' · ') : ` ${LANG==='zh' ? '本页做法' : 'this page'}`}</em></span></li>`).join('');
 }
 // dragging on the sheet moves whichever element is under the pointer (B first, it is on top)
 function mxBindDrag(cv){

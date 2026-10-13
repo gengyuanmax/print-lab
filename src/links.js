@@ -3,12 +3,13 @@
 (() => {
   const h = location.hostname;
   const local = h.endsWith('github.io') || location.protocol === 'file:' || h === 'localhost' || h === '127.0.0.1';
-  const FILE = {home:'index.html', print:'print.html', layout:'layout.html', object:'object.html'};
+  const FILE = {home:'index.html', print:'print.html', layout:'layout.html', object:'object.html', element:'element.html'};
   const ART = {
     home:'@ART_HOME@',
     print:'https://claude.ai/artifact/BEBGEYAVkseDmEd78EbxS4',
     layout:'https://claude.ai/artifact/3kpSy3NxXfTr8N6h2EhqAB',
     object:'@ART_OBJECT@',
+    element:'@ART_ELEMENT@',
   };
   const wire = () => document.querySelectorAll('a[data-page]').forEach(a => {
     const k = a.dataset.page;

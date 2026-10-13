@@ -12,13 +12,14 @@ import pathlib, re
 
 ROOT = pathlib.Path(__file__).parent
 SRC, DIST = ROOT / 'src', ROOT / 'dist'
-PAGES = {'home.html': 'index.html', 'print.html': 'print.html', 'layout.html': 'layout.html', 'object.html': 'object.html'}
+PAGES = {'home.html': 'index.html', 'print.html': 'print.html', 'layout.html': 'layout.html', 'object.html': 'object.html', 'element.html': 'element.html'}
 HOME_ARTIFACT = 'https://claude.ai/artifact/PeE1kDmTykEsa3FWtq1ujK'
 OBJECT_ARTIFACT = 'https://claude.ai/artifact/MDsc8WCa1yWzZArUPnWvAo'
+ELEMENT_ARTIFACT = 'https://claude.ai/artifact/42e7hhVJtn6MSQRErAsAqR'
 
 def inline(src: str) -> str:
     shared = (SRC / 'shared.css').read_text()
-    links = (SRC / 'links.js').read_text().replace('@ART_HOME@', HOME_ARTIFACT).replace('@ART_OBJECT@', OBJECT_ARTIFACT)
+    links = (SRC / 'links.js').read_text().replace('@ART_HOME@', HOME_ARTIFACT).replace('@ART_OBJECT@', OBJECT_ARTIFACT).replace('@ART_ELEMENT@', ELEMENT_ARTIFACT)
     assert src.count('/*@shared*/') == 1 and src.count('/*@links*/') == 1
     return src.replace('/*@shared*/', shared).replace('/*@links*/', links)
 

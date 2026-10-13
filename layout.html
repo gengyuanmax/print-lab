@@ -551,7 +551,7 @@ function control(it){
   } else if (it.type==='toggle'){
     d = document.createElement('div'); d.className='row2';
     d.innerHTML = `<span class="lb">${T(it.label)}${infoBtn(it.key, T(it.label))}</span><div class="seg"><button type="button" id="${id}"></button></div>`;
-    const b = d.querySelector('button');
+    const b = d.querySelector('.seg button');   // the on/off button, not the i button in the label
     b.addEventListener('click', () => { P[it.key] = !P[it.key]; manual(); syncPanel(); render(); });
     d._sync = () => { b.setAttribute('aria-pressed', !!P[it.key]); b.textContent = P[it.key] ? (LANG==='zh'?'开':'On') : (LANG==='zh'?'关':'Off'); };
   } else if (it.type==='swatch'){

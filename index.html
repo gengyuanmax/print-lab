@@ -1,0 +1,708 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>印痕实验室</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@400;700;900&display=swap">
+<style>
+/* Layout: print-shop proof sheet — large proof on the left with registration marks and a colour control strip, parameter "job ticket" on the right, preset contact sheet below. Single committed paper look. */
+:root{
+  --paper:#F1F0EB;
+  --sheet:#FBFBF8;
+  --ink:#1C1B22;
+  --muted:#5E5C66;
+  --rule:#CFCCC4;
+  --pink:#FF48B0;
+  --blue:#0078BF;
+  --display:"Bricolage Grotesque","Noto Sans SC",system-ui,sans-serif;
+  --body:"IBM Plex Sans","Noto Sans SC",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:28px 56px}
+
+/* masthead */
+.mast{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px 32px;align-items:end;border-bottom:3px solid var(--ink);padding-bottom:18px;margin-bottom:28px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);grid-column:1/-1}
+.mis{display:grid;margin:0;font-family:var(--display);font-weight:900;font-size:clamp(48px,9vw,112px);line-height:.92;letter-spacing:-.02em}
+.mis span{grid-area:1/1;mix-blend-mode:multiply}
+.mis span:first-child{color:var(--pink)}
+.mis span:last-child{color:var(--blue);transform:translate(.045em,.03em)}
+.lede{max-width:34em;margin:0;color:var(--muted);text-wrap:pretty}
+@media (max-width:760px){.mast{grid-template-columns:1fr}}
+
+/* lab */
+.lab{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:32px;align-items:start}
+@media (max-width:860px){.lab{grid-template-columns:minmax(0,1fr)}}
+.stage{min-width:0;display:flex;flex-direction:column;gap:14px}
+.frame{position:relative;padding:22px;background:var(--sheet);border:1px solid var(--rule)}
+.frame canvas{display:block;width:100%;height:auto;aspect-ratio:1;max-width:100%}
+.reg{position:absolute;width:14px;height:14px;color:var(--ink);opacity:.75}
+.reg svg{display:block;width:100%;height:100%}
+.reg.tl{top:4px;left:4px}.reg.tr{top:4px;right:4px}.reg.bl{bottom:4px;left:4px}.reg.br{bottom:4px;right:4px}
+.strip{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+.chip{display:inline-flex;align-items:center;gap:6px}
+.chip i{display:inline-block;width:22px;height:14px;border:1px solid rgba(0,0,0,.15)}
+.desc{margin:0;max-width:62ch;text-wrap:pretty}
+.desc b{font-family:var(--display);font-weight:800;font-size:1.15em;margin-right:.4em}
+
+/* panel */
+.panel{min-width:0;display:flex;flex-direction:column;gap:22px}
+.group{display:flex;flex-direction:column;gap:12px;padding-top:12px;border-top:1.5px solid var(--ink)}
+.group h2{margin:0;display:flex;justify-content:space-between;align-items:baseline;font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:-.01em}
+.group h2 small{font-family:var(--mono);font-weight:400;font-size:10.5px;letter-spacing:.14em;color:var(--muted)}
+.seg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.seg.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+#modeSeg{grid-template-columns:repeat(5,minmax(0,1fr))}
+#modeSeg button{font-size:12.5px;padding-inline:3px}
+@media (max-width:520px){#modeSeg{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.field.off{opacity:.4}
+.seg button{font:500 13px/1.25 var(--body);padding:8px 6px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer;min-height:40px}
+.seg button:hover{background:rgba(28,27,34,.07)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
+@media (max-width:420px){.seg{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.sublabel{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:-4px}
+.sublabel span{text-transform:none;letter-spacing:.02em}
+.seg button:disabled{opacity:.35;cursor:not-allowed}
+.field{display:grid;grid-template-columns:7.5em minmax(0,1fr) 3.4em;gap:10px;align-items:center;font-size:13.5px}
+.field output{font-family:var(--mono);font-size:12px;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+.field input[type=range]{width:100%;accent-color:var(--ink)}
+.inkrow{display:grid;grid-template-columns:7.5em minmax(0,1fr);gap:10px;align-items:start;font-size:13.5px}
+.inkrow[hidden]{display:none!important}
+.sw{display:flex;flex-wrap:wrap;gap:6px}
+.sw button{width:28px;height:28px;border:1.5px solid rgba(0,0,0,.18);cursor:pointer;padding:0}
+.sw button[aria-pressed="true"]{outline:2.5px solid var(--ink);outline-offset:2px}
+.inkname{grid-column:2;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.04em}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;font:500 13px var(--body);padding:8px 12px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer;min-height:38px}
+.btn:hover{background:rgba(28,27,34,.07)}
+.btn[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
+.hint{font-size:12.5px;color:var(--muted);margin:0}
+button:focus-visible,input:focus-visible,label.btn:focus-within{outline:2.5px solid var(--blue);outline-offset:2px}
+
+/* presets */
+.presets{margin-top:44px;border-top:3px solid var(--ink);padding-top:16px}
+.presets header{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.presets h2{margin:0;font-family:var(--display);font-weight:800;font-size:28px;letter-spacing:-.01em}
+.sheet{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px}
+.card{display:flex;flex-direction:column;gap:8px;background:none;border:none;padding:0;cursor:pointer;text-align:left;color:var(--ink);font:inherit}
+.card canvas{display:block;width:100%;height:auto;aspect-ratio:1;max-width:100%;border:1px solid var(--rule);background:var(--sheet);transition:transform .15s ease}
+.card:hover canvas{transform:translate(-3px,-3px);box-shadow:3px 3px 0 var(--pink)}
+.card strong{font-family:var(--display);font-weight:700;font-size:15px;line-height:1.2}
+.card span{font-family:var(--mono);font-size:10.5px;color:var(--muted);letter-spacing:.04em}
+@media (prefers-reduced-motion:reduce){.card canvas{transition:none}.card:hover canvas{transform:none}}
+
+/* references */
+.refs{margin-top:48px;border-top:3px solid var(--ink);padding-top:16px}
+.refs header{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.refs h2{margin:0;font-family:var(--display);font-weight:800;font-size:28px;letter-spacing:-.01em}
+.refgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px 32px}
+.refgrid > div{min-width:0}
+.refs h3{margin:0 0 10px;font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--rule);padding-bottom:6px}
+.refs ol{margin:0 0 12px;padding-left:1.6em;display:flex;flex-direction:column;gap:9px;font-size:14px}
+.refs li::marker{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.refs li > *{display:block}
+.refs a{color:var(--ink);text-decoration-color:var(--pink);text-decoration-thickness:2px;text-underline-offset:3px;overflow-wrap:anywhere}
+.refs a:hover{color:var(--blue)}
+.refs li span:not(.book){font-size:12.5px;color:var(--muted)}
+.refs .book{font-size:14px;color:var(--ink)}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="mast">
+    <div class="eyebrow">Print texture lab · 网点 / 叠印 / 瑕疵</div>
+    <h1 class="mis" aria-label="印痕实验室"><span aria-hidden="true">印痕实验室</span><span aria-hidden="true">印痕实验室</span></h1>
+    <p class="lede">把加网方式、油墨组合和印刷瑕疵拆成可调参数。选一种网点，换油墨，加一点错位和颗粒，看画面怎么变。也可以上传你自己的照片。</p>
+  </header>
+
+  <main class="lab">
+    <section class="stage" aria-label="预览">
+      <div class="frame">
+        <span class="reg tl" aria-hidden="true"></span><span class="reg tr" aria-hidden="true"></span>
+        <span class="reg bl" aria-hidden="true"></span><span class="reg br" aria-hidden="true"></span>
+        <canvas id="out" width="600" height="600" role="img" aria-label="印刷效果预览"></canvas>
+      </div>
+      <div class="strip" id="ctrlStrip"></div>
+      <p class="desc" id="desc"></p>
+    </section>
+
+    <aside class="panel" aria-label="参数">
+      <div class="group">
+        <h2>加网 <small>SCREEN</small></h2>
+        <div class="seg" id="screenSeg"></div>
+        <div class="sublabel">网点形状 <span>仅 AM 圆点与 Ben-Day</span></div>
+        <div class="seg" id="shapeSeg"></div>
+        <div class="field"><label for="cell">网点尺寸</label><input type="range" id="cell" min="3" max="28" step="1"><output id="cellOut"></output></div>
+        <div class="field"><label for="angle">网角</label><input type="range" id="angle" min="0" max="90" step="1"><output id="angleOut"></output></div>
+        <div class="field"><label for="contrast">原图对比度</label><input type="range" id="contrast" min="0.5" max="2.5" step="0.05"><output id="contrastOut"></output></div>
+      </div>
+
+      <div class="group">
+        <h2>油墨 <small>INK</small></h2>
+        <div class="seg" id="modeSeg"></div>
+        <div class="sublabel">油墨覆盖 <span>叠印混色，还是上层盖住下层</span></div>
+        <div class="seg two" id="blendSeg"></div>
+        <div class="inkrow"><span>油墨 A</span><div class="sw" id="inkA"></div><span class="inkname" id="inkAName"></span></div>
+        <div class="inkrow" id="inkBRow"><span>油墨 B</span><div class="sw" id="inkB"></div><span class="inkname" id="inkBName"></span></div>
+        <div class="inkrow" id="inkCRow"><span>油墨 C</span><div class="sw" id="inkC"></div><span class="inkname" id="inkCName"></span></div>
+        <div class="inkrow"><span>纸张</span><div class="sw" id="paper"></div><span class="inkname" id="paperName"></span></div>
+      </div>
+
+      <div class="group">
+        <h2>瑕疵 <small>MISPRINT</small></h2>
+        <div class="field"><label for="mx">套色错位 X</label><input type="range" id="mx" min="-14" max="14" step="1"><output id="mxOut"></output></div>
+        <div class="field"><label for="my">套色错位 Y</label><input type="range" id="my" min="-14" max="14" step="1"><output id="myOut"></output></div>
+        <div class="field"><label for="grain">墨色颗粒</label><input type="range" id="grain" min="0" max="1" step="0.01"><output id="grainOut"></output></div>
+        <div class="field"><label for="starve">缺墨漏白</label><input type="range" id="starve" min="0" max="1" step="0.01"><output id="starveOut"></output></div>
+        <div class="field"><label for="band">辊痕条带</label><input type="range" id="band" min="0" max="1" step="0.01"><output id="bandOut"></output></div>
+        <div class="field"><label for="tex">纸张纹理</label><input type="range" id="tex" min="0" max="1" step="0.01"><output id="texOut"></output></div>
+        <div class="field"><label for="gain">溢墨扩散</label><input type="range" id="gain" min="0" max="1" step="0.01"><output id="gainOut"></output></div>
+        <div class="field"><label for="ca">RGB 色差</label><input type="range" id="ca" min="0" max="12" step="1"><output id="caOut"></output></div>
+        <p class="hint">溢墨让网点变胖、边缘发毛，中间调最明显。RGB 色差是屏幕上的“错位”，把红、蓝通道左右拉开，偏 glitch。</p>
+      </div>
+
+      <div class="group">
+        <h2>原图 <small>SOURCE</small></h2>
+        <div class="row" id="srcRow">
+          <button class="btn" type="button" data-src="scene">测试画面</button>
+          <button class="btn" type="button" data-src="ramp">色阶条</button>
+          <label class="btn" id="uploadLabel">上传照片<input type="file" id="upload" accept="image/*" hidden></label>
+        </div>
+        <p class="hint" id="srcHint">照片只在你的浏览器里处理，不会上传到任何地方。</p>
+      </div>
+    </aside>
+  </main>
+
+  <section class="presets" aria-label="预设">
+    <header><h2>预设样张</h2><span class="hint">点一张，把它的参数载入上面的实验台</span></header>
+    <div class="sheet" id="sheet"></div>
+  </section>
+
+  <section class="refs" aria-label="参考资料">
+    <header><h2>参考资料</h2><span class="hint">算法、印刷特性和油墨色值的出处</span></header>
+    <div class="refgrid">
+      <div>
+        <h3>加网与抖动</h3>
+        <ol>
+          <li><a href="https://en.wikipedia.org/wiki/Halftone" target="_blank" rel="noopener">Halftone</a><span>Wikipedia · AM 网点、网角与摩尔纹</span></li>
+          <li><a href="https://en.wikipedia.org/wiki/Ben-Day_dots" target="_blank" rel="noopener">Ben-Day dots</a><span>Wikipedia · 固定尺寸网点与波普印刷</span></li>
+          <li><a href="https://en.wikipedia.org/wiki/Ordered_dithering" target="_blank" rel="noopener">Ordered dithering</a><span>Wikipedia · Bayer 矩阵（Bayer, 1973）</span></li>
+          <li><a href="https://en.wikipedia.org/wiki/Floyd%E2%80%93Steinberg_dithering" target="_blank" rel="noopener">Floyd–Steinberg dithering</a><span>Wikipedia · 误差扩散（Floyd &amp; Steinberg, 1976）</span></li>
+          <li><span class="book">Robert Ulichney, <i>Digital Halftoning</i></span><span>MIT Press, 1987 · AM / FM 加网的系统论述</span></li>
+          <li><span class="book">Adobe, <i>PostScript Language Reference</i>, 3rd ed.</span><span>Addison-Wesley, 1999 · 网点形状的 spot function 定义</span></li>
+          <li><a href="https://frontendmasters.com/blog/pure-css-halftone-effect-in-3-declarations/" target="_blank" rel="noopener">Pure CSS Halftone Effect in 3 Declarations</a><span>Ana Tudor · Frontend Masters</span></li>
+          <li><a href="https://leanrada.com/notes/pure-css-halftone/" target="_blank" rel="noopener">Creating a halftone effect with CSS</a><span>Lean Rada</span></li>
+        </ol>
+      </div>
+      <div>
+        <h3>Riso 印刷特性</h3>
+        <ol>
+          <li><a href="https://en.wikipedia.org/wiki/Risograph" target="_blank" rel="noopener">Risograph</a><span>Wikipedia · 孔版印刷原理与历史</span></li>
+          <li><a href="https://oxfordgreenprint.com/?p=223" target="_blank" rel="noopener">Design for Riso</a><span>Oxford Greenprint · 套色错位 1–2mm、浅色调易丢失</span></li>
+          <li><a href="https://creativemarket.com/blog/risograph-printing" target="_blank" rel="noopener">The Fascinating World of Risograph Printing</a><span>Creative Market · 风格特征与制版建议</span></li>
+          <li><a href="https://icons8.com/clipart/textured/print" target="_blank" rel="noopener">Print Style Illustrations</a><span>Icons8 · 数字化 riso 风格：有限色板、网点纹理、错位</span></li>
+          <li><a href="https://en.wikipedia.org/wiki/Dot_gain" target="_blank" rel="noopener">Dot gain</a><span>Wikipedia · 溢墨与网点扩大，中间调最明显</span></li>
+          <li><a href="https://en.wikipedia.org/wiki/CMYK_color_model" target="_blank" rel="noopener">CMYK color model</a><span>Wikipedia · 减色分色，三色叠印的拆版思路</span></li>
+          <li><a href="https://en.wikipedia.org/wiki/Chromatic_aberration" target="_blank" rel="noopener">Chromatic aberration</a><span>Wikipedia · RGB 色差效果的光学来源</span></li>
+        </ol>
+      </div>
+      <div>
+        <h3>相邻印刷工艺与 Duotone</h3>
+        <ol>
+          <li><a href="https://en.wikipedia.org/wiki/Screen_printing" target="_blank" rel="noopener">Screen printing</a><span>Wikipedia · 丝网印刷：分色制版、不透明油墨</span></li>
+          <li><a href="https://en.wikipedia.org/wiki/Letterpress_printing" target="_blank" rel="noopener">Letterpress printing</a><span>Wikipedia · 凸版印刷：压痕与挤墨</span></li>
+          <li><a href="https://en.wikipedia.org/wiki/Woodcut" target="_blank" rel="noopener">Woodcut</a><span>Wikipedia · 木刻：刀痕线条与黑白强对比</span></li>
+          <li><a href="https://en.wikipedia.org/wiki/Linocut" target="_blank" rel="noopener">Linocut</a><span>Wikipedia · 麻胶版画</span></li>
+          <li><a href="https://en.wikipedia.org/wiki/Duotone" target="_blank" rel="noopener">Duotone</a><span>Wikipedia · 印刷双色调与数字渐变映射</span></li>
+        </ol>
+      </div>
+      <div>
+        <h3>油墨色值与质感</h3>
+        <ol>
+          <li><a href="https://www.npmjs.com/package/riso-colors" target="_blank" rel="noopener">riso-colors</a><span>npm · Riso 油墨的屏幕近似色值</span></li>
+          <li><a href="https://www.monikerpress.ca/colours/" target="_blank" rel="noopener">Ink Colours</a><span>Moniker Press · 印厂油墨色卡</span></li>
+          <li><a href="https://bushe.co/tools/css-noise-grain-overlay/" target="_blank" rel="noopener">CSS Noise Grain Overlay</a><span>颗粒纹理的网页实现思路</span></li>
+        </ol>
+        <p class="hint">页面上的油墨色值是屏幕近似，真实印刷效果以印厂实物色卡为准。缺墨、辊痕、纸纹为程序模拟，不对应具体机型。</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(() => {
+const S = 600;
+const INKS = [
+  {id:'fpink', zh:'荧光粉', en:'Fluorescent Pink', c:'#FF48B0'},
+  {id:'blue', zh:'蓝', en:'Blue', c:'#0078BF'},
+  {id:'fedblue', zh:'联邦蓝', en:'Federal Blue', c:'#3D5588'},
+  {id:'teal', zh:'青绿', en:'Teal', c:'#00838A'},
+  {id:'yellow', zh:'黄', en:'Yellow', c:'#FFE800'},
+  {id:'red', zh:'亮红', en:'Bright Red', c:'#F15060'},
+  {id:'orange', zh:'橙', en:'Orange', c:'#FF6C2F'},
+  {id:'green', zh:'绿', en:'Green', c:'#00A95C'},
+  {id:'hunter', zh:'猎人绿', en:'Hunter Green', c:'#407060'},
+  {id:'purple', zh:'紫', en:'Purple', c:'#765BA7'},
+  {id:'black', zh:'黑', en:'Black', c:'#1A1A1A'},
+];
+const PAPERS = [
+  {id:'white', zh:'白卡', c:'#FAFAF6'},
+  {id:'recycled', zh:'再生米色', c:'#EEE7D6'},
+  {id:'news', zh:'新闻纸', c:'#E4DFD1'},
+  {id:'mint', zh:'薄荷', c:'#DCE7D0'},
+  {id:'blush', zh:'浅粉', c:'#F6E0E4'},
+];
+const SCREENS = [
+  {id:'am', zh:'AM 圆点', d:'规则排列的圆点，靠点的大小表现明暗。报纸、复古画报的标准做法，网角决定点阵的倾斜方向。'},
+  {id:'line', zh:'线条网', d:'用平行线的粗细表现明暗。像钞票和版画，比圆点更硬朗、更有方向感。'},
+  {id:'hatch', zh:'交叉排线', d:'亮部是单向线，暗部再叠一层垂直的线。铜版画和钢笔插图的味道。'},
+  {id:'benday', zh:'Ben-Day', d:'点的大小固定，只分“空白 / 网点 / 实地”三级。利希滕斯坦式的波普和老漫画。'},
+  {id:'bayer', zh:'有序抖动', d:'Bayer 矩阵抖动，1-bit 像素排成规则格纹。早期电脑、Game Boy 和像素游戏的质感。'},
+  {id:'fs', zh:'误差扩散', d:'Floyd–Steinberg 抖动，把量化误差推给邻近像素，形成细碎有机的颗粒，最有“计算机”气质。'},
+  {id:'fm', zh:'FM 调频网', d:'点的大小一样，随机分布，靠疏密表现明暗。看起来像胶片颗粒或细腻的点刻。'},
+  {id:'thresh', zh:'阈值位图', d:'直接二值化，没有中间调。配合颗粒和缺墨，就是复印机和朋克 zine 的样子。'},
+  {id:'silk', zh:'丝网', d:'丝网印刷：先把图像简化成干净的色块，一种颜色一块版，油墨厚、颜色饱满，边缘略毛。沃霍尔和演出海报的做法，配合“不透明遮盖”最像。网点尺寸在这里控制简化程度。'},
+  {id:'letter', zh:'凸版', d:'凸版 / 活字印刷：凸起的版面压进纸里。实地中间墨色斑驳，边缘因为挤墨颜色更深，纸面留下轻微压痕。配厚一点的纸纹更像。'},
+  {id:'wood', zh:'木刻', d:'木刻 / 麻胶版：暗部是实地，亮部是留白，中间调用刻刀留下的弯曲线条表现，实地里有顺着刀向的崩口，墨色带木纹。'},
+  {id:'cont', zh:'连续调', d:'连续调：不加网，油墨浓淡直接对应原图明暗。和“双色调”一起用，就是不加网的连续调双色印刷。'},
+];
+const MODES = [
+  {id:'mono', zh:'单色'},
+  {id:'sep', zh:'双色叠印'},
+  {id:'tri', zh:'三色叠印'},
+  {id:'duo', zh:'双色调'},
+  {id:'grad', zh:'渐变映射'},
+];
+const MODE_DESC = {
+  mono:'单色：只用一种油墨。',
+  sep:'双色叠印：把原图拆成两块版，两种油墨叠在一起会混出第三种颜色。',
+  tri:'三色叠印：按类似 CMY 的方式拆成三块版，每块版有自己的网角和错位，叠出更丰富的混色。',
+  duo:'双色调：同一张灰度图按两条曲线出两块版，浅色油墨铺中间调，深色油墨压暗部。',
+  grad:'渐变映射：不模拟印刷，直接把亮部映射成油墨 A、暗部映射成油墨 B，就是 Spotify 式的数字 duotone。加网、错位和油墨瑕疵在这个模式下不起作用，纸纹和 RGB 色差仍然有效。'
+};
+const BLENDS = [
+  {id:'multiply', zh:'透明叠印'},
+  {id:'opaque', zh:'不透明遮盖'},
+];
+const SHAPES = [
+  {id:'round', zh:'圆形'},
+  {id:'ellipse', zh:'椭圆'},
+  {id:'diamond', zh:'菱形'},
+  {id:'square', zh:'方形'},
+];
+const DEFAULTS = {shape:'round', gain:0, ca:0, inkC:'yellow', blend:'multiply'};
+const PRESETS = [
+  {name:'Riso 双色', tag:'AM · 粉 + 蓝 · 错位', p:{screen:'am',cell:9,angle:15,contrast:1.15,mode:'sep',inkA:'fpink',inkB:'blue',paper:'white',mx:5,my:3,grain:.45,starve:.3,band:.25,tex:.35}},
+  {name:'报纸半调', tag:'AM · 黑 · 新闻纸', p:{screen:'am',cell:7,angle:45,contrast:1.1,mode:'mono',inkA:'black',inkB:'blue',paper:'news',mx:0,my:0,grain:.15,starve:.05,band:0,tex:.5}},
+  {name:'波普漫画', tag:'Ben-Day · 红 + 联邦蓝', p:{screen:'benday',cell:14,angle:30,contrast:1.2,mode:'sep',inkA:'red',inkB:'fedblue',paper:'white',mx:2,my:1,grain:.1,starve:0,band:0,tex:.2}},
+  {name:'计算机抖动', tag:'误差扩散 · 粉 + 青绿', p:{screen:'fs',cell:8,angle:0,contrast:1.1,mode:'sep',inkA:'fpink',inkB:'teal',paper:'white',mx:3,my:-2,grain:.2,starve:.1,band:.1,tex:.2}},
+  {name:'掌机像素', tag:'有序抖动 · 猎人绿', p:{screen:'bayer',cell:14,angle:0,contrast:1.2,mode:'mono',inkA:'hunter',inkB:'black',paper:'mint',mx:0,my:0,grain:0,starve:0,band:0,tex:.15}},
+  {name:'复印朋克', tag:'阈值 · 黑 · 缺墨', p:{screen:'thresh',cell:6,angle:0,contrast:1.7,mode:'mono',inkA:'black',inkB:'black',paper:'recycled',mx:0,my:0,grain:.65,starve:.45,band:.55,tex:.6}},
+  {name:'胶片颗粒', tag:'FM · 青绿 + 黑 双色调', p:{screen:'fm',cell:7,angle:0,contrast:1.15,mode:'duo',inkA:'teal',inkB:'black',paper:'recycled',mx:1,my:1,grain:.25,starve:.1,band:0,tex:.4}},
+  {name:'版画排线', tag:'交叉排线 · 联邦蓝', p:{screen:'hatch',cell:9,angle:45,contrast:1.2,mode:'mono',inkA:'fedblue',inkB:'black',paper:'recycled',mx:0,my:0,grain:.2,starve:.1,band:0,tex:.45}},
+  {name:'三色 Riso', tag:'AM · 粉 + 蓝 + 黄', p:{screen:'am',shape:'round',cell:10,angle:15,contrast:1.1,mode:'tri',inkA:'fpink',inkB:'blue',inkC:'yellow',paper:'white',mx:4,my:2,grain:.4,starve:.25,band:.2,tex:.3,gain:.25}},
+  {name:'菱形网点', tag:'AM 菱形 · 联邦蓝', p:{screen:'am',shape:'diamond',cell:13,angle:45,contrast:1.15,mode:'mono',inkA:'fedblue',inkB:'black',paper:'white',mx:0,my:0,grain:.1,starve:0,band:0,tex:.25,gain:.15}},
+  {name:'溢墨海报', tag:'AM 椭圆 · 红 + 联邦蓝 · 溢墨', p:{screen:'am',shape:'ellipse',cell:11,angle:20,contrast:1.2,mode:'sep',inkA:'red',inkB:'fedblue',paper:'recycled',mx:3,my:2,grain:.3,starve:.15,band:.1,tex:.35,gain:.75}},
+  {name:'故障屏幕', tag:'误差扩散 · 黑 · RGB 色差', p:{screen:'fs',cell:6,angle:0,contrast:1.25,mode:'mono',inkA:'black',inkB:'blue',paper:'white',mx:0,my:0,grain:0,starve:0,band:0,tex:0,ca:6}},
+  {name:'丝网海报', tag:'丝网 · 橙 + 紫 · 不透明', p:{screen:'silk',cell:12,angle:0,contrast:1.3,mode:'sep',blend:'opaque',inkA:'orange',inkB:'purple',paper:'white',mx:6,my:4,grain:.12,starve:.08,band:0,tex:.25}},
+  {name:'凸版印刷', tag:'凸版 · 亮红 · 再生纸', p:{screen:'letter',cell:10,angle:0,contrast:1.35,mode:'mono',inkA:'red',inkB:'black',paper:'recycled',mx:0,my:0,grain:.25,starve:.25,band:0,tex:.65}},
+  {name:'木刻版画', tag:'木刻 · 黑 · 再生纸', p:{screen:'wood',cell:8,angle:10,contrast:1.3,mode:'mono',inkA:'black',inkB:'black',paper:'recycled',mx:0,my:0,grain:.2,starve:.15,band:0,tex:.5}},
+  {name:'连续调双色', tag:'连续调 · 橙 + 黑 双色调', p:{screen:'cont',cell:8,angle:0,contrast:1.15,mode:'duo',inkA:'orange',inkB:'black',paper:'recycled',mx:2,my:1,grain:.2,starve:.1,band:0,tex:.4}},
+  {name:'数字 Duotone', tag:'渐变映射 · 粉 → 联邦蓝', p:{screen:'cont',cell:8,angle:0,contrast:1.2,mode:'grad',inkA:'fpink',inkB:'fedblue',paper:'white',mx:0,my:0,grain:0,starve:0,band:0,tex:0}},
+];
+
+const P = Object.assign({}, DEFAULTS, PRESETS[0].p);
+let srcKind = 'scene';
+let uploaded = null;
+
+const $ = id => document.getElementById(id);
+const hex = c => [1,3,5].map(i => parseInt(c.slice(i,i+2),16)/255);
+const ink = id => INKS.find(x => x.id === id);
+const paper = id => PAPERS.find(x => x.id === id);
+
+/* ---------- registration marks ---------- */
+const regSvg = '<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1"><circle cx="7" cy="7" r="4"/><path d="M7 0v14M0 7h14"/></svg>';
+document.querySelectorAll('.reg').forEach(el => el.innerHTML = regSvg);
+
+/* ---------- source image ---------- */
+const srcC = document.createElement('canvas'); srcC.width = srcC.height = S;
+function drawSource(){
+  const g = srcC.getContext('2d'), n = S;
+  g.fillStyle = '#fff'; g.fillRect(0,0,n,n);
+  if (srcKind === 'upload' && uploaded){
+    const im = uploaded, s = Math.max(n/im.width, n/im.height);
+    const w = im.width*s, h = im.height*s;
+    g.drawImage(im, (n-w)/2, (n-h)/2, w, h);
+    return;
+  }
+  if (srcKind === 'ramp'){
+    const rows = [['#ffffff','#000000'],['#ffffff','#e0308a'],['#ffffff','#0a58b8'],['#ffffff','#2a1838']];
+    rows.forEach((r,i) => {
+      const lg = g.createLinearGradient(n*.06,0,n*.94,0); lg.addColorStop(0,r[0]); lg.addColorStop(1,r[1]);
+      g.fillStyle = lg; g.fillRect(n*.06, n*(.08+i*.225), n*.88, n*.19);
+    });
+    return;
+  }
+  // test scene: shaded sphere, blue slab, big letters, small shapes
+  const bg = g.createLinearGradient(0,0,0,n); bg.addColorStop(0,'#ffffff'); bg.addColorStop(1,'#eef3f8');
+  g.fillStyle = bg; g.fillRect(0,0,n,n);
+  const sl = g.createLinearGradient(0,n*.58,n,n*.98); sl.addColorStop(0,'#cfe0f2'); sl.addColorStop(.55,'#2f78c6'); sl.addColorStop(1,'#0b2c66');
+  g.fillStyle = sl;
+  g.beginPath(); g.moveTo(0,n*.66); g.lineTo(n,n*.52); g.lineTo(n,n); g.lineTo(0,n); g.closePath(); g.fill();
+  const cx = n*.4, cy = n*.42, r = n*.27;
+  const rg = g.createRadialGradient(cx-r*.38, cy-r*.42, r*.05, cx, cy, r);
+  rg.addColorStop(0,'#fff2f8'); rg.addColorStop(.35,'#f06aa9'); rg.addColorStop(.8,'#b0185f'); rg.addColorStop(1,'#5a0a30');
+  g.fillStyle = rg; g.beginPath(); g.arc(cx,cy,r,0,Math.PI*2); g.fill();
+  g.fillStyle = '#ffd400'; g.beginPath(); g.moveTo(n*.74,n*.12); g.lineTo(n*.9,n*.38); g.lineTo(n*.58,n*.38); g.closePath(); g.fill();
+  g.fillStyle = '#141018';
+  g.font = `800 ${Math.round(n*.2)}px "Bricolage Grotesque", "Noto Sans SC", sans-serif`;
+  g.textBaseline = 'alphabetic';
+  g.fillText('RISO', n*.36, n*.86);
+  g.font = `600 ${Math.round(n*.032)}px "JetBrains Mono", monospace`;
+  g.fillText('NO.01 — TEST FORM', n*.06, n*.08);
+}
+
+/* ---------- noise cache ---------- */
+function rng(seed){ return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function lowNoise(n, grid, r){
+  const G = grid+1, v = new Float32Array(G*G); for (let i=0;i<v.length;i++) v[i]=r();
+  const out = new Float32Array(n*n), sc = grid/n;
+  for (let y=0;y<n;y++){ const fy=y*sc, iy=Math.floor(fy), ty=fy-iy, sy=ty*ty*(3-2*ty);
+    for (let x=0;x<n;x++){ const fx=x*sc, ix=Math.floor(fx), tx=fx-ix, sx=tx*tx*(3-2*tx);
+      const a=v[iy*G+ix], b=v[iy*G+ix+1], c=v[(iy+1)*G+ix], d=v[(iy+1)*G+ix+1];
+      out[y*n+x] = (a+(b-a)*sx) + ((c+(d-c)*sx) - (a+(b-a)*sx))*sy; } }
+  return out;
+}
+const noiseCache = {};
+function noises(n){
+  if (noiseCache[n]) return noiseCache[n];
+  const r = rng(1337), N = n*n;
+  const g1 = new Float32Array(N), g2 = new Float32Array(N), fm = new Float32Array(N);
+  for (let i=0;i<N;i++){ g1[i]=r(); g2[i]=r(); fm[i]=r(); }
+  const la = lowNoise(n,5,r), lb = lowNoise(n,13,r), lc = lowNoise(n,7,r);
+  const low = new Float32Array(N), low2 = new Float32Array(N);
+  for (let i=0;i<N;i++){ low[i] = la[i]*.65 + lb[i]*.35; low2[i] = lc[i]; }
+  const rows = new Float32Array(n), rv = []; for (let i=0;i<=20;i++) rv.push(r());
+  for (let y=0;y<n;y++){ const f=y/n*20, i=Math.floor(f), t=f-i, s=t*t*(3-2*t); const v=rv[i]+(rv[i+1]-rv[i])*s; rows[y]=Math.min(1,Math.max(0,(v-.5)*2.4+.5)); }
+  return noiseCache[n] = {g1,g2,fm,low,low2,rows};
+}
+
+/* ---------- plates ---------- */
+function plates(data, n, mode, k, gain){
+  const N = n*n, A = new Float32Array(N);
+  const B = mode==='mono' ? null : new Float32Array(N);
+  const C = mode==='tri' ? new Float32Array(N) : null;
+  // contrast, then a dot-gain tone curve that peaks in the midtones
+  const f = v => { v = (v-.5)*k+.5; v = v<0?0:v>1?1:v; v += gain*.32*4*v*(1-v); return v>1?1:v; };
+  for (let i=0;i<N;i++){
+    const r=data[i*4]/255, g=data[i*4+1]/255, b=data[i*4+2]/255;
+    const d = 1-(.299*r+.587*g+.114*b);
+    if (mode==='mono'){ A[i]=f(d); }
+    else if (mode==='sep'){ const cy=1-r; A[i]=f(Math.max(0,(1-g)-cy*.6)); B[i]=f(cy); }
+    else if (mode==='tri'){ A[i]=f(1-g); B[i]=f(1-r); C[i]=f((1-b)*.85); }
+    else { const v=f(d); A[i]=Math.pow(v,.75); B[i]=Math.pow(v,1.9); }
+  }
+  return [A,B,C];
+}
+/* spot functions: threshold t(u,w) on fractional cell coords; pixel inks when value > t */
+function spotT(shape, u, w){
+  const fu = u-Math.floor(u)-.5, fw = w-Math.floor(w)-.5, TAU = Math.PI*2;
+  if (shape==='ellipse') return 1-(Math.cos(TAU*u)+.55*Math.cos(TAU*w)+1.55)/3.1;
+  if (shape==='diamond'){ const s=Math.abs(fu)+Math.abs(fw); return s<=.5 ? 2*s*s : 1-2*(1-s)*(1-s); }
+  if (shape==='square'){ const m=Math.max(Math.abs(fu),Math.abs(fw)); return 4*m*m; }
+  return 1-(Math.cos(TAU*u)+Math.cos(TAU*w)+2)/4;
+}
+function inShape(shape, du, dw){
+  if (shape==='ellipse') return du*du+dw*dw*2.4<.13;
+  if (shape==='diamond') return Math.abs(du)+Math.abs(dw)<.42;
+  if (shape==='square') return Math.max(Math.abs(du),Math.abs(dw))<.29;
+  return du*du+dw*dw<.105;
+}
+/* ink spread: grow the mask by r px, only where a noise field allows, so edges go ragged */
+function spread(m, n, r, field, amt, off){
+  const N = n*n, h = new Uint8Array(N), v = new Uint8Array(N);
+  for (let y=0;y<n;y++){ const row=y*n; for (let x=0;x<n;x++){ let on=0; for (let k=-r;k<=r&&!on;k++){ const xx=x+k; if (xx>=0&&xx<n&&m[row+xx]) on=1; } h[row+x]=on; } }
+  for (let y=0;y<n;y++) for (let x=0;x<n;x++){ let on=0; for (let k=-r;k<=r&&!on;k++){ const yy=y+k; if (yy>=0&&yy<n&&h[yy*n+x]) on=1; } v[y*n+x]=on; }
+  for (let i=0;i<N;i++) if (!m[i] && v[i] && field[(i+off)%N] < amt) m[i]=1;
+}
+
+/* ---------- helpers for print-process styles ---------- */
+function hh(a, b){ const v = Math.sin(a*127.1 + b*311.7)*43758.5453; return v - Math.floor(v); }
+function boxBlur(src, n, r){
+  const tmp = new Float32Array(n*n), out = new Float32Array(n*n), w = 2*r+1, cl = v => v<0?0:v>=n?n-1:v;
+  for (let y=0;y<n;y++){ const row=y*n; let acc=0; for (let k=-r;k<=r;k++) acc+=src[row+cl(k)];
+    for (let x=0;x<n;x++){ tmp[row+x]=acc/w; acc += src[row+cl(x+r+1)] - src[row+cl(x-r)]; } }
+  for (let x=0;x<n;x++){ let acc=0; for (let k=-r;k<=r;k++) acc+=tmp[cl(k)*n+x];
+    for (let y=0;y<n;y++){ out[y*n+x]=acc/w; acc += tmp[cl(y+r+1)*n+x] - tmp[cl(y-r)*n+x]; } }
+  return out;
+}
+function erode(m, n, r){
+  const N = n*n, h = new Uint8Array(N), v = new Uint8Array(N);
+  for (let y=0;y<n;y++){ const row=y*n; for (let x=0;x<n;x++){ let on=1; for (let k=-r;k<=r&&on;k++){ const xx=x+k; if (xx<0||xx>=n||!m[row+xx]) on=0; } h[row+x]=on; } }
+  for (let y=0;y<n;y++) for (let x=0;x<n;x++){ let on=1; for (let k=-r;k<=r&&on;k++){ const yy=y+k; if (yy<0||yy>=n||!h[yy*n+x]) on=0; } v[y*n+x]=on; }
+  return v;
+}
+
+/* ---------- screening ---------- */
+const BAYER = (() => { const m=[[0,2],[3,1]]; let M=m; while (M.length<8){ const s=M.length, R=[]; for (let y=0;y<s*2;y++){ R.push([]); for (let x=0;x<s*2;x++){ const q=[[0,2],[3,1]][y>=s?1:0][x>=s?1:0]; R[y].push(4*M[y%s][x%s]+q); } } M=R; } return M; })();
+function screen(pl, n, type, cell, angDeg, idx, nz, shape){
+  const out = new Uint8Array(n*n), TAU = Math.PI*2;
+  const a = angDeg*Math.PI/180, c = Math.cos(a), s = Math.sin(a);
+  const at = (x,y) => { x=x<0?0:x>=n?n-1:x|0; y=y<0?0:y>=n?n-1:y|0; return pl[y*n+x]; };
+  if (type==='am' || type==='line' || type==='hatch'){
+    for (let y=0;y<n;y++) for (let x=0;x<n;x++){
+      const i=y*n+x, v=pl[i]; if (v<=0) continue;
+      const u=(x*c+y*s)/cell, w=(-x*s+y*c)/cell;
+      let on;
+      if (type==='am'){ on = v > spotT(shape, u, w); }
+      else if (type==='line'){ on = v > (1-Math.cos(TAU*w))/2; }
+      else { const t1=(1-Math.cos(TAU*w))/2, t2=(1-Math.cos(TAU*u))/2; on = Math.min(1,v*1.7)>t1*.95+.03 || (v>.42 && (v-.42)/.58*1.1>t2); }
+      out[i]=on?1:0;
+    }
+    return out;
+  }
+  if (type==='benday'){
+    for (let y=0;y<n;y++) for (let x=0;x<n;x++){
+      const u=(x*c+y*s)/cell, w=(-x*s+y*c)/cell, iu=Math.floor(u), iw=Math.floor(w);
+      const cu=iu+.5, cw=iw+.5, px=(cu*c-cw*s)*cell, py=(cu*s+cw*c)*cell, vc=at(px,py);
+      const du=u-cu, dw=w-cw;
+      out[y*n+x] = vc>.78 ? 1 : vc>.2 ? (inShape(shape,du,dw)?1:0) : 0;
+    }
+    return out;
+  }
+  if (type==='silk' || type==='letter' || type==='wood'){
+    const N = n*n;
+    const rb = type==='wood' ? Math.max(1, Math.round(cell*.12)) : Math.max(1, Math.round(cell*.35));
+    const bp = boxBlur(pl, n, rb);
+    if (type==='silk'){ const off = idx*977; for (let i=0;i<N;i++) out[i] = bp[i] + (nz.g1[(i+off)%N]-.5)*.07 > .46 ? 1 : 0; }
+    else if (type==='letter'){ for (let i=0;i<N;i++) out[i] = bp[i] > .5 ? 1 : 0; }
+    else {
+      const low = nz.low, off = idx*7919;
+      for (let y=0;y<n;y++) for (let x=0;x<n;x++){
+        const i=y*n+x, v=bp[i]; if (v<.1) continue;
+        const u=(x*c+y*s)/cell, w=(-x*s+y*c)/cell + (low[(i+off)%N]-.5)*2.4;
+        // solid blacks with gouge chips aligned to the cut direction; carved wavy lines in the midtones
+        const on = v>.8 ? hh(Math.floor(u*.6)+idx*31, Math.floor(w*2.5)) > .06 : v*1.15 > (1-Math.cos(TAU*w))/2;
+        out[i] = on?1:0;
+      }
+    }
+    return out;
+  }
+  if (type==='thresh'){ for (let i=0;i<n*n;i++) out[i]=pl[i]>.5?1:0; return out; }
+  // block-based: bayer, fs, fm
+  const b = Math.max(1, Math.round(cell/(type==='fm'?4.5:3.5)));
+  const bw = Math.ceil(n/b), bh = bw, bv = new Float32Array(bw*bh);
+  for (let by=0;by<bh;by++) for (let bx=0;bx<bw;bx++) bv[by*bw+bx]=at(bx*b+b/2, by*b+b/2);
+  const bit = new Uint8Array(bw*bh);
+  if (type==='bayer'){
+    for (let by=0;by<bh;by++) for (let bx=0;bx<bw;bx++){
+      const m = idx===1 ? BAYER[bx%8][by%8] : idx===2 ? BAYER[(by+4)%8][(bx+2)%8] : BAYER[by%8][bx%8];
+      bit[by*bw+bx] = bv[by*bw+bx] > (m+.5)/64 ? 1 : 0;
+    }
+  } else if (type==='fs'){
+    for (let by=0;by<bh;by++) for (let bx=0;bx<bw;bx++){
+      const i=by*bw+bx, o=bv[i], q=o>.5?1:0, e=o-q; bit[i]=q;
+      if (bx+1<bw) bv[i+1]+=e*7/16;
+      if (by+1<bh){ if (bx>0) bv[i+bw-1]+=e*3/16; bv[i+bw]+=e*5/16; if (bx+1<bw) bv[i+bw+1]+=e/16; }
+    }
+  } else {
+    const fm = nz.fm, N=fm.length;
+    for (let i=0;i<bw*bh;i++) bit[i] = bv[i] > fm[(i*7+idx*104729)%N] ? 1 : 0;
+  }
+  for (let y=0;y<n;y++){ const by=Math.floor(y/b); for (let x=0;x<n;x++) out[y*n+x]=bit[by*bw+Math.floor(x/b)]; }
+  return out;
+}
+
+/* ---------- render ---------- */
+function render(canvas, p, srcCanvas){
+  const n = canvas.width, sc = n/S, nz = noises(n);
+  const ctx = canvas.getContext('2d', {willReadFrequently:true});
+  ctx.drawImage(srcCanvas, 0, 0, n, n);
+  const sd = ctx.getImageData(0,0,n,n), data = sd.data;
+  const N = n*n;
+  const {g1,g2,low,low2,rows} = nz;
+  const iA = hex(ink(p.inkA).c), iB = hex(ink(p.inkB).c), iC = hex(ink(p.inkC).c), pp = hex(paper(p.paper).c);
+
+  if (p.mode==='grad'){
+    // digital gradient map: highlights -> ink A, shadows -> ink B
+    for (let i=0;i<N;i++){
+      const d = 1-(.299*data[i*4]+.587*data[i*4+1]+.114*data[i*4+2])/255;
+      let v = (d-.5)*p.contrast+.5; v = v<0?0:v>1?1:v;
+      const pt = 1 - p.tex*(.08*g2[i] + .06*low2[i]);
+      data[i*4]   = (iA[0]+(iB[0]-iA[0])*v)*pt*255;
+      data[i*4+1] = (iA[1]+(iB[1]-iA[1])*v)*pt*255;
+      data[i*4+2] = (iA[2]+(iB[2]-iA[2])*v)*pt*255;
+      data[i*4+3] = 255;
+    }
+  } else {
+    const [pa, pb, pc] = plates(data, n, p.mode, p.contrast, p.gain);
+    const cell = Math.max(1.6, p.cell*sc);
+    const lineish = p.screen==='line'||p.screen==='hatch'||p.screen==='wood';
+    const cont = p.screen==='cont';
+    let mA, mB, mC;
+    if (cont){ mA = pa; mB = pb; mC = pc; }
+    else {
+      mA = screen(pa, n, p.screen, cell, p.angle, 0, nz, p.shape);
+      mB = pb ? screen(pb, n, p.screen, cell, p.angle + (lineish?45:30), 1, nz, p.shape) : null;
+      mC = pc ? screen(pc, n, p.screen, cell, p.angle + (lineish?90:60), 2, nz, p.shape) : null;
+      if (p.gain > .02){
+        const r = Math.max(1, Math.round(p.gain*2.5*sc)), amt = .3 + .6*p.gain;
+        spread(mA, n, r, g2, amt, 0);
+        if (mB) spread(mB, n, r, g2, amt, 7919);
+        if (mC) spread(mC, n, r, g2, amt, 15401);
+      }
+    }
+    const letter = p.screen==='letter', wood = p.screen==='wood', opaque = p.blend==='opaque';
+    let eA, eB, eC;
+    if (letter){ const r = Math.max(1, Math.round(2.5*sc)); eA = erode(mA,n,r); eB = mB && erode(mB,n,r); eC = mC && erode(mC,n,r); }
+    const dx = Math.round(p.mx*sc), dy = Math.round(p.my*sc);
+    const cdx = Math.round(-p.my*.7*sc), cdy = Math.round(p.mx*.7*sc);
+    const strength = (j, y, er) => {
+      let s = .96;
+      s *= 1 - p.grain*.85*Math.pow(g1[j],1.6);
+      const l = low[j]; const m = l<.42?0:l>.8?1:(l-.42)/.38; s *= 1 - p.starve*.92*m*m;
+      s *= 1 - p.band*.5*rows[y];
+      if (er) s *= (.64 + .36*Math.min(1, low2[j]*1.25)) * (.86 + .14*g2[j]);  // letterpress: mottled interior, full ink at the squeezed rim
+      if (wood) s *= .82 + .18*(.5 + .5*Math.sin(y/sc*.5 + low[j]*16));      // wood grain
+      return s<0?0:s;
+    };
+    const col = [0,0,0];
+    const lay = (ic, s) => {
+      if (opaque){ col[0]+=(ic[0]-col[0])*s; col[1]+=(ic[1]-col[1])*s; col[2]+=(ic[2]-col[2])*s; }
+      else { col[0]*=1-s*(1-ic[0]); col[1]*=1-s*(1-ic[1]); col[2]*=1-s*(1-ic[2]); }
+    };
+    for (let y=0;y<n;y++) for (let x=0;x<n;x++){
+      const i = y*n+x;
+      let pt = 1 - p.tex*(.08*g2[i] + .06*low2[i]);
+      if (letter && !mA[i]){ // impression into the paper: shadow on one side of each inked edge, highlight on the other
+        if (x>0 && y>0 && mA[i-n-1]) pt *= .91; else if (x<n-1 && y<n-1 && mA[i+n+1]) pt *= 1.03;
+      }
+      col[0]=Math.min(1,pp[0]*pt); col[1]=Math.min(1,pp[1]*pt); col[2]=Math.min(1,pp[2]*pt);
+      const a = mA[i]; if (a) lay(iA, strength(i, y, letter && eA[i]) * a);
+      if (mB){ const xs=x-dx, ys=y-dy;
+        if (xs>=0&&xs<n&&ys>=0&&ys<n){ const j=ys*n+xs, b=mB[j]; if (b) lay(iB, strength(N-1-i, ys, letter && eB[j]) * b); } }
+      if (mC){ const xs=x-cdx, ys=y-cdy;
+        if (xs>=0&&xs<n&&ys>=0&&ys<n){ const j=ys*n+xs, c=mC[j]; if (c) lay(iC, strength((i+(N>>1))%N, ys, letter && eC[j]) * c); } }
+      data[i*4]=col[0]*255; data[i*4+1]=col[1]*255; data[i*4+2]=col[2]*255; data[i*4+3]=255;
+    }
+  }
+  const ca = Math.round(p.ca*sc);
+  if (ca > 0){
+    const src = new Uint8ClampedArray(data);
+    for (let y=0;y<n;y++) for (let x=0;x<n;x++){
+      const i=(y*n+x)*4, xr=Math.max(0,x-ca), xb=Math.min(n-1,x+ca);
+      data[i] = src[(y*n+xr)*4];
+      data[i+2] = src[(y*n+xb)*4+2];
+    }
+  }
+  ctx.putImageData(sd,0,0);
+}
+
+/* ---------- UI ---------- */
+const out = $('out');
+let queued = false;
+function schedule(){ if (queued) return; queued = true; requestAnimationFrame(() => { queued = false; render(out, P, srcC); syncInfo(); }); }
+
+function seg(el, items, key){
+  el.innerHTML = '';
+  items.forEach(it => { const b = document.createElement('button'); b.type='button'; b.textContent=it.zh; b.dataset.v=it.id;
+    b.addEventListener('click', () => { P[key]=it.id; syncControls(); schedule(); }); el.appendChild(b); });
+}
+function swatches(el, items, key){
+  el.innerHTML = '';
+  items.forEach(it => { const b = document.createElement('button'); b.type='button'; b.style.background=it.c; b.dataset.v=it.id;
+    b.title = it.en ? `${it.zh} · ${it.en}` : it.zh; b.setAttribute('aria-label', b.title);
+    b.addEventListener('click', () => { P[key]=it.id; syncControls(); schedule(); }); el.appendChild(b); });
+}
+seg($('screenSeg'), SCREENS, 'screen');
+seg($('modeSeg'), MODES, 'mode');
+seg($('shapeSeg'), SHAPES, 'shape');
+seg($('blendSeg'), BLENDS, 'blend');
+swatches($('inkA'), INKS, 'inkA');
+swatches($('inkB'), INKS, 'inkB');
+swatches($('inkC'), INKS, 'inkC');
+swatches($('paper'), PAPERS, 'paper');
+
+const SLIDERS = {cell:v=>v+' px', angle:v=>v+'°', contrast:v=>(+v).toFixed(2), mx:v=>v+' px', my:v=>v+' px', grain:v=>Math.round(v*100)+'%', starve:v=>Math.round(v*100)+'%', band:v=>Math.round(v*100)+'%', tex:v=>Math.round(v*100)+'%', gain:v=>Math.round(v*100)+'%', ca:v=>v+' px'};
+Object.keys(SLIDERS).forEach(k => {
+  $(k).addEventListener('input', e => { P[k] = parseFloat(e.target.value); $(k+'Out').textContent = SLIDERS[k](P[k]); schedule(); });
+});
+
+function syncControls(){
+  Object.keys(SLIDERS).forEach(k => { $(k).value = P[k]; $(k+'Out').textContent = SLIDERS[k](P[k]); });
+  document.querySelectorAll('#screenSeg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===P.screen));
+  document.querySelectorAll('#modeSeg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===P.mode));
+  const grad = P.mode==='grad';
+  const shapeOk = !grad && (P.screen==='am' || P.screen==='benday');
+  document.querySelectorAll('#shapeSeg button').forEach(b => { b.setAttribute('aria-pressed', b.dataset.v===P.shape); b.disabled = !shapeOk; });
+  document.querySelectorAll('#screenSeg button').forEach(b => b.disabled = grad);
+  document.querySelectorAll('#blendSeg button').forEach(b => { b.setAttribute('aria-pressed', b.dataset.v===P.blend); b.disabled = grad || P.mode==='mono'; });
+  const angleOk = !grad && ['am','line','hatch','benday','wood'].includes(P.screen);
+  const cellOk = !grad && P.screen!=='cont' && P.screen!=='thresh';
+  [['cell',cellOk],['angle',angleOk],['grain',!grad],['starve',!grad],['band',!grad],['gain',!grad]].forEach(([k,ok]) => { $(k).disabled = !ok; $(k).closest('.field').classList.toggle('off', !ok); });
+  ['inkA','inkB','inkC','paper'].forEach(k => document.querySelectorAll('#'+k+' button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===P[k])));
+  $('inkBRow').hidden = P.mode==='mono';
+  $('inkCRow').hidden = P.mode!=='tri';
+  const two = P.mode!=='mono' && !grad;
+  ['mx','my'].forEach(k => { $(k).disabled = !two; $(k).closest('.field').classList.toggle('off', !two); });
+  const iA = ink(P.inkA), iB = ink(P.inkB), iC = ink(P.inkC);
+  $('inkAName').textContent = `${iA.zh} · ${iA.en} · ${iA.c}`;
+  $('inkBName').textContent = `${iB.zh} · ${iB.en} · ${iB.c}`;
+  $('inkCName').textContent = `${iC.zh} · ${iC.en} · ${iC.c}`;
+  $('paperName').textContent = `${paper(P.paper).zh} · ${paper(P.paper).c}`;
+  document.querySelectorAll('#srcRow [data-src]').forEach(b => b.setAttribute('aria-pressed', b.dataset.src===srcKind));
+  $('uploadLabel').setAttribute('aria-pressed', srcKind==='upload');
+}
+function mul(a,b){ const x=hex(a), y=hex(b); return '#'+x.map((v,i)=>Math.round(v*y[i]*255).toString(16).padStart(2,'0')).join(''); }
+function syncInfo(){
+  const sc = SCREENS.find(s => s.id===P.screen), iA = ink(P.inkA), iB = ink(P.inkB), iC = ink(P.inkC), pa = paper(P.paper);
+  const shapeNote = (P.screen==='am'||P.screen==='benday') && P.shape!=='round' ? ` 当前点形：${SHAPES.find(s=>s.id===P.shape).zh}。` : '';
+  $('desc').innerHTML = P.mode==='grad' ? `<b>渐变映射</b>${MODE_DESC.grad}` : `<b>${sc.zh}</b>${sc.d}${shapeNote} ${MODE_DESC[P.mode]}${P.blend==='opaque'&&P.mode!=='mono'?' 当前为不透明遮盖：后印的油墨盖住先印的，不再混色。':''}`;
+  const chips = [[pa.c,'纸 '+pa.zh],[iA.c,'A '+iA.en]];
+  if (P.mode!=='mono'){ chips.push([iB.c,'B '+iB.en]); }
+  if (P.mode==='tri'){ chips.push([iC.c,'C '+iC.en]); chips.push([mul(iA.c,iB.c),'A×B']); chips.push([mul(iA.c,iC.c),'A×C']); chips.push([mul(iB.c,iC.c),'B×C']); }
+  else if (P.mode==='grad'){ chips.splice(0,1); chips[0][1]='亮部 '+iA.en; chips[1][1]='暗部 '+iB.en; }
+  else if (P.mode!=='mono' && P.blend!=='opaque'){ chips.push([mul(iA.c,iB.c),'A×B 叠印']); }
+  $('ctrlStrip').innerHTML = chips.map(([c,l]) => `<span class="chip"><i style="background:${c}"></i>${l}</span>`).join('');
+}
+
+/* source buttons */
+document.querySelectorAll('#srcRow [data-src]').forEach(b => b.addEventListener('click', () => { srcKind = b.dataset.src; refreshSource(); }));
+$('upload').addEventListener('change', e => {
+  const f = e.target.files && e.target.files[0]; if (!f) return;
+  const rd = new FileReader();
+  rd.onload = () => { const im = new Image(); im.onload = () => { uploaded = im; srcKind = 'upload'; $('srcHint').textContent = '正在使用：'+f.name+'（只在本机处理）'; refreshSource(); }; im.onerror = () => { $('srcHint').textContent = '这张图片读不出来，换一张 JPG 或 PNG 试试。'; }; im.src = rd.result; };
+  rd.readAsDataURL(f);
+});
+
+/* presets */
+const thumbs = [];
+PRESETS.forEach(pr => {
+  const card = document.createElement('button'); card.type='button'; card.className='card';
+  const cv = document.createElement('canvas'); cv.width = cv.height = 220;
+  card.appendChild(cv);
+  card.insertAdjacentHTML('beforeend', `<strong>${pr.name}</strong><span>${pr.tag}</span>`);
+  card.addEventListener('click', () => { Object.assign(P, DEFAULTS, pr.p); syncControls(); schedule(); window.scrollTo({top:0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'}); });
+  $('sheet').appendChild(card); thumbs.push([cv, Object.assign({}, DEFAULTS, pr.p)]);
+});
+function renderThumbs(){
+  let i = 0;
+  const step = () => { if (i>=thumbs.length) return; const [cv,p] = thumbs[i++]; render(cv, p, srcC); setTimeout(step, 0); };
+  step();
+}
+function refreshSource(){ drawSource(); syncControls(); schedule(); renderThumbs(); }
+
+syncControls();
+refreshSource();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (srcKind!=='upload') refreshSource(); });
+})();
+</script>
+</body>
+</html>

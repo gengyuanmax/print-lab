@@ -118,6 +118,13 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
 .pg .ttl .p3{color:var(--k)}
 .pg .disc{flex:none;width:clamp(56px,16cqi,110px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle, var(--b) 0 34%, transparent 36%) 0 0/7px 7px;mix-blend-mode:multiply;box-shadow:inset 0 0 0 0 transparent}
 .pg .gridx{padding-left:0}
+.optiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.optile{display:flex;flex-direction:column;gap:4px;margin:0}
+.optile canvas{display:block;width:100%;height:auto;border:1px solid var(--rule)}
+.optile figcaption{display:flex;justify-content:space-between;gap:6px;font-size:12.5px;color:var(--ink)}
+.optile figcaption i{font-style:normal;font-family:var(--mono);font-size:10px;letter-spacing:.06em;padding:1px 5px;border:1.5px solid var(--ink)}
+.optile figcaption i.warn{border-color:#C2183C;color:#C2183C}
+.pg canvas.vis{display:block;width:100%;height:auto}
 .pg .lede{font-size:13px;max-width:36em;color:color-mix(in srgb, var(--k) 75%, transparent)}
 </style>
 
@@ -133,17 +140,17 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
       </div>
     </div>
     <h1 class="mis"><span aria-hidden="true"><span class="zh">元素实验室</span><span class="en">Element Lab</span></span><span><span class="zh">元素实验室</span><span class="en">Element Lab</span></span></h1>
-    <p class="lede"><span class="zh">网页组件怎样融入瑞士风格、Riso 和半色调设计？从配色、字体、线条和对齐方式入手，逐项开关效果，对照改造前后的变化。下方列出各项规则的启用状态及参考来源，方便理解每一步的作用。</span><span class="en">When an element feels out of place in a Swiss / Riso / halftone design, it usually has not gone through the same print pipeline. This lab translates one element step by step: switch each step on or off, compare before and after on the same paper, and check what still does not fit and where each rule comes from.</span></p>
+    <p class="lede"><span class="zh">网页组件、图形和照片怎样融入瑞士风格、Riso 和半色调设计？逐项调整配色、线条和网点，对照改造前后的变化；也可处理单张照片，或比较两个元素的叠印、挖空等组合效果。各项说明附有参考来源。</span><span class="en">When an element feels out of place in a Swiss / Riso / halftone design, it usually has not gone through the same print pipeline. This lab translates one element step by step: switch each step on or off, compare before and after on the same paper, and check what still does not fit and where each rule comes from.</span></p>
   </header>
 
   <main class="lab">
     <section class="stage" data-aria-zh="改造前后" data-aria-en="Before and after">
       <div class="sheetbox">
-        <div class="cap"><span><span class="zh">改造前</span><span class="en">Before</span></span><b id="beforeName"></b></div>
+        <div class="cap"><span id="beforeLbl"></span><b id="beforeName"></b></div>
         <div class="sheet" id="before"></div>
       </div>
       <div class="sheetbox">
-        <div class="cap"><span><span class="zh">改造后</span><span class="en">After</span></span><b id="afterName"></b></div>
+        <div class="cap"><span id="afterLbl"></span><b id="afterName"></b></div>
         <div class="sheet" id="after"></div>
       </div>
       <div class="cap"><span><span class="zh">规则启用情况</span><span class="en">Fit check (after)</span></span><span class="score" id="score"></span></div>
@@ -153,17 +160,36 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
     <aside class="panel" id="panel" data-aria-zh="参数" data-aria-en="Settings">
       <div class="group">
         <h2><span class="zh">元素</span><span class="en">Element</span> <small>ELEMENT</small></h2>
-        <p class="hint"><span class="zh">选择导航、按钮、卡片、图标或分隔线，尝试不同的改造方案。几何图形、实物、照片和手绘暂未开放。</span><span class="en">Web components come first: they come from software interfaces and are the easiest to get wrong. Geometry, objects, photos and drawings come next.</span></p>
+        <p class="hint"><span class="zh">选择网页组件，或几何图形、实物、照片、手绘等视觉元素。页面会显示适用于当前类型的调整步骤。</span><span class="en">Web components come from software interfaces; visual elements come from digital drawing, 3D rendering and cameras. They look out of place for different reasons, so the steps differ.</span></p>
         <div class="row2"><span class="zh">网页组件</span><span class="en">Web components</span><div class="seg" id="elSeg"></div></div>
         <div class="row2"><span class="zh">视觉元素</span><span class="en">Visual elements</span><div class="seg" id="visSeg"></div></div>
+        <div class="row2" id="upRow" hidden><span class="zh">照片</span><span class="en">Photo</span><div class="seg"><button type="button" id="upScene"><span class="zh">风景示例</span><span class="en">Sample scene</span></button><label class="btn" style="min-height:38px"><span class="zh">上传照片</span><span class="en">Upload photo</span><input type="file" id="upFile" accept="image/*" hidden></label></div></div>
+        <p class="hint" id="upHint" hidden><span class="zh">照片只在你的浏览器里处理，不会上传到任何地方。</span><span class="en">Your photo is processed in your browser and never uploaded.</span></p>
+      </div>
+      <div class="group" id="imgGroup" hidden>
+        <h2><span class="zh">照片处理</span><span class="en">Moves on one image</span> <small>IMAGE</small></h2>
+        <p class="hint"><span class="zh">先通过裁切、镜像、去底、条带错位、重复或错位复制调整照片构图，再设置印刷效果。这里的处理会同时应用到“改造前”和“改造后”。</span><span class="en">Work on the picture itself before translating it: crop, mirror, cut out, slice, repeat, echo. These decide what the image says on the page; the steps decide how it prints. Both before and after use them.</span></p>
+        <div class="row2"><span class="zh">裁切</span><span class="en">Crop</span><div class="seg" id="imCrop"></div></div>
+        <div class="row2"><span class="zh">镜像</span><span class="en">Mirror</span><div class="seg" id="imMirror"></div></div>
+        <div class="row2"><span class="zh">去底</span><span class="en">Cut-out</span><div class="seg" id="imCut"></div></div>
+        <div class="row2"><span class="zh">条带错位</span><span class="en">Slice</span><div class="seg" id="imSlice"></div></div>
+        <div class="row2"><span class="zh">重复</span><span class="en">Repeat</span><div class="seg" id="imRepeat"></div></div>
+        <div class="row2"><span class="zh">错位复制</span><span class="en">Echo</span><div class="seg" id="imEcho"></div></div>
+        <p class="hint" id="imNote"></p>
+      </div>
+      <div class="group">
+        <h2><span class="zh">双元素组合</span><span class="en">Two elements</span> <small>OPERATIONS</small></h2>
+        <p class="hint"><span class="zh">选择一组元素，比较叠印、挖空、反白和布尔运算等效果。开启套色错位，观察边缘是否出现白缝、重叠或偏移。</span><span class="en">Two elements can overprint, knock out or reverse, or be combined with boolean operations. In print the key question is whether the result survives when the two plates miss.</span></p>
+        <div class="row2"><span class="zh">组合</span><span class="en">Pair</span><div class="seg" id="pairSeg"></div></div>
+        <div class="row2"><span class="zh">套色错位</span><span class="en">Misregister</span><div class="seg"><button type="button" id="misBtn"></button></div></div>
       </div>
       <div class="group">
         <h2><span class="zh">改造方案</span><span class="en">Translation</span> <small>SCHEME</small></h2>
-        <p class="hint" id="schemeHint"></p>
-        <div class="seg" id="schemeSeg"></div>
+        <div id="schemeBox"><p class="hint" id="schemeHint"></p>
+        <div class="seg" id="schemeSeg"></div></div>
         <div class="row2"><span class="zh">配色</span><span class="en">Inks</span><div class="seg" id="inkSeg"></div></div>
       </div>
-      <div class="group">
+      <div class="group" id="stepsGroup">
         <h2><span class="zh">调整步骤</span><span class="en">Steps</span> <small>STEPS</small></h2>
         <p class="hint"><span class="zh">步骤右侧标注参考来源：<b>印前</b>是印厂或工作室的文件准备建议，<b>设计</b>是 Isotype、IBM 等视觉系统的设计方法，<b>本页</b>是为本实验设计的做法。</span><span class="en">Each step is tagged with its source: <b>Press</b> = print-shop file specs, <b>System</b> = methods from Isotype, IBM and other unified visual languages, <b>This page</b> = this lab's own synthesis.</span></p>
         <div class="allrow"><button class="btn" type="button" id="allOn"><span class="zh">全部启用</span><span class="en">All on</span></button><button class="btn" type="button" id="allOff"><span class="zh">全部停用</span><span class="en">All off</span></button></div>
@@ -188,7 +214,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
       <li><a href="https://standardsmanual.com/products/nasa-graphics-standards-manual" target="_blank" rel="noopener">NASA Graphics Standards Manual (1975)</a><span><span class="zh">Danne & Blackburn · 通过统一的视觉规范保持不同应用场景中的一致性</span><span class="en">Danne & Blackburn · one standard for every application</span></span></li>
       <li><a href="https://www.ibm.com/design/language/illustration/overview" target="_blank" rel="noopener">IBM Design Language · Illustration</a><span><span class="zh">通过网格、形状、角度和圆角规范统一插画风格，减少无助于表达的装饰</span><span class="en">Consistency comes from the grid and consistent shapes, angles and radii; only essential, non-decorative elements</span></span></li>
     </ol>
-    <p class="note" style="margin-top:14px"><span class="zh">本页参考印前建议与视觉设计方法，并做了适合网页演示的简化。“规则启用情况”只反映当前开关设置，不评判设计优劣，也不代表文件已通过印前检查。实际制作请以承印方要求为准。</span><span class="en">There is no existing guide to translating web components into Riso / halftone language; steps tagged “This page” are this lab's synthesis of the two groups of sources above.</span></p>
+    <p class="note" style="margin-top:14px"><span class="zh">本页参考印前建议与视觉设计方法，并做了适合网页演示的简化。“规则启用情况”只显示开关状态；“套色偏差提示”依据预设的组合方式给出说明，不能替代实际印前检查。实际制作请以承印方要求为准。</span><span class="en">There is no existing guide to translating web components into Riso / halftone language; steps tagged “This page” are this lab's synthesis of the two groups of sources above.</span></p>
   </section>
 </div>
 
@@ -226,9 +252,9 @@ const T = o => (o && typeof o==='object' && 'zh' in o) ? o[LANG] : o;
 const ELEMENTS = [['nav',L('导航','Navigation')],['button',L('按钮','Buttons')],['card',L('卡片','Card')],['icon',L('图标','Icons')],['divider',L('分隔线','Dividers')]];
 const VISUALS = [['geo',L('几何图形','Geometry')],['obj',L('实物','Objects')],['photo',L('照片','Photo')],['hand',L('手绘','Drawing')]];
 const SCHEMES = {
-  swiss:{n:L('瑞士风格 · 线条与文字','Swiss · rules & type'), h:L('以文字、编号和实线组织信息，用粗线或实色块突出选中项，参考杂志目录和索引的编排。','Type, numbers and ink rules only: the current state is a heavy rule or a solid bar, like a magazine contents page.')},
-  riso:{n:L('Riso · 色块','Riso · ink blocks'), h:L('用色块与网点表现油墨效果。选中项以色块突出，文字反白；开关可控制配色、线条和错位等细节。','Flat ink blocks and screened tints: the current state is a block of ink with the label knocked out; only large blocks show misregistration.')},
-  object:{n:L('纸品造型','Print objects'), h:L('借鉴书页边缘的分区索引、票根和裁切标记，让组件带有纸质印刷品的外观。','Borrow forms from printed objects: thumb-index tabs, ticket stubs, cut paper scraps, crop marks.')},
+  swiss:{vh:L('以黑色和网点浅色表现图像，用清晰的几何形与线条呼应瑞士风格海报。','One ink, usually black, plus one screened tint, shapes on the grid, like the images in a Swiss poster.'), n:L('瑞士风格 · 线条与文字','Swiss · rules & type'), h:L('以文字、编号和实线组织信息，用粗线或实色块突出选中项，参考杂志目录和索引的编排。','Type, numbers and ink rules only: the current state is a heavy rule or a solid bar, like a magazine contents page.')},
+  riso:{vh:L('用两种油墨叠印表现层次：照片和实物示例中，A 版表现亮部与中间调，B 版加强暗部，并模拟轻微的套色错位。','Two inks overprinting: A carries the lights and midtones, B the darks; large areas show a little misregistration.'), n:L('Riso · 色块','Riso · ink blocks'), h:L('用色块与网点表现油墨效果。选中项以色块突出，文字反白；开关可控制配色、线条和错位等细节。','Flat ink blocks and screened tints: the current state is a block of ink with the label knocked out; only large blocks show misregistration.')},
+  object:{vh:L('借鉴剪纸和拼贴的外观，简化图像的配色与明暗；几何图形示例中还加入裁切标记。','Cut paper scraps: one ink, with a paper edge and crop marks, so the difference reads as deliberate collage.'), n:L('纸品造型','Print objects'), h:L('借鉴书页边缘的分区索引、票根和裁切标记，让组件带有纸质印刷品的外观。','Borrow forms from printed objects: thumb-index tabs, ticket stubs, cut paper scraps, crop marks.')},
 };
 const INKSETS = {
   orange:{n:L('Riso 橙 + 联邦蓝','Riso orange + federal blue'), paper:'#F3EFE6', k:'#1A1A1A', a:'#FF6C2F', b:'#3D5588'},
@@ -246,9 +272,10 @@ const STEPS = [
   {id:'type', t:L('统一字体搭配','One type family'), w:L('文字标签沿用标题的字体系列，编号等辅助信息使用等宽字体。','Labels use the title\'s family or the monospace, not a default UI font.'), s:'m', l:['NASA Standards Manual','https://standardsmanual.com/products/nasa-graphics-standards-manual']},
   {id:'active', t:L('统一状态用色','States use plate inks'), w:L('用当前配色中的油墨色标示选中项，替换额外的链接蓝。','Current and hover states use an ink that is already on the plates, not a hyperlink blue.'), s:'o'},
 ];
+function VSTEPS_IDS(){ return ['v_spot','v_tone','v_contrast','v_screen','v_detail','v_angle','v_line','v_single','v_edge']; }
 const SRC_LBL = {c:L('印前','Press'), m:L('设计','System'), o:L('本页','This page')};
 
-const S = {el:'nav', scheme:'swiss', inks:'orange', on:Object.fromEntries(STEPS.map(s => [s.id, true]))};
+const S = {img:{crop:'none', mirror:'none', cut:'none', slice:'none', repeat:'1', echo:'none'}, pair:'shapes', mis:true, cat:'web', el:'nav', scheme:'swiss', inks:'orange', on:Object.fromEntries(STEPS.map(s => [s.id, true]).concat(VSTEPS_IDS().map(id => [id, true])))};
 
 /* ---------- specimen page ---------- */
 const NAV = [['01',L('索引','Index')],['02',L('作品','Works')],['03',L('工作坊','Workshops')],['04',L('关于','About')]];
@@ -262,7 +289,7 @@ function hero(f, small){
 function page(el, f, sc, ink, before){
   const v = `--paper:${f.spot ? ink.paper : ink.paper};--k:${ink.k};--a:${ink.a};--b:${ink.b}`;
   const frame = !f.spot;                                     // a second "paper" around the page and a different tab-bar tone
-  const body = {nav, button, card, icon, divider}[el](f, sc, ink);
+  const body = VISUALS.some(v => v[0]===el) ? `<canvas class="vis" data-kind="${el}" width="640" height="300"></canvas>` : {nav, button, card, icon, divider}[el](f, sc, ink);
   const order = el==='nav' ? body + hero(f) : hero(f, true) + body;
   return `<div class="pg${frame ? ' frame' : ''}" style="${v}">${order}</div>`;
 }
@@ -382,42 +409,494 @@ function divider(f, sc, ink){
   return `<div style="margin-left:${off}px;display:flex;flex-direction:column;gap:12px">${txt}${rule}${txt}</div>`;
 }
 
+/* ---------- visual elements: geometry, objects, photos, drawings ---------- */
+const VSTEPS = [
+  {id:'v_spot', t:L('限定专色','Spot inks only'), w:L('将全彩图像和 RGB 渐变改为少量油墨色，重叠处以叠印模拟混色。','Full colour and RGB gradients become two or three plate inks; where they overlap they overprint into a third colour.'), s:'c', l:['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']},
+  {id:'v_tone', t:L('简化明暗层次','Light in a few steps'), w:L('将连续明暗简化为少数几个层次，用留白、浅色和深色突出结构，减弱细腻光影带来的立体感。','Continuous shading becomes two to four steps: highlights stay paper, midtones one tint, shadows one dark; soft shadows go.'), s:'m', l:['Isotype','https://en.wikipedia.org/wiki/Isotype_(picture_language)']},
+  {id:'v_contrast', t:L('提高反差','Raise the contrast'), w:L('拉开照片的明暗范围，让亮部与暗部更清楚，减少低反差图像在印刷后层次不清的问题。','Stretch the black and white points of a flat photo first: low-contrast images print grey and muddy.'), s:'c', l:['Good Press','https://goodpress.co.uk/pages/file-preparation']},
+  {id:'v_screen', t:L('统一加网方式','One screening system'), w:L('用规则网点表现浅色和中间调，使图像质感更统一。网点随明暗变化，两色照片采用不同的加网角度。','Tints and midtones all use the same screen at the same dot size, never opacity or blur.'), s:'c', l:['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']},
+  {id:'v_detail', t:L('简化细节','Essential detail only'), w:L('减少反光、贴花和细碎纹理等装饰，保留用于辨认物体的主要轮廓与结构；照片则先做轻微平滑处理。','Drop reflections, decals, fine texture and ornament; keep the outline and structure that say what the thing is.'), s:'m', l:['IBM Design Language','https://www.ibm.com/design/language/illustration/overview']},
+  {id:'v_angle', t:L('统一角度与圆角','Shared angles and radii'), w:L('本页将几何图形的旋转角度调整为 45° 的整数倍，并将圆角改为直角，统一造型。','Angles only at 0° / 45° / 90°, one corner radius, shapes on the same grid.'), s:'m', l:['IBM Design Language','https://www.ibm.com/design/language/illustration/overview']},
+  {id:'v_line', t:L('统一线条','Lines are ink'), w:L('将细小的彩色线条改为较粗的单色轮廓，减少错位造成的模糊。线宽为网页演示设置，实际印刷需另行确认。','Coloured 1 px hairlines become ink lines of at least 2.5 px: thin multi-colour lines blur when the plates miss.'), s:'c', l:['Good Press','https://goodpress.co.uk/pages/file-preparation']},
+  {id:'v_single', t:L('细小图形用单色','Small parts in one ink'), w:L('小圆点、叶脉等细节使用一种油墨，减少套色错位对细小图形的影响。','Small dots, details and veins stay one ink; misregistration is kept for large areas.'), s:'c', l:['Oxford Greenprint','https://oxfordgreenprint.com/home/design-for-riso/']},
+  {id:'v_edge', t:L('统一颗粒与纸纹','Shared edges and grain'), w:L('为图像加入一致的墨色颗粒与纸纹，让各元素的印刷质感更协调。','Every element gets the same ink grain and paper texture, so nothing looks suspiciously smooth.'), s:'o'},
+];
+const VAPPLY = {
+  geo:['v_spot','v_screen','v_angle','v_line','v_single','v_edge'],
+  obj:['v_spot','v_tone','v_screen','v_detail','v_line','v_edge'],
+  photo:['v_spot','v_contrast','v_tone','v_screen','v_detail','v_edge'],
+  hand:['v_spot','v_line','v_single','v_screen','v_detail','v_edge'],
+};
+const VBEFORE = {geo:L('数码矢量图','the usual digital vector'), obj:L('3D 渲染效果','the usual 3D render'), photo:L('原始彩色照片','the raw colour photo'), hand:L('数码手绘','the usual digital drawing')};
+const VW = 640, VH = 300;
+let vUpload = null;
+
+const hx = c => [1,3,5].map(i => parseInt(c.slice(i,i+2),16));
+function noise2(seed){ let s = seed>>>0 || 1; return () => { s ^= s << 13; s ^= s >>> 17; s ^= s << 5; return ((s>>>0) % 100000)/100000; }; }
+// a screen tile: dots on a 45° lattice whose area matches the coverage
+function dotFill(g, color, cov, cell = 6){
+  const t = document.createElement('canvas'); t.width = t.height = cell; const c = t.getContext('2d');
+  const r = Math.sqrt(Math.max(0, Math.min(1, cov)) * cell*cell / (2*Math.PI));
+  c.fillStyle = color; [[0,0],[cell,0],[0,cell],[cell,cell],[cell/2,cell/2]].forEach(([x,y]) => { c.beginPath(); c.arc(x, y, r, 0, Math.PI*2); c.fill(); });
+  return g.createPattern(t, 'repeat');
+}
+// shared after-pass: grain and paper texture over everything printed
+function grain(g, ink, amt){
+  if (!amt) return;
+  const im = g.getImageData(0, 0, VW, VH), d = im.data, r = noise2(7), p = hx(ink.paper);
+  for (let i=0;i<d.length;i+=4){
+    const k = r();
+    if (d[i]+d[i+1]+d[i+2] < 690 && k < .07*amt){ const m = .35 + .4*r(); d[i]+=(p[0]-d[i])*m; d[i+1]+=(p[1]-d[i+1])*m; d[i+2]+=(p[2]-d[i+2])*m; }
+    const n = (r() - .5)*10*amt; d[i]+=n; d[i+1]+=n; d[i+2]+=n;
+  }
+  g.putImageData(im, 0, 0);
+}
+
+/* geometry */
+function drawGeo(g, f, sc, ink){
+  const before = !Object.values(f).some(Boolean);
+  const snap = a => f.v_angle ? Math.round(a/45)*45 : a, rad = f.v_angle ? 0 : 1;
+  const multiply = f.v_spot; g.globalCompositeOperation = multiply ? 'multiply' : 'source-over';
+  const fillOf = (rgbA, rgbB, inkC, tint) => {
+    if (f.v_spot){ if (tint < 1) return f.v_screen ? dotFill(g, inkC, tint) : (inkC + Math.round(tint*255).toString(16).padStart(2,'0')); return inkC; }
+    if (!f.v_screen){ const lg = g.createLinearGradient(0, 0, 200, 200); lg.addColorStop(0, rgbA); lg.addColorStop(1, rgbB); return lg; }
+    return rgbA;
+  };
+  const shadow = on => { if (on && !f.v_spot && !f.v_screen){ g.shadowColor = 'rgba(20,20,40,.25)'; g.shadowBlur = 18; g.shadowOffsetY = 8; } else { g.shadowColor = 'transparent'; g.shadowBlur = 0; g.shadowOffsetY = 0; } };
+  const alpha = v => { g.globalAlpha = (!f.v_spot && !f.v_screen) ? v : 1; };
+  const cA = sc==='swiss' ? ink.k : ink.a, cB = ink.b, cK = ink.k;
+  const offB = sc==='riso' ? [3, 2] : [0, 0];
+  // big circle
+  g.save(); shadow(true); alpha(.85); g.fillStyle = fillOf('#7F5AF0', '#2CB1BC', cB, sc==='swiss' ? .35 : 1);
+  g.beginPath(); g.arc(430 + offB[0], 150 + offB[1], 110, 0, Math.PI*2); g.fill(); g.restore();
+  // rotated rounded rectangle
+  g.save(); shadow(true); alpha(.8); g.translate(250, 160); g.rotate(snap(17)*Math.PI/180); g.fillStyle = fillOf('#F6C177', '#EB6F92', cA, 1);
+  const rr = 22*rad; g.beginPath(); g.roundRect ? g.roundRect(-120, -60, 240, 120, rr) : g.rect(-120, -60, 240, 120); g.fill(); g.restore();
+  // triangle
+  g.save(); shadow(true); alpha(.75); g.translate(120, 120); g.rotate(snap(33)*Math.PI/180); g.fillStyle = fillOf('#31748F', '#9CCFD8', sc==='riso' ? cB : cK, sc==='riso' ? .5 : .8);
+  g.beginPath(); g.moveTo(0, -70); g.lineTo(65, 50); g.lineTo(-65, 50); g.closePath(); g.fill(); g.restore();
+  // thin line
+  g.save(); g.globalAlpha = 1; shadow(false); g.strokeStyle = f.v_line ? cK : '#9AA0AA'; g.lineWidth = f.v_line ? 4 : 1;
+  g.translate(320, 255); g.rotate(snap(-8)*Math.PI/180); g.beginPath(); g.moveTo(-260, 0); g.lineTo(260, 0); g.stroke(); g.restore();
+  // small circles: two colours slightly off register unless kept to one ink
+  g.save(); shadow(false); g.globalAlpha = 1;
+  [[560, 45], [590, 70], [530, 80], [60, 250], [90, 270]].forEach(([x, y]) => {
+    if (f.v_single){ g.fillStyle = f.v_spot ? cK : '#1F2937'; g.beginPath(); g.arc(x, y, 9, 0, Math.PI*2); g.fill(); }
+    else { g.fillStyle = f.v_spot ? cA : '#EB6F92'; g.beginPath(); g.arc(x-2, y-1.5, 9, 0, Math.PI*2); g.fill(); g.fillStyle = f.v_spot ? cB : '#7F5AF0'; g.beginPath(); g.arc(x+2, y+1.5, 9, 0, Math.PI*2); g.fill(); }
+  });
+  g.restore(); g.globalCompositeOperation = 'source-over';
+  if (sc==='object' && f.v_spot){ g.strokeStyle = ink.k; g.lineWidth = 1.5; [[16,16,1,1],[VW-16,16,-1,1],[16,VH-16,1,-1],[VW-16,VH-16,-1,-1]].forEach(([x,y,a,b]) => { g.beginPath(); g.moveTo(x, y+b*14); g.lineTo(x, y); g.lineTo(x+a*14, y); g.stroke(); }); }
+  grain(g, ink, f.v_edge ? 1 : 0);
+}
+
+/* objects: a mug with shading, a specular highlight, a decal, a reflection and a soft shadow */
+function mugShade(x, y){
+  // analytic shading of a cylinder lit from the upper left: returns [inside mask, luminance]
+  const cx = 300, top = 70, bot = 240, rx = 95;
+  if (x < cx - rx || x > cx + rx || y < top || y > bot + 20) return null;
+  const u = (x - cx)/rx; if (Math.abs(u) > 1) return null;
+  const yBot = bot + 18*Math.sqrt(1 - u*u); if (y > yBot) return null;
+  const nx = u, nz = Math.sqrt(1 - u*u);
+  let L = .25 + .75*Math.max(0, -nx*.55 + nz*.83);
+  L += .35*Math.pow(Math.max(0, -nx*.25 + nz*.97), 40);
+  L *= 1 - .18*(y - top)/(bot - top);
+  return Math.min(1, L);
+}
+function drawObj(g, f, sc, ink){
+  const im = g.getImageData(0, 0, VW, VH), d = im.data, P = hx(ink.paper), A = hx(sc==='swiss' ? ink.k : ink.a), B = hx(ink.b), K = hx(ink.k);
+  const teal = [38, 128, 140], r = noise2(3);
+  const cell = 6, TAU = Math.PI*2;
+  const spot = (x, y) => { const a = Math.PI/4, u = (x*Math.cos(a) + y*Math.sin(a))/cell, w = (-x*Math.sin(a) + y*Math.cos(a))/cell; return (Math.cos(TAU*u) + Math.cos(TAU*w) + 2)/4; };
+  const mix = (c, k, t) => c.map((v,i) => v + (k[i]-v)*t);
+  const mul = (c, k, t) => c.map((v,i) => v * (1 - t*(1 - k[i]/255)));
+  for (let y=0;y<VH;y++) for (let x=0;x<VW;x++){
+    const i = (y*VW + x)*4; let c = P.slice();
+    // cast shadow on the table
+    const sx = (x - 330)/150, sy = (y - 262)/22, sd = sx*sx + sy*sy;
+    if (sd < 1){
+      if (f.v_tone){ const cov = .45; c = f.v_screen ? (spot(x, y) > 1 - cov ? (f.v_spot ? mul(c, B, 1) : mix(c, [60,60,70], .9)) : c) : (f.v_spot ? mul(c, B, cov) : mix(c, [60,60,70], cov)); }
+      else { const t = .35*(1 - sd); c = f.v_spot ? (f.v_screen ? (spot(x,y) > 1 - t ? mul(c, B, 1) : c) : mul(c, B, t)) : mix(c, [40,40,50], t); }
+    }
+    // handle
+    const hxd = (x - 400)/48, hyd = (y - 155)/52, hr = Math.sqrt(hxd*hxd + hyd*hyd);
+    let L = null;
+    if (hr > .62 && hr < 1 && x > 390) L = .3 + .4*(1 - Math.abs(hyd));
+    const m = mugShade(x, y); if (m != null) L = m;
+    // rim and inside
+    const ry = (y - 70)/14, rxx = (x - 300)/95; if (rxx*rxx + ry*ry < 1) L = .18 + .25*((y - 56)/28);
+    if (L != null){
+      // decal and reflection are "non-essential detail"
+      if (!f.v_detail){
+        if (Math.abs(x - 290) < 30 && Math.abs(y - 150) < 22) L = Math.min(1, L*.6 + .35*(Math.sin(x*.4) > 0 ? 1 : .3));
+        if (x > 215 && x < 230 && y > 95 && y < 220) L = Math.min(1, L + .25);
+      }
+      let col;
+      if (f.v_tone){
+        const lv = L > .78 ? 0 : L > .5 ? 1 : L > .28 ? 2 : 3;   // paper, light tint, full, dark overprint
+        if (!f.v_spot){ const shades = [[230,242,240], [92,170,178], [38,128,140], [16,64,72]]; col = shades[lv]; }
+        else {
+          col = P.slice();
+          const tint = [0, .45, 1, 1][lv];
+          if (tint){ if (lv===1 && f.v_screen){ if (spot(x, y) > 1 - tint) col = mul(col, A, 1); } else col = mul(col, A, tint); }
+          if (lv===3) col = mul(col, B, 1);
+        }
+      } else {
+        if (!f.v_spot) col = mix(mix([255,255,255], teal, 1 - L*.6), [10,30,35], Math.max(0, .5 - L)*.8);
+        else { const t = 1 - L; col = f.v_screen ? (spot(x, y) > 1 - t ? mul(P.slice(), A, 1) : P.slice()) : mul(P.slice(), A, t); }
+      }
+      c = col;
+      if (f.v_line && !f.v_spot){}
+    }
+    d[i] = c[0]; d[i+1] = c[1]; d[i+2] = c[2]; d[i+3] = 255;
+  }
+  g.putImageData(im, 0, 0);
+  if (!f.v_tone && !f.v_spot){ g.save(); g.globalCompositeOperation = 'screen'; const rg = g.createRadialGradient(250, 120, 2, 250, 120, 40); rg.addColorStop(0, 'rgba(255,255,255,.9)'); rg.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = rg; g.fillRect(200, 70, 100, 110); g.restore(); }
+  if (f.v_line){ g.strokeStyle = ink.k; g.lineWidth = 3; g.beginPath(); g.ellipse(300, 70, 95, 14, 0, 0, Math.PI*2); g.moveTo(205, 70); g.lineTo(205, 240); g.ellipse(300, 240, 95, 18, 0, Math.PI, 0, true); g.lineTo(395, 70); g.stroke(); g.beginPath(); g.ellipse(400, 155, 48, 52, 0, -1.25, 1.25); g.stroke(); }
+  grain(g, ink, f.v_edge ? 1 : 0);
+}
+
+/* photo: a procedural landscape (or an uploaded photo), low contrast and full colour */
+const photoCache = {};
+function photoSource(){
+  const key = vUpload ? vUpload.src.length : 'scene'; if (photoCache[key]) return photoCache[key];
+  const c = document.createElement('canvas'); c.width = VW; c.height = VH; const g = c.getContext('2d');
+  if (vUpload){ const s = Math.max(VW/vUpload.width, VH/vUpload.height), w = vUpload.width*s, h = vUpload.height*s; g.drawImage(vUpload, (VW-w)/2, (VH-h)/2, w, h); }
+  else {
+    const sky = g.createLinearGradient(0, 0, 0, VH*.6); sky.addColorStop(0, '#9DB7CF'); sky.addColorStop(1, '#E9C9A8'); g.fillStyle = sky; g.fillRect(0, 0, VW, VH);
+    const sun = g.createRadialGradient(470, 120, 4, 470, 120, 90); sun.addColorStop(0, 'rgba(255,240,210,1)'); sun.addColorStop(.25, 'rgba(255,225,180,.8)'); sun.addColorStop(1, 'rgba(255,225,180,0)'); g.fillStyle = sun; g.fillRect(0, 0, VW, VH);
+    const r = noise2(11);
+    [['#8E9DB0', 150, 40], ['#6F7F93', 175, 55], ['#4E5C6B', 200, 70]].forEach(([col, base, amp], k) => {
+      g.fillStyle = col; g.beginPath(); g.moveTo(0, VH); let y = base;
+      for (let x=0;x<=VW;x+=8){ y = base - amp*(.5 + .5*Math.sin(x*.012 + k*1.7)) - 18*r(); g.lineTo(x, y); }
+      g.lineTo(VW, VH); g.closePath(); g.fill();
+    });
+    const lake = g.createLinearGradient(0, 215, 0, VH); lake.addColorStop(0, '#B9C3CC'); lake.addColorStop(1, '#7F8C99'); g.fillStyle = lake; g.fillRect(0, 222, VW, VH - 222);
+    g.fillStyle = 'rgba(255,240,215,.35)'; for (let y=226;y<VH;y+=5) g.fillRect(430 + 30*Math.sin(y), y, 80 - (y-226), 1.5);
+    g.fillStyle = '#2E3A2F'; g.beginPath(); g.moveTo(0, VH); for (let x=0;x<=230;x+=6) g.lineTo(x, 250 - 30*Math.exp(-Math.pow((x-90)/70, 2)) - 6*r()); g.lineTo(230, VH); g.fill();
+    g.fillStyle = '#20281F'; g.fillRect(120, 200, 3, 40); g.beginPath(); g.arc(121, 196, 16, 0, Math.PI*2); g.fill();
+    // haze and slight blur: a low-contrast phone photo
+    g.fillStyle = 'rgba(230,225,215,.18)'; g.fillRect(0, 0, VW, VH);
+    g.filter = 'blur(1.2px)'; g.drawImage(c, 0, 0); g.filter = 'none';
+  }
+  photoCache[key] = c; return c;
+}
+function drawPhoto(g, f, sc, ink){
+  const prep = imgPrep(), src = prep.c.getContext('2d').getImageData(0, 0, VW, VH).data, alpha = prep.alpha, Pp = hx(ink.paper);
+  if (!f.v_spot && !f.v_contrast && !f.v_tone && !f.v_screen){
+    const raw = new Uint8ClampedArray(src); for (let i=0;i<VW*VH;i++) if (!alpha[i]){ raw[i*4] = Pp[0]; raw[i*4+1] = Pp[1]; raw[i*4+2] = Pp[2]; }
+    g.putImageData(new ImageData(raw, VW, VH), 0, 0);
+    if (S.img.echo==='ink'){ g.save(); g.globalCompositeOperation = 'multiply'; g.globalAlpha = .45; g.drawImage(prep.c, 14, 9); g.restore(); }
+    grain(g, ink, f.v_edge ? 1 : 0); return;
+  }
+  const N = VW*VH, Lm = new Float32Array(N);
+  for (let i=0;i<N;i++) Lm[i] = (.299*src[i*4] + .587*src[i*4+1] + .114*src[i*4+2])/255;
+  if (f.v_contrast){ const s = Array.from(Lm).sort((a,b)=>a-b), lo = s[Math.floor(N*.02)], hi = s[Math.floor(N*.98)]; for (let i=0;i<N;i++){ let v = (Lm[i]-lo)/Math.max(.05, hi-lo); v = v<0?0:v>1?1:v; Lm[i] = Math.pow(v, 1.15); } }
+  if (f.v_detail) { /* essential only: a light blur removes fine noise before screening */
+    const t = new Float32Array(Lm); for (let y=1;y<VH-1;y++) for (let x=1;x<VW-1;x++){ const i = y*VW+x; Lm[i] = (t[i]*4 + t[i-1] + t[i+1] + t[i-VW] + t[i+VW])/8; } }
+  if (f.v_tone) for (let i=0;i<N;i++) Lm[i] = Math.round(Lm[i]*3)/3;
+  const im = g.createImageData(VW, VH), d = im.data, P = hx(ink.paper), A = hx(sc==='swiss' ? ink.k : ink.a), B = hx(ink.b);
+  const cell = 6, TAU = Math.PI*2, spot = (x, y, ang) => { const a = ang*Math.PI/180, u = (x*Math.cos(a) + y*Math.sin(a))/cell, w = (-x*Math.sin(a) + y*Math.cos(a))/cell; return (Math.cos(TAU*u) + Math.cos(TAU*w) + 2)/4; };
+  const mul = (c, k, t) => c.map((v,i) => v * (1 - t*(1 - k[i]/255)));
+  const nRep = +S.img.repeat, echo = S.img.echo==='ink';
+  for (let y=0;y<VH;y++) for (let x=0;x<VW;x++){
+    const i = y*VW + x, dk = 1 - Lm[i];
+    let c;
+    // the echo: the same image again in ink B, offset, under the main print
+    let base = P.slice();
+    if (echo && f.v_spot){ const xe = x - 14, ye = y - 9; if (xe >= 0 && ye >= 0){ const j = ye*VW + xe; if (alpha[j]){ const e = 1 - Lm[j]; if (f.v_screen ? spot(xe, ye, 75) > 1 - e*.9 : true) base = mul(base, B, f.v_screen ? 1 : e*.9); } } }
+    if (!alpha[i]){ d[i*4] = base[0]; d[i*4+1] = base[1]; d[i*4+2] = base[2]; d[i*4+3] = 255; continue; }
+    // repeats swap the inks from slot to slot
+    const slot = Math.floor(x / (VW/nRep)), swap = nRep > 1 && slot % 2 === 1;
+    const AA = swap ? B : A, BB = swap ? A : B;
+    if (!f.v_spot){ const s = f.v_contrast ? 1 : 0; c = [src[i*4], src[i*4+1], src[i*4+2]]; if (f.v_contrast || f.v_tone){ const L0 = (.299*c[0]+.587*c[1]+.114*c[2])/255 || 1e-3, k = Lm[i]/L0; c = c.map(v => Math.min(255, v*k)); } if (f.v_screen){ c = spot(x, y, 45) > Lm[i] ? c.map(v => v*.25) : [255,255,255]; } }
+    else if (sc==='riso'){
+      // duotone: ink A carries the light-to-mid tones, ink B the shadows; B is read a little off register
+      const a = Math.min(1, dk*1.2), b = Math.max(0, (dk - .45)/.55), xb = x - 3, yb = y - 2, ib = Math.max(0, Math.min(N-1, yb*VW + xb)), b2 = Math.max(0, ((1 - Lm[ib]) - .45)/.55);
+      c = base.slice();
+      if (f.v_screen){ if (spot(x, y, 15) > 1 - a) c = mul(c, AA, 1); if (spot(xb, yb, 75) > 1 - b2) c = mul(c, BB, 1); }
+      else { c = mul(c, AA, a); c = mul(c, BB, b2); }
+    } else {
+      c = base.slice(); const K1 = sc==='swiss' ? (swap ? A : hx(ink.k)) : BB;
+      if (f.v_screen){ if (spot(x, y, 45) > 1 - dk) c = mul(c, K1, 1); } else c = mul(c, K1, dk);
+    }
+    d[i*4] = c[0]; d[i*4+1] = c[1]; d[i*4+2] = c[2]; d[i*4+3] = 255;
+  }
+  g.putImageData(im, 0, 0);
+  if (sc==='object' && f.v_spot){ g.save(); g.globalCompositeOperation = 'destination-in'; g.beginPath(); g.moveTo(18, 22); g.lineTo(VW-14, 14); g.lineTo(VW-22, VH-16); g.lineTo(12, VH-24); g.closePath(); g.fill(); g.restore(); g.save(); g.globalCompositeOperation = 'destination-over'; g.fillStyle = ink.paper; g.fillRect(0, 0, VW, VH); g.restore(); }
+  grain(g, ink, f.v_edge ? 1 : 0);
+}
+
+/* moves on one image, applied before translation; alpha 0 = cut away (paper) */
+const IMOPTS = {
+  imCrop:['crop', [['none',L('原图','Full')],['tight',L('局部特写','Tight')],['strip',L('横向窄幅','Strip')]]],
+  imMirror:['mirror', [['none',L('无','None')],['flip',L('水平翻转','Flip')],['sym',L('对称','Symmetric')]]],
+  imCut:['cut', [['none',L('无','None')],['bg',L('按颜色去底','Remove background')]]],
+  imSlice:['slice', [['none',L('无','None')],['strips',L('横条错开','Shifted strips')]]],
+  imRepeat:['repeat', [['1',L('×1','×1')],['2',L('×2','×2')],['3',L('×3','×3')]]],
+  imEcho:['echo', [['none',L('无','None')],['ink',L('异色错位','Offset in ink B')]]],
+};
+const IMNOTE = {
+  crop:L('裁切可突出主体、改变构图。“局部特写”放大细节，“横向窄幅”只保留画面中间的横向区域。','Cropping decides the subject and the scale: a tight crop turns a detail into a shape, a strip reads like a film frame.'),
+  mirror:L('水平翻转可改变画面方向；镜像对称则让照片形成重复的装饰图案。','Mirroring changes where the eye goes; symmetry turns a photo into a pattern that reads as ornament.'),
+  cut:L('去底后可将照片与图形、文字叠放。本页按图像顶部的平均颜色及高亮区域识别背景，适合风景示例，并非自动识别主体的精细抠图。','A cut-out turns the photo into a shape that can sit with geometry and type; here anything close to the sky colour counts as background.'),
+  slice:L('将照片切成水平条带，交替向左右错开，模拟拼贴和小志中常见的剪贴效果。','Shifted strips are a collage and zine move that turns a photo into a handled photo.'),
+  repeat:L('并排重复同一幅图像，形成连续的视觉节奏；开启专色效果后，相邻图像会交替使用所选油墨色。','Repeating with a different ink each time is a screen-print classic (Warhol\'s Marilyn Diptych repeats one photo 50 times).'),
+  echo:L('用另一种油墨色偏移复制同一幅图像，模拟双色错位叠印。','Printing the same image again in a second ink, offset, is misregistration on purpose.'),
+};
+const prepCache = {};
+function imgPrep(){
+  const o = S.img, key = JSON.stringify(o) + '|' + (vUpload ? vUpload.src.length : 0);
+  if (prepCache[key]) return prepCache[key];
+  const src = photoSource(), c = document.createElement('canvas'); c.width = VW; c.height = VH; const g = c.getContext('2d');
+  // crop and mirror
+  const n = +o.repeat, sw = VW/n;
+  for (let k=0;k<n;k++){
+    g.save(); g.beginPath(); g.rect(k*sw, 0, sw, VH); g.clip();
+    let sx = 0, sy = 0, sW = VW, sH = VH;
+    if (o.crop==='tight'){ sx = VW*.12; sy = VH*.3; sW = VW*.5; sH = VH*.6; }
+    // each repeat shows the same picture, cropped to its own slot
+    const aspect = sw/VH, cw = Math.min(sW, sH*aspect), cx = sx + (sW - cw)/2;
+    if (o.mirror==='flip'){ g.translate(k*sw + sw, 0); g.scale(-1, 1); g.drawImage(src, cx, sy, cw, sH, 0, 0, sw, VH); }
+    else g.drawImage(src, cx, sy, cw, sH, k*sw, 0, sw, VH);
+    g.restore();
+  }
+  if (o.mirror==='sym'){ g.save(); g.translate(VW, 0); g.scale(-1, 1); g.drawImage(c, 0, 0, VW/2, VH, 0, 0, VW/2, VH); g.restore(); }
+  let im = g.getImageData(0, 0, VW, VH), d = im.data;
+  const alpha = new Uint8Array(VW*VH).fill(1);
+  // background removal: pixels close to the average colour of the top rows
+  if (o.cut==='bg'){
+    let r = 0, gg = 0, b = 0, cnt = 0; for (let y=0;y<Math.round(VH*.08);y++) for (let x=0;x<VW;x++){ const i = (y*VW+x)*4; r += d[i]; gg += d[i+1]; b += d[i+2]; cnt++; }
+    r /= cnt; gg /= cnt; b /= cnt;
+    for (let i=0;i<VW*VH;i++){ const dr = d[i*4]-r, dg = d[i*4+1]-gg, db = d[i*4+2]-b; if (Math.sqrt(dr*dr+dg*dg+db*db) < 48 || (d[i*4]+d[i*4+1]+d[i*4+2] > 690)) alpha[i] = 0; }
+  }
+  if (o.crop==='strip') for (let y=0;y<VH;y++) if (y < VH*.3 || y > VH*.7) for (let x=0;x<VW;x++) alpha[y*VW+x] = 0;
+  // slices: horizontal bands shifted left and right
+  if (o.slice==='strips'){
+    const out = new Uint8ClampedArray(d.length), al = new Uint8Array(alpha.length), band = 26;
+    for (let y=0;y<VH;y++){ const sh = (Math.floor(y/band) % 2 ? 1 : -1) * 22; for (let x=0;x<VW;x++){ const xs = x - sh, i = y*VW + x; if (xs < 0 || xs >= VW){ al[i] = 0; continue; } const j = y*VW + xs; out.set(d.subarray(j*4, j*4+4), i*4); al[i] = alpha[j]; } }
+    d.set(out); alpha.set(al);
+  }
+  g.putImageData(im, 0, 0);
+  return (prepCache[key] = {c, alpha});
+}
+function buildImgSegs(){
+  Object.entries(IMOPTS).forEach(([id, [key, opts]]) => { const el = $(id); el.innerHTML = '';
+    opts.forEach(([v, l]) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = T(l); b.dataset.v = v;
+      b.addEventListener('click', () => { S.img[key] = v; S.lastImg = key; render(); }); el.appendChild(b); }); });
+}
+function syncImgSegs(){
+  Object.entries(IMOPTS).forEach(([id, [key]]) => document.querySelectorAll('#' + id + ' button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===S.img[key])));
+  $('imNote').textContent = S.lastImg ? T(IMNOTE[S.lastImg]) : '';
+}
+
+/* drawing: a potted plant */
+function drawHand(g, f, sc, ink){
+  const r = noise2(21), jit = (v, a) => v + (r() - .5)*a;
+  const wob = f.v_line ? 2.2 : .6;
+  const path = (pts) => { g.beginPath(); pts.forEach(([x, y], i) => i ? g.lineTo(jit(x, wob), jit(y, wob)) : g.moveTo(x, y)); };
+  const leaves = [[300, 232, -0.9, 90], [300, 232, -0.2, 110], [300, 232, 0.6, 95], [300, 232, -1.6, 75], [300, 232, 1.3, 70]];
+  const cLeaf = f.v_spot ? (sc==='swiss' ? ink.k : ink.a) : '#3A7D44', cPot = f.v_spot ? ink.b : '#B5651D', cLine = f.v_spot ? ink.k : '#2F4F2F';
+  const multiply = f.v_spot; g.globalCompositeOperation = multiply ? 'multiply' : 'source-over';
+  const leafPath = (x, y, a, len) => { const pts = []; for (let k=0;k<=20;k++){ const t = k/20, w = Math.sin(Math.PI*t)*len*.28; pts.push([x + Math.cos(a)*len*t - Math.sin(a)*w, y - 60 + Math.sin(a)*len*t*.6 - len*t*.9 + Math.cos(a)*w*.4]); } for (let k=20;k>=0;k--){ const t = k/20, w = Math.sin(Math.PI*t)*len*.28; pts.push([x + Math.cos(a)*len*t + Math.sin(a)*w, y - 60 + Math.sin(a)*len*t*.6 - len*t*.9 - Math.cos(a)*w*.4]); } return pts; };
+  // fills: soft airbrushed gradients before; flat (or screened) inks after, offset from the line on Riso
+  const off = sc==='riso' && f.v_spot ? [6, 4] : [0, 0];
+  leaves.forEach(([x, y, a, len]) => {
+    g.save(); g.translate(off[0], off[1]);
+    if (!f.v_spot && !f.v_screen){ const rg = g.createRadialGradient(x, y - 80, 5, x, y - 80, len); rg.addColorStop(0, 'rgba(120,200,120,.75)'); rg.addColorStop(1, 'rgba(40,110,60,.35)'); g.fillStyle = rg; g.shadowColor = 'rgba(0,0,0,.2)'; g.shadowBlur = 12; }
+    else g.fillStyle = f.v_screen ? dotFill(g, cLeaf, sc==='swiss' ? .35 : .7) : cLeaf;
+    path(leafPath(x, y, a, len)); g.closePath(); g.fill(); g.restore();
+  });
+  g.save(); g.translate(off[0]*.6, off[1]*.6);
+  if (!f.v_spot && !f.v_screen){ const lg = g.createLinearGradient(240, 0, 360, 0); lg.addColorStop(0, '#D98A4E'); lg.addColorStop(1, '#8E4A1E'); g.fillStyle = lg; g.shadowColor = 'rgba(0,0,0,.25)'; g.shadowBlur = 14; g.shadowOffsetY = 6; }
+  else g.fillStyle = f.v_screen && sc!=='riso' ? dotFill(g, cPot, .55) : cPot;
+  path([[245, 170], [355, 170], [338, 270], [262, 270]]); g.closePath(); g.fill(); g.restore();
+  g.globalCompositeOperation = 'source-over';
+  // lines: thin multi-colour strokes before; one ink, heavier, a little rough after
+  g.lineCap = 'round'; g.lineJoin = 'round';
+  const stroke = (col, w) => { g.strokeStyle = col; g.lineWidth = w; g.stroke(); };
+  leaves.forEach(([x, y, a, len], k) => { path(leafPath(x, y, a, len)); g.closePath(); stroke(f.v_line ? ink.k : ['#2F4F2F', '#557A3E', '#3E6B48', '#6B8E23', '#2E8B57'][k], f.v_line ? 3 : 1.1); });
+  path([[245, 170], [355, 170], [338, 270], [262, 270], [245, 170]]); stroke(f.v_line ? ink.k : '#7A3E12', f.v_line ? 3 : 1.1);
+  path([[240, 170], [360, 170], [360, 186], [240, 186], [240, 170]]); stroke(f.v_line ? ink.k : '#7A3E12', f.v_line ? 3 : 1.1);
+  // small details: leaf veins and dots on the pot
+  if (!f.v_detail){
+    leaves.forEach(([x, y, a, len]) => { g.beginPath(); g.moveTo(x, y - 60); g.lineTo(x + Math.cos(a)*len*.8, y - 60 + Math.sin(a)*len*.48 - len*.72); g.strokeStyle = f.v_single ? (f.v_spot ? ink.k : '#2F4F2F') : '#9ACD32'; g.lineWidth = f.v_line ? 2 : .8; g.stroke(); });
+    for (let k=0;k<7;k++){ const x = 262 + k*12, y = 220 + (k%2)*14;
+      if (f.v_single){ g.fillStyle = f.v_spot ? ink.k : '#5A2D0C'; g.beginPath(); g.arc(x, y, 3.5, 0, Math.PI*2); g.fill(); }
+      else { g.fillStyle = f.v_spot ? ink.a : '#FFD166'; g.beginPath(); g.arc(x-1.5, y-1, 3.5, 0, Math.PI*2); g.fill(); g.fillStyle = f.v_spot ? ink.b : '#118AB2'; g.beginPath(); g.arc(x+1.5, y+1, 3.5, 0, Math.PI*2); g.fill(); } }
+  }
+  // the table line
+  g.beginPath(); g.moveTo(60, 272); g.lineTo(580, 272); stroke(f.v_line ? ink.k : '#B8B2A7', f.v_line ? 3 : 1);
+  grain(g, ink, f.v_edge ? 1 : 0);
+}
+
+function drawVisual(cv, kind, f, sc, ink){
+  const g = cv.getContext('2d', {willReadFrequently:true});
+  g.globalCompositeOperation = 'source-over'; g.globalAlpha = 1; g.fillStyle = ink.paper; g.fillRect(0, 0, VW, VH);
+  ({geo:drawGeo, obj:drawObj, photo:drawPhoto, hand:drawHand})[kind](g, f, sc, ink);
+}
+
+/* ---------- two elements: operations ---------- */
+const PAIRS = [['shapes',L('形状 + 形状','Shape + shape')],['text',L('色块 + 文字','Block + type')],['photo',L('形状 + 照片','Shape + photo')]];
+// safe: does the result survive misregistration? (one plate, or tolerant by design)
+const OPS = [
+  {id:'over', t:L('叠印','Overprint'), d:L('两块色版分别完整印刷，在重叠区域形成混色。','Both plates print in full; the overlap prints a third colour.'), safe:true, l:['Overprinting','https://en.wikipedia.org/wiki/Overprinting']},
+  {id:'knock', t:L('挖空','Knockout'), d:L('从 A 版中移除 B 图形所占的区域，再印上 B 版。两版错位时，交界处可能出现白缝。','B\'s shape is cut out of A\'s plate and B prints into the hole; the default in digital prepress.'), safe:false, l:['Overprinting','https://en.wikipedia.org/wiki/Overprinting']},
+  {id:'trap', t:L('挖空 + 陷印','Knockout + trap'), d:L('让相邻色块的边缘略微重叠，减少套印不准造成的白缝。本页通过缩小 A 版的挖空区域来模拟；偏差过大时仍可能露白。','A knockout where the lighter colour spreads slightly under the darker one: a miss shows a thin dark line, not a white gap.'), safe:true, l:['Trap (printing)','https://en.wikipedia.org/wiki/Trap_(printing)']},
+  {id:'reverse', t:L('反白','Reverse'), d:L('从 A 版中挖空 B 图形所在区域，不再印 B 版，让图形呈现纸色。此示例只用一块色版，无需两版套准。','B is cut out of A and not printed: it stays paper. One plate, so misregistration cannot hurt it.'), safe:true},
+  {id:'union', t:L('并集','Union'), d:L('将 A 与 B 的覆盖区域合为一个图形，用同一块色版印刷。','A and B merge into one shape on one plate.'), safe:true},
+  {id:'inter', t:L('交集','Intersect'), d:L('只印两者重叠的部分。','Only the part where they overlap prints.'), safe:true},
+  {id:'xor', t:L('排除重叠','Exclude'), d:L('印两者不重叠的部分，重叠处留白。','The parts that do not overlap print; the overlap stays paper.'), safe:true},
+  {id:'clip', t:L('剪切蒙版','Clip'), d:L('只保留 B 图像落在 A 图形内部的部分，例如将照片裁成圆形。本页另印一圈描边，因此照片与描边仍需套准。','B only appears inside A\'s shape, like a photo inside a circle; the two plates still have to line up.'), safe:false},
+];
+const OPS_FOR = {shapes:['over','knock','trap','reverse','union','inter','xor'], text:['over','knock','trap','reverse','union','inter','xor'], photo:['over','knock','trap','reverse','clip']};
+const OW = 320, OH = 210;
+const opCache = {};
+function opMasks(pair){
+  const key = pair + '|' + (vUpload ? vUpload.src.length : 0); if (opCache[key]) return opCache[key];
+  const mk = () => { const c = document.createElement('canvas'); c.width = OW; c.height = OH; return c; };
+  const a = mk(), b = mk(), ga = a.getContext('2d'), gb = b.getContext('2d');
+  ga.fillStyle = gb.fillStyle = '#000';
+  if (pair==='shapes'){ ga.beginPath(); ga.arc(130, 105, 78, 0, Math.PI*2); ga.fill(); gb.save(); gb.translate(205, 105); gb.rotate(Math.PI/4); gb.fillRect(-58, -58, 116, 116); gb.restore(); }
+  else if (pair==='text'){ ga.fillRect(30, 45, 260, 120); gb.font = '800 96px "Bricolage Grotesque", "Archivo", sans-serif'; gb.textAlign = 'center'; gb.textBaseline = 'middle'; gb.fillText('INK', 160, 110); }
+  else { ga.beginPath(); ga.arc(160, 105, 88, 0, Math.PI*2); ga.fill();
+    // B: the sample landscape, screened in one ink, filling the whole tile
+    const src = photoSource(), t = mk(), gt = t.getContext('2d'); gt.drawImage(src, 0, 0, OW, OH);
+    const d = gt.getImageData(0, 0, OW, OH).data, im = gb.createImageData(OW, OH), o = im.data, cell = 5, TAU = Math.PI*2;
+    for (let y=0;y<OH;y++) for (let x=0;x<OW;x++){ const i = (y*OW+x)*4, L0 = (.299*d[i]+.587*d[i+1]+.114*d[i+2])/255, dk = Math.min(1, Math.max(0, (1 - L0 - .1)*1.5));
+      const u = (x+y)/(cell*Math.SQRT2), w = (y-x)/(cell*Math.SQRT2), thr = (Math.cos(TAU*u) + Math.cos(TAU*w) + 2)/4; o[i+3] = thr > 1 - dk ? 255 : 0; }
+    gb.putImageData(im, 0, 0);
+  }
+  const A = ga.getImageData(0, 0, OW, OH).data, B = gb.getImageData(0, 0, OW, OH).data, N = OW*OH, ma = new Float32Array(N), mb = new Float32Array(N);
+  for (let i=0;i<N;i++){ ma[i] = A[i*4+3]/255; mb[i] = B[i*4+3]/255; }
+  return (opCache[key] = {ma, mb});
+}
+function erode(m, r){
+  const out = new Float32Array(m.length);
+  for (let y=0;y<OH;y++) for (let x=0;x<OW;x++){ let v = 1; for (let dy=-r; dy<=r && v>0; dy++) for (let dx=-r; dx<=r; dx++){ const xx = x+dx, yy = y+dy; if (xx<0||yy<0||xx>=OW||yy>=OH){ v = 0; break; } v = Math.min(v, m[yy*OW+xx]); } out[y*OW+x] = v; }
+  return out;
+}
+function drawOp(cv, op, pair, ink, mis){
+  const g = cv.getContext('2d'), {ma, mb} = opMasks(pair), N = OW*OH;
+  const dx = mis ? 5 : 0, dy = mis ? 3 : 0;                      // plate B slips by about 1–2 mm at print size
+  const mbE = op==='trap' ? erode(mb, 3) : null;                 // the hole in A is choked so A runs under B
+  const im = g.createImageData(OW, OH), d = im.data, P = hx(ink.paper), A = hx(ink.a), B = hx(ink.b), r = noise2(5);
+  for (let y=0;y<OH;y++) for (let x=0;x<OW;x++){
+    const i = y*OW + x, xs = x - dx, ys = y - dy, j = (xs>=0 && ys>=0 && xs<OW && ys<OH) ? ys*OW + xs : -1;
+    const a = ma[i], b0 = mb[i], bS = j>=0 ? mb[j] : 0, aS = j>=0 ? ma[j] : 0;
+    let cA = 0, cB = 0;
+    switch (op){
+      case 'over': cA = a; cB = bS; break;
+      case 'knock': cA = a*(1 - b0); cB = bS; break;
+      case 'trap': cA = a*(1 - mbE[i]); cB = bS; break;
+      case 'reverse': cA = a*(1 - b0); break;
+      case 'union': cA = Math.max(a, b0); break;
+      case 'inter': cA = a*b0; break;
+      case 'xor': cA = Math.abs(a - b0); break;
+      case 'clip': cB = bS*aS; break;
+    }
+    let c = P.slice();
+    const s = .95 - .25*r();
+    if (cA) c = c.map((v,k) => v*(1 - cA*s*(1 - A[k]/255)));
+    if (cB) c = c.map((v,k) => v*(1 - cB*s*(1 - B[k]/255)));
+    d[i*4] = c[0]; d[i*4+1] = c[1]; d[i*4+2] = c[2]; d[i*4+3] = 255;
+  }
+  g.putImageData(im, 0, 0);
+  if (op==='clip'){ g.strokeStyle = ink.a; g.lineWidth = 3; g.beginPath(); g.arc(160, 105, 88, 0, Math.PI*2); g.stroke(); }
+}
+function drawInputs(cv, pair, ink){
+  const g = cv.getContext('2d'), {ma, mb} = opMasks(pair), W2 = cv.width, im = g.createImageData(W2, OH), d = im.data, P = hx(ink.paper), A = hx(ink.a), B = hx(ink.b);
+  for (let y=0;y<OH;y++) for (let x=0;x<W2;x++){
+    const o = (y*W2 + x)*4, left = x < OW, i = y*OW + (left ? x : x - OW - 20), inside = left || (x >= OW + 20);
+    let c = P.slice();
+    if (inside){ const m = left ? ma[i] : mb[i], K = left ? A : B; if (m) c = c.map((v,k) => v*(1 - m*.95*(1 - K[k]/255))); }
+    d[o] = c[0]; d[o+1] = c[1]; d[o+2] = c[2]; d[o+3] = 255;
+  }
+  g.putImageData(im, 0, 0);
+  g.fillStyle = ink.k; g.font = '600 13px "JetBrains Mono", monospace'; g.fillText('A', 10, 20); g.fillText('B', OW + 30, 20);
+}
+
 /* ---------- fit check ---------- */
+const curSteps = () => S.cat==='ops' ? [] : S.cat==='vis' ? VSTEPS.filter(v => VAPPLY[S.el].includes(v.id)) : STEPS;
 function checks(f, sc){
-  const out = STEPS.map(s => ({ok:!!f[s.id], t:s.t, w:s.w, l:s.l}));
+  const out = curSteps().map(s => ({ok:!!f[s.id], t:s.t, w:s.w, l:s.l}));
   // one derived check: large solid blocks in the Riso scheme should sit near 85%
-  if (sc==='riso' && f.flat) out.push({ok:!!f.screen, t:L('大色块适当减淡','Large solids near 85%'), w:L('MICA 建议将大面积满墨色块降至 85%，以减少卡纸和蹭脏。本页以约 85% 不透明度模拟部分色块，并非通用制版标准。','Large 100% solids on a Riso can jam and smudge; at 85% they still look dark.'), l:['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']});
+  if (S.cat==='web' && sc==='riso' && f.flat) out.push({ok:!!f.screen, t:L('大色块适当减淡','Large solids near 85%'), w:L('MICA 建议将大面积满墨色块降至 85%，以减少卡纸和蹭脏。本页以约 85% 不透明度模拟部分色块，并非通用制版标准。','Large 100% solids on a Riso can jam and smudge; at 85% they still look dark.'), l:['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']});
   return out;
 }
 
 /* ---------- UI ---------- */
 function segs(){
-  const mk = (el, items, key, dis) => { el.innerHTML = ''; items.forEach(([v, l]) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = T(l); b.dataset.v = v; if (dis){ b.disabled = true; b.title = LANG==='zh' ? '尚未开放' : 'Coming next'; } else b.addEventListener('click', () => { S[key] = v; render(); }); el.appendChild(b); }); };
-  mk($('elSeg'), ELEMENTS, 'el');
-  mk($('visSeg'), VISUALS, null, true);
+  const mk = (el, items, key, cat) => { el.innerHTML = ''; items.forEach(([v, l]) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = T(l); b.dataset.v = v;
+    b.addEventListener('click', () => { if (cat) S.cat = cat; S[key] = v; buildSteps(); render(); }); el.appendChild(b); }); };
+  mk($('elSeg'), ELEMENTS, 'el', 'web');
+  mk($('visSeg'), VISUALS, 'el', 'vis');
   mk($('schemeSeg'), Object.entries(SCHEMES).map(([k, v]) => [k, v.n]), 'scheme');
   mk($('inkSeg'), Object.entries(INKSETS).map(([k, v]) => [k, v.n]), 'inks');
-  $('steps').innerHTML = STEPS.map(s => `<li><label><input type="checkbox" data-step="${s.id}"><span>${T(s.t)}<small>${T(s.w)}</small></span><span class="src ${s.s}" title="${s.l ? s.l[0] : ''}">${T(SRC_LBL[s.s])}</span></label></li>`).join('');
+  mk($('pairSeg'), PAIRS, 'pair', 'ops');
+  buildImgSegs();
+  buildSteps();
+}
+function buildSteps(){
+  $('steps').innerHTML = curSteps().map(s => `<li><label><input type="checkbox" data-step="${s.id}"><span>${T(s.t)}<small>${T(s.w)}</small></span><span class="src ${s.s}" title="${s.l ? s.l[0] : ''}">${T(SRC_LBL[s.s])}</span></label></li>`).join('');
   $('steps').querySelectorAll('[data-step]').forEach(cb => cb.addEventListener('change', () => { S.on[cb.dataset.step] = cb.checked; render(); }));
 }
+function renderOps(){
+  const ink = INKSETS[S.inks], list = OPS.filter(o => OPS_FOR[S.pair].includes(o.id));
+  $('before').innerHTML = `<div class="pg" style="--paper:${ink.paper};--k:${ink.k};--a:${ink.a};--b:${ink.b}"><canvas class="vis" width="${OW*2+20}" height="${OH}"></canvas></div>`;
+  drawInputs($('before').querySelector('canvas'), S.pair, ink);
+  $('after').innerHTML = `<div class="pg" style="--paper:${ink.paper}"><div class="optiles">${list.map(o => `<figure class="optile"><canvas width="${OW}" height="${OH}" data-op="${o.id}"></canvas><figcaption>${T(o.t)}<i class="${o.safe ? '' : 'warn'}">${o.safe ? (LANG==='zh'?'较耐错位':'miss-proof') : (LANG==='zh'?'需套准':'needs register')}</i></figcaption></figure>`).join('')}</div></div>`;
+  $('after').querySelectorAll('canvas[data-op]').forEach(cv => drawOp(cv, cv.dataset.op, S.pair, ink, S.mis));
+  $('beforeName').textContent = T(PAIRS.find(x => x[0]===S.pair)[1]);
+  $('afterName').textContent = (LANG==='zh' ? '运算结果' : 'Results') + (S.mis ? (LANG==='zh' ? ' · 模拟 B 版偏移' : ' · plate B off by about 1–2 mm') : (LANG==='zh' ? ' · 无套色偏差' : ' · perfect register'));
+  const ok = list.filter(o => o.safe).length;
+  $('score').textContent = `${ok} / ${list.length}`;
+  $('checks').innerHTML = list.map(o => `<li class="${o.safe ? 'ok' : 'warn'}"><b>${o.safe ? (LANG==='zh'?'较耐错位':'Safe') : (LANG==='zh'?'注意':'Care')}</b><span>${T(o.t)} <em>· ${T(o.d)}${o.l ? ` <a href="${o.l[1]}" target="_blank" rel="noopener">${o.l[0]}</a>` : ` ${LANG==='zh'?'本页示例':'this page'}`}</em></span></li>`).join('');
+}
 function render(){
-  const ink = INKSETS[S.inks], none = Object.fromEntries(STEPS.map(s => [s.id, false]));
+  const opsMode = S.cat==='ops';
+  $('beforeLbl').textContent = opsMode ? (LANG==='zh' ? '两个元素' : 'Two elements') : (LANG==='zh' ? '改造前' : 'Before');
+  $('afterLbl').textContent = opsMode ? (LANG==='zh' ? '运算' : 'Operations') : (LANG==='zh' ? '改造后' : 'After');
+  $('imgGroup').hidden = !(S.cat==='vis' && S.el==='photo');
+  syncImgSegs();
+  $('stepsGroup').hidden = opsMode; $('schemeBox').hidden = opsMode;
+  document.querySelector('.stage .cap:last-of-type span').innerHTML = opsMode ? (LANG==='zh' ? '套色偏差提示' : 'Does it survive a miss?') : (LANG==='zh' ? '规则启用情况' : 'Fit check (after)');
+  $('misBtn').textContent = S.mis ? (LANG==='zh'?'开':'On') : (LANG==='zh'?'关':'Off'); $('misBtn').setAttribute('aria-pressed', S.mis);
+  document.querySelectorAll('#pairSeg button').forEach(b => b.setAttribute('aria-pressed', opsMode && b.dataset.v===S.pair));
+  if (opsMode){
+    renderOps(); $('upRow').hidden = $('upHint').hidden = true;
+    document.querySelectorAll('#elSeg button, #visSeg button').forEach(b => b.setAttribute('aria-pressed', false));
+    document.querySelectorAll('#inkSeg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===S.inks));
+    return;
+  }
+  const ink = INKSETS[S.inks], none = Object.fromEntries(STEPS.map(s => [s.id, false]).concat(VSTEPS.map(s => [s.id, false])));
+  const vis = S.cat==='vis';
+  // steps that do not apply to this element stay off in "after" too
+  const on = vis ? Object.fromEntries(VSTEPS.map(v => [v.id, VAPPLY[S.el].includes(v.id) && !!S.on[v.id]])) : S.on;
   $('before').innerHTML = page(S.el, none, S.scheme, ink, true);
-  $('after').innerHTML = page(S.el, S.on, S.scheme, ink, false);
-  const elName = T(ELEMENTS.find(e => e[0]===S.el)[1]);
-  $('beforeName').textContent = elName + (LANG==='zh' ? ' · 常见网页样式' : ' · the usual web version');
+  $('after').innerHTML = page(S.el, on, S.scheme, ink, false);
+  if (vis){
+    drawVisual($('before').querySelector('canvas.vis'), S.el, none, S.scheme, ink);
+    drawVisual($('after').querySelector('canvas.vis'), S.el, on, S.scheme, ink);
+  }
+  const elName = T((vis ? VISUALS : ELEMENTS).find(e => e[0]===S.el)[1]);
+  $('beforeName').textContent = elName + ' · ' + (vis ? T(VBEFORE[S.el]) : (LANG==='zh' ? '常见网页样式' : 'the usual web version'));
   $('afterName').textContent = elName + ' · ' + T(SCHEMES[S.scheme].n);
-  $('schemeHint').textContent = T(SCHEMES[S.scheme].h);
-  const C = checks(S.on, S.scheme), ok = C.filter(c => c.ok).length;
+  $('schemeHint').textContent = T(vis ? SCHEMES[S.scheme].vh : SCHEMES[S.scheme].h);
+  $('upRow').hidden = $('upHint').hidden = !(vis && S.el==='photo');
+  const C = checks(on, S.scheme), ok = C.filter(c => c.ok).length;
   $('score').textContent = `${ok} / ${C.length}`;
   $('checks').innerHTML = C.map(c => `<li class="${c.ok ? 'ok' : 'warn'}"><b>${c.ok ? (LANG==='zh'?'已启用':'OK') : (LANG==='zh'?'未启用':'Off')}</b><span>${T(c.t)} <em>· ${T(c.w)}${c.l ? ` <a href="${c.l[1]}" target="_blank" rel="noopener">${c.l[0]}</a>` : ` ${LANG==='zh'?'本页示例':'this page'}`}</em></span></li>`).join('');
-  document.querySelectorAll('#elSeg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===S.el));
+  document.querySelectorAll('#elSeg button').forEach(b => b.setAttribute('aria-pressed', !vis && b.dataset.v===S.el));
+  document.querySelectorAll('#visSeg button').forEach(b => b.setAttribute('aria-pressed', vis && b.dataset.v===S.el));
   document.querySelectorAll('#schemeSeg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===S.scheme));
   document.querySelectorAll('#inkSeg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===S.inks));
   document.querySelectorAll('[data-step]').forEach(cb => cb.checked = !!S.on[cb.dataset.step]);
 }
-$('allOn').addEventListener('click', () => { STEPS.forEach(s => S.on[s.id] = true); render(); });
-$('allOff').addEventListener('click', () => { STEPS.forEach(s => S.on[s.id] = false); render(); });
+$('allOn').addEventListener('click', () => { curSteps().forEach(s => S.on[s.id] = true); render(); });
+$('allOff').addEventListener('click', () => { curSteps().forEach(s => S.on[s.id] = false); render(); });
+$('upScene').addEventListener('click', () => { vUpload = null; render(); });
+$('misBtn').addEventListener('click', () => { S.mis = !S.mis; render(); });
+$('upFile').addEventListener('change', e => { const file = e.target.files && e.target.files[0]; if (!file) return; const rd = new FileReader(); rd.onload = () => { const im = new Image(); im.onload = () => { vUpload = im; render(); }; im.src = rd.result; }; rd.readAsDataURL(file); });
 
 function applyLang(l){
   LANG = l; const r = document.documentElement;

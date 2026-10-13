@@ -48,8 +48,19 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);f
 .strip{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
 .chip{display:inline-flex;align-items:center;gap:6px}
 .chip i{display:inline-block;width:22px;height:14px;border:1px solid rgba(0,0,0,.15)}
-.desc{margin:0;max-width:62ch;text-wrap:pretty}
+.desc{max-width:62ch;display:flex;flex-direction:column;gap:10px}
+.desc p{margin:0;text-wrap:pretty}
 .desc b{font-family:var(--display);font-weight:800;font-size:1.15em;margin-right:.4em}
+.prov{font-size:13.5px;color:var(--muted);border-left:3px solid var(--pink);padding-left:10px}
+.prov .tag{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);margin-bottom:2px}
+.prov .links{display:block;margin-top:4px}
+.prov a{color:var(--ink);text-decoration-color:var(--blue);text-decoration-thickness:1.5px;text-underline-offset:3px}
+.prov a:hover{color:var(--blue)}
+.prov i{font-style:normal;margin:0 .45em;color:var(--rule)}
+.tip{position:absolute;z-index:20;max-width:300px;padding:10px 12px;background:var(--ink);color:var(--sheet);font-size:12.5px;line-height:1.5;box-shadow:4px 4px 0 var(--pink);pointer-events:none;display:flex;flex-direction:column;gap:4px}
+.tip[hidden]{display:none!important}
+.tip strong{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;font-weight:600}
+.tip em{font-style:normal;font-family:var(--mono);font-size:10.5px;opacity:.7}
 
 /* panel */
 .panel{min-width:0;display:flex;flex-direction:column;gap:22px}
@@ -130,7 +141,7 @@ button:focus-visible,input:focus-visible,label.btn:focus-within{outline:2.5px so
         <canvas id="out" width="600" height="600" role="img" aria-label="印刷效果预览"></canvas>
       </div>
       <div class="strip" id="ctrlStrip"></div>
-      <p class="desc" id="desc"></p>
+      <div class="desc" id="desc" aria-live="polite"></div>
     </section>
 
     <aside class="panel" aria-label="参数">
@@ -297,6 +308,38 @@ const SHAPES = [
   {id:'diamond', zh:'菱形'},
   {id:'square', zh:'方形'},
 ];
+/* provenance / credits for each style: short origin note + links */
+const W = t => 'https://en.wikipedia.org/wiki/' + t;
+const PROV = {
+  // screens
+  am:{o:'1850 年代 Fox Talbot 用纱网做照相制版试验；1880 年代 Frederic Ives 做出实用的网屏；1893 年 Levy 兄弟的玻璃交叉线网屏让报纸照片真正普及。', l:[['Halftone',W('Halftone')],['Frederic Eugene Ives',W('Frederic_Eugene_Ives')]]},
+  line:{o:'源自 15 世纪以来的铜版线雕传统，后来成为钞票和邮票的防伪雕刻语言；照相制版时代有对应的“线条转换”技法。', l:[['Line engraving',W('Line_engraving')]]},
+  hatch:{o:'排线与交叉排线是版画和素描的古老技法，丢勒（Albrecht Dürer）的铜版画是最经典的范例。', l:[['Hatching',W('Hatching')],['Albrecht Dürer',W('Albrecht_D%C3%BCrer')]]},
+  benday:{o:'插画师兼印刷工 Benjamin Henry Day Jr. 于 1879 年发明，长期用于报纸漫画上色；1960 年代 Roy Lichtenstein 把它放大成波普艺术的标志。', l:[['Ben-Day dots',W('Ben-Day_dots')],['Roy Lichtenstein',W('Roy_Lichtenstein')]]},
+  bayer:{o:'柯达工程师 Bryce Bayer 在 1973 年提出这种有序抖动矩阵，他也是数码相机里 Bayer 彩色滤镜的发明者。', l:[['Ordered dithering',W('Ordered_dithering')],['Bryce Bayer',W('Bryce_Bayer')]]},
+  fs:{o:'Robert W. Floyd 与 Louis Steinberg 在 1976 年发表的误差扩散算法，至今仍是图像抖动的基准方法。', l:[['Floyd–Steinberg dithering',W('Floyd%E2%80%93Steinberg_dithering')]]},
+  fm:{o:'理论基础是 Robert Ulichney 在 1980 年代提出的蓝噪声抖动；1990 年代调频加网进入商业印刷。', l:[['Stochastic screening',W('Stochastic_screening')],['Blue noise',W('Colors_of_noise#Blue_noise')]]},
+  thresh:{o:'Chester Carlson 在 1938 年发明静电复印；1970 年代朋克 zine 用廉价复印机自出版，高反差黑白成了地下出版的视觉语言。', l:[['Xerography',W('Xerography')],['Zine',W('Zine')]]},
+  silk:{o:'模版印刷可以追溯到宋代中国；20 世纪的感光制版让它工业化，1962 年起安迪·沃霍尔用丝网创作肖像系列。', l:[['Screen printing',W('Screen_printing')],['Andy Warhol',W('Andy_Warhol')]]},
+  letter:{o:'约 1440 年谷登堡的活字印刷开启凸版时代。今天追求“深压痕”的质感，是凸版在 20 世纪末作为手工艺复兴后的审美。', l:[['Letterpress printing',W('Letterpress_printing')],['Johannes Gutenberg',W('Johannes_Gutenberg')]]},
+  wood:{o:'现存最早有纪年的印本是 868 年的木刻《金刚经》；丢勒把木刻推向艺术高峰；1930 年代鲁迅倡导的新兴木刻运动是中国现代版画的起点。', l:[['Woodcut',W('Woodcut')],['Diamond Sutra',W('Diamond_Sutra')],['Linocut',W('Linocut')]]},
+  cont:{o:'不加网也能印出连续调的珂罗版（collotype）出现在 19 世纪中叶；今天的照片冲印和数码喷墨同样是连续调。', l:[['Collotype',W('Collotype')]]},
+  // modes
+  mono:{o:'一版一色是印刷最原始的形式，从雕版到活字都是如此。', l:[['Printing',W('Printing')]]},
+  sep:{o:'两种专色叠印是 Riso 印刷的典型用法。Risograph 由日本理想科学（Riso Kagaku）在 1980 年推出，2000 年代后被独立出版和艺术书展重新发现。', l:[['Risograph',W('Risograph')],['Spot color',W('Spot_color')]]},
+  tri:{o:'18 世纪初 Jacob Christoph Le Blon 用红、黄、蓝三块版叠印出彩色图像，是今天 CMYK 四色印刷的前身。', l:[['Jacob Christoph Le Blon',W('Jacob_Christoph_Le_Blon')],['CMYK color model',W('CMYK_color_model')]]},
+  duo:{o:'印刷双色调最早用于高品质的摄影书和画册，用第二块版加深暗部、扩展色调范围。', l:[['Duotone',W('Duotone')]]},
+  grad:{o:'渐变映射是数字图像处理的做法；2015 年前后 Spotify 的品牌视觉让高饱和的 duotone 照片流行起来。', l:[['Duotone',W('Duotone')]]},
+  // dot shapes
+  round:{o:'欧几里得圆点，最通用的网点形状，50% 时形成棋盘格。'},
+  ellipse:{o:'椭圆（链状）网点：相邻网点先沿一个方向连成链，中间调过渡更平滑，传统上常用于人像肤色。'},
+  diamond:{o:'菱形网点：和椭圆点一样属于链状网点，用来减少中间调的跳变。'},
+  square:{o:'方形网点：暗部更早连成棋盘格，画面更硬朗、更图形化。'},
+  // ink coverage
+  multiply:{o:'透明油墨：Riso 和胶印的四色油墨都是半透明的，叠在一起会混出新颜色。'},
+  opaque:{o:'不透明油墨：丝网印刷常用厚而不透明的油墨，后印的颜色直接盖住先印的。'},
+};
+const linkList = l => l ? l.map(([t,u]) => `<a href="${u}" target="_blank" rel="noopener">${t}</a>`).join('<i>·</i>') : '';
 const DEFAULTS = {shape:'round', gain:0, ca:0, inkC:'yellow', blend:'multiply'};
 const PRESETS = [
   {name:'Riso 双色', tag:'AM · 粉 + 蓝 · 错位', p:{screen:'am',cell:9,angle:15,contrast:1.15,mode:'sep',inkA:'fpink',inkB:'blue',paper:'white',mx:5,my:3,grain:.45,starve:.3,band:.25,tex:.35}},
@@ -613,8 +656,25 @@ function schedule(){ if (queued) return; queued = true; requestAnimationFrame(()
 function seg(el, items, key){
   el.innerHTML = '';
   items.forEach(it => { const b = document.createElement('button'); b.type='button'; b.textContent=it.zh; b.dataset.v=it.id;
+    if (PROV[it.id]) b.dataset.tip = it.id;
     b.addEventListener('click', () => { P[key]=it.id; syncControls(); schedule(); }); el.appendChild(b); });
 }
+/* hover / focus popover with the provenance note */
+const tip = document.createElement('div'); tip.className = 'tip'; tip.setAttribute('role','tooltip'); tip.hidden = true; document.body.appendChild(tip);
+function showTip(el){
+  const pv = PROV[el.dataset.tip]; if (!pv) return;
+  tip.innerHTML = `<strong>${el.textContent} · 溯源</strong><span>${pv.o}</span>${pv.l ? `<em>${pv.l.map(x=>x[0]).join(' · ')}</em>` : ''}`;
+  tip.hidden = false;
+  const r = el.getBoundingClientRect(), tw = tip.offsetWidth, th = tip.offsetHeight;
+  let left = r.left + r.width/2 - tw/2; left = Math.max(12, Math.min(left, window.innerWidth - tw - 12));
+  let top = r.bottom + 8; if (top + th > window.innerHeight - 8) top = r.top - th - 8;
+  tip.style.left = (left + window.scrollX) + 'px'; tip.style.top = (top + window.scrollY) + 'px';
+}
+document.addEventListener('mouseover', e => { const el = e.target.closest('[data-tip]'); if (el) showTip(el); });
+document.addEventListener('mouseout', e => { if (e.target.closest('[data-tip]')) tip.hidden = true; });
+document.addEventListener('focusin', e => { const el = e.target.closest('[data-tip]'); if (el && el.matches(':focus-visible')) showTip(el); else tip.hidden = true; });
+document.addEventListener('focusout', () => { tip.hidden = true; });
+window.addEventListener('scroll', () => { tip.hidden = true; }, {passive:true});
 function swatches(el, items, key){
   el.innerHTML = '';
   items.forEach(it => { const b = document.createElement('button'); b.type='button'; b.style.background=it.c; b.dataset.v=it.id;
@@ -664,7 +724,10 @@ function mul(a,b){ const x=hex(a), y=hex(b); return '#'+x.map((v,i)=>Math.round(
 function syncInfo(){
   const sc = SCREENS.find(s => s.id===P.screen), iA = ink(P.inkA), iB = ink(P.inkB), iC = ink(P.inkC), pa = paper(P.paper);
   const shapeNote = (P.screen==='am'||P.screen==='benday') && P.shape!=='round' ? ` 当前点形：${SHAPES.find(s=>s.id===P.shape).zh}。` : '';
-  $('desc').innerHTML = P.mode==='grad' ? `<b>渐变映射</b>${MODE_DESC.grad}` : `<b>${sc.zh}</b>${sc.d}${shapeNote} ${MODE_DESC[P.mode]}${P.blend==='opaque'&&P.mode!=='mono'?' 当前为不透明遮盖：后印的油墨盖住先印的，不再混色。':''}`;
+  const md = MODES.find(m => m.id===P.mode);
+  const prov = (label, id) => { const pv = PROV[id]; return pv ? `<p class="prov"><span class="tag">${label}</span>${pv.o}${pv.l ? `<span class="links">${linkList(pv.l)}</span>` : ''}</p>` : ''; };
+  const main = P.mode==='grad' ? `<p><b>渐变映射</b>${MODE_DESC.grad}</p>` : `<p><b>${sc.zh}</b>${sc.d}${shapeNote} ${MODE_DESC[P.mode]}${P.blend==='opaque'&&P.mode!=='mono'?' 当前为不透明遮盖：后印的油墨盖住先印的，不再混色。':''}</p>`;
+  $('desc').innerHTML = main + (P.mode==='grad' ? '' : prov('溯源 · '+sc.zh, P.screen)) + (P.mode!=='mono' ? prov('溯源 · '+md.zh, P.mode) : '');
   const chips = [[pa.c,'纸 '+pa.zh],[iA.c,'A '+iA.en]];
   if (P.mode!=='mono'){ chips.push([iB.c,'B '+iB.en]); }
   if (P.mode==='tri'){ chips.push([iC.c,'C '+iC.en]); chips.push([mul(iA.c,iB.c),'A×B']); chips.push([mul(iA.c,iC.c),'A×C']); chips.push([mul(iB.c,iC.c),'B×C']); }

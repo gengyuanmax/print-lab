@@ -101,7 +101,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
 /* panel */
 .seg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
 .seg.two{grid-template-columns:repeat(2,minmax(0,1fr))}
-#modeSeg{grid-template-columns:repeat(5,minmax(0,1fr))}
+#modeSeg{grid-template-columns:repeat(3,minmax(0,1fr))}
 #modeSeg button{font-size:12.5px;padding-inline:3px}
 @media (max-width:520px){#modeSeg{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .field.off{opacity:.4}
@@ -185,7 +185,10 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
 .trans h3 small{font-family:var(--mono);font-weight:400;font-size:10.5px;letter-spacing:.14em;color:var(--muted)}
 .trows{display:flex;flex-direction:column;gap:8px}
 .trow{display:grid;grid-template-columns:9.5em minmax(0,1fr);gap:12px;align-items:center}
-.trow .tl{display:flex;flex-direction:column;gap:1px;font-size:13px;line-height:1.3;cursor:help}
+.trow{background:transparent;border:1.5px solid transparent;padding:4px;cursor:pointer;text-align:left;font:inherit;color:inherit;width:100%}
+.trow:hover{border-color:var(--rule)}
+.trow[aria-pressed="true"]{border-color:var(--ink);background:var(--sheet)}
+.trow .tl{display:flex;flex-direction:column;gap:1px;font-size:13px;line-height:1.3}
 .trow .tl small{font-family:var(--mono);font-size:10.5px;color:var(--muted)}
 .trow canvas{display:block;width:100%;height:auto;border:1px solid var(--rule)}
 @media (max-width:520px){.trow{grid-template-columns:minmax(0,1fr);gap:4px}}
@@ -220,7 +223,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
       <div class="desc" id="desc" aria-live="polite"></div>
           <section class="trans" data-aria-zh="过渡" data-aria-en="Transitions">
         <h3><span><span class="zh">过渡</span><span class="en">Transitions</span></span><small>A → B</small></h3>
-        <p class="hint"><span class="zh">同一个从油墨 A 到油墨 B 的变化，用不同的印刷手段做出来。用的是上面选的油墨、纸张和瑕疵；把鼠标停在名字上看来源。</span><span class="en">The same change from ink A to ink B, made with different print techniques, using the inks, paper and flaws chosen above. Hover a name for its source.</span></p>
+        <p class="hint"><span class="zh">同一个从油墨 A 到油墨 B 的变化，用不同的印刷手段做出来，跟着上面的油墨、纸张和瑕疵一起变。点一条，就把这种过渡用到图像上（油墨模式切到“过渡映射”）；鼠标停在名字上看来源。</span><span class="en">The same change from ink A to ink B, made with different print techniques, following the inks, paper and flaws above. Click one to apply it to the image (the ink mode switches to Transition map); hover a name for its source.</span></p>
         <div class="trows" id="trows"></div>
       </section>
 </section>
@@ -476,8 +479,10 @@ const MODES = [
   {id:'tri', zh:'三色叠印', en:'Three-colour'},
   {id:'duo', zh:'双色调', en:'Duotone'},
   {id:'grad', zh:'渐变映射', en:'Gradient map'},
+  {id:'trans', zh:'过渡映射', en:'Transition map'},
 ];
 const MODE_DESC = {
+  trans:{zh:'过渡映射：图像从亮到暗，对应从油墨 A 过渡到油墨 B，过渡方式在画布下方的“过渡”里选。', en:'Transition map: the image\'s tones, light to dark, become a change from ink A to ink B, made with the technique chosen under Transitions below the proof.'},
   mono:{zh:'单色：只用一种油墨。', en:'Mono: a single ink.'},
   sep:{zh:'双色叠印：把原图拆成两块版，两种油墨叠在一起会混出第三种颜色。', en:'Two-colour overprint: the image is split into two plates, and where the inks overlap they mix into a third colour.'},
   tri:{zh:'三色叠印：按类似 CMY 的方式拆成三块版，每块版有自己的网角和错位，叠出更丰富的混色。', en:'Three-colour overprint: a CMY-like split into three plates, each with its own screen angle and misregistration, for richer mixes.'},
@@ -586,7 +591,7 @@ const PROV = {
   opaque:{o:{zh:'不透明遮盖：油墨厚而不透明，后印的颜色直接盖住先印的，丝网印刷里很常见。', en:'Opaque: thick ink that covers whatever was printed before it, common in screen printing.'}},
 };
 const linkList = l => l ? l.map(([t,u]) => `<a href="${u}" target="_blank" rel="noopener">${t}</a>`).join('<i>·</i>') : '';
-const DEFAULTS = {pattern:'none', shape:'round', gain:0, ca:0, inkC:'yellow', blend:'multiply', process:'none', stampType:'zhu', copyGen:0, black:0, white:1, gamma:1, posterize:0, stock:'uncoated', invA:false, invB:false};
+const DEFAULTS = {trans:'am', pattern:'none', shape:'round', gain:0, ca:0, inkC:'yellow', blend:'multiply', process:'none', stampType:'zhu', copyGen:0, black:0, white:1, gamma:1, posterize:0, stock:'uncoated', invA:false, invB:false};
 /* presets describe a final effect. Each lists the visible features that make it recognisable:
    e = essential, r = representative, o = optional; where each comes from: d = design decision, p = process, m = material;
    and what switching the feature off changes (used by the feature switches). */
@@ -1034,7 +1039,39 @@ function render(canvas, p, srcCanvas){
   let result = null;
   const patL = paperPattern(n, p.pattern, sc);
 
-  if (proc==='cyano' || proc==='gram'){
+  if (p.mode==='trans'){
+    // tone → A-to-B transition, made with the chosen technique; B is read at its misregistered position
+    const [pa] = plates(data, n, 'mono', p.contrast, gainEff, {black:p.black, white:p.white, gamma:p.gamma, posterize:p.posterize});
+    const cell = Math.max(2, p.cell*sc), dx = Math.round(p.mx*sc), dy = Math.round(p.my*sc), id = p.trans || 'am';
+    const mA = new Float32Array(N), mB = new Float32Array(N), split = id==='split';
+    for (let y=0;y<n;y++) for (let x=0;x<n;x++){
+      const i = y*n+x, xs = Math.min(n-1, Math.max(0, x-dx)), ys = Math.min(n-1, Math.max(0, y-dy));
+      const [a, b] = transCover(id, x, y, pa[i], x-dx, y-dy, pa[ys*n+xs], cell);
+      mA[i] = a; mB[i] = b;
+    }
+    for (let y=0;y<n;y++) for (let x=0;x<n;x++){
+      const i = y*n+x;
+      const s = .96*(1 - p.grain*.85*Math.pow(g1[i],1.6))*(1 - p.starve*.92*Math.pow(Math.max(0,(low[i]-.42)/.38),2))*(1 - p.band*.5*rows[y]);
+      const pt = 1 - tex*(.08*g2[i] + .06*low2[i]);
+      let c0 = pp[0]*pt, c1 = pp[1]*pt, c2 = pp[2]*pt;
+      for (let q=0;q<patL.length;q++){ const mm = patL[q][0][i]; if (mm){ const pc = patL[q][1]; c0*=1-mm*(1-pc[0]); c1*=1-mm*(1-pc[1]); c2*=1-mm*(1-pc[2]); } }
+      if (split){
+        const k0 = Math.min(1, Math.max(0, mB[i] + .03*Math.sin(y/sc*.9))), k = k0*k0*(3-2*k0), ss = s;
+        const ck = [iA[0]+(iB[0]-iA[0])*k, iA[1]+(iB[1]-iA[1])*k, iA[2]+(iB[2]-iA[2])*k];
+        c0 += (ck[0]*c0 - c0)*ss; c1 += (ck[1]*c1 - c1)*ss; c2 += (ck[2]*c2 - c2)*ss;
+      } else {
+        const a = mA[i]*s, b = mB[i]*s;
+        if (a){ c0*=1-a*(1-iA[0]); c1*=1-a*(1-iA[1]); c2*=1-a*(1-iA[2]); }
+        if (b){ c0*=1-b*(1-iB[0]); c1*=1-b*(1-iB[1]); c2*=1-b*(1-iB[2]); }
+      }
+      data[i*4]=c0*255; data[i*4+1]=c1*255; data[i*4+2]=c2*255; data[i*4+3]=255;
+    }
+    if (!split){
+      // plate view: B shown on its own plate (un-shifted)
+      const mB0 = new Float32Array(N); for (let y=0;y<n;y++) for (let x=0;x<n;x++){ const xs = x+dx, ys = y+dy; if (xs>=0&&xs<n&&ys>=0&&ys<n) mB0[y*n+x] = mB[ys*n+xs]; }
+      result = {n, masks:[mA, mB0, null], cont: id==='overlap'};
+    }
+  } else if (proc==='cyano' || proc==='gram'){
     renderLight(data, n, sc, p, nz, proc);
   } else if (p.mode==='grad'){
     // digital gradient map: highlights -> ink A, shadows -> ink B
@@ -1186,19 +1223,19 @@ function syncControls(){
   Object.keys(SLIDERS).forEach(k => { $(k).value = P[k]; $(k+'Out').textContent = SLIDERS[k](P[k]); });
   const press = (sel, key) => document.querySelectorAll(sel+' button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===P[key]));
   press('#screenSeg','screen'); press('#procSeg','process'); press('#stampSeg','stampType'); press('#modeSeg','mode'); press('#stockSeg','stock'); press('#patSeg','pattern');
-  const grad = P.mode==='grad', proc = P.process || 'none';
+  const tmode = P.mode==='trans', grad = P.mode==='grad', proc = tmode ? 'none' : (P.process || 'none');
   const light = proc==='cyano' || proc==='gram';
-  const screenOn = !grad && proc==='none';
+  const screenOn = !grad && !tmode && proc==='none';
   document.querySelectorAll('#screenSeg button').forEach(b => b.disabled = !screenOn);
   const shapeOk = screenOn && (P.screen==='am' || P.screen==='benday');
   document.querySelectorAll('#shapeSeg button').forEach(b => { b.setAttribute('aria-pressed', b.dataset.v===P.shape); b.disabled = !shapeOk; });
-  document.querySelectorAll('#procSeg button').forEach(b => b.disabled = grad);
+  document.querySelectorAll('#procSeg button').forEach(b => b.disabled = grad || tmode);
   $('stampRow').hidden = proc!=='stamp';
   $('copyGenRow').hidden = proc!=='xerox';
-  document.querySelectorAll('#blendSeg button').forEach(b => { b.setAttribute('aria-pressed', b.dataset.v===P.blend); b.disabled = grad || P.mode==='mono'; });
-  document.querySelectorAll('#invSeg button').forEach(b => { b.setAttribute('aria-pressed', !!P[b.dataset.k]); b.disabled = grad || (b.dataset.k==='invB' && P.mode==='mono'); });
-  const angleOk = !grad && !light && (proc==='wood' || (screenOn && ['am','line','hatch','benday'].includes(P.screen)));
-  const cellOk = !grad && !light && !(screenOn && (P.screen==='cont' || P.screen==='thresh')) && proc!=='xerox';
+  document.querySelectorAll('#blendSeg button').forEach(b => { b.setAttribute('aria-pressed', b.dataset.v===P.blend); b.disabled = grad || tmode || P.mode==='mono'; });
+  document.querySelectorAll('#invSeg button').forEach(b => { b.setAttribute('aria-pressed', !!P[b.dataset.k]); b.disabled = grad || tmode || (b.dataset.k==='invB' && P.mode==='mono'); });
+  const angleOk = !grad && !tmode && !light && (proc==='wood' || (screenOn && ['am','line','hatch','benday'].includes(P.screen)));
+  const cellOk = !grad && !light && (tmode ? !['overlap','split','trap'].includes(P.trans) : true) && !(screenOn && (P.screen==='cont' || P.screen==='thresh')) && proc!=='xerox';
   [['cell',cellOk],['angle',angleOk],['grain',!grad],['starve',!grad && proc!=='gram'],['band',!grad && !light],['gain',!grad && !light],['black',!grad && !light],['white',!grad && !light],['gamma',!grad && !light],['posterize',!grad && !light]].forEach(([k,ok]) => { $(k).disabled = !ok; $(k).closest('.field').classList.toggle('off', !ok); });
   ['inkA','inkB','inkC','paper'].forEach(k => document.querySelectorAll('#'+k+' button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===P[k])));
   $('inkBRow').hidden = P.mode==='mono';
@@ -1224,6 +1261,12 @@ function syncInfo(){
   const shapeNote = proc==='none' && (P.screen==='am'||P.screen==='benday') && P.shape!=='round' ? `${T(UI.shape)}${NM(SHAPES.find(s=>s.id===P.shape))}${LANG==='zh'?'。':'.'}` : '';
   const md = MODES.find(m => m.id===P.mode);
   const prov = (label, id) => { const pv = PROV[id]; return pv ? `<p class="prov"><span class="tag">${label}</span>${T(pv.o)}${pv.l ? `<span class="links">${linkList(pv.l)}</span>` : ''}</p>` : ''; };
+  const trn = TRANS.find(t => t.id===P.trans) || TRANS[0];
+  if (P.mode==='trans'){
+    $('desc').innerHTML = `<p><b>${NM(md)}</b>${T(MODE_DESC.trans)} ${LANG==='zh'?'当前：':'Now: '}${T(trn)}${LANG==='zh'?'（'+trn.szh+'）。':' ('+trn.sen+').'}</p>` + prov(T(UI.prov)+' · '+T(trn), trn.tip);
+    $('ctrlStrip').innerHTML = [[pa.c,T(UI.paper)+NM(pa)],[iA.c,(LANG==='zh'?'亮部 A ':'Light A ')+iA.en],[iB.c,(LANG==='zh'?'暗部 B ':'Dark B ')+iB.en]].map(([c,l]) => `<span class="chip"><i style="background:${c}"></i>${l}</span>`).join('');
+    return;
+  }
   const main = P.mode==='grad' ? `<p><b>${NM(md)}</b>${T(MODE_DESC.grad)}</p>` : `<p><b>${NM(lead)}</b>${T(lead.d)}${shapeNote} ${T(MODE_DESC[P.mode])}${P.blend==='opaque'&&P.mode!=='mono'?T(UI.opaqueNote):''}</p>`;
   $('desc').innerHTML = main + (P.mode==='grad' ? '' : prov(T(UI.prov)+' · '+NM(lead), lead.id)) + (P.mode!=='mono' ? prov(T(UI.prov)+' · '+NM(md), P.mode) : '') + prov(T(UI.prov)+' · '+NM(STOCKS.find(x=>x.id===P.stock)), P.stock);
   const chips = [[pa.c,T(UI.paper)+NM(pa)],[iA.c,'A '+iA.en]];
@@ -1240,7 +1283,7 @@ $('sepBtn').addEventListener('click', () => { sepView = !sepView; $('seps').hidd
 function drawSeps(){
   const box = $('seps');
   if (!sepView){ box.innerHTML = ''; return; }
-  if (!lastResult){ box.innerHTML = `<p class="hint">${(P.process==='cyano'||P.process==='gram') ? (LANG==='zh'?'蓝晒和实物投影靠光和化学反应成像，不用印版，所以没有分版。':'Cyanotypes and photograms are made with light and chemistry, not plates, so there is nothing to separate.') : (LANG==='zh'?'渐变映射不模拟印刷，所以没有分版。':'The gradient map does not simulate printing, so there are no plates.')}</p>`; return; }
+  if (!lastResult){ box.innerHTML = `<p class="hint">${P.mode==='trans' ? (LANG==='zh'?'分墨渐变是一块版上的一种混合油墨，没有分开的版。':'A split fountain is one plate inked with blended inks, so there is nothing to separate.') : (P.process==='cyano'||P.process==='gram') ? (LANG==='zh'?'蓝晒和实物投影靠光和化学反应成像，不用印版，所以没有分版。':'Cyanotypes and photograms are made with light and chemistry, not plates, so there is nothing to separate.') : (LANG==='zh'?'渐变映射不模拟印刷，所以没有分版。':'The gradient map does not simulate printing, so there are no plates.')}</p>`; return; }
   const {n, masks, cont} = lastResult, names = [P.inkA, P.inkB, P.inkC];
   box.innerHTML = '';
   masks.forEach((m, k) => {
@@ -1265,12 +1308,31 @@ const TRANS = [
   {id:'tlines', tip:'tlines', zh:'线条粗细', en:'Line weight', szh:'横线与竖线', sen:'horizontal vs vertical lines'},
   {id:'trap', tip:'trap', zh:'硬边与补漏白', en:'Hard edge & trap', szh:'上：白缝  下：补漏白', sen:'top: gap · bottom: trapped'},
 ];
+function transCover(id, x, y, t, xb, yb, tb, cell){
+  // returns [coverage of A, coverage of B] for tone t (0 = all A, 1 = all B); split fountain returns [-1, mix]
+  const TAU = Math.PI*2;
+  const spot = (X, Y, ang) => { const a = ang*Math.PI/180, u = (X*Math.cos(a) + Y*Math.sin(a))/cell, w = (-X*Math.sin(a) + Y*Math.cos(a))/cell; return (Math.cos(TAU*u) + Math.cos(TAU*w) + 2)/4; };
+  const hash = (X, Y, k) => { let h = (X*374761393 + Y*668265263 + k*2147483647) | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0) / 4294967296; };
+  const q = Math.max(1, Math.round(cell/3.5));
+  switch (id){
+    case 'am': return [(1-t) > 1 - spot(x, y, 15) ? 1 : 0, tb > 1 - spot(xb, yb, 75) ? 1 : 0];
+    case 'fm': return [hash(Math.floor(x/q), Math.floor(y/q), 1) < 1-t ? 1 : 0, hash(Math.floor(xb/q), Math.floor(yb/q), 2) < tb ? 1 : 0];
+    case 'bayer': return [(1-t) > BAYER4[((y/q|0)&3)*4 + ((x/q|0)&3)] ? 1 : 0, tb > BAYER4[(((yb/q|0)+1)&3)*4 + (((xb/q|0)+2)&3)] ? 1 : 0];
+    case 'overlap': return [Math.min(1, Math.max(0, (.68 - t)/.36)), Math.min(1, Math.max(0, (tb - .32)/.36))];
+    case 'split': return [-1, t];
+    case 'steps': { const la = Math.min(4, Math.floor(t*5))/4, lb = Math.min(4, Math.floor(tb*5))/4; return [(1-la) > 1 - spot(x, y, 15) ? 1 : 0, lb > 1 - spot(xb, yb, 75) ? 1 : 0]; }
+    case 'tlines': { const pa = ((y % cell) + cell) % cell / cell, pb = ((xb % cell) + cell) % cell / cell; return [pa < (1-t) ? 1 : 0, pb < tb ? 1 : 0]; }
+    case 'trap': return [t < .5 ? 1 : 0, tb >= .5 ? 1 : 0];
+  }
+  return [0, 0];
+}
 const BAYER4 = [0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5].map(v => (v+.5)/16);
 const transCv = {};
 function buildTrans(){
   const box = $('trows'); box.innerHTML = '';
   TRANS.forEach(t => {
-    const row = document.createElement('div'); row.className = 'trow';
+    const row = document.createElement('button'); row.type = 'button'; row.className = 'trow'; row.dataset.trans = t.id;
+    row.addEventListener('click', () => { P.trans = t.id; P.mode = 'trans'; manual(); syncControls(); schedule(); });
     row.innerHTML = `<span class="tl" data-tip="${t.tip}">${T(t)}<small>${LANG==='zh'?t.szh:t.sen}</small></span>`;
     const cv = document.createElement('canvas'); cv.width = 640; cv.height = 56; row.appendChild(cv); transCv[t.id] = cv;
     box.appendChild(row);
@@ -1293,17 +1355,12 @@ function drawTrans(){
       let col = pp.map(v => v*pt);
       const lay = (c, a) => { if (a > 0) col = col.map((v,k) => v*(1 - a*s*(1 - c[k]))); };
       const tx = x/(W-1), xb = x - mx, yb = y - my, tb = xb/(W-1);
-      if (t.id==='am'){ lay(iA, (1-tx) > 1 - spot(x, y, 15) ? 1 : 0); lay(iB, tb > 1 - spot(xb, yb, 75) ? 1 : 0); }
-      else if (t.id==='fm'){ lay(iA, hash(x>>1, y>>1, 1) < 1-tx ? 1 : 0); lay(iB, hash(xb>>1, yb>>1, 2) < tb ? 1 : 0); }
-      else if (t.id==='bayer'){ const q = 2; lay(iA, (1-tx) > BAYER4[((y/q|0)&3)*4 + ((x/q|0)&3)] ? 1 : 0); lay(iB, tb > BAYER4[(((yb/q|0)+1)&3)*4 + (((xb/q|0)+2)&3)] ? 1 : 0); }
-      else if (t.id==='overlap'){ lay(iA, Math.min(1, Math.max(0, (.68 - tx)/.36))); lay(iB, Math.min(1, Math.max(0, (tb - .32)/.36))); }
+      if (t.id!=='split' && t.id!=='trap'){ const [ca, cb] = transCover(t.id, x, y, tx, xb, yb, tb, cell); lay(iA, ca); lay(iB, cb); }
       else if (t.id==='split'){
         // one opaque layer whose colour drifts from A to B, with streaks along the roller direction
         const k = Math.min(1, Math.max(0, tx + .035*Math.sin(y*.9 + tx*7) + .02*(nz.low[j] - .5))), c = iA.map((v,q) => v + (iB[q]-v)*(k*k*(3-2*k)));
         col = col.map((v,q) => v + (c[q]*v - v)*s);
       }
-      else if (t.id==='steps'){ const lv = Math.min(4, Math.floor(tx*5))/4; lay(iA, (1-lv) > 1 - spot(x, y, 15) ? 1 : 0); lay(iB, lv > 1 - spot(xb, yb, 75) ? 1 : 0); }
-      else if (t.id==='tlines'){ const pa = (y % cell)/cell, pb = (xb % cell + cell) % cell / cell; lay(iA, pa < (1-tx) ? 1 : 0); lay(iB, pb < tb ? 1 : 0); }
       else if (t.id==='trap'){
         const top = y < H/2, edge = W/2, shift = Math.max(4, Math.abs(mx)), spreadPx = top ? 0 : shift + 3;
         lay(iA, x < edge ? 1 : 0);
@@ -1312,6 +1369,7 @@ function drawTrans(){
       d[(y*W+x)*4] = col[0]*255; d[(y*W+x)*4+1] = col[1]*255; d[(y*W+x)*4+2] = col[2]*255; d[(y*W+x)*4+3] = 255;
     }
     g.putImageData(im, 0, 0);
+    const rowEl = cv.parentElement; if (rowEl) rowEl.setAttribute('aria-pressed', P.mode==='trans' && P.trans===t.id);
     if (t.id==='trap'){ g.fillStyle = 'rgba(28,27,34,.5)'; g.fillRect(0, H/2 - .5, W, 1); }
   });
 }

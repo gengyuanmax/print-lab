@@ -242,6 +242,11 @@
         <div class="sublabel"><span class="zh">纸面图案</span><span class="en">Printed-on pattern</span> <span class="note"><span class="zh">模拟纸张上预先印好的格线或底纹</span><span class="en">ruling or tint already on the stock, under the ink</span></span></div>
         <div class="seg" id="patSeg"></div>
         <div class="inkrow"><span><span class="zh">纸色</span><span class="en">Colour</span></span><div class="sw" id="paper"></div><span class="inkname" id="paperName"></span></div>
+        <div class="sublabel"><span class="zh">做旧</span><span class="en">Ageing</span> <span class="note"><span class="zh">不是印刷工艺，而是纸张之后经历的时间</span><span class="en">not a print process: what time does to the paper afterwards</span></span></div>
+        <div class="field"><label for="age"><span class="zh">泛黄</span><span class="en">Yellowing</span></label><input type="range" id="age" min="0" max="1" step="0.01"><output id="ageOut"></output></div>
+        <div class="field"><label for="fox"><span class="zh">边缘与斑点</span><span class="en">Edges &amp; foxing</span></label><input type="range" id="fox" min="0" max="1" step="0.01"><output id="foxOut"></output></div>
+        <div class="seg" id="foldSeg"></div>
+        <p class="hint"><span class="zh">含木质素的酸性纸遇光和热会慢慢发黄、变脆（<a href="https://en.wikipedia.org/wiki/Acid-free_paper" target="_blank" rel="noopener">Acid-free paper</a>）；旧纸上的褐色斑点叫 foxing，成因至今没有定论，可能和霉菌、纸浆里的金属氧化、湿度有关（<a href="https://en.wikipedia.org/wiki/Foxing" target="_blank" rel="noopener">Foxing</a>）。折痕处墨层会开裂、露出纸色。</span><span class="en">Acidic paper that still contains lignin slowly yellows and turns brittle under light and heat (<a href="https://en.wikipedia.org/wiki/Acid-free_paper" target="_blank" rel="noopener">Acid-free paper</a>); the brown spots on old paper are called foxing, and their cause is still debated: fungus, oxidising metals in the pulp, humidity (<a href="https://en.wikipedia.org/wiki/Foxing" target="_blank" rel="noopener">Foxing</a>). Ink cracks along a fold and shows the paper.</span></p>
       </div>
 
       <div class="group">
@@ -253,8 +258,9 @@
         <div class="field"><label for="band"><span class="zh">墨辊条纹</span><span class="en">Roller banding</span></label><input type="range" id="band" min="0" max="1" step="0.01"><output id="bandOut"></output></div>
         <div class="field"><label for="tex"><span class="zh">纸张纹理</span><span class="en">Paper texture</span></label><input type="range" id="tex" min="0" max="1" step="0.01"><output id="texOut"></output></div>
         <div class="field"><label for="gain"><span class="zh">网点扩大</span><span class="en">Dot gain</span></label><input type="range" id="gain" min="0" max="1" step="0.01"><output id="gainOut"></output></div>
+        <div class="field"><label for="wear"><span class="zh">活字磨损</span><span class="en">Type wear</span></label><input type="range" id="wear" min="0" max="1" step="0.01"><output id="wearOut"></output></div>
         <div class="field"><label for="ca"><span class="zh">RGB 通道偏移</span><span class="en">RGB split</span></label><input type="range" id="ca" min="0" max="12" step="1"><output id="caOut"></output></div>
-        <p class="hint"><span class="zh">网点扩大使墨点增大、边缘变粗，中间调的变化尤其明显。RGB 通道偏移则将红、蓝通道向两侧错开，模拟数字故障效果。</span><span class="en">Dot gain fattens the dots and roughens their edges, most visibly in the midtones. RGB split is misregistration on a screen: the red and blue channels slide apart for a glitch look.</span></p>
+        <p class="hint"><span class="zh">网点扩大使墨点增大、边缘变粗，中间调的变化尤其明显。RGB 通道偏移则将红、蓝通道向两侧错开，模拟数字故障效果。活字磨损只作用于凸版：字的边缘出现缺口，实地透出木纹，每块版的墨量略有不同，压痕也更深。</span><span class="en">Dot gain fattens the dots and roughens their edges, most visibly in the midtones. RGB split is misregistration on a screen: the red and blue channels slide apart for a glitch look. Type wear only affects letterpress: chipped edges, wood grain in the solids, each block inked a little differently and a deeper impression.</span></p>
       </div>
 
     </aside>
@@ -414,6 +420,7 @@ const TRANS = [
   {id:'trap', tip:'trap', zh:'硬边与陷印', en:'Hard edge & trap', szh:'上：未陷印  下：已陷印', sen:'top: gap · bottom: trapped'},
 ];
 const STAMPS = [{id:'zhu', zh:'朱文（红字）', en:'Zhuwen (red characters)'}, {id:'bai', zh:'白文（白字）', en:'Baiwen (white characters)'}];
+const FOLDS = [{id:'none', zh:'没有折痕', en:'No fold'}, {id:'half', zh:'对折过', en:'Folded once'}, {id:'quarter', zh:'十字折过', en:'Folded in four'}];
 const STOCKS = [
   {id:'uncoated', zh:'非涂布', en:'Uncoated', gain:.18, sat:.88, tex:.15},
   {id:'coated', zh:'涂布', en:'Coated', gain:0, sat:1, tex:-.2},
@@ -537,7 +544,7 @@ const PROV = {
   opaque:{o:{zh:'不透明遮盖：油墨厚而不透明，后印的颜色直接盖住先印的，丝网印刷里很常见。', en:'Opaque: thick ink that covers whatever was printed before it, common in screen printing.'}},
 };
 const linkList = l => l ? l.map(([t,u]) => `<a href="${u}" target="_blank" rel="noopener">${t}</a>`).join('<i>·</i>') : '';
-const DEFAULTS = {trans:'am', pattern:'none', shape:'round', gain:0, ca:0, inkC:'yellow', blend:'multiply', process:'none', stampType:'zhu', copyGen:0, black:0, white:1, gamma:1, posterize:0, stock:'uncoated', invA:false, invB:false};
+const DEFAULTS = {trans:'am', pattern:'none', shape:'round', gain:0, ca:0, inkC:'yellow', blend:'multiply', process:'none', stampType:'zhu', copyGen:0, black:0, white:1, gamma:1, posterize:0, stock:'uncoated', invA:false, invB:false, wear:0, age:0, fox:0, fold:'none'};
 /* presets describe a final effect. Each lists the visible features that make it recognisable:
    e = essential, r = representative, o = optional; where each comes from: d = design decision, p = process, m = material;
    and what switching the feature off changes (used by the feature switches). */
@@ -571,8 +578,8 @@ const PRESETS = [
     f:[F('e','p','简化成干净的平涂色块','Simplified into clean flat shapes',{process:'none'}), F('e','p','厚而不透明的油墨','Thick, opaque ink',{blend:'multiply'}), F('r','p','套色错位','Misregistration',{mx:0,my:0})]},
   {name:{zh:'凸版印刷', en:'Letterpress'}, tag:{zh:'凸版 · 亮红 · 再生纸', en:'Letterpress · bright red · recycled'}, p:{screen:'am',process:'letter',cell:10,angle:0,contrast:1.35,mode:'mono',inkA:'red',inkB:'black',paper:'recycled',mx:0,my:0,grain:.25,starve:.25,band:0,tex:.65},
     f:[F('e','p','色块内部斑驳、边缘积墨，纸面带压痕','Mottled solids, squeezed edges, a pressed impression',{process:'none'}), F('r','m','明显的纸张纹理','Heavy paper texture',{tex:0}), F('r','p','墨色不匀','Uneven ink',{grain:0,starve:0})]},
-  {name:{zh:'木活字演出海报', en:'Wood-type show bill'}, tag:{zh:'凸版 · 亮红 + 联邦蓝 · 再生纸', en:'Letterpress · bright red + federal blue · recycled'}, src:'poster', p:{screen:'am',process:'letter',cell:8,angle:0,contrast:1.3,mode:'sep',inkA:'red',inkB:'fedblue',paper:'recycled',mx:3,my:2,grain:.3,starve:.35,band:0,tex:.6,gain:.2},
-    f:[F('e','p','凸版：实地斑驳、边缘积墨、纸面压痕','Letterpress: mottled solids, squeezed edges, a pressed impression',{process:'none',screen:'thresh'}), F('e','d','两三种鲜艳专色，重叠处叠出第三色','Two or three bright spot colours, overlapping into a third',{mode:'mono'}), F('r','m','粗纹再生纸','Rough recycled paper',{tex:0,paper:'white'}), F('r','p','手工对版，套色略有错位','Hand-registered plates, slightly off',{mx:0,my:0}), F('o','p','墨色不匀','Uneven ink',{grain:0,starve:0})]},
+  {name:{zh:'木活字演出海报', en:'Wood-type show bill'}, tag:{zh:'凸版 · 亮红 + 联邦蓝 · 再生纸', en:'Letterpress · bright red + federal blue · recycled'}, src:'poster', p:{screen:'am',process:'letter',cell:8,angle:0,contrast:1.3,mode:'sep',inkA:'red',inkB:'fedblue',paper:'recycled',mx:3,my:2,grain:.3,starve:.35,band:0,tex:.6,gain:.2,wear:.7,age:.35,fox:.3,fold:'half'},
+    f:[F('e','p','凸版：实地斑驳、边缘积墨、纸面压痕','Letterpress: mottled solids, squeezed edges, a pressed impression',{process:'none',screen:'thresh'}), F('e','d','两三种鲜艳专色，重叠处叠出第三色','Two or three bright spot colours, overlapping into a third',{mode:'mono'}), F('e','m','磨损的旧木活字：边缘缺口、实地里的木纹、每块版墨量不同','Worn wood type: chipped edges, wood grain in the solids, each block inked a little differently',{wear:0}), F('r','m','粗纹再生纸','Rough recycled paper',{tex:0,paper:'white'}), F('r','p','手工对版，套色略有错位','Hand-registered plates, slightly off',{mx:0,my:0}), F('o','p','墨色不匀','Uneven ink',{grain:0,starve:0}), F('o','m','时间：泛黄、斑点、折痕处墨层开裂','Time: yellowing, foxing, ink cracked along the fold',{age:0,fox:0,fold:'none'})]},
   {name:{zh:'木刻版画', en:'Woodcut print'}, tag:{zh:'木刻 · 黑 · 再生纸', en:'Woodcut · black · recycled'}, p:{screen:'am',process:'wood',cell:8,angle:10,contrast:1.3,mode:'mono',inkA:'black',inkB:'black',paper:'recycled',mx:0,my:0,grain:.2,starve:.15,band:0,tex:.5},
     f:[F('e','p','刀痕线条与色块边缘的缺口','Gouged lines and chipped solids',{process:'none'}), F('r','m','再生纸','Recycled paper',{paper:'white'}), F('o','p','墨色带木纹','Wood grain in the ink',{grain:0,starve:0})]},
   {name:{zh:'连续调双色', en:'Continuous duotone'}, tag:{zh:'连续调 · 橙 + 黑 双色调', en:'Continuous · orange + black duotone'}, p:{screen:'cont',cell:8,angle:0,contrast:1.15,mode:'duo',inkA:'orange',inkB:'black',paper:'recycled',mx:2,my:1,grain:.2,starve:.1,band:0,tex:.4},
@@ -845,7 +852,7 @@ function xeroxDegrade(pl, n, gens, nz){
 
 /* ---------- screening ---------- */
 const BAYER = (() => { const m=[[0,2],[3,1]]; let M=m; while (M.length<8){ const s=M.length, R=[]; for (let y=0;y<s*2;y++){ R.push([]); for (let x=0;x<s*2;x++){ const q=[[0,2],[3,1]][y>=s?1:0][x>=s?1:0]; R[y].push(4*M[y%s][x%s]+q); } } M=R; } return M; })();
-function screen(pl, n, type, cell, angDeg, idx, nz, shape){
+function screen(pl, n, type, cell, angDeg, idx, nz, shape, wear = 0){
   const out = new Uint8Array(n*n), TAU = Math.PI*2;
   const a = angDeg*Math.PI/180, c = Math.cos(a), s = Math.sin(a);
   const at = (x,y) => { x=x<0?0:x>=n?n-1:x|0; y=y<0?0:y>=n?n-1:y|0; return pl[y*n+x]; };
@@ -898,7 +905,12 @@ function screen(pl, n, type, cell, angDeg, idx, nz, shape){
     const rb = type==='wood' ? Math.max(1, Math.round(cell*.12)) : Math.max(1, Math.round(cell*.35));
     const bp = boxBlur(pl, n, rb);
     if (type==='silk'){ const off = idx*977; for (let i=0;i<N;i++) out[i] = bp[i] + (nz.g1[(i+off)%N]-.5)*.07 > .46 ? 1 : 0; }
-    else if (type==='letter'){ for (let i=0;i<N;i++) out[i] = bp[i] > .5 ? 1 : 0; }
+    else if (type==='letter'){
+      // worn wood type: the edge wanders with a slow noise, and small nicks are knocked out near the edges
+      const off = idx*7919, low = nz.low, g1 = nz.g1;
+      for (let i=0;i<N;i++){ const j = (i + off) % N, t = .5 + wear*(.34*(low[j] - .5) + .12*(g1[j] - .5));
+        out[i] = bp[i] > t && !(bp[i] < .82 && g1[(j*7) % N] > 1 - .05*wear) ? 1 : 0; }
+    }
     else {
       const low = nz.low, off = idx*7919;
       for (let y=0;y<n;y++) for (let x=0;x<n;x++){
@@ -1074,9 +1086,9 @@ function render(canvas, p, srcCanvas){
     let mA, mB, mC;
     if (cont){ mA = pa; mB = pb; mC = pc; }
     else {
-      mA = screen(pa, n, eff, cell, p.angle, 0, nz, p.shape);
-      mB = pb ? screen(pb, n, eff, cell, p.angle + (lineish?45:30), 1, nz, p.shape) : null;
-      mC = pc ? screen(pc, n, eff, cell, p.angle + (lineish?90:60), 2, nz, p.shape) : null;
+      mA = screen(pa, n, eff, cell, p.angle, 0, nz, p.shape, p.wear);
+      mB = pb ? screen(pb, n, eff, cell, p.angle + (lineish?45:30), 1, nz, p.shape, p.wear) : null;
+      mC = pc ? screen(pc, n, eff, cell, p.angle + (lineish?90:60), 2, nz, p.shape, p.wear) : null;
       if (gainEff > .02){
         const r = Math.max(1, Math.round(gainEff*2.5*sc)), amt = .3 + .6*gainEff;
         spread(mA, n, r, g2, amt, 0);
@@ -1097,6 +1109,8 @@ function render(canvas, p, srcCanvas){
       s *= 1 - p.band*.5*rows[y];
       if (er) s *= (.64 + .36*Math.min(1, low2[j]*1.25)) * (.86 + .14*g2[j]);  // relief: mottled interior, full ink at the squeezed rim
       if (wood) s *= .82 + .18*(.5 + .5*Math.sin(y/sc*.5 + low[j]*16));      // wood grain
+      if (letter && p.wear){ s *= 1 - p.wear*.26*Math.pow(.5 + .5*Math.sin(x/sc*.3 + low[j]*18 + 3*Math.sin(y/n*5 + x/n*2)), 3);          // the grain of the wood block shows in the solids
+        s *= 1 - p.wear*.28*(.5 + .5*Math.sin(y/n*7.3 + x/n*2.1 + 1.7)); }                         // each block takes ink a little differently
       if (stamp){ const t = (x + y)/(2*n); s *= 1 - .5*Math.max(0, t - .45)/.55; }   // uneven pressure fades one corner
       return s<0?0:s;
     };
@@ -1110,7 +1124,8 @@ function render(canvas, p, srcCanvas){
       const i = y*n+x;
       let pt = 1 - tex*(.08*g2[i] + .06*low2[i]);
       if (letter && !mA[i]){ // impression into the paper: shadow on one side of each inked edge, highlight on the other
-        if (x>0 && y>0 && mA[i-n-1]) pt *= .91; else if (x<n-1 && y<n-1 && mA[i+n+1]) pt *= 1.03;
+        const o = Math.max(1, Math.round((1 + p.wear*1.5)*sc));
+        if (x>=o && y>=o && mA[i-o*n-o]) pt *= .9 - .04*p.wear; else if (x<n-o && y<n-o && mA[i+o*n+o]) pt *= 1.03;
       }
       col[0]=Math.min(1,pp[0]*pt); col[1]=Math.min(1,pp[1]*pt); col[2]=Math.min(1,pp[2]*pt);
       for (let q=0;q<patL.length;q++){ const mm = patL[q][0][i]; if (mm){ const pc = patL[q][1]; col[0]*=1-mm*(1-pc[0]); col[1]*=1-mm*(1-pc[1]); col[2]*=1-mm*(1-pc[2]); } }
@@ -1122,6 +1137,7 @@ function render(canvas, p, srcCanvas){
       data[i*4]=col[0]*255; data[i*4+1]=col[1]*255; data[i*4+2]=col[2]*255; data[i*4+3]=255;
     }
   }
+  ageing(data, n, p, nz, sc, pp);
   const ca = Math.round(p.ca*sc);
   if (ca > 0){
     const src = new Uint8ClampedArray(data);
@@ -1133,6 +1149,32 @@ function render(canvas, p, srcCanvas){
   }
   ctx.putImageData(sd,0,0);
   return result;
+}
+
+/* ageing: time, not process. Cracks along folds, crease light and shade, yellowing (stronger and patchier near the edges), foxing spots */
+function ageing(data, n, p, nz, sc, pp){
+  const folds = p.fold==='quarter' ? [['v', n/2], ['h', n/2]] : p.fold==='half' ? [['v', n/2]] : [];
+  if (!p.age && !p.fox && !folds.length) return;
+  const N = n*n, low = nz.low, g1 = nz.g1, r = rng(31), Y = [1, .9, .7], BR = [.66, .48, .32], fw = Math.max(2, 3*sc);
+  const spot = new Float32Array(N);
+  for (let k=0, ns=Math.round(p.fox*70); k<ns; k++){
+    const cx = r()*n, cy = r()*n, rad = (1 + r()*5)*sc, a = .35 + .65*r(), R = Math.ceil(rad*2);
+    for (let y=Math.max(0, Math.floor(cy-R)); y<Math.min(n, cy+R); y++) for (let x=Math.max(0, Math.floor(cx-R)); x<Math.min(n, cx+R); x++){
+      const d = Math.hypot(x-cx, y-cy)/rad; if (d < 2){ const i = y*n+x, v = a*(1 - d*d/4)*(.6 + .4*g1[i]); if (v > spot[i]) spot[i] = v; } }
+  }
+  for (let y=0;y<n;y++) for (let x=0;x<n;x++){
+    const i = y*n+x, o = i*4; let c0 = data[o]/255, c1 = data[o+1]/255, c2 = data[o+2]/255;
+    for (const [d, pos] of folds){
+      const t = (d==='v' ? x : y) - pos, at = Math.abs(t);
+      if (at < fw*.7 && g1[(i*13) % N] > .4){ c0 += (pp[0]-c0)*.75; c1 += (pp[1]-c1)*.75; c2 += (pp[2]-c2)*.75; }   // the ink layer cracks
+      if (at < fw*3){ const f = 1 + (t < 0 ? -.1 : .05)*(1 - at/(fw*3)); c0 *= f; c1 *= f; c2 *= f; }                // one side of the crease in shade
+    }
+    const ed = Math.min(x, y, n-1-x, n-1-y)/n, edge = Math.max(0, 1 - ed/.1);
+    const ya = Math.min(1, p.age*(.7 + .3*low[i]) + p.fox*.6*edge*edge*(.5 + .5*low[(i*3) % N]));
+    if (ya > 0){ c0 *= 1 - ya*(1-Y[0]); c1 *= 1 - ya*(1-Y[1]); c2 *= 1 - ya*(1-Y[2]); }
+    const sm = spot[i]; if (sm > 0){ c0 *= 1 - sm*(1-BR[0]); c1 *= 1 - sm*(1-BR[1]); c2 *= 1 - sm*(1-BR[2]); }
+    data[o] = Math.min(255, c0*255); data[o+1] = Math.min(255, c1*255); data[o+2] = Math.min(255, c2*255);
+  }
 }
 
 /* ---------- UI ---------- */
@@ -1177,6 +1219,7 @@ function buildControls(){
   seg($('blendSeg'), BLENDS, 'blend');
   seg($('stockSeg'), STOCKS, 'stock');
   seg($('patSeg'), PATTERNS, 'pattern');
+  seg($('foldSeg'), FOLDS, 'fold');
   seg($('transSeg'), TRANS, 'trans');
   $('transSeg').querySelectorAll('button').forEach(b => b.addEventListener('click', () => { P.mode = 'trans'; syncControls(); schedule(); }));
   swatches($('inkA'), INKS, 'inkA');
@@ -1192,7 +1235,7 @@ buildControls();
 
 const pct = v => Math.round(v*100)+'%';
 const SLIDERS = {cell:v=>v+' px', angle:v=>v+'°', contrast:v=>(+v).toFixed(2), black:pct, white:pct, gamma:v=>(+v).toFixed(2), posterize:v=>v>1?v+(LANG==='zh'?' 级':' lv'):(LANG==='zh'?'关':'off'),
-  copyGen:v=>v>0?(LANG==='zh'?`翻印 ${v} 次`:`gen ${v}`):(LANG==='zh'?'原稿':'original'), mx:v=>v+' px', my:v=>v+' px', grain:pct, starve:pct, band:pct, tex:pct, gain:pct, ca:v=>v+' px'};
+  copyGen:v=>v>0?(LANG==='zh'?`翻印 ${v} 次`:`gen ${v}`):(LANG==='zh'?'原稿':'original'), mx:v=>v+' px', my:v=>v+' px', grain:pct, starve:pct, band:pct, tex:pct, gain:pct, ca:v=>v+' px', wear:pct, age:pct, fox:pct};
 Object.keys(SLIDERS).forEach(k => {
   $(k).addEventListener('input', e => { P[k] = parseFloat(e.target.value); $(k+'Out').textContent = SLIDERS[k](P[k]); manual(); schedule(); });
 });
@@ -1200,7 +1243,7 @@ Object.keys(SLIDERS).forEach(k => {
 function syncControls(){
   Object.keys(SLIDERS).forEach(k => { $(k).value = P[k]; $(k+'Out').textContent = SLIDERS[k](P[k]); });
   const press = (sel, key) => document.querySelectorAll(sel+' button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===P[key]));
-  press('#screenSeg','screen'); press('#procSeg','process'); press('#stampSeg','stampType'); press('#modeSeg','mode'); press('#stockSeg','stock'); press('#patSeg','pattern'); press('#transSeg','trans');
+  press('#screenSeg','screen'); press('#procSeg','process'); press('#stampSeg','stampType'); press('#modeSeg','mode'); press('#stockSeg','stock'); press('#patSeg','pattern'); press('#foldSeg','fold'); press('#transSeg','trans');
   $('transMini').hidden = P.mode!=='trans';
   if (P.mode!=='trans') document.querySelectorAll('#transSeg button').forEach(b => b.setAttribute('aria-pressed', false));
   const tmode = P.mode==='trans', grad = P.mode==='grad', proc = tmode ? 'none' : (P.process || 'none');

@@ -219,7 +219,7 @@ const DEFAULT_TEXT = {
 
 /* ---------- parameters ---------- */
 const BASE = {format:'poster', vw:1280, cols:6, margin:.07, gutter:.02, baseline:12,
-  pair:'swiss', ratio:1.414, levels:4, titleScale:.22, tWeight:800, tWidth:110, tLead:.88, track:-.03, measure:55, align:'left', upper:true, vertical:false, titleStyle:'solid',
+  pair:'swiss', ratio:1.414, levels:4, titleScale:.22, tWeight:800, tWidth:110, tLead:.88, track:-.03, measure:55, align:'left', handset:0, upper:true, vertical:false, titleStyle:'solid',
   breakS:.2, white:.5, asym:.8, jitter:0, layers:1, axis:0, focal:'thirds', bleed:false, titleCrop:0,
   path:'auto', guide:true, sizeSeq:false, frame:'none', ladder:false, numbers:true,
   vocab:{circle:true, rect:true, line:true, tri:false}, nShapes:3, sizeExp:2, fill:.7, radius:0, strokeW:.006, angles:'ortho', snap:true,
@@ -266,7 +266,7 @@ const PRESETS = {
   woodtype:{name:{zh:'木活字海报',en:'Wood-type poster'}, tag:{zh:'撑满整行',en:'set to measure'}, p:{cols:6, margin:.05, gutter:.015, pair:'swiss', ratio:1.6, levels:4, titleScale:.3, tWeight:900, tWidth:125, tLead:.9, track:0, measure:50, upper:true, align:'fill', titleStyle:'solid',
     breakS:0, white:.18, asym:.5, jitter:0, layers:1, axis:0, focal:'edge', bleed:false, titleCrop:0, path:'auto', guide:false, sizeSeq:false, frame:'none', ladder:false, numbers:false,
     vocab:{circle:false, rect:false, line:true, tri:false, star:true, burst:true}, nShapes:4, sizeExp:2.4, fill:1, radius:0, strokeW:.012, angles:'ortho', snap:false,
-    inks:2, inkA:'red', inkB:'fedblue', paper:'recycled', textInk:'ink', colorRatio:'603010', accent:3, overprint:true, tMisX:2, tMisY:1, tGrain:.35, tStarve:.35, tPaper:.55,
+    inks:2, inkA:'red', inkB:'fedblue', paper:'recycled', textInk:'ink', colorRatio:'603010', accent:3, overprint:true, tMisX:2, tMisY:1, tGrain:.35, tStarve:.35, tPaper:.55, handset:.6,
     img:false, treat:'thresh', cell:7, imgSpan:.45, mask:'rect', crop:'tight', rules:{grid:true, avoid:true, max3:false, scale:false, tiers:false, unify:true}, strict:1,
     furn:{reg:false, crop:false, bar:false, folio:false}, seed:8}},
 };
@@ -319,6 +319,7 @@ const GROUPS = [
     {type:'range', key:'measure', label:L('正文行宽','Body measure'), min:25, max:80, step:1, fmt:v=>v+(LANG==='zh'?' 字':' ch')},
     {type:'seg', key:'titleStyle', label:L('标题处理','Title treatment'), opts:[['solid',L('实心','Solid')],['ink',L('油墨色','In ink')],['outline',L('描边','Outline')],['knock',L('反白','Knockout')],['double',L('双版叠印','Two plates')]]},
     {type:'seg', key:'align', label:L('对齐','Alignment'), opts:[['left',L('左对齐','Flush left')],['center',L('居中','Centred')],['fill',L('撑满整行','Set to measure')]]},
+    {type:'range', key:'handset', label:L('手排误差','Hand-set wobble'), min:0, max:1, step:.05, fmt:pct, when:()=>P.align==='fill'},
     {type:'toggle', key:'upper', label:L('标题全大写','Uppercase title')},
     {type:'toggle', key:'vertical', label:L('标题竖排','Vertical title')},
     {type:'toggle', key:'cjk', label:L('中文排印','CJK typesetting')},
@@ -444,6 +445,7 @@ const TIPS = {
   frame:{t:L('图底关系指主体与背景之间的视觉关系。在重点内容后面放置圆形或色块，可以将它与周围内容区分开。','Figure–ground: we read one region as the figure and the rest as background. A circle or block behind the key element lifts it out of the background.'), l:[['Figure–ground',WK('Figure%E2%80%93ground_(perception)')]]},
   ladder:{t:L('让重点内容与背景形成较强对比，次要信息适当减淡，使主次更清楚。正文仍需达到 WCAG 4.5:1 的对比度。','A contrast ladder gives the most important element the highest contrast and fades secondary and supporting text step by step, reinforcing the hierarchy. Body text still needs WCAG\'s 4.5:1.'), l:[['Visual hierarchy',WK('Visual_hierarchy')],['WCAG 2.1 contrast','https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html']]},
   numbers:{t:L('编号让读者看到内容的先后和数量。适合用于有明确先后关系的内容。','Numbering shows the order and count of the content. Use it only when the content really has an order.'), own:true},
+  handset:{t:L('手工排的活字不会完全对齐：每个字的基线上下差一点、略微歪斜，字距也不均匀。只在“撑满整行”时生效。','Hand-set type never lines up perfectly: each letter sits a little above or below the baseline, tilts slightly, and the spacing is uneven. Works with “Set to measure”.'), own:true},
   vocab:{t:L('选用少量基本形状，在整页重复使用，有助于统一画面。星、横条和放射光芒是美国凸版演出海报的常见装饰。','Choose a few basic shapes and repeat them across the page so they read as one system. Stars, bars and sunbursts are stock ornaments of American letterpress show posters.'), l:[['Nashville Scene · Fine Print','https://www.nashvillescene.com/arts_culture/coverstory/fine-print-the-letterpress-artists-visually-defining-nashville/article_4842e4ae-1ce5-11ed-b75e-83816f4dfa1a.html']]},
   nShapes:{t:L('形状数量还会受“留白倾向”影响：留白越多，形状越少。','The shape count also follows the whitespace setting: more white space, fewer shapes.'), own:true},
   sizeExp:{t:L('形状大小由随机数 u 的 k 次方决定。k 越大，小形状越多，大形状越少，大小对比也越明显。','Shape sizes follow a power law u^k: the larger k is, the more a few shapes are big and most are small, which reads as more tension than an even spread.'), own:true},
@@ -554,7 +556,7 @@ const STYLE = {
     people:L('Hatch Show Print（纳什维尔，1879 年起）：至今仍用老木活字和手刻木版印演出海报','Hatch Show Print (Nashville, since 1879), still printing show posters from vintage wood type and hand-carved blocks'),
     vs:[[ 'swiss', L('两者都追求一眼读清；瑞士风格靠网格和留白，木活字海报靠把每一行都撑满。','Both want to be read at a glance; Swiss uses the grid and white space, the wood-type poster fills every line.')],
         [ 'halftone', L('半色调海报靠一张大图；木活字海报的主角是字本身。','The halftone poster leans on one big image; in the wood-type poster the letters are the image.')]],
-    keys:['align','vocab','white','inks','tPaper','img'],
+    keys:['align','handset','vocab','white','inks','img'],
     l:[['Wood type',WK('Wood_type')],['Letterpress printing',WK('Letterpress_printing')],['Hatch Show Print',WK('Hatch_Show_Print')],['Nashville Scene · Fine Print','https://www.nashvillescene.com/arts_culture/coverstory/fine-print-the-letterpress-artists-visually-defining-nashville/article_4842e4ae-1ce5-11ed-b75e-83816f4dfa1a.html']]},
 };
 let lastPreset = 'zine';
@@ -930,6 +932,13 @@ function renderPage(poster, Q, pageIdx){
     lines.forEach((ln, i) => {
       const sp = document.createElement('span'); sp.textContent = ln;
       sp.style.cssText = `display:block;width:max-content;white-space:nowrap;font-size:100px;line-height:.95` + (vary ? `;font-stretch:${i%2 ? 75 : 125}%;font-weight:${i%2 ? 700 : 900}` : '');
+      if (Q.handset > 0){   // hand-set: every sort sits a little off the baseline, tilts, and the spacing wobbles
+        const hs = Q.handset; sp.textContent = '';
+        [...ln].forEach(ch => { const c = document.createElement('span'); c.textContent = ch;
+          c.style.cssText = `display:inline-block;white-space:pre;transform:translateY(${((rng()-.5)*.07*hs).toFixed(3)}em) rotate(${((rng()-.5)*3*hs).toFixed(2)}deg);margin-right:${((rng()-.3)*.04*hs).toFixed(3)}em`;
+          sp.appendChild(c); });
+        sp.style.marginLeft = ((rng()-.5)*.03*hs).toFixed(3) + 'em';
+      }
       el.appendChild(sp);
       const w = sp.offsetWidth || 1; sp.style.fontSize = Math.min(100*target/w, maxSize).toFixed(1) + 'px';
     });

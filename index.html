@@ -28,11 +28,21 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);f
 
 /* masthead */
 .mast{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px 32px;align-items:end;border-bottom:3px solid var(--ink);padding-bottom:18px;margin-bottom:28px}
-.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);grid-column:1/-1}
-.mis{display:grid;margin:0;font-family:var(--display);font-weight:900;font-size:clamp(48px,9vw,112px);line-height:.92;letter-spacing:-.02em}
-.mis span{grid-area:1/1;mix-blend-mode:multiply}
-.mis span:first-child{color:var(--pink)}
-.mis span:last-child{color:var(--blue);transform:translate(.045em,.03em)}
+/* language switching: paired .zh / .en spans */
+:root[data-lang="en"] .zh{display:none!important}
+:root:not([data-lang="en"]) .en{display:none!important}
+.mast-top{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.langsw{display:inline-flex;border:1.5px solid var(--ink)}
+.langsw button{font:600 12px/1 var(--mono);letter-spacing:.06em;padding:8px 12px;min-height:34px;border:0;background:transparent;color:var(--ink);cursor:pointer}
+.langsw button + button{border-left:1.5px solid var(--ink)}
+.langsw button[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
+.langsw button:hover:not([aria-pressed="true"]){background:rgba(28,27,34,.07)}
+.mis{display:grid;margin:0;font-family:var(--display);font-weight:900;font-size:clamp(48px,9vw,112px);line-height:.92;letter-spacing:-.02em;text-wrap:balance}
+:root[data-lang="en"] .mis{font-size:clamp(40px,7vw,92px);font-weight:800}
+.mis > span{grid-area:1/1;mix-blend-mode:multiply}
+.mis > span:first-child{color:var(--pink)}
+.mis > span:last-child{color:var(--blue);transform:translate(.045em,.03em)}
 .lede{max-width:34em;margin:0;color:var(--muted);text-wrap:pretty}
 @media (max-width:760px){.mast{grid-template-columns:1fr}}
 
@@ -78,7 +88,7 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);f
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
 @media (max-width:420px){.seg{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .sublabel{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:-4px}
-.sublabel span{text-transform:none;letter-spacing:.02em}
+.sublabel .note{text-transform:none;letter-spacing:.02em}
 .seg button:disabled{opacity:.35;cursor:not-allowed}
 .field{display:grid;grid-template-columns:7.5em minmax(0,1fr) 3.4em;gap:10px;align-items:center;font-size:13.5px}
 .field output{font-family:var(--mono);font-size:12px;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
@@ -128,120 +138,126 @@ button:focus-visible,input:focus-visible,label.btn:focus-within{outline:2.5px so
 <body>
 <div class="wrap">
   <header class="mast">
-    <div class="eyebrow">Print texture lab · 网点 / 叠印 / 瑕疵</div>
-    <h1 class="mis" aria-label="印痕实验室"><span aria-hidden="true">印痕实验室</span><span aria-hidden="true">印痕实验室</span></h1>
-    <p class="lede">把加网方式、油墨组合和印刷瑕疵拆成可调参数。选一种网点，换油墨，加一点错位和颗粒，看画面怎么变。也可以上传你自己的照片。</p>
+    <div class="mast-top">
+      <div class="eyebrow">Print texture lab · <span class="zh">网点 / 叠印 / 瑕疵</span><span class="en">Dots / Overprint / Flaws</span></div>
+      <div class="langsw" role="group" aria-label="Language / 语言">
+        <button type="button" data-setlang="zh" lang="zh-CN">中文</button>
+        <button type="button" data-setlang="en" lang="en">EN</button>
+      </div>
+    </div>
+    <h1 class="mis" id="title"><span aria-hidden="true"><span class="zh">印痕实验室</span><span class="en">Print Texture Lab</span></span><span aria-hidden="true"><span class="zh">印痕实验室</span><span class="en">Print Texture Lab</span></span></h1>
+    <p class="lede"><span class="zh">把加网方式、油墨组合和印刷瑕疵拆成可调参数。选一种网点，换油墨，加一点错位和颗粒，看画面怎么变。也可以上传你自己的照片。</span><span class="en">Halftone screens, ink combinations and print flaws, broken into adjustable parameters. Pick a screen, swap inks, add some misregistration and grain, and watch the image change. You can also upload your own photo.</span></p>
   </header>
 
   <main class="lab">
-    <section class="stage" aria-label="预览">
+    <section class="stage" data-aria-zh="预览" data-aria-en="Preview">
       <div class="frame">
         <span class="reg tl" aria-hidden="true"></span><span class="reg tr" aria-hidden="true"></span>
         <span class="reg bl" aria-hidden="true"></span><span class="reg br" aria-hidden="true"></span>
-        <canvas id="out" width="600" height="600" role="img" aria-label="印刷效果预览"></canvas>
+        <canvas id="out" width="600" height="600" role="img" data-aria-zh="印刷效果预览" data-aria-en="Print effect preview"></canvas>
       </div>
       <div class="strip" id="ctrlStrip"></div>
       <div class="desc" id="desc" aria-live="polite"></div>
     </section>
 
-    <aside class="panel" aria-label="参数">
+    <aside class="panel" data-aria-zh="参数" data-aria-en="Settings">
       <div class="group">
-        <h2>加网 <small>SCREEN</small></h2>
+        <h2><span class="zh">加网</span><span class="en">Screen</span> <small class="zh">SCREEN</small><small class="en">加网</small></h2>
         <div class="seg" id="screenSeg"></div>
-        <div class="sublabel">网点形状 <span>仅 AM 圆点与 Ben-Day</span></div>
+        <div class="sublabel"><span class="zh">网点形状</span><span class="en">Dot shape</span> <span class="note"><span class="zh">仅 AM 圆点与 Ben-Day</span><span class="en">AM dots and Ben-Day only</span></span></div>
         <div class="seg" id="shapeSeg"></div>
-        <div class="field"><label for="cell">网点尺寸</label><input type="range" id="cell" min="3" max="28" step="1"><output id="cellOut"></output></div>
-        <div class="field"><label for="angle">网角</label><input type="range" id="angle" min="0" max="90" step="1"><output id="angleOut"></output></div>
-        <div class="field"><label for="contrast">原图对比度</label><input type="range" id="contrast" min="0.5" max="2.5" step="0.05"><output id="contrastOut"></output></div>
+        <div class="field"><label for="cell"><span class="zh">网点尺寸</span><span class="en">Dot size</span></label><input type="range" id="cell" min="3" max="28" step="1"><output id="cellOut"></output></div>
+        <div class="field"><label for="angle"><span class="zh">网角</span><span class="en">Screen angle</span></label><input type="range" id="angle" min="0" max="90" step="1"><output id="angleOut"></output></div>
+        <div class="field"><label for="contrast"><span class="zh">原图对比度</span><span class="en">Contrast</span></label><input type="range" id="contrast" min="0.5" max="2.5" step="0.05"><output id="contrastOut"></output></div>
       </div>
 
       <div class="group">
-        <h2>油墨 <small>INK</small></h2>
+        <h2><span class="zh">油墨</span><span class="en">Ink</span> <small class="zh">INK</small><small class="en">油墨</small></h2>
         <div class="seg" id="modeSeg"></div>
-        <div class="sublabel">油墨覆盖 <span>叠印混色，还是上层盖住下层</span></div>
+        <div class="sublabel"><span class="zh">油墨覆盖</span><span class="en">Ink coverage</span> <span class="note"><span class="zh">叠印混色，还是上层盖住下层</span><span class="en">mix where inks overlap, or cover</span></span></div>
         <div class="seg two" id="blendSeg"></div>
-        <div class="inkrow"><span>油墨 A</span><div class="sw" id="inkA"></div><span class="inkname" id="inkAName"></span></div>
-        <div class="inkrow" id="inkBRow"><span>油墨 B</span><div class="sw" id="inkB"></div><span class="inkname" id="inkBName"></span></div>
-        <div class="inkrow" id="inkCRow"><span>油墨 C</span><div class="sw" id="inkC"></div><span class="inkname" id="inkCName"></span></div>
-        <div class="inkrow"><span>纸张</span><div class="sw" id="paper"></div><span class="inkname" id="paperName"></span></div>
+        <div class="inkrow"><span><span class="zh">油墨 A</span><span class="en">Ink A</span></span><div class="sw" id="inkA"></div><span class="inkname" id="inkAName"></span></div>
+        <div class="inkrow" id="inkBRow"><span><span class="zh">油墨 B</span><span class="en">Ink B</span></span><div class="sw" id="inkB"></div><span class="inkname" id="inkBName"></span></div>
+        <div class="inkrow" id="inkCRow"><span><span class="zh">油墨 C</span><span class="en">Ink C</span></span><div class="sw" id="inkC"></div><span class="inkname" id="inkCName"></span></div>
+        <div class="inkrow"><span><span class="zh">纸张</span><span class="en">Paper</span></span><div class="sw" id="paper"></div><span class="inkname" id="paperName"></span></div>
       </div>
 
       <div class="group">
-        <h2>瑕疵 <small>MISPRINT</small></h2>
-        <div class="field"><label for="mx">套色错位 X</label><input type="range" id="mx" min="-14" max="14" step="1"><output id="mxOut"></output></div>
-        <div class="field"><label for="my">套色错位 Y</label><input type="range" id="my" min="-14" max="14" step="1"><output id="myOut"></output></div>
-        <div class="field"><label for="grain">墨色颗粒</label><input type="range" id="grain" min="0" max="1" step="0.01"><output id="grainOut"></output></div>
-        <div class="field"><label for="starve">缺墨漏白</label><input type="range" id="starve" min="0" max="1" step="0.01"><output id="starveOut"></output></div>
-        <div class="field"><label for="band">辊痕条带</label><input type="range" id="band" min="0" max="1" step="0.01"><output id="bandOut"></output></div>
-        <div class="field"><label for="tex">纸张纹理</label><input type="range" id="tex" min="0" max="1" step="0.01"><output id="texOut"></output></div>
-        <div class="field"><label for="gain">溢墨扩散</label><input type="range" id="gain" min="0" max="1" step="0.01"><output id="gainOut"></output></div>
-        <div class="field"><label for="ca">RGB 色差</label><input type="range" id="ca" min="0" max="12" step="1"><output id="caOut"></output></div>
-        <p class="hint">溢墨让网点变胖、边缘发毛，中间调最明显。RGB 色差是屏幕上的“错位”，把红、蓝通道左右拉开，偏 glitch。</p>
+        <h2><span class="zh">瑕疵</span><span class="en">Misprint</span> <small class="zh">MISPRINT</small><small class="en">瑕疵</small></h2>
+        <div class="field"><label for="mx"><span class="zh">套色错位 X</span><span class="en">Misregister X</span></label><input type="range" id="mx" min="-14" max="14" step="1"><output id="mxOut"></output></div>
+        <div class="field"><label for="my"><span class="zh">套色错位 Y</span><span class="en">Misregister Y</span></label><input type="range" id="my" min="-14" max="14" step="1"><output id="myOut"></output></div>
+        <div class="field"><label for="grain"><span class="zh">墨色颗粒</span><span class="en">Ink grain</span></label><input type="range" id="grain" min="0" max="1" step="0.01"><output id="grainOut"></output></div>
+        <div class="field"><label for="starve"><span class="zh">缺墨漏白</span><span class="en">Ink starvation</span></label><input type="range" id="starve" min="0" max="1" step="0.01"><output id="starveOut"></output></div>
+        <div class="field"><label for="band"><span class="zh">辊痕条带</span><span class="en">Roller banding</span></label><input type="range" id="band" min="0" max="1" step="0.01"><output id="bandOut"></output></div>
+        <div class="field"><label for="tex"><span class="zh">纸张纹理</span><span class="en">Paper texture</span></label><input type="range" id="tex" min="0" max="1" step="0.01"><output id="texOut"></output></div>
+        <div class="field"><label for="gain"><span class="zh">溢墨扩散</span><span class="en">Dot gain</span></label><input type="range" id="gain" min="0" max="1" step="0.01"><output id="gainOut"></output></div>
+        <div class="field"><label for="ca"><span class="zh">RGB 色差</span><span class="en">RGB split</span></label><input type="range" id="ca" min="0" max="12" step="1"><output id="caOut"></output></div>
+        <p class="hint"><span class="zh">溢墨让网点变胖、边缘发毛，中间调最明显。RGB 色差是屏幕上的“错位”，把红、蓝通道左右拉开，偏 glitch。</span><span class="en">Dot gain fattens the dots and roughens their edges, most visibly in the midtones. RGB split is misregistration on a screen: the red and blue channels slide apart for a glitch look.</span></p>
       </div>
 
       <div class="group">
-        <h2>原图 <small>SOURCE</small></h2>
+        <h2><span class="zh">原图</span><span class="en">Source</span> <small class="zh">SOURCE</small><small class="en">原图</small></h2>
         <div class="row" id="srcRow">
-          <button class="btn" type="button" data-src="scene">测试画面</button>
-          <button class="btn" type="button" data-src="ramp">色阶条</button>
-          <label class="btn" id="uploadLabel">上传照片<input type="file" id="upload" accept="image/*" hidden></label>
+          <button class="btn" type="button" data-src="scene"><span class="zh">测试画面</span><span class="en">Test scene</span></button>
+          <button class="btn" type="button" data-src="ramp"><span class="zh">色阶条</span><span class="en">Tone ramps</span></button>
+          <label class="btn" id="uploadLabel"><span class="zh">上传照片</span><span class="en">Upload photo</span><input type="file" id="upload" accept="image/*" hidden></label>
         </div>
-        <p class="hint" id="srcHint">照片只在你的浏览器里处理，不会上传到任何地方。</p>
+        <p class="hint" id="srcHint"></p>
       </div>
     </aside>
   </main>
 
-  <section class="presets" aria-label="预设">
-    <header><h2>预设样张</h2><span class="hint">点一张，把它的参数载入上面的实验台</span></header>
+  <section class="presets" data-aria-zh="预设" data-aria-en="Presets">
+    <header><h2><span class="zh">预设样张</span><span class="en">Preset proofs</span></h2><span class="hint"><span class="zh">点一张，把它的参数载入上面的实验台</span><span class="en">Click one to load its settings into the lab above</span></span></header>
     <div class="sheet" id="sheet"></div>
   </section>
 
-  <section class="refs" aria-label="参考资料">
-    <header><h2>参考资料</h2><span class="hint">算法、印刷特性和油墨色值的出处</span></header>
+  <section class="refs" data-aria-zh="参考资料" data-aria-en="References">
+    <header><h2><span class="zh">参考资料</span><span class="en">References</span></h2><span class="hint"><span class="zh">算法、印刷特性和油墨色值的出处</span><span class="en">Sources for the algorithms, print behaviour and ink colours</span></span></header>
     <div class="refgrid">
       <div>
-        <h3>加网与抖动</h3>
+        <h3><span class="zh">加网与抖动</span><span class="en">Screening &amp; dithering</span></h3>
         <ol>
-          <li><a href="https://en.wikipedia.org/wiki/Halftone" target="_blank" rel="noopener">Halftone</a><span>Wikipedia · AM 网点、网角与摩尔纹</span></li>
-          <li><a href="https://en.wikipedia.org/wiki/Ben-Day_dots" target="_blank" rel="noopener">Ben-Day dots</a><span>Wikipedia · 固定尺寸网点与波普印刷</span></li>
-          <li><a href="https://en.wikipedia.org/wiki/Ordered_dithering" target="_blank" rel="noopener">Ordered dithering</a><span>Wikipedia · Bayer 矩阵（Bayer, 1973）</span></li>
-          <li><a href="https://en.wikipedia.org/wiki/Floyd%E2%80%93Steinberg_dithering" target="_blank" rel="noopener">Floyd–Steinberg dithering</a><span>Wikipedia · 误差扩散（Floyd &amp; Steinberg, 1976）</span></li>
-          <li><span class="book">Robert Ulichney, <i>Digital Halftoning</i></span><span>MIT Press, 1987 · AM / FM 加网的系统论述</span></li>
-          <li><span class="book">Adobe, <i>PostScript Language Reference</i>, 3rd ed.</span><span>Addison-Wesley, 1999 · 网点形状的 spot function 定义</span></li>
+          <li><a href="https://en.wikipedia.org/wiki/Halftone" target="_blank" rel="noopener">Halftone</a><span><span class="zh">Wikipedia · AM 网点、网角与摩尔纹</span><span class="en">Wikipedia · AM dots, screen angles and moiré</span></span></li>
+          <li><a href="https://en.wikipedia.org/wiki/Ben-Day_dots" target="_blank" rel="noopener">Ben-Day dots</a><span><span class="zh">Wikipedia · 固定尺寸网点与波普印刷</span><span class="en">Wikipedia · fixed-size dots and pop printing</span></span></li>
+          <li><a href="https://en.wikipedia.org/wiki/Ordered_dithering" target="_blank" rel="noopener">Ordered dithering</a><span><span class="zh">Wikipedia · Bayer 矩阵（Bayer, 1973）</span><span class="en">Wikipedia · Bayer matrix (Bayer, 1973)</span></span></li>
+          <li><a href="https://en.wikipedia.org/wiki/Floyd%E2%80%93Steinberg_dithering" target="_blank" rel="noopener">Floyd–Steinberg dithering</a><span><span class="zh">Wikipedia · 误差扩散（Floyd &amp; Steinberg, 1976）</span><span class="en">Wikipedia · error diffusion (Floyd &amp; Steinberg, 1976)</span></span></li>
+          <li><span class="book">Robert Ulichney, <i>Digital Halftoning</i></span><span><span class="zh">MIT Press, 1987 · AM / FM 加网的系统论述</span><span class="en">MIT Press, 1987 · a systematic treatment of AM / FM screening</span></span></li>
+          <li><span class="book">Adobe, <i>PostScript Language Reference</i>, 3rd ed.</span><span><span class="zh">Addison-Wesley, 1999 · 网点形状的 spot function 定义</span><span class="en">Addison-Wesley, 1999 · spot functions that define dot shapes</span></span></li>
           <li><a href="https://frontendmasters.com/blog/pure-css-halftone-effect-in-3-declarations/" target="_blank" rel="noopener">Pure CSS Halftone Effect in 3 Declarations</a><span>Ana Tudor · Frontend Masters</span></li>
           <li><a href="https://leanrada.com/notes/pure-css-halftone/" target="_blank" rel="noopener">Creating a halftone effect with CSS</a><span>Lean Rada</span></li>
         </ol>
       </div>
       <div>
-        <h3>Riso 印刷特性</h3>
+        <h3><span class="zh">Riso 印刷特性</span><span class="en">Riso printing</span></h3>
         <ol>
-          <li><a href="https://en.wikipedia.org/wiki/Risograph" target="_blank" rel="noopener">Risograph</a><span>Wikipedia · 孔版印刷原理与历史</span></li>
-          <li><a href="https://oxfordgreenprint.com/?p=223" target="_blank" rel="noopener">Design for Riso</a><span>Oxford Greenprint · 套色错位 1–2mm、浅色调易丢失</span></li>
-          <li><a href="https://creativemarket.com/blog/risograph-printing" target="_blank" rel="noopener">The Fascinating World of Risograph Printing</a><span>Creative Market · 风格特征与制版建议</span></li>
-          <li><a href="https://icons8.com/clipart/textured/print" target="_blank" rel="noopener">Print Style Illustrations</a><span>Icons8 · 数字化 riso 风格：有限色板、网点纹理、错位</span></li>
-          <li><a href="https://en.wikipedia.org/wiki/Dot_gain" target="_blank" rel="noopener">Dot gain</a><span>Wikipedia · 溢墨与网点扩大，中间调最明显</span></li>
-          <li><a href="https://en.wikipedia.org/wiki/CMYK_color_model" target="_blank" rel="noopener">CMYK color model</a><span>Wikipedia · 减色分色，三色叠印的拆版思路</span></li>
-          <li><a href="https://en.wikipedia.org/wiki/Chromatic_aberration" target="_blank" rel="noopener">Chromatic aberration</a><span>Wikipedia · RGB 色差效果的光学来源</span></li>
+          <li><a href="https://en.wikipedia.org/wiki/Risograph" target="_blank" rel="noopener">Risograph</a><span><span class="zh">Wikipedia · 孔版印刷原理与历史</span><span class="en">Wikipedia · how stencil duplicating works, and its history</span></span></li>
+          <li><a href="https://oxfordgreenprint.com/?p=223" target="_blank" rel="noopener">Design for Riso</a><span><span class="zh">Oxford Greenprint · 套色错位 1–2mm、浅色调易丢失</span><span class="en">Oxford Greenprint · 1–2 mm misregistration, light tones dropping out</span></span></li>
+          <li><a href="https://creativemarket.com/blog/risograph-printing" target="_blank" rel="noopener">The Fascinating World of Risograph Printing</a><span><span class="zh">Creative Market · 风格特征与制版建议</span><span class="en">Creative Market · style traits and file-prep tips</span></span></li>
+          <li><a href="https://icons8.com/clipart/textured/print" target="_blank" rel="noopener">Print Style Illustrations</a><span><span class="zh">Icons8 · 数字化 riso 风格：有限色板、网点纹理、错位</span><span class="en">Icons8 · digital riso style: limited palette, dot textures, misregistration</span></span></li>
+          <li><a href="https://en.wikipedia.org/wiki/Dot_gain" target="_blank" rel="noopener">Dot gain</a><span><span class="zh">Wikipedia · 溢墨与网点扩大，中间调最明显</span><span class="en">Wikipedia · ink spread and dot gain, strongest in the midtones</span></span></li>
+          <li><a href="https://en.wikipedia.org/wiki/CMYK_color_model" target="_blank" rel="noopener">CMYK color model</a><span><span class="zh">Wikipedia · 减色分色，三色叠印的拆版思路</span><span class="en">Wikipedia · subtractive separation behind the three-colour split</span></span></li>
+          <li><a href="https://en.wikipedia.org/wiki/Chromatic_aberration" target="_blank" rel="noopener">Chromatic aberration</a><span><span class="zh">Wikipedia · RGB 色差效果的光学来源</span><span class="en">Wikipedia · the optical origin of the RGB split effect</span></span></li>
         </ol>
       </div>
       <div>
-        <h3>相邻印刷工艺与 Duotone</h3>
+        <h3><span class="zh">相邻印刷工艺与 Duotone</span><span class="en">Related processes &amp; duotone</span></h3>
         <ol>
-          <li><a href="https://en.wikipedia.org/wiki/Screen_printing" target="_blank" rel="noopener">Screen printing</a><span>Wikipedia · 丝网印刷：分色制版、不透明油墨</span></li>
-          <li><a href="https://en.wikipedia.org/wiki/Letterpress_printing" target="_blank" rel="noopener">Letterpress printing</a><span>Wikipedia · 凸版印刷：压痕与挤墨</span></li>
-          <li><a href="https://en.wikipedia.org/wiki/Woodcut" target="_blank" rel="noopener">Woodcut</a><span>Wikipedia · 木刻：刀痕线条与黑白强对比</span></li>
-          <li><a href="https://en.wikipedia.org/wiki/Linocut" target="_blank" rel="noopener">Linocut</a><span>Wikipedia · 麻胶版画</span></li>
-          <li><a href="https://en.wikipedia.org/wiki/Duotone" target="_blank" rel="noopener">Duotone</a><span>Wikipedia · 印刷双色调与数字渐变映射</span></li>
+          <li><a href="https://en.wikipedia.org/wiki/Screen_printing" target="_blank" rel="noopener">Screen printing</a><span><span class="zh">Wikipedia · 丝网印刷：分色制版、不透明油墨</span><span class="en">Wikipedia · separations and opaque inks</span></span></li>
+          <li><a href="https://en.wikipedia.org/wiki/Letterpress_printing" target="_blank" rel="noopener">Letterpress printing</a><span><span class="zh">Wikipedia · 凸版印刷：压痕与挤墨</span><span class="en">Wikipedia · impression and ink squeeze</span></span></li>
+          <li><a href="https://en.wikipedia.org/wiki/Woodcut" target="_blank" rel="noopener">Woodcut</a><span><span class="zh">Wikipedia · 木刻：刀痕线条与黑白强对比</span><span class="en">Wikipedia · gouged lines and hard black-and-white contrast</span></span></li>
+          <li><a href="https://en.wikipedia.org/wiki/Linocut" target="_blank" rel="noopener">Linocut</a><span><span class="zh">Wikipedia · 麻胶版画</span><span class="en">Wikipedia · linoleum relief prints</span></span></li>
+          <li><a href="https://en.wikipedia.org/wiki/Duotone" target="_blank" rel="noopener">Duotone</a><span><span class="zh">Wikipedia · 印刷双色调与数字渐变映射</span><span class="en">Wikipedia · printed duotones and digital gradient maps</span></span></li>
         </ol>
       </div>
       <div>
-        <h3>油墨色值与质感</h3>
+        <h3><span class="zh">油墨色值与质感</span><span class="en">Ink colours &amp; texture</span></h3>
         <ol>
-          <li><a href="https://www.npmjs.com/package/riso-colors" target="_blank" rel="noopener">riso-colors</a><span>npm · Riso 油墨的屏幕近似色值</span></li>
-          <li><a href="https://www.monikerpress.ca/colours/" target="_blank" rel="noopener">Ink Colours</a><span>Moniker Press · 印厂油墨色卡</span></li>
-          <li><a href="https://bushe.co/tools/css-noise-grain-overlay/" target="_blank" rel="noopener">CSS Noise Grain Overlay</a><span>颗粒纹理的网页实现思路</span></li>
+          <li><a href="https://www.npmjs.com/package/riso-colors" target="_blank" rel="noopener">riso-colors</a><span><span class="zh">npm · Riso 油墨的屏幕近似色值</span><span class="en">npm · on-screen approximations of Riso inks</span></span></li>
+          <li><a href="https://www.monikerpress.ca/colours/" target="_blank" rel="noopener">Ink Colours</a><span><span class="zh">Moniker Press · 印厂油墨色卡</span><span class="en">Moniker Press · a print shop's ink chart</span></span></li>
+          <li><a href="https://bushe.co/tools/css-noise-grain-overlay/" target="_blank" rel="noopener">CSS Noise Grain Overlay</a><span><span class="zh">颗粒纹理的网页实现思路</span><span class="en">A web approach to grain textures</span></span></li>
         </ol>
-        <p class="hint">页面上的油墨色值是屏幕近似，真实印刷效果以印厂实物色卡为准。缺墨、辊痕、纸纹为程序模拟，不对应具体机型。</p>
+        <p class="hint"><span class="zh">页面上的油墨色值是屏幕近似，真实印刷效果以印厂实物色卡为准。缺墨、辊痕、纸纹为程序模拟，不对应具体机型。</span><span class="en">Ink colours on this page are on-screen approximations; check a print shop's physical swatches for real results. Ink starvation, roller banding and paper texture are simulated and do not model any specific machine.</span></p>
       </div>
     </div>
   </section>
@@ -264,105 +280,167 @@ const INKS = [
   {id:'black', zh:'黑', en:'Black', c:'#1A1A1A'},
 ];
 const PAPERS = [
-  {id:'white', zh:'白卡', c:'#FAFAF6'},
-  {id:'recycled', zh:'再生米色', c:'#EEE7D6'},
-  {id:'news', zh:'新闻纸', c:'#E4DFD1'},
-  {id:'mint', zh:'薄荷', c:'#DCE7D0'},
-  {id:'blush', zh:'浅粉', c:'#F6E0E4'},
+  {id:'white', zh:'白卡', en:'White card', c:'#FAFAF6'},
+  {id:'recycled', zh:'再生米色', en:'Recycled cream', c:'#EEE7D6'},
+  {id:'news', zh:'新闻纸', en:'Newsprint', c:'#E4DFD1'},
+  {id:'mint', zh:'薄荷', en:'Mint', c:'#DCE7D0'},
+  {id:'blush', zh:'浅粉', en:'Blush', c:'#F6E0E4'},
 ];
 const SCREENS = [
-  {id:'am', zh:'AM 圆点', d:'规则排列的圆点，靠点的大小表现明暗。报纸、复古画报的标准做法，网角决定点阵的倾斜方向。'},
-  {id:'line', zh:'线条网', d:'用平行线的粗细表现明暗。像钞票和版画，比圆点更硬朗、更有方向感。'},
-  {id:'hatch', zh:'交叉排线', d:'亮部是单向线，暗部再叠一层垂直的线。铜版画和钢笔插图的味道。'},
-  {id:'benday', zh:'Ben-Day', d:'点的大小固定，只分“空白 / 网点 / 实地”三级。利希滕斯坦式的波普和老漫画。'},
-  {id:'bayer', zh:'有序抖动', d:'Bayer 矩阵抖动，1-bit 像素排成规则格纹。早期电脑、Game Boy 和像素游戏的质感。'},
-  {id:'fs', zh:'误差扩散', d:'Floyd–Steinberg 抖动，把量化误差推给邻近像素，形成细碎有机的颗粒，最有“计算机”气质。'},
-  {id:'fm', zh:'FM 调频网', d:'点的大小一样，随机分布，靠疏密表现明暗。看起来像胶片颗粒或细腻的点刻。'},
-  {id:'thresh', zh:'阈值位图', d:'直接二值化，没有中间调。配合颗粒和缺墨，就是复印机和朋克 zine 的样子。'},
-  {id:'silk', zh:'丝网', d:'丝网印刷：先把图像简化成干净的色块，一种颜色一块版，油墨厚、颜色饱满，边缘略毛。沃霍尔和演出海报的做法，配合“不透明遮盖”最像。网点尺寸在这里控制简化程度。'},
-  {id:'letter', zh:'凸版', d:'凸版 / 活字印刷：凸起的版面压进纸里。实地中间墨色斑驳，边缘因为挤墨颜色更深，纸面留下轻微压痕。配厚一点的纸纹更像。'},
-  {id:'wood', zh:'木刻', d:'木刻 / 麻胶版：暗部是实地，亮部是留白，中间调用刻刀留下的弯曲线条表现，实地里有顺着刀向的崩口，墨色带木纹。'},
-  {id:'cont', zh:'连续调', d:'连续调：不加网，油墨浓淡直接对应原图明暗。和“双色调”一起用，就是不加网的连续调双色印刷。'},
+  {id:'am', zh:'AM 圆点', en:'AM dots',
+    d:{zh:'规则排列的圆点，靠点的大小表现明暗。报纸、复古画报的标准做法，网角决定点阵的倾斜方向。', en:'Dots on a regular grid whose size carries the tone. The standard for newspapers and vintage magazines; the screen angle sets the tilt of the grid.'}},
+  {id:'line', zh:'线条网', en:'Line screen',
+    d:{zh:'用平行线的粗细表现明暗。像钞票和版画，比圆点更硬朗、更有方向感。', en:'Parallel lines whose thickness carries the tone. Feels like banknotes and engravings: harder and more directional than dots.'}},
+  {id:'hatch', zh:'交叉排线', en:'Cross-hatch',
+    d:{zh:'亮部是单向线，暗部再叠一层垂直的线。铜版画和钢笔插图的味道。', en:'Light tones get one direction of lines; darker tones add a second, perpendicular layer. The look of copperplate prints and pen illustration.'}},
+  {id:'benday', zh:'Ben-Day', en:'Ben-Day',
+    d:{zh:'点的大小固定，只分“空白 / 网点 / 实地”三级。利希滕斯坦式的波普和老漫画。', en:'Fixed-size dots with only three levels: paper, dots and solid. Lichtenstein-style pop art and old comics.'}},
+  {id:'bayer', zh:'有序抖动', en:'Ordered dither',
+    d:{zh:'Bayer 矩阵抖动，1-bit 像素排成规则格纹。早期电脑、Game Boy 和像素游戏的质感。', en:'Bayer-matrix dithering: 1-bit pixels in a regular cross-hatch pattern. The texture of early computers, the Game Boy and pixel games.'}},
+  {id:'fs', zh:'误差扩散', en:'Error diffusion',
+    d:{zh:'Floyd–Steinberg 抖动，把量化误差推给邻近像素，形成细碎有机的颗粒，最有“计算机”气质。', en:'Floyd–Steinberg dithering pushes each pixel\'s quantization error onto its neighbours, giving a fine, organic grain. The most computational look here.'}},
+  {id:'fm', zh:'FM 调频网', en:'FM stochastic',
+    d:{zh:'点的大小一样，随机分布，靠疏密表现明暗。看起来像胶片颗粒或细腻的点刻。', en:'Equal-sized dots scattered at random; density carries the tone. Reads like film grain or fine stippling.'}},
+  {id:'thresh', zh:'阈值位图', en:'Threshold',
+    d:{zh:'直接二值化，没有中间调。配合颗粒和缺墨，就是复印机和朋克 zine 的样子。', en:'Straight black or white with no midtones. Add grain and ink starvation and you get photocopier and punk-zine aesthetics.'}},
+  {id:'silk', zh:'丝网', en:'Screen print',
+    d:{zh:'丝网印刷：先把图像简化成干净的色块，一种颜色一块版，油墨厚、颜色饱满，边缘略毛。沃霍尔和演出海报的做法，配合“不透明遮盖”最像。网点尺寸在这里控制简化程度。', en:'Screen printing: the image is simplified into clean flat shapes, one stencil per colour, with thick, saturated ink and slightly ragged edges. Think Warhol and gig posters. Pair it with Opaque for the most convincing result. Here the dot-size slider controls how much the image is simplified.'}},
+  {id:'letter', zh:'凸版', en:'Letterpress',
+    d:{zh:'凸版 / 活字印刷：凸起的版面压进纸里。实地中间墨色斑驳，边缘因为挤墨颜色更深，纸面留下轻微压痕。配厚一点的纸纹更像。', en:'Letterpress: the raised plate is pressed into the paper. Solids are mottled in the middle and darker at the edges where ink squeezes out, and the paper shows a slight impression. Looks best with more paper texture.'}},
+  {id:'wood', zh:'木刻', en:'Woodcut',
+    d:{zh:'木刻 / 麻胶版：暗部是实地，亮部是留白，中间调用刻刀留下的弯曲线条表现，实地里有顺着刀向的崩口，墨色带木纹。', en:'Woodcut / linocut: shadows are solid, highlights are bare paper and midtones are carved as curving gouge lines. Solids show chips along the cut, and the ink carries wood grain.'}},
+  {id:'cont', zh:'连续调', en:'Continuous',
+    d:{zh:'连续调：不加网，油墨浓淡直接对应原图明暗。和“双色调”一起用，就是不加网的连续调双色印刷。', en:'Continuous tone: no screen at all, so ink density follows the image directly. Combine it with Duotone for unscreened two-colour printing.'}},
 ];
 const MODES = [
-  {id:'mono', zh:'单色'},
-  {id:'sep', zh:'双色叠印'},
-  {id:'tri', zh:'三色叠印'},
-  {id:'duo', zh:'双色调'},
-  {id:'grad', zh:'渐变映射'},
+  {id:'mono', zh:'单色', en:'Mono'},
+  {id:'sep', zh:'双色叠印', en:'Two-colour'},
+  {id:'tri', zh:'三色叠印', en:'Three-colour'},
+  {id:'duo', zh:'双色调', en:'Duotone'},
+  {id:'grad', zh:'渐变映射', en:'Gradient map'},
 ];
 const MODE_DESC = {
-  mono:'单色：只用一种油墨。',
-  sep:'双色叠印：把原图拆成两块版，两种油墨叠在一起会混出第三种颜色。',
-  tri:'三色叠印：按类似 CMY 的方式拆成三块版，每块版有自己的网角和错位，叠出更丰富的混色。',
-  duo:'双色调：同一张灰度图按两条曲线出两块版，浅色油墨铺中间调，深色油墨压暗部。',
-  grad:'渐变映射：不模拟印刷，直接把亮部映射成油墨 A、暗部映射成油墨 B，就是 Spotify 式的数字 duotone。加网、错位和油墨瑕疵在这个模式下不起作用，纸纹和 RGB 色差仍然有效。'
+  mono:{zh:'单色：只用一种油墨。', en:'Mono: a single ink.'},
+  sep:{zh:'双色叠印：把原图拆成两块版，两种油墨叠在一起会混出第三种颜色。', en:'Two-colour overprint: the image is split into two plates, and where the inks overlap they mix into a third colour.'},
+  tri:{zh:'三色叠印：按类似 CMY 的方式拆成三块版，每块版有自己的网角和错位，叠出更丰富的混色。', en:'Three-colour overprint: a CMY-like split into three plates, each with its own screen angle and misregistration, for richer mixes.'},
+  duo:{zh:'双色调：同一张灰度图按两条曲线出两块版，浅色油墨铺中间调，深色油墨压暗部。', en:'Duotone: two plates from the same greyscale image with different curves. The light ink carries the midtones and the dark ink deepens the shadows.'},
+  grad:{zh:'渐变映射：不模拟印刷，直接把亮部映射成油墨 A、暗部映射成油墨 B，就是 Spotify 式的数字 duotone。加网、错位和油墨瑕疵在这个模式下不起作用，纸纹和 RGB 色差仍然有效。', en:'Gradient map: no print simulation. Highlights map to ink A and shadows to ink B, the Spotify-style digital duotone. Screening, misregistration and ink flaws do nothing in this mode; paper texture and RGB split still apply.'}
 };
 const BLENDS = [
-  {id:'multiply', zh:'透明叠印'},
-  {id:'opaque', zh:'不透明遮盖'},
+  {id:'multiply', zh:'透明叠印', en:'Overprint'},
+  {id:'opaque', zh:'不透明遮盖', en:'Opaque'},
 ];
 const SHAPES = [
-  {id:'round', zh:'圆形'},
-  {id:'ellipse', zh:'椭圆'},
-  {id:'diamond', zh:'菱形'},
-  {id:'square', zh:'方形'},
+  {id:'round', zh:'圆形', en:'Round'},
+  {id:'ellipse', zh:'椭圆', en:'Ellipse'},
+  {id:'diamond', zh:'菱形', en:'Diamond'},
+  {id:'square', zh:'方形', en:'Square'},
 ];
-/* provenance / credits for each style: short origin note + links */
+/* provenance / credits for each style: short origin note + links (fact-checked against the linked sources) */
 const W = t => 'https://en.wikipedia.org/wiki/' + t;
 const PROV = {
   // screens
-  am:{o:'1852 年 Fox Talbot 在专利中提出用“网幕”把照片转成可印刷的图像；1880 年《纽约每日图报》首次在报纸上印出全色调照片；1881 年 Frederic Ives 取得第一个商业成功的半调工艺专利，此后交叉线网屏让它成为标准做法。', l:[['Halftone',W('Halftone')],['Frederic Eugene Ives',W('Frederic_Eugene_Ives')]]},
-  line:{o:'源自 15 世纪末兴起的金属版雕刻印刷；后来的钢版雕刻主要用于钞票和书籍插图，所以线条网自带一种“钞票感”。', l:[['Line engraving',W('Line_engraving')]]},
-  hatch:{o:'排线与交叉排线是雕刻版画和木刻的古老技法，丢勒（Albrecht Dürer）在这两种媒介里都把交叉排线推向了成熟。', l:[['Hatching',W('Hatching')],['Albrecht Dürer',W('Albrecht_D%C3%BCrer')]]},
-  benday:{o:'插画师兼印刷工 Benjamin Henry Day Jr. 于 1879 年发明，长期用于报纸漫画上色；后来 Roy Lichtenstein 把它放大成波普艺术的标志。', l:[['Ben-Day dots',W('Ben-Day_dots')],['Roy Lichtenstein',W('Roy_Lichtenstein')]]},
-  bayer:{o:'柯达研究员 Bryce Bayer 在 1973 年的论文中提出最优的有序抖动阈值矩阵；他还发明了数码相机普遍使用的 Bayer 滤色阵列。', l:[['Ordered dithering',W('Ordered_dithering')],['Bryce Bayer',W('Bryce_Bayer')]]},
-  fs:{o:'Robert W. Floyd 与 Louis Steinberg 在 1976 年发表的误差扩散算法，至今仍是图像抖动的基准方法。', l:[['Floyd–Steinberg dithering',W('Floyd%E2%80%93Steinberg_dithering')]]},
-  fm:{o:'Robert Ulichney 1988 年的论文《Dithering with Blue Noise》奠定了蓝噪声抖动的理论基础；到 1994 年，Agfa、Linotype-Hell 等厂商的调频加网已经用于商业印刷。', l:[['Stochastic screening',W('Stochastic_screening')],['Ulichney 1988（索引）','https://isgwww.cs.uni-magdeburg.de/~stefans/npr/entry-Ulichney-1988-DBM.html'],['Eye 杂志 1994','https://eyemagazine.com/review/article/could-this-be-the-death-of-the-dot']]},
-  thresh:{o:'1938 年 Chester Carlson 在纽约做出第一张静电复印件；1976 年起，英国的《Sniffin\' Glue》等朋克 zine 用复印机自出版，高反差黑白成了地下出版的视觉语言。', l:[['Xerography',W('Xerography')],['Chester Carlson',W('Chester_Carlson')],['Zine',W('Zine')]]},
-  silk:{o:'丝网的模版印刷源自中国的雕版传统，并影响了日本的伊势型纸；1910 年代出现感光制版；1962 年安迪·沃霍尔的《玛丽莲双联画》让丝网成为艺术家的技法。', l:[['Screen printing',W('Screen_printing')],['Andy Warhol',W('Andy_Warhol')]]},
-  letter:{o:'约 1440 年谷登堡发展出西方的活字印刷。传统凸版讲究轻触纸面，压痕被视为印坏了；1980 年代凸版作为手工艺复兴后，一些印刷者才刻意保留压痕来展示工艺。', l:[['Letterpress printing',W('Letterpress_printing')],['Johannes Gutenberg',W('Johannes_Gutenberg')]]},
-  wood:{o:'868 年的敦煌木刻《金刚经》被普遍认为是现存最早有纪年的印本；15 世纪末丢勒把西方木刻推向高峰；1931 年鲁迅在上海组织木刻讲习会，开启了中国的新兴木刻运动。', l:[['Woodcut',W('Woodcut')],['Diamond Sutra',W('Diamond_Sutra')],['Linocut',W('Linocut')],['新兴木刻运动（Smarthistory）','https://smarthistory.org/hu-yichuan-to-the-front']]},
-  cont:{o:'1855 年 Alphonse Poitevin 发明珂罗版，不用半调网屏就能印出连续色调；1868 年 Joseph Albert 造出第一台机械化珂罗版印刷机。', l:[['Collotype',W('Collotype')]]},
+  am:{o:{zh:'1852 年 Fox Talbot 在专利中提出用“网幕”把照片转成可印刷的图像；1880 年《纽约每日图报》首次在报纸上印出全色调照片；1881 年 Frederic Ives 取得第一个商业成功的半调工艺专利，此后交叉线网屏让它成为标准做法。',
+    en:'In an 1852 patent, Fox Talbot proposed using screens to turn photographs into printable images. In 1880 the New York Daily Graphic printed the first full-tone photograph in a newspaper. In 1881 Frederic Ives patented the first commercially successful halftone process, and cross-line screens later made halftone the standard.'},
+    l:[['Halftone',W('Halftone')],['Frederic Eugene Ives',W('Frederic_Eugene_Ives')]]},
+  line:{o:{zh:'源自 15 世纪末兴起的金属版雕刻印刷；后来的钢版雕刻主要用于钞票和书籍插图，所以线条网自带一种“钞票感”。',
+    en:'Grew out of the metal-plate engraving that emerged in the late 15th century. Steel engraving was later used mostly for banknotes and book illustration, which is why line screens feel like currency.'},
+    l:[['Line engraving',W('Line_engraving')]]},
+  hatch:{o:{zh:'排线与交叉排线是雕刻版画和木刻的古老技法，丢勒（Albrecht Dürer）在这两种媒介里都把交叉排线推向了成熟。',
+    en:'Hatching and cross-hatching are old techniques of engraving and woodcut. Albrecht Dürer perfected cross-hatching in both media.'},
+    l:[['Hatching',W('Hatching')],['Albrecht Dürer',W('Albrecht_D%C3%BCrer')]]},
+  benday:{o:{zh:'插画师兼印刷工 Benjamin Henry Day Jr. 于 1879 年发明，长期用于报纸漫画上色；后来 Roy Lichtenstein 把它放大成波普艺术的标志。',
+    en:'Invented in 1879 by illustrator and printer Benjamin Henry Day Jr. and long used to colour newspaper comics. Roy Lichtenstein later enlarged the dots into a hallmark of pop art.'},
+    l:[['Ben-Day dots',W('Ben-Day_dots')],['Roy Lichtenstein',W('Roy_Lichtenstein')]]},
+  bayer:{o:{zh:'柯达研究员 Bryce Bayer 在 1973 年的论文中提出最优的有序抖动阈值矩阵；他还发明了数码相机普遍使用的 Bayer 滤色阵列。',
+    en:'Kodak research scientist Bryce Bayer described the optimal ordered-dither threshold matrix in a 1973 paper. He also invented the Bayer colour filter used in most digital cameras.'},
+    l:[['Ordered dithering',W('Ordered_dithering')],['Bryce Bayer',W('Bryce_Bayer')]]},
+  fs:{o:{zh:'Robert W. Floyd 与 Louis Steinberg 在 1976 年发表的误差扩散算法，至今仍是图像抖动的基准方法。',
+    en:'The error-diffusion algorithm published by Robert W. Floyd and Louis Steinberg in 1976, still the reference method for dithering images.'},
+    l:[['Floyd–Steinberg dithering',W('Floyd%E2%80%93Steinberg_dithering')]]},
+  fm:{o:{zh:'Robert Ulichney 1988 年的论文《Dithering with Blue Noise》奠定了蓝噪声抖动的理论基础；到 1994 年，Agfa、Linotype-Hell 等厂商的调频加网已经用于商业印刷。',
+    en:'Robert Ulichney\'s 1988 paper "Dithering with Blue Noise" laid the theoretical groundwork. By 1994, FM screening from vendors such as Agfa and Linotype-Hell was in commercial use.'},
+    l:[['Stochastic screening',W('Stochastic_screening')],['Ulichney 1988 (citation)','https://isgwww.cs.uni-magdeburg.de/~stefans/npr/entry-Ulichney-1988-DBM.html'],['Eye magazine, 1994','https://eyemagazine.com/review/article/could-this-be-the-death-of-the-dot']]},
+  thresh:{o:{zh:'1938 年 Chester Carlson 在纽约做出第一张静电复印件；1976 年起，英国的《Sniffin\' Glue》等朋克 zine 用复印机自出版，高反差黑白成了地下出版的视觉语言。',
+    en:'Chester Carlson made the first xerographic copy in New York in 1938. From 1976, punk zines such as the UK\'s Sniffin\' Glue were self-published on photocopiers, and high-contrast black and white became the visual language of the underground press.'},
+    l:[['Xerography',W('Xerography')],['Chester Carlson',W('Chester_Carlson')],['Zine',W('Zine')]]},
+  silk:{o:{zh:'丝网的模版印刷源自中国的雕版传统，并影响了日本的伊势型纸；1910 年代出现感光制版；1962 年安迪·沃霍尔的《玛丽莲双联画》让丝网成为艺术家的技法。',
+    en:'Screen-printing stencils descend from Chinese block printing, which also influenced Japanese Ise katagami. Photo-imaged stencils appeared in the 1910s, and Andy Warhol\'s Marilyn Diptych (1962) made screen printing an artist\'s technique.'},
+    l:[['Screen printing',W('Screen_printing')],['Andy Warhol',W('Andy_Warhol')]]},
+  letter:{o:{zh:'约 1440 年谷登堡发展出西方的活字印刷。传统凸版讲究轻触纸面，压痕被视为印坏了；1980 年代凸版作为手工艺复兴后，一些印刷者才刻意保留压痕来展示工艺。',
+    en:'Gutenberg developed Western movable-type printing around 1440. Traditional letterpress aimed for a light kiss on the paper, and a visible impression counted as bad printing. Only after the craft revival of the 1980s did some printers deliberately show the impression.'},
+    l:[['Letterpress printing',W('Letterpress_printing')],['Johannes Gutenberg',W('Johannes_Gutenberg')]]},
+  wood:{o:{zh:'868 年的敦煌木刻《金刚经》被普遍认为是现存最早有纪年的印本；15 世纪末丢勒把西方木刻推向高峰；1931 年鲁迅在上海组织木刻讲习会，开启了中国的新兴木刻运动。',
+    en:'The woodblock-printed Diamond Sutra from Dunhuang, dated 868, is broadly considered the oldest dated printed book. Dürer took the Western woodcut to its peak in the late 15th century. In 1931 Lu Xun organised a woodcut workshop in Shanghai, starting China\'s Modern Woodcut Movement.'},
+    l:[['Woodcut',W('Woodcut')],['Diamond Sutra',W('Diamond_Sutra')],['Linocut',W('Linocut')],['Modern Woodcut Movement (Smarthistory)','https://smarthistory.org/hu-yichuan-to-the-front']]},
+  cont:{o:{zh:'1855 年 Alphonse Poitevin 发明珂罗版，不用半调网屏就能印出连续色调；1868 年 Joseph Albert 造出第一台机械化珂罗版印刷机。',
+    en:'Alphonse Poitevin invented collotype in 1855, printing continuous tone without a halftone screen. In 1868 Joseph Albert built the first mechanised collotype press.'},
+    l:[['Collotype',W('Collotype')]]},
   // modes
-  mono:{o:'一块版、一种油墨是最基本的印刷方式；要几种颜色，就要准备几块版、印几次。', l:[['Spot color',W('Spot_color')]]},
-  sep:{o:'Risograph 由日本理想科学（Riso Kagaku）在 1980 年推出，2010 年代起在艺术家、zine 和漫画圈流行。它一次印一种专色，多色要逐层叠印。', l:[['Risograph',W('Risograph')],['Spot color',W('Spot_color')]]},
-  tri:{o:'1710 年前后 Jacob Christoph Le Blon 用红、黄、蓝三块铜版叠印出彩色图像，1719 年取得专利；他的体系被视为现代 CMYK 的基础。', l:[['Jacob Christoph Le Blon',W('Jacob_Christoph_Le_Blon')],['CMYK color model',W('CMYK_color_model')]]},
-  duo:{o:'印刷双色调是把一种颜色的半调叠在另一种颜色的半调上，最常用来强化图像的中间调和亮部。', l:[['Duotone',W('Duotone')]]},
-  grad:{o:'图像软件让双色调可以直接在屏幕上生成；2015 年 3 月，Collins 为 Spotify 做的品牌刷新大量使用双色调照片，让这种风格流行开来。', l:[['Duotone',W('Duotone')],['Design Week 2015','https://www.designweek.co.uk/spotify-undergoes-colourful-brand-refresh/']]},
+  mono:{o:{zh:'一块版、一种油墨是最基本的印刷方式；要几种颜色，就要准备几块版、印几次。',
+    en:'One plate, one ink is the most basic way to print. Every additional colour needs another plate and another pass.'},
+    l:[['Spot color',W('Spot_color')]]},
+  sep:{o:{zh:'Risograph 由日本理想科学（Riso Kagaku）在 1980 年推出，2010 年代起在艺术家、zine 和漫画圈流行。它一次印一种专色，多色要逐层叠印。',
+    en:'Riso Kagaku introduced the Risograph in Japan in 1980, and it became popular with artists, zine makers and comics creators in the 2010s. It prints one spot colour at a time, so multicolour work is built up in layers.'},
+    l:[['Risograph',W('Risograph')],['Spot color',W('Spot_color')]]},
+  tri:{o:{zh:'1710 年前后 Jacob Christoph Le Blon 用红、黄、蓝三块铜版叠印出彩色图像，1719 年取得专利；他的体系被视为现代 CMYK 的基础。',
+    en:'Around 1710 Jacob Christoph Le Blon printed colour images from three copper plates in red, yellow and blue, and patented the process in 1719. His system is seen as the foundation of modern CMYK.'},
+    l:[['Jacob Christoph Le Blon',W('Jacob_Christoph_Le_Blon')],['CMYK color model',W('CMYK_color_model')]]},
+  duo:{o:{zh:'印刷双色调是把一种颜色的半调叠在另一种颜色的半调上，最常用来强化图像的中间调和亮部。',
+    en:'A printed duotone superimposes a halftone in one colour over a halftone in another, most often to bring out the midtones and highlights.'},
+    l:[['Duotone',W('Duotone')]]},
+  grad:{o:{zh:'图像软件让双色调可以直接在屏幕上生成；2015 年 3 月，Collins 为 Spotify 做的品牌刷新大量使用双色调照片，让这种风格流行开来。',
+    en:'Image editors made duotones something you can generate on screen. In March 2015, Collins\'s brand refresh for Spotify used duotone photography heavily and made the look popular.'},
+    l:[['Duotone',W('Duotone')],['Design Week, 2015','https://www.designweek.co.uk/spotify-undergoes-colourful-brand-refresh/']]},
   // dot shapes
-  round:{o:'圆形（欧几里得）网点：最通用的网点形状，50% 时相邻网点相接，形成棋盘格。'},
-  ellipse:{o:'椭圆（链状）网点：相邻网点先沿一个方向连成链，可以缓和中间调附近的跳变，过渡更平滑。'},
-  diamond:{o:'菱形网点：边缘是直线，中间调呈现明显的菱形格纹，比圆点更有图形感。'},
-  square:{o:'方形网点：中间调形成规整的棋盘格，画面更硬朗。'},
+  round:{o:{zh:'圆形（欧几里得）网点：最通用的网点形状，50% 时相邻网点相接，形成棋盘格。', en:'Round (Euclidean) dot: the most common shape. At 50% neighbouring dots touch and form a checkerboard.'}},
+  ellipse:{o:{zh:'椭圆（链状）网点：相邻网点先沿一个方向连成链，可以缓和中间调附近的跳变，过渡更平滑。', en:'Elliptical (chain) dot: neighbouring dots join along one direction first, which softens the tone jump around the midtones.'}},
+  diamond:{o:{zh:'菱形网点：边缘是直线，中间调呈现明显的菱形格纹，比圆点更有图形感。', en:'Diamond dot: straight edges and a clear diamond lattice in the midtones; more graphic than round dots.'}},
+  square:{o:{zh:'方形网点：中间调形成规整的棋盘格，画面更硬朗。', en:'Square dot: a crisp checkerboard in the midtones and a harder overall look.'}},
   // ink coverage
-  multiply:{o:'透明叠印：油墨半透明，叠在一起会混出新的颜色，Riso 和四色印刷都靠这一点。'},
-  opaque:{o:'不透明遮盖：油墨厚而不透明，后印的颜色直接盖住先印的，丝网印刷里很常见。'},
+  multiply:{o:{zh:'透明叠印：油墨半透明，叠在一起会混出新的颜色，Riso 和四色印刷都靠这一点。', en:'Overprint: translucent inks mix into new colours where they overlap. Riso and four-colour process printing both rely on this.'}},
+  opaque:{o:{zh:'不透明遮盖：油墨厚而不透明，后印的颜色直接盖住先印的，丝网印刷里很常见。', en:'Opaque: thick ink that covers whatever was printed before it, common in screen printing.'}},
 };
 const linkList = l => l ? l.map(([t,u]) => `<a href="${u}" target="_blank" rel="noopener">${t}</a>`).join('<i>·</i>') : '';
 const DEFAULTS = {shape:'round', gain:0, ca:0, inkC:'yellow', blend:'multiply'};
 const PRESETS = [
-  {name:'Riso 双色', tag:'AM · 粉 + 蓝 · 错位', p:{screen:'am',cell:9,angle:15,contrast:1.15,mode:'sep',inkA:'fpink',inkB:'blue',paper:'white',mx:5,my:3,grain:.45,starve:.3,band:.25,tex:.35}},
-  {name:'报纸半调', tag:'AM · 黑 · 新闻纸', p:{screen:'am',cell:7,angle:45,contrast:1.1,mode:'mono',inkA:'black',inkB:'blue',paper:'news',mx:0,my:0,grain:.15,starve:.05,band:0,tex:.5}},
-  {name:'波普漫画', tag:'Ben-Day · 红 + 联邦蓝', p:{screen:'benday',cell:14,angle:30,contrast:1.2,mode:'sep',inkA:'red',inkB:'fedblue',paper:'white',mx:2,my:1,grain:.1,starve:0,band:0,tex:.2}},
-  {name:'计算机抖动', tag:'误差扩散 · 粉 + 青绿', p:{screen:'fs',cell:8,angle:0,contrast:1.1,mode:'sep',inkA:'fpink',inkB:'teal',paper:'white',mx:3,my:-2,grain:.2,starve:.1,band:.1,tex:.2}},
-  {name:'掌机像素', tag:'有序抖动 · 猎人绿', p:{screen:'bayer',cell:14,angle:0,contrast:1.2,mode:'mono',inkA:'hunter',inkB:'black',paper:'mint',mx:0,my:0,grain:0,starve:0,band:0,tex:.15}},
-  {name:'复印朋克', tag:'阈值 · 黑 · 缺墨', p:{screen:'thresh',cell:6,angle:0,contrast:1.7,mode:'mono',inkA:'black',inkB:'black',paper:'recycled',mx:0,my:0,grain:.65,starve:.45,band:.55,tex:.6}},
-  {name:'胶片颗粒', tag:'FM · 青绿 + 黑 双色调', p:{screen:'fm',cell:7,angle:0,contrast:1.15,mode:'duo',inkA:'teal',inkB:'black',paper:'recycled',mx:1,my:1,grain:.25,starve:.1,band:0,tex:.4}},
-  {name:'版画排线', tag:'交叉排线 · 联邦蓝', p:{screen:'hatch',cell:9,angle:45,contrast:1.2,mode:'mono',inkA:'fedblue',inkB:'black',paper:'recycled',mx:0,my:0,grain:.2,starve:.1,band:0,tex:.45}},
-  {name:'三色 Riso', tag:'AM · 粉 + 蓝 + 黄', p:{screen:'am',shape:'round',cell:10,angle:15,contrast:1.1,mode:'tri',inkA:'fpink',inkB:'blue',inkC:'yellow',paper:'white',mx:4,my:2,grain:.4,starve:.25,band:.2,tex:.3,gain:.25}},
-  {name:'菱形网点', tag:'AM 菱形 · 联邦蓝', p:{screen:'am',shape:'diamond',cell:13,angle:45,contrast:1.15,mode:'mono',inkA:'fedblue',inkB:'black',paper:'white',mx:0,my:0,grain:.1,starve:0,band:0,tex:.25,gain:.15}},
-  {name:'溢墨海报', tag:'AM 椭圆 · 红 + 联邦蓝 · 溢墨', p:{screen:'am',shape:'ellipse',cell:11,angle:20,contrast:1.2,mode:'sep',inkA:'red',inkB:'fedblue',paper:'recycled',mx:3,my:2,grain:.3,starve:.15,band:.1,tex:.35,gain:.75}},
-  {name:'故障屏幕', tag:'误差扩散 · 黑 · RGB 色差', p:{screen:'fs',cell:6,angle:0,contrast:1.25,mode:'mono',inkA:'black',inkB:'blue',paper:'white',mx:0,my:0,grain:0,starve:0,band:0,tex:0,ca:6}},
-  {name:'丝网海报', tag:'丝网 · 橙 + 紫 · 不透明', p:{screen:'silk',cell:12,angle:0,contrast:1.3,mode:'sep',blend:'opaque',inkA:'orange',inkB:'purple',paper:'white',mx:6,my:4,grain:.12,starve:.08,band:0,tex:.25}},
-  {name:'凸版印刷', tag:'凸版 · 亮红 · 再生纸', p:{screen:'letter',cell:10,angle:0,contrast:1.35,mode:'mono',inkA:'red',inkB:'black',paper:'recycled',mx:0,my:0,grain:.25,starve:.25,band:0,tex:.65}},
-  {name:'木刻版画', tag:'木刻 · 黑 · 再生纸', p:{screen:'wood',cell:8,angle:10,contrast:1.3,mode:'mono',inkA:'black',inkB:'black',paper:'recycled',mx:0,my:0,grain:.2,starve:.15,band:0,tex:.5}},
-  {name:'连续调双色', tag:'连续调 · 橙 + 黑 双色调', p:{screen:'cont',cell:8,angle:0,contrast:1.15,mode:'duo',inkA:'orange',inkB:'black',paper:'recycled',mx:2,my:1,grain:.2,starve:.1,band:0,tex:.4}},
-  {name:'数字 Duotone', tag:'渐变映射 · 粉 → 联邦蓝', p:{screen:'cont',cell:8,angle:0,contrast:1.2,mode:'grad',inkA:'fpink',inkB:'fedblue',paper:'white',mx:0,my:0,grain:0,starve:0,band:0,tex:0}},
+  {name:{zh:'Riso 双色', en:'Riso two-colour'}, tag:{zh:'AM · 粉 + 蓝 · 错位', en:'AM · pink + blue · misregistered'}, p:{screen:'am',cell:9,angle:15,contrast:1.15,mode:'sep',inkA:'fpink',inkB:'blue',paper:'white',mx:5,my:3,grain:.45,starve:.3,band:.25,tex:.35}},
+  {name:{zh:'报纸半调', en:'Newspaper halftone'}, tag:{zh:'AM · 黑 · 新闻纸', en:'AM · black · newsprint'}, p:{screen:'am',cell:7,angle:45,contrast:1.1,mode:'mono',inkA:'black',inkB:'blue',paper:'news',mx:0,my:0,grain:.15,starve:.05,band:0,tex:.5}},
+  {name:{zh:'波普漫画', en:'Pop comic'}, tag:{zh:'Ben-Day · 红 + 联邦蓝', en:'Ben-Day · red + federal blue'}, p:{screen:'benday',cell:14,angle:30,contrast:1.2,mode:'sep',inkA:'red',inkB:'fedblue',paper:'white',mx:2,my:1,grain:.1,starve:0,band:0,tex:.2}},
+  {name:{zh:'计算机抖动', en:'Computer dither'}, tag:{zh:'误差扩散 · 粉 + 青绿', en:'Error diffusion · pink + teal'}, p:{screen:'fs',cell:8,angle:0,contrast:1.1,mode:'sep',inkA:'fpink',inkB:'teal',paper:'white',mx:3,my:-2,grain:.2,starve:.1,band:.1,tex:.2}},
+  {name:{zh:'掌机像素', en:'Handheld pixels'}, tag:{zh:'有序抖动 · 猎人绿', en:'Ordered dither · hunter green'}, p:{screen:'bayer',cell:14,angle:0,contrast:1.2,mode:'mono',inkA:'hunter',inkB:'black',paper:'mint',mx:0,my:0,grain:0,starve:0,band:0,tex:.15}},
+  {name:{zh:'复印朋克', en:'Photocopy punk'}, tag:{zh:'阈值 · 黑 · 缺墨', en:'Threshold · black · ink starvation'}, p:{screen:'thresh',cell:6,angle:0,contrast:1.7,mode:'mono',inkA:'black',inkB:'black',paper:'recycled',mx:0,my:0,grain:.65,starve:.45,band:.55,tex:.6}},
+  {name:{zh:'胶片颗粒', en:'Film grain'}, tag:{zh:'FM · 青绿 + 黑 双色调', en:'FM · teal + black duotone'}, p:{screen:'fm',cell:7,angle:0,contrast:1.15,mode:'duo',inkA:'teal',inkB:'black',paper:'recycled',mx:1,my:1,grain:.25,starve:.1,band:0,tex:.4}},
+  {name:{zh:'版画排线', en:'Engraved hatching'}, tag:{zh:'交叉排线 · 联邦蓝', en:'Cross-hatch · federal blue'}, p:{screen:'hatch',cell:9,angle:45,contrast:1.2,mode:'mono',inkA:'fedblue',inkB:'black',paper:'recycled',mx:0,my:0,grain:.2,starve:.1,band:0,tex:.45}},
+  {name:{zh:'三色 Riso', en:'Three-colour Riso'}, tag:{zh:'AM · 粉 + 蓝 + 黄', en:'AM · pink + blue + yellow'}, p:{screen:'am',shape:'round',cell:10,angle:15,contrast:1.1,mode:'tri',inkA:'fpink',inkB:'blue',inkC:'yellow',paper:'white',mx:4,my:2,grain:.4,starve:.25,band:.2,tex:.3,gain:.25}},
+  {name:{zh:'菱形网点', en:'Diamond dots'}, tag:{zh:'AM 菱形 · 联邦蓝', en:'AM diamond · federal blue'}, p:{screen:'am',shape:'diamond',cell:13,angle:45,contrast:1.15,mode:'mono',inkA:'fedblue',inkB:'black',paper:'white',mx:0,my:0,grain:.1,starve:0,band:0,tex:.25,gain:.15}},
+  {name:{zh:'溢墨海报', en:'Ink-spread poster'}, tag:{zh:'AM 椭圆 · 红 + 联邦蓝 · 溢墨', en:'AM ellipse · red + federal blue · dot gain'}, p:{screen:'am',shape:'ellipse',cell:11,angle:20,contrast:1.2,mode:'sep',inkA:'red',inkB:'fedblue',paper:'recycled',mx:3,my:2,grain:.3,starve:.15,band:.1,tex:.35,gain:.75}},
+  {name:{zh:'故障屏幕', en:'Glitch screen'}, tag:{zh:'误差扩散 · 黑 · RGB 色差', en:'Error diffusion · black · RGB split'}, p:{screen:'fs',cell:6,angle:0,contrast:1.25,mode:'mono',inkA:'black',inkB:'blue',paper:'white',mx:0,my:0,grain:0,starve:0,band:0,tex:0,ca:6}},
+  {name:{zh:'丝网海报', en:'Screen-print poster'}, tag:{zh:'丝网 · 橙 + 紫 · 不透明', en:'Screen print · orange + purple · opaque'}, p:{screen:'silk',cell:12,angle:0,contrast:1.3,mode:'sep',blend:'opaque',inkA:'orange',inkB:'purple',paper:'white',mx:6,my:4,grain:.12,starve:.08,band:0,tex:.25}},
+  {name:{zh:'凸版印刷', en:'Letterpress'}, tag:{zh:'凸版 · 亮红 · 再生纸', en:'Letterpress · bright red · recycled'}, p:{screen:'letter',cell:10,angle:0,contrast:1.35,mode:'mono',inkA:'red',inkB:'black',paper:'recycled',mx:0,my:0,grain:.25,starve:.25,band:0,tex:.65}},
+  {name:{zh:'木刻版画', en:'Woodcut print'}, tag:{zh:'木刻 · 黑 · 再生纸', en:'Woodcut · black · recycled'}, p:{screen:'wood',cell:8,angle:10,contrast:1.3,mode:'mono',inkA:'black',inkB:'black',paper:'recycled',mx:0,my:0,grain:.2,starve:.15,band:0,tex:.5}},
+  {name:{zh:'连续调双色', en:'Continuous duotone'}, tag:{zh:'连续调 · 橙 + 黑 双色调', en:'Continuous · orange + black duotone'}, p:{screen:'cont',cell:8,angle:0,contrast:1.15,mode:'duo',inkA:'orange',inkB:'black',paper:'recycled',mx:2,my:1,grain:.2,starve:.1,band:0,tex:.4}},
+  {name:{zh:'数字 Duotone', en:'Digital duotone'}, tag:{zh:'渐变映射 · 粉 → 联邦蓝', en:'Gradient map · pink → federal blue'}, p:{screen:'cont',cell:8,angle:0,contrast:1.2,mode:'grad',inkA:'fpink',inkB:'fedblue',paper:'white',mx:0,my:0,grain:0,starve:0,band:0,tex:0}},
 ];
+/* language */
+const UI = {
+  prov:{zh:'溯源', en:'Origin'},
+  shape:{zh:' 当前点形：', en:' Dot shape: '},
+  opaqueNote:{zh:' 当前为不透明遮盖：后印的油墨盖住先印的，不再混色。', en:' Opaque is on: later inks cover earlier ones instead of mixing.'},
+  paper:{zh:'纸 ', en:'Paper '}, light:{zh:'亮部 ', en:'Highlights '}, dark:{zh:'暗部 ', en:'Shadows '}, over:{zh:'A×B 叠印', en:'A×B overprint'},
+  srcHint:{zh:'照片只在你的浏览器里处理，不会上传到任何地方。', en:'Photos are processed in your browser and never uploaded.'},
+  using:{zh:n=>`正在使用：${n}（只在本机处理）`, en:n=>`Using: ${n} (processed on this device only)`},
+  bad:{zh:'这张图片读不出来，换一张 JPG 或 PNG 试试。', en:'This image could not be read. Try a JPG or PNG.'},
+  title:{zh:'印痕实验室', en:'Print Texture Lab'},
+};
+let LANG = 'zh';
+try { const s = localStorage.getItem('printlab-lang'); LANG = s==='en'||s==='zh' ? s : ((navigator.language||'').toLowerCase().startsWith('zh') ? 'zh' : 'en'); }
+catch(e){ LANG = (navigator.language||'').toLowerCase().startsWith('zh') ? 'zh' : 'en'; }
+const T = o => (o && typeof o==='object') ? o[LANG] : o;
+const NM = it => it[LANG] || it.zh;   // display name of a list item
 
 const P = Object.assign({}, DEFAULTS, PRESETS[0].p);
-let srcKind = 'scene';
+let srcKind = 'scene', uploadName = '', srcHintState = 'default';
 let uploaded = null;
 
 const $ = id => document.getElementById(id);
@@ -655,7 +733,7 @@ function schedule(){ if (queued) return; queued = true; requestAnimationFrame(()
 
 function seg(el, items, key){
   el.innerHTML = '';
-  items.forEach(it => { const b = document.createElement('button'); b.type='button'; b.textContent=it.zh; b.dataset.v=it.id;
+  items.forEach(it => { const b = document.createElement('button'); b.type='button'; b.textContent=NM(it); b.dataset.v=it.id;
     if (PROV[it.id]) b.dataset.tip = it.id;
     b.addEventListener('click', () => { P[key]=it.id; syncControls(); schedule(); }); el.appendChild(b); });
 }
@@ -663,7 +741,7 @@ function seg(el, items, key){
 const tip = document.createElement('div'); tip.className = 'tip'; tip.setAttribute('role','tooltip'); tip.hidden = true; document.body.appendChild(tip);
 function showTip(el){
   const pv = PROV[el.dataset.tip]; if (!pv) return;
-  tip.innerHTML = `<strong>${el.textContent} · 溯源</strong><span>${pv.o}</span>${pv.l ? `<em>${pv.l.map(x=>x[0]).join(' · ')}</em>` : ''}`;
+  tip.innerHTML = `<strong>${el.textContent} · ${T(UI.prov)}</strong><span>${T(pv.o)}</span>${pv.l ? `<em>${pv.l.map(x=>x[0]).join(' · ')}</em>` : ''}`;
   tip.hidden = false;
   const r = el.getBoundingClientRect(), tw = tip.offsetWidth, th = tip.offsetHeight;
   let left = r.left + r.width/2 - tw/2; left = Math.max(12, Math.min(left, window.innerWidth - tw - 12));
@@ -678,17 +756,20 @@ window.addEventListener('scroll', () => { tip.hidden = true; }, {passive:true});
 function swatches(el, items, key){
   el.innerHTML = '';
   items.forEach(it => { const b = document.createElement('button'); b.type='button'; b.style.background=it.c; b.dataset.v=it.id;
-    b.title = it.en ? `${it.zh} · ${it.en}` : it.zh; b.setAttribute('aria-label', b.title);
+    b.title = LANG==='zh' ? `${it.zh} · ${it.en}` : it.en; b.setAttribute('aria-label', b.title);
     b.addEventListener('click', () => { P[key]=it.id; syncControls(); schedule(); }); el.appendChild(b); });
 }
-seg($('screenSeg'), SCREENS, 'screen');
-seg($('modeSeg'), MODES, 'mode');
-seg($('shapeSeg'), SHAPES, 'shape');
-seg($('blendSeg'), BLENDS, 'blend');
-swatches($('inkA'), INKS, 'inkA');
-swatches($('inkB'), INKS, 'inkB');
-swatches($('inkC'), INKS, 'inkC');
-swatches($('paper'), PAPERS, 'paper');
+function buildControls(){
+  seg($('screenSeg'), SCREENS, 'screen');
+  seg($('modeSeg'), MODES, 'mode');
+  seg($('shapeSeg'), SHAPES, 'shape');
+  seg($('blendSeg'), BLENDS, 'blend');
+  swatches($('inkA'), INKS, 'inkA');
+  swatches($('inkB'), INKS, 'inkB');
+  swatches($('inkC'), INKS, 'inkC');
+  swatches($('paper'), PAPERS, 'paper');
+}
+buildControls();
 
 const SLIDERS = {cell:v=>v+' px', angle:v=>v+'°', contrast:v=>(+v).toFixed(2), mx:v=>v+' px', my:v=>v+' px', grain:v=>Math.round(v*100)+'%', starve:v=>Math.round(v*100)+'%', band:v=>Math.round(v*100)+'%', tex:v=>Math.round(v*100)+'%', gain:v=>Math.round(v*100)+'%', ca:v=>v+' px'};
 Object.keys(SLIDERS).forEach(k => {
@@ -713,26 +794,27 @@ function syncControls(){
   const two = P.mode!=='mono' && !grad;
   ['mx','my'].forEach(k => { $(k).disabled = !two; $(k).closest('.field').classList.toggle('off', !two); });
   const iA = ink(P.inkA), iB = ink(P.inkB), iC = ink(P.inkC);
-  $('inkAName').textContent = `${iA.zh} · ${iA.en} · ${iA.c}`;
-  $('inkBName').textContent = `${iB.zh} · ${iB.en} · ${iB.c}`;
-  $('inkCName').textContent = `${iC.zh} · ${iC.en} · ${iC.c}`;
-  $('paperName').textContent = `${paper(P.paper).zh} · ${paper(P.paper).c}`;
+  const inkLabel = i => LANG==='zh' ? `${i.zh} · ${i.en} · ${i.c}` : `${i.en} · ${i.c}`;
+  $('inkAName').textContent = inkLabel(iA);
+  $('inkBName').textContent = inkLabel(iB);
+  $('inkCName').textContent = inkLabel(iC);
+  $('paperName').textContent = `${NM(paper(P.paper))} · ${paper(P.paper).c}`;
   document.querySelectorAll('#srcRow [data-src]').forEach(b => b.setAttribute('aria-pressed', b.dataset.src===srcKind));
   $('uploadLabel').setAttribute('aria-pressed', srcKind==='upload');
 }
 function mul(a,b){ const x=hex(a), y=hex(b); return '#'+x.map((v,i)=>Math.round(v*y[i]*255).toString(16).padStart(2,'0')).join(''); }
 function syncInfo(){
   const sc = SCREENS.find(s => s.id===P.screen), iA = ink(P.inkA), iB = ink(P.inkB), iC = ink(P.inkC), pa = paper(P.paper);
-  const shapeNote = (P.screen==='am'||P.screen==='benday') && P.shape!=='round' ? ` 当前点形：${SHAPES.find(s=>s.id===P.shape).zh}。` : '';
+  const shapeNote = (P.screen==='am'||P.screen==='benday') && P.shape!=='round' ? `${T(UI.shape)}${NM(SHAPES.find(s=>s.id===P.shape))}${LANG==='zh'?'。':'.'}` : '';
   const md = MODES.find(m => m.id===P.mode);
-  const prov = (label, id) => { const pv = PROV[id]; return pv ? `<p class="prov"><span class="tag">${label}</span>${pv.o}${pv.l ? `<span class="links">${linkList(pv.l)}</span>` : ''}</p>` : ''; };
-  const main = P.mode==='grad' ? `<p><b>渐变映射</b>${MODE_DESC.grad}</p>` : `<p><b>${sc.zh}</b>${sc.d}${shapeNote} ${MODE_DESC[P.mode]}${P.blend==='opaque'&&P.mode!=='mono'?' 当前为不透明遮盖：后印的油墨盖住先印的，不再混色。':''}</p>`;
-  $('desc').innerHTML = main + (P.mode==='grad' ? '' : prov('溯源 · '+sc.zh, P.screen)) + (P.mode!=='mono' ? prov('溯源 · '+md.zh, P.mode) : '');
-  const chips = [[pa.c,'纸 '+pa.zh],[iA.c,'A '+iA.en]];
+  const prov = (label, id) => { const pv = PROV[id]; return pv ? `<p class="prov"><span class="tag">${label}</span>${T(pv.o)}${pv.l ? `<span class="links">${linkList(pv.l)}</span>` : ''}</p>` : ''; };
+  const main = P.mode==='grad' ? `<p><b>${NM(md)}</b>${T(MODE_DESC.grad)}</p>` : `<p><b>${NM(sc)}</b>${T(sc.d)}${shapeNote} ${T(MODE_DESC[P.mode])}${P.blend==='opaque'&&P.mode!=='mono'?T(UI.opaqueNote):''}</p>`;
+  $('desc').innerHTML = main + (P.mode==='grad' ? '' : prov(T(UI.prov)+' · '+NM(sc), P.screen)) + (P.mode!=='mono' ? prov(T(UI.prov)+' · '+NM(md), P.mode) : '');
+  const chips = [[pa.c,T(UI.paper)+NM(pa)],[iA.c,'A '+iA.en]];
   if (P.mode!=='mono'){ chips.push([iB.c,'B '+iB.en]); }
   if (P.mode==='tri'){ chips.push([iC.c,'C '+iC.en]); chips.push([mul(iA.c,iB.c),'A×B']); chips.push([mul(iA.c,iC.c),'A×C']); chips.push([mul(iB.c,iC.c),'B×C']); }
-  else if (P.mode==='grad'){ chips.splice(0,1); chips[0][1]='亮部 '+iA.en; chips[1][1]='暗部 '+iB.en; }
-  else if (P.mode!=='mono' && P.blend!=='opaque'){ chips.push([mul(iA.c,iB.c),'A×B 叠印']); }
+  else if (P.mode==='grad'){ chips.splice(0,1); chips[0][1]=T(UI.light)+iA.en; chips[1][1]=T(UI.dark)+iB.en; }
+  else if (P.mode!=='mono' && P.blend!=='opaque'){ chips.push([mul(iA.c,iB.c),T(UI.over)]); }
   $('ctrlStrip').innerHTML = chips.map(([c,l]) => `<span class="chip"><i style="background:${c}"></i>${l}</span>`).join('');
 }
 
@@ -741,17 +823,18 @@ document.querySelectorAll('#srcRow [data-src]').forEach(b => b.addEventListener(
 $('upload').addEventListener('change', e => {
   const f = e.target.files && e.target.files[0]; if (!f) return;
   const rd = new FileReader();
-  rd.onload = () => { const im = new Image(); im.onload = () => { uploaded = im; srcKind = 'upload'; $('srcHint').textContent = '正在使用：'+f.name+'（只在本机处理）'; refreshSource(); }; im.onerror = () => { $('srcHint').textContent = '这张图片读不出来，换一张 JPG 或 PNG 试试。'; }; im.src = rd.result; };
+  rd.onload = () => { const im = new Image(); im.onload = () => { uploaded = im; uploadName = f.name; srcKind = 'upload'; srcHintState = 'using'; syncSrcHint(); refreshSource(); }; im.onerror = () => { srcHintState = 'bad'; syncSrcHint(); }; im.src = rd.result; };
   rd.readAsDataURL(f);
 });
 
 /* presets */
-const thumbs = [];
+const thumbs = [], cardText = [];
 PRESETS.forEach(pr => {
   const card = document.createElement('button'); card.type='button'; card.className='card';
   const cv = document.createElement('canvas'); cv.width = cv.height = 220;
   card.appendChild(cv);
-  card.insertAdjacentHTML('beforeend', `<strong>${pr.name}</strong><span>${pr.tag}</span>`);
+  const st = document.createElement('strong'), sp = document.createElement('span');
+  card.append(st, sp); cardText.push([st, sp, pr]);
   card.addEventListener('click', () => { Object.assign(P, DEFAULTS, pr.p); syncControls(); schedule(); window.scrollTo({top:0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'}); });
   $('sheet').appendChild(card); thumbs.push([cv, Object.assign({}, DEFAULTS, pr.p)]);
 });
@@ -762,7 +845,25 @@ function renderThumbs(){
 }
 function refreshSource(){ drawSource(); syncControls(); schedule(); renderThumbs(); }
 
-syncControls();
+function syncSrcHint(){
+  $('srcHint').textContent = srcHintState==='using' && uploadName ? T(UI.using)(uploadName) : srcHintState==='bad' ? T(UI.bad) : T(UI.srcHint);
+}
+function applyLang(l){
+  LANG = l;
+  const root = document.documentElement;
+  root.dataset.lang = l; root.lang = l==='zh' ? 'zh-CN' : 'en';
+  document.title = T(UI.title);
+  $('title').setAttribute('aria-label', T(UI.title));
+  document.querySelectorAll('[data-aria-zh]').forEach(el => el.setAttribute('aria-label', l==='zh' ? el.dataset.ariaZh : el.dataset.ariaEn));
+  document.querySelectorAll('[data-setlang]').forEach(b => b.setAttribute('aria-pressed', b.dataset.setlang===l));
+  buildControls();
+  cardText.forEach(([st, sp, pr]) => { st.textContent = T(pr.name); sp.textContent = T(pr.tag); });
+  syncSrcHint(); syncControls(); syncInfo();
+  try { localStorage.setItem('printlab-lang', l); } catch(e){}
+}
+document.querySelectorAll('[data-setlang]').forEach(b => b.addEventListener('click', () => { if (b.dataset.setlang!==LANG) applyLang(b.dataset.setlang); }));
+
+applyLang(LANG);
 refreshSource();
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (srcKind!=='upload') refreshSource(); });
 })();

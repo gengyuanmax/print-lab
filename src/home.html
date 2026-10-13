@@ -255,76 +255,73 @@ function inkGrain(g, W, H, seed){
   g.putImageData(im,0,0);
 }
 
-/* 03: the one-sheet 8-page zine printed in two inks: top row upside down, a cut along the middle fold, and the folded booklet below */
+/* 03: a tri-fold leaflet standing in a zigzag, printed in Riso teal and yellow; the panel turned away sits in a screened shade */
 function drawObject(){
-  const c = $('pvObject'), g = c.getContext('2d'), W = c.width, H = c.height, m = 56;
-  g.globalCompositeOperation = 'source-over'; g.fillStyle = CREAM; g.fillRect(0,0,W,H);
-  const sw = W - 2*m, sh = sw/2, x0 = m, y0 = 104, pw = sw/4, ph = sh/2;
-  const top = [5,4,3,2], bottom = [6,7,8,1];
+  const c = $('pvObject'), g = c.getContext('2d'), W = c.width, H = c.height;
+  const TEAL = '#00838A', YEL = '#FFE800', GREY = '#E6E2D8', K = '#22201E';
+  g.setTransform(1,0,0,1,0,0); g.globalCompositeOperation = 'source-over'; g.fillStyle = GREY; g.fillRect(0,0,W,H);
+  // table shadow under the leaflet
   g.globalCompositeOperation = 'multiply';
-  // page fills: orange floods and federal-blue screened gradients, alternating like a real spread plan
-  const pages = [...top.map((n,i) => [n, i, 0]), ...bottom.map((n,i) => [n, i, 1])];
-  pages.forEach(([n, i, r]) => {
-    const px = x0 + i*pw, py = y0 + r*ph, box = [px+10, py+10, px+pw-10, py+ph-10];
-    if (n===1){ g.fillStyle = FB; g.fillRect(box[0]+4, box[1]+3, box[2]-box[0], box[3]-box[1]); return; }
-    if (n % 3===0){ g.fillStyle = OR; g.globalAlpha = .88; g.fillRect(...box.slice(0,2), box[2]-box[0], box[3]-box[1]); g.globalAlpha = 1; }
-    else screenFill(g, n % 2 ? OR : FB, n % 2 ? 15 : 75, 11, (x, y) => r ? (y - box[1])/(box[3]-box[1]) : 1 - (y - box[1])/(box[3]-box[1]), box, n % 2 ? 0 : 4, n % 2 ? 0 : 3);
-  });
-  // page numbers: black, the top row upside down; the cover number knocked out to paper
-  g.globalCompositeOperation = 'source-over'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.font = '800 92px "Bricolage Grotesque", "Archivo", sans-serif';
-  pages.forEach(([n, i, r]) => { const cx = x0 + pw*(i+.5), cy = y0 + ph*(r+.5); g.save(); g.translate(cx, cy); if (!r) g.rotate(Math.PI); g.fillStyle = n===1 ? CREAM : INK; g.fillText(String(n), 0, 6); g.restore(); });
-  // sheet edge, folds (dashed) and the cut along the middle
-  g.strokeStyle = INK; g.lineWidth = 2; g.strokeRect(x0, y0, sw, sh);
-  g.setLineDash([8, 8]); g.lineWidth = 1.5; for (let i=1;i<4;i++){ g.beginPath(); g.moveTo(x0+i*pw, y0-14); g.lineTo(x0+i*pw, y0+sh+14); g.stroke(); }
-  g.beginPath(); g.moveTo(x0-14, y0+ph); g.lineTo(x0+pw, y0+ph); g.moveTo(x0+3*pw, y0+ph); g.lineTo(x0+sw+14, y0+ph); g.stroke(); g.setLineDash([]);
-  g.strokeStyle = OR; g.lineWidth = 7; g.beginPath(); g.moveTo(x0+pw, y0+ph); g.lineTo(x0+3*pw, y0+ph); g.stroke();
-  g.textAlign = 'left'; g.textBaseline = 'alphabetic'; g.fillStyle = INK; g.font = '600 18px "JetBrains Mono", monospace';
-  g.fillText('A4 · 8 PP · 2 INKS', x0, y0 - 24); g.textAlign = 'right'; g.fillStyle = OR; g.fillText('✂ CUT', x0+sw, y0+sh+40); g.textAlign = 'left';
-  // the folded booklet: the cover with two pages fanned behind it and a screened shadow
-  const bx = 250, by = 560, bw = 300, bh = 330;
-  g.globalCompositeOperation = 'multiply';
-  screenFill(g, FB, 45, 10, (x, y) => Math.max(0, .75 - Math.hypot((x - (bx + bw*.62))/(bw*.7), (y - (by + bh + 20))/40)), [bx - 40, by + bh - 30, bx + bw + 110, by + bh + 70], 4, 3);
-  g.globalCompositeOperation = 'source-over';
-  [[34, -18, '#FBF8F1'], [17, -9, '#F7F3EA']].forEach(([dx, dy, col]) => { g.fillStyle = col; g.fillRect(bx+dx, by+dy, bw, bh); g.strokeStyle = INK; g.lineWidth = 2; g.strokeRect(bx+dx, by+dy, bw, bh); });
-  g.globalCompositeOperation = 'multiply'; g.fillStyle = FB; g.fillRect(bx+4, by+3, bw, bh);
-  g.globalCompositeOperation = 'source-over'; g.strokeStyle = INK; g.lineWidth = 2; g.strokeRect(bx, by, bw, bh);
-  g.fillStyle = CREAM; g.font = '800 120px "Bricolage Grotesque", "Archivo", sans-serif'; g.fillText('1', bx + 26, by + bh - 26);
-  g.fillStyle = INK; g.fillRect(bx, by, 9, bh);   // the spine
-  inkGrain(g, W, H, 23);
-  furniture(g, W, H, m, '— 03 / 04 —  OBJECT LAB');
+  screenFill(g, K, 45, 10, (x, y) => Math.max(0, .55 - Math.hypot((x - 420)/330, (y - 815)/58)), [40, 730, 780, 900]);
+  const xs = [110, 320, 490, 700], tops = [300, 220, 300, 220], ph = 500, pw = 220;
+  const panel = i => { const x0 = xs[i], x1 = xs[i+1], y0 = tops[i], y1 = tops[i+1]; g.setTransform((x1-x0)/pw, (y1-y0)/pw, 0, 1, x0, y0); };
+  const paperBase = i => { panel(i); g.globalCompositeOperation = 'source-over'; g.fillStyle = '#FBF9F2'; g.fillRect(0, 0, pw, ph); g.globalCompositeOperation = 'multiply'; };
+  // panel 1, the cover: a yellow flood, a teal halftone sun and the title
+  paperBase(0);
+  g.fillStyle = YEL; g.fillRect(0, 0, pw, ph);
+  screenFill(g, TEAL, 75, 12, (x, y) => { const d = Math.hypot(x - 110, y - 170)/95; return d < 1 ? .35 + .6*(1 - d) : 0; }, [0, 60, pw, 280], 3, 2);
+  g.fillStyle = TEAL; g.font = '800 64px "Bricolage Grotesque", "Archivo", sans-serif'; g.textBaseline = 'alphabetic'; g.fillText('FOLD', 14, 360); g.fillText('OUT', 14, 418);
+  g.font = '600 13px "JetBrains Mono", monospace'; g.fillText('NO. 03 · TRI-FOLD', 16, 470);
+  // panel 2, turned away from the light: teal rules and type over yellow tints, in a screened shade
+  paperBase(1);
+  g.fillStyle = TEAL; g.fillRect(18, 40, pw - 36, 8);
+  screenFill(g, YEL, 15, 11, () => .55, [18, 70, pw - 18, 200]);
+  g.fillStyle = TEAL; g.font = '800 40px "Bricolage Grotesque", "Archivo", sans-serif'; g.fillText('02', 26, 160);
+  for (let r=0;r<9;r++){ g.fillRect(18, 236 + r*22, (pw - 36)*(r===8 ? .5 : .9 + .1*Math.sin(r*3)), 6); }
+  screenFill(g, K, 45, 7, () => .32, [0, 0, pw, ph]);
+  // panel 3: a teal flood with a yellow screened map of dots and a big folio
+  paperBase(2);
+  g.fillStyle = TEAL; g.globalAlpha = .9; g.fillRect(0, 0, pw, ph); g.globalAlpha = 1;
+  screenFill(g, YEL, 15, 16, (x, y) => .5 + .5*Math.sin(x*.035)*Math.cos(y*.03), [16, 30, pw - 16, 300], 4, 3);
+  g.globalCompositeOperation = 'source-over'; g.fillStyle = '#FBF9F2'; g.font = '800 150px "Bricolage Grotesque", "Archivo", sans-serif'; g.fillText('3', 20, 460);
+  // fold edges
+  g.setTransform(1,0,0,1,0,0); g.globalCompositeOperation = 'source-over'; g.strokeStyle = K; g.lineWidth = 2;
+  for (let i=0;i<3;i++){ g.beginPath(); g.moveTo(xs[i], tops[i]); g.lineTo(xs[i+1], tops[i+1]); g.lineTo(xs[i+1], tops[i+1] + ph); g.lineTo(xs[i], tops[i] + ph); g.closePath(); g.stroke(); }
+  // a fold diagram in the corner: valley and mountain marks
+  g.font = '600 18px "JetBrains Mono", monospace'; g.fillStyle = K; g.fillText('TRI-FOLD · Z', 56, 92);
+  g.setLineDash([10, 7]); g.beginPath(); g.moveTo(56, 128); g.lineTo(150, 128); g.stroke(); g.setLineDash([2, 6]); g.beginPath(); g.moveTo(170, 128); g.lineTo(264, 128); g.stroke(); g.setLineDash([]);
+  g.font = '500 13px "JetBrains Mono", monospace'; g.fillText('VALLEY', 56, 150); g.fillText('MOUNTAIN', 170, 150);
+  // ink grain over the printed panels
+  let s = 41; const rnd = () => (s = (s*16807) % 2147483647) / 2147483647;
+  const im = g.getImageData(0,0,W,H), d = im.data;
+  for (let i=0;i<d.length;i+=4){ if (rnd() < .05 && d[i]+d[i+1]+d[i+2] < 640){ const k = .3 + .4*rnd(); d[i]+=(251-d[i])*k; d[i+1]+=(249-d[i+1])*k; d[i+2]+=(242-d[i+2])*k; } }
+  g.putImageData(im,0,0);
 }
 
-/* 04: two elements combined the ways the composer combines them: overprint with a miss, a paper keyline, a hard shadow */
+/* 04: two elements combined, in Riso bright red and green on a warm paper: giant dots, a star with a paper keyline, type with a hard shadow */
 function drawElement(){
-  const c = $('pvElement'), g = c.getContext('2d'), W = c.width, H = c.height, m = 56;
-  g.globalCompositeOperation = 'source-over'; g.fillStyle = CREAM; g.fillRect(0,0,W,H);
-  // A: an orange halftone landscape, screened; B: "INK" in federal blue, overprinting, a little off register
-  const ax0 = m, ay0 = 110, ax1 = W - m - 90, ay1 = 470;
-  const ridge = x => ay0 + 150 - 70*Math.sin((x - ax0)*.011) - 30*Math.sin((x - ax0)*.033);
+  const c = $('pvElement'), g = c.getContext('2d'), W = c.width, H = c.height;
+  const RED = '#F15060', GRN = '#00A95C', PAP = '#F6EED8';
+  g.setTransform(1,0,0,1,0,0); g.globalCompositeOperation = 'source-over'; g.fillStyle = PAP; g.fillRect(0,0,W,H);
   g.globalCompositeOperation = 'multiply';
-  screenFill(g, OR, 15, 12, (x, y) => y < ridge(x) ? .18 + .25*(y - ay0)/(ay1 - ay0) : y < ay0 + 270 ? .9 - .25*(y - ridge(x))/200 : .45 + .4*Math.sin(y*.12)*Math.sin(x*.02), [ax0, ay0, ax1, ay1]);
-  g.fillStyle = FB; g.font = '800 270px "Bricolage Grotesque", "Archivo", sans-serif'; g.textBaseline = 'alphabetic'; g.fillText('INK', ax0 + 150 + 5, ay0 + 330 + 4);
-  // three small specimens in a row, each with its label
-  const row = 600, sz = 170, gap = (W - 2*m - 3*sz)/2, X = i => m + i*(sz + gap);
-  // overprint: two shapes, the overlap a third colour
-  g.fillStyle = OR; g.beginPath(); g.arc(X(0) + 70, row + 85, 64, 0, Math.PI*2); g.fill();
-  g.fillStyle = FB; g.save(); g.translate(X(0) + 115 + 4, row + 88 + 3); g.rotate(Math.PI/4); g.fillRect(-50, -50, 100, 100); g.restore();
-  // paper keyline: a blue flood, an orange circle with a ring of paper around it
-  g.globalCompositeOperation = 'source-over';
-  g.fillStyle = FB; g.fillRect(X(1), row, sz, sz);
-  g.fillStyle = CREAM; g.beginPath(); g.arc(X(1) + sz/2, row + sz/2, 62, 0, Math.PI*2); g.fill();
-  g.globalCompositeOperation = 'multiply'; g.fillStyle = OR; g.beginPath(); g.arc(X(1) + sz/2 + 4, row + sz/2 + 3, 50, 0, Math.PI*2); g.fill();
-  // hard shadow: black type with an orange offset copy underneath
-  g.font = '800 132px "Bricolage Grotesque", "Archivo", sans-serif';
-  g.fillStyle = OR; g.fillText('Aa', X(2) + 8 + 10, row + 128 + 8);
-  g.globalCompositeOperation = 'source-over'; g.fillStyle = INK; g.fillText('Aa', X(2) + 8, row + 128);
-  g.fillStyle = INK; g.fillRect(m, row + sz + 26, W - 2*m, 5);
-  g.font = '600 18px "JetBrains Mono", monospace';
-  ['A + B · OVERPRINT', 'PAPER KEYLINE', 'HARD SHADOW'].forEach((t, i) => g.fillText(t, X(i), row + sz + 62));
-  g.fillStyle = OR; g.fillText('A', ax1 + 22, ay0 + 24); g.fillStyle = FB; g.fillText('B', ax1 + 22, ay0 + 52);
-  g.fillStyle = INK; g.fillText('↗ miss 1.5 mm', ax1 - 150, ay1 + 34);
-  inkGrain(g, W, H, 31);
-  furniture(g, W, H, m, '— 04 / 04 —  ELEMENT LAB');
+  // A: a red circle in giant dots, darker towards the lower right
+  const cx = 360, cy = 380, R = 290;
+  screenFill(g, RED, 15, 34, (x, y) => { const dx = (x-cx)/R, dy = (y-cy)/R, d2 = dx*dx + dy*dy; return d2 < 1 ? .25 + .55*(dx*.5 + dy*.5 + .7) : 0; }, [cx-R, cy-R, cx+R, cy+R]);
+  // B: a green star on top, with a ring of paper cut around it so the miss never shows
+  const star = (x, y, r1, r2, rot) => { g.beginPath(); for (let k=0;k<10;k++){ const r = k%2 ? r2 : r1, a = rot - Math.PI/2 + k*Math.PI/5; g.lineTo(x + r*Math.cos(a), y + r*Math.sin(a)); } g.closePath(); };
+  g.globalCompositeOperation = 'source-over'; g.fillStyle = PAP; g.lineJoin = 'round'; g.strokeStyle = PAP; g.lineWidth = 34; star(520, 470, 210, 92, .2); g.fill(); g.stroke();
+  g.globalCompositeOperation = 'multiply'; g.fillStyle = GRN; star(520 + 5, 470 + 4, 210, 92, .2); g.fill();
+  // type with a hard shadow: the red copy offset under the green
+  g.font = '800 230px "Bricolage Grotesque", "Archivo", sans-serif'; g.textBaseline = 'alphabetic';
+  g.fillStyle = RED; g.fillText('A+B', 52 + 14, 900 + 11);
+  g.fillStyle = GRN; g.fillText('A+B', 52, 900);
+  g.globalCompositeOperation = 'source-over'; g.fillStyle = '#2A2422'; g.font = '600 18px "JetBrains Mono", monospace';
+  g.fillText('GIANT DOTS', 60, 80); g.fillText('+ KEYLINE', 60, 104); g.fillText('+ HARD SHADOW', 60, 128);
+  g.textAlign = 'right'; g.fillText('04', W - 60, 80); g.textAlign = 'left';
+  let s = 53; const rnd = () => (s = (s*16807) % 2147483647) / 2147483647;
+  const im = g.getImageData(0,0,W,H), d = im.data;
+  for (let i=0;i<d.length;i+=4){ if (rnd() < .06 && d[i]+d[i+1]+d[i+2] < 620){ const k = .3 + .4*rnd(); d[i]+=(0xF6-d[i])*k; d[i+1]+=(0xEE-d[i+1])*k; d[i+2]+=(0xD8-d[i+2])*k; } }
+  g.putImageData(im,0,0);
 }
 
 /* language: shared with the labs through the same storage key */

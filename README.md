@@ -16,6 +16,12 @@
 
 右上角可切换中文和英文，浏览器会记住所选语言。
 
+## 分享预览
+
+首页在 HTML 中提供 Open Graph 标题、简介和演示素材，供 LinkedIn 等平台抓取。英文演示 GIF 位于 `assets/social/print-lab-demo-en.gif`；同时提供静态 JPEG，供支持选择备用图片的平台使用。素材保留网页原有界面与英文操作字幕，宽 1200 像素，GIF 小于 5 MB。
+
+链接卡片是否播放 GIF、是否裁切以及选用哪张图片，由分享平台决定，不能通过网站设置保证自动播放。需要在 LinkedIn 动态中展示完整动画时，可直接上传 GIF 或视频，并在正文附上网站链接。部署后可通过 [LinkedIn Post Inspector](https://www.linkedin.com/post-inspector/) 检查和刷新首页链接的预览。
+
 ## 目录结构与构建
 
 修改 `src/` 中的源文件：

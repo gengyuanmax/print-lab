@@ -80,6 +80,24 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
 
 /* lab */
 @media (max-width:860px){.lab{grid-template-columns:minmax(0,1fr)}}
+/* the proof stays in view while the settings scroll (as in the layout lab); it is sized so the whole stage fits the screen */
+@media (min-width:861px){
+  .stage{position:sticky;top:calc(16px + env(safe-area-inset-top, 0px))}
+  .frame{width:min(100%, calc(100vh - 210px));align-self:flex-start}
+}
+.pops{display:flex;flex-wrap:wrap;gap:6px}
+.pop > .btn[aria-expanded="true"]{background:var(--ink);color:var(--sheet)}
+.popbody{display:none;background:var(--sheet);border:1.5px solid var(--ink);box-shadow:4px 4px 0 var(--pink);padding:14px;overflow:auto;z-index:35}
+.pop.open > .popbody{display:block}
+.popbody .feat{border:0;padding:0;max-width:none;background:transparent}
+.popbody .desc{max-width:none}
+.popbody .trans{border-top:0;padding-top:0}
+.poptip{margin-top:-6px}
+@media (min-width:861px){
+  /* open beside the proof, over the settings column */
+  .popbody{position:absolute;top:0;left:calc(100% + 32px);width:87%;max-height:calc(100vh - 40px)}
+}
+@media (max-width:860px){ .popbody{margin-top:8px;width:100%} .pop{flex:1 1 100%} .pop:not(.open){flex:0 1 auto} .poptip{display:none} }
 .frame{position:relative;padding:20px;background:var(--sheet);border:1px solid var(--rule)}
 .frame canvas{display:block;width:100%;height:auto;aspect-ratio:1;max-width:100%}
 .reg{position:absolute;width:14px;height:14px;color:var(--ink);opacity:.75}
@@ -138,7 +156,6 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
 .refs li span:not(.book){font-size:12.5px;color:var(--muted)}
 .refs .book{font-size:14px;color:var(--ink)}
 .seps{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
-.seps[hidden]{display:none!important}
 .seps figure{margin:0;display:flex;flex-direction:column;gap:5px}
 .seps canvas{display:block;width:100%;height:auto;aspect-ratio:1;border:1px solid var(--rule);background:#fff}
 .seps figcaption{font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;color:var(--muted)}
@@ -222,16 +239,22 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
         <canvas id="out" width="600" height="600" role="img" data-aria-zh="印刷效果预览" data-aria-en="Print effect preview"></canvas>
       </div>
       <div class="strip" id="ctrlStrip"></div>
-      <div class="row"><button class="btn" type="button" id="sepBtn"><span class="zh">分版视图</span><span class="en">Plate view</span></button><span class="hint"><span class="zh">交给 Riso 的稿子：每块版一张黑白图</span><span class="en">What you would send to a Riso shop: one black-and-white file per plate</span></span></div>
-      <div class="seps" id="seps" hidden></div>
-      <div class="feat" id="feat"></div>
-      <div class="desc" id="desc" aria-live="polite"></div>
-          <section class="trans" data-aria-zh="过渡" data-aria-en="Transitions">
+      <div class="pops" id="pops">
+        <div class="pop" data-pop="desc"><button class="btn" type="button" aria-expanded="false"><span class="zh">说明与溯源</span><span class="en">About &amp; sources</span></button>
+          <div class="popbody"><div class="desc" id="desc" aria-live="polite"></div></div></div>
+        <div class="pop" data-pop="feat"><button class="btn" type="button" aria-expanded="false"><span class="zh">风格特征</span><span class="en">Style features</span></button>
+          <div class="popbody"><div class="feat" id="feat"></div></div></div>
+        <div class="pop" data-pop="seps"><button class="btn" type="button" id="sepBtn" aria-expanded="false"><span class="zh">分版视图</span><span class="en">Plate view</span></button>
+          <div class="popbody"><p class="hint"><span class="zh">交给 Riso 的稿子：每块版一张黑白图</span><span class="en">What you would send to a Riso shop: one black-and-white file per plate</span></p><div class="seps" id="seps"></div></div></div>
+        <div class="pop" data-pop="trans"><button class="btn" type="button" aria-expanded="false"><span class="zh">过渡对照</span><span class="en">Transitions</span></button>
+          <div class="popbody"><section class="trans" data-aria-zh="过渡" data-aria-en="Transitions">
         <h3><span><span class="zh">过渡</span><span class="en">Transitions</span></span><span class="tinks" id="transInks"></span></h3>
-        <p class="hint"><span class="zh">过渡跟着油墨走：A、B 就是“油墨”组里选的两种墨，纸张和瑕疵也一起生效。点一条，就把它用到图像上，油墨模式会切到“过渡映射”，在“油墨”组里也能直接换；鼠标停在名字上看来源。</span><span class="en">Transitions follow the inks: A and B are the two inks chosen in the Ink group, with the paper and flaws applied too. Click one to apply it to the image; the ink mode switches to Transition map, where you can also switch it from the Ink group. Hover a name for its source.</span></p>
         <div class="trows" id="trows"></div>
       </section>
-</section>
+</div></div>
+      </div>
+      <p class="hint poptip"><span class="zh">鼠标停在按钮上展开，点一下固定；展开的内容显示在右侧，画布不被挡住。</span><span class="en">Hover a button to open it, click to keep it open; it opens on the right so the proof stays visible.</span></p>
+    </section>
 
     <aside class="panel" data-aria-zh="参数" data-aria-en="Settings">
       <div class="group">
@@ -286,7 +309,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
           <div class="sublabel"><span class="zh">过渡方式</span><span class="en">Transition</span> <span class="note"><span class="zh">油墨 A 到油墨 B 用什么手段过渡</span><span class="en">how ink A turns into ink B</span></span></div>
           <div class="seg" id="transSeg"></div>
           <canvas id="transMini" width="640" height="36" aria-hidden="true"></canvas>
-          <button type="button" class="tolink" id="toTrans"><span class="zh">看八种过渡的对照 ↓</span><span class="en">Compare all eight transitions ↓</span></button>
+          <button type="button" class="tolink" id="toTrans"><span class="zh">看八种过渡的对照</span><span class="en">Compare all eight transitions</span></button>
         </div>
         <div class="sublabel"><span class="zh">反白（空印）</span><span class="en">Knockout (reverse)</span> <span class="note"><span class="zh">把一块版取反：原来有墨的地方留成纸色</span><span class="en">invert a plate: what was inked becomes paper</span></span></div>
         <div class="seg two" id="invSeg"></div>
@@ -1274,7 +1297,6 @@ function syncControls(){
   $('paperName').textContent = `${NM(paper(P.paper))} · ${paper(P.paper).c}`;
   document.querySelectorAll('#srcRow [data-src]').forEach(b => b.setAttribute('aria-pressed', b.dataset.src===srcKind));
   $('uploadLabel').setAttribute('aria-pressed', srcKind==='upload');
-  $('sepBtn').setAttribute('aria-pressed', sepView);
   syncFeatures();
 }
 function mul(a,b){ const x=hex(a), y=hex(b); return '#'+x.map((v,i)=>Math.round(v*y[i]*255).toString(16).padStart(2,'0')).join(''); }
@@ -1303,7 +1325,29 @@ function syncInfo(){
 
 /* plate view: each plate as the black-and-white file you would send to the printer */
 let sepView = false;
-$('sepBtn').addEventListener('click', () => { sepView = !sepView; $('seps').hidden = !sepView; syncControls(); drawSeps(); });
+/* hover panels: open on hover, pin on click, one at a time; opening the plate view turns plate rendering on */
+let pinned = null, closeT = null;
+const pops = [...document.querySelectorAll('#pops .pop')];
+function setPop(el, open){
+  el.classList.toggle('open', open); el.querySelector(':scope > .btn').setAttribute('aria-expanded', open);
+  if (el.dataset.pop==='seps'){ sepView = open; drawSeps(); }
+}
+function openPop(el){ clearTimeout(closeT); pops.forEach(o => { if (o!==el && o!==pinned) setPop(o, false); }); setPop(el, true); }
+const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+pops.forEach(el => {
+  const btn = el.querySelector(':scope > .btn');
+  if (fine){
+    el.addEventListener('mouseenter', () => { if (!pinned || pinned===el) openPop(el); });
+    el.addEventListener('mouseleave', () => { if (pinned===el) return; clearTimeout(closeT); closeT = setTimeout(() => setPop(el, false), 450); });
+  }
+  btn.addEventListener('click', () => {
+    if (pinned===el){ pinned = null; setPop(el, false); return; }
+    if (pinned) setPop(pinned, false);
+    pinned = el; openPop(el);
+  });
+});
+document.addEventListener('keydown', e => { if (e.key==='Escape' && pinned){ setPop(pinned, false); pinned = null; } });
+function showPop(name){ const el = pops.find(o => o.dataset.pop===name); if (!el) return; if (pinned && pinned!==el) setPop(pinned, false); pinned = el; openPop(el); }
 function drawSeps(){
   const box = $('seps');
   if (!sepView){ box.innerHTML = ''; return; }
@@ -1391,7 +1435,7 @@ function drawTrans(){
   });
 }
 
-$('toTrans').addEventListener('click', () => document.querySelector('.trans').scrollIntoView({block:'start', behavior: REDUCED_M ? 'auto' : 'smooth'}));
+$('toTrans').addEventListener('click', () => { showPop('trans'); if (innerWidth <= 860) document.querySelector('.trans').scrollIntoView({block:'start', behavior: REDUCED_M ? 'auto' : 'smooth'}); });
 
 /* source buttons */
 document.querySelectorAll('#srcRow [data-src]').forEach(b => b.addEventListener('click', () => { srcKind = b.dataset.src; refreshSource(); }));

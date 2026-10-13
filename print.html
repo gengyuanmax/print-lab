@@ -180,6 +180,11 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
 .tray .all{align-self:flex-start;font-size:12.5px;color:var(--ink);text-decoration-color:var(--pink);text-decoration-thickness:2px;text-underline-offset:3px;background:none;border:0;padding:0;cursor:pointer}
 @media (prefers-reduced-motion:reduce){.dock{transition:none}}
 /* transitions: one A→B change rendered several ways, with the current inks, paper and flaws */
+.tpick{display:flex;flex-direction:column;gap:10px}
+.tpick canvas{display:block;width:100%;height:auto;border:1px solid var(--rule)}
+.tolink{align-self:flex-start;background:none;border:0;padding:0;cursor:pointer;font:12.5px var(--body);color:var(--ink);text-decoration:underline;text-decoration-color:var(--pink);text-decoration-thickness:2px;text-underline-offset:3px}
+.tinks{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted)}
+.tinks i{display:inline-block;width:14px;height:14px;border:1px solid rgba(0,0,0,.15)}
 .trans{display:flex;flex-direction:column;gap:10px;border-top:1.5px solid var(--ink);padding-top:12px}
 .trans h3{margin:0;display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:-.01em}
 .trans h3 small{font-family:var(--mono);font-weight:400;font-size:10.5px;letter-spacing:.14em;color:var(--muted)}
@@ -222,13 +227,26 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
       <div class="feat" id="feat"></div>
       <div class="desc" id="desc" aria-live="polite"></div>
           <section class="trans" data-aria-zh="过渡" data-aria-en="Transitions">
-        <h3><span><span class="zh">过渡</span><span class="en">Transitions</span></span><small>A → B</small></h3>
-        <p class="hint"><span class="zh">同一个从油墨 A 到油墨 B 的变化，用不同的印刷手段做出来，跟着上面的油墨、纸张和瑕疵一起变。点一条，就把这种过渡用到图像上（油墨模式切到“过渡映射”）；鼠标停在名字上看来源。</span><span class="en">The same change from ink A to ink B, made with different print techniques, following the inks, paper and flaws above. Click one to apply it to the image (the ink mode switches to Transition map); hover a name for its source.</span></p>
+        <h3><span><span class="zh">过渡</span><span class="en">Transitions</span></span><span class="tinks" id="transInks"></span></h3>
+        <p class="hint"><span class="zh">过渡跟着油墨走：A、B 就是“油墨”组里选的两种墨，纸张和瑕疵也一起生效。点一条，就把它用到图像上，油墨模式会切到“过渡映射”，在“油墨”组里也能直接换；鼠标停在名字上看来源。</span><span class="en">Transitions follow the inks: A and B are the two inks chosen in the Ink group, with the paper and flaws applied too. Click one to apply it to the image; the ink mode switches to Transition map, where you can also switch it from the Ink group. Hover a name for its source.</span></p>
         <div class="trows" id="trows"></div>
       </section>
 </section>
 
     <aside class="panel" data-aria-zh="参数" data-aria-en="Settings">
+      <div class="group">
+        <h2><span class="zh">原图</span><span class="en">Source</span> <small class="zh">SOURCE</small><small class="en">原图</small></h2>
+        <div class="row" id="srcRow">
+          <button class="btn" type="button" data-src="scene"><span class="zh">测试画面</span><span class="en">Test scene</span></button>
+          <button class="btn" type="button" data-src="ramp"><span class="zh">色阶条</span><span class="en">Tone ramps</span></button>
+          <button class="btn" type="button" data-src="seal"><span class="zh">印文</span><span class="en">Seal text</span></button>
+          <button class="btn" type="button" data-src="fern"><span class="zh">蕨叶（实物）</span><span class="en">Fern (object)</span></button>
+          <button class="btn" type="button" data-src="wood"><span class="zh">木纹（表面）</span><span class="en">Wood (surface)</span></button>
+          <label class="btn" id="uploadLabel"><span class="zh">上传照片</span><span class="en">Upload photo</span><input type="file" id="upload" accept="image/*" hidden></label>
+        </div>
+        <p class="hint" id="srcHint"></p>
+      </div>
+
       <div class="group">
         <h2><span class="zh">加网</span><span class="en">Screen</span> <small class="zh">SCREEN</small><small class="en">加网</small></h2>
         <div class="seg" id="screenSeg"></div>
@@ -264,6 +282,12 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
         <div class="inkrow"><span><span class="zh">油墨 A</span><span class="en">Ink A</span></span><div class="sw" id="inkA"></div><span class="inkname" id="inkAName"></span></div>
         <div class="inkrow" id="inkBRow"><span><span class="zh">油墨 B</span><span class="en">Ink B</span></span><div class="sw" id="inkB"></div><span class="inkname" id="inkBName"></span></div>
         <div class="inkrow" id="inkCRow"><span><span class="zh">油墨 C</span><span class="en">Ink C</span></span><div class="sw" id="inkC"></div><span class="inkname" id="inkCName"></span></div>
+        <div class="tpick" id="transPick" hidden>
+          <div class="sublabel"><span class="zh">过渡方式</span><span class="en">Transition</span> <span class="note"><span class="zh">油墨 A 到油墨 B 用什么手段过渡</span><span class="en">how ink A turns into ink B</span></span></div>
+          <div class="seg" id="transSeg"></div>
+          <canvas id="transMini" width="640" height="36" aria-hidden="true"></canvas>
+          <button type="button" class="tolink" id="toTrans"><span class="zh">看八种过渡的对照 ↓</span><span class="en">Compare all eight transitions ↓</span></button>
+        </div>
         <div class="sublabel"><span class="zh">反白（空印）</span><span class="en">Knockout (reverse)</span> <span class="note"><span class="zh">把一块版取反：原来有墨的地方留成纸色</span><span class="en">invert a plate: what was inked becomes paper</span></span></div>
         <div class="seg two" id="invSeg"></div>
       </div>
@@ -290,18 +314,6 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
         <p class="hint"><span class="zh">溢墨让网点变胖、边缘发毛，中间调最明显。RGB 色差是屏幕上的“错位”，把红、蓝通道左右拉开，偏 glitch。</span><span class="en">Dot gain fattens the dots and roughens their edges, most visibly in the midtones. RGB split is misregistration on a screen: the red and blue channels slide apart for a glitch look.</span></p>
       </div>
 
-      <div class="group">
-        <h2><span class="zh">原图</span><span class="en">Source</span> <small class="zh">SOURCE</small><small class="en">原图</small></h2>
-        <div class="row" id="srcRow">
-          <button class="btn" type="button" data-src="scene"><span class="zh">测试画面</span><span class="en">Test scene</span></button>
-          <button class="btn" type="button" data-src="ramp"><span class="zh">色阶条</span><span class="en">Tone ramps</span></button>
-          <button class="btn" type="button" data-src="seal"><span class="zh">印文</span><span class="en">Seal text</span></button>
-          <button class="btn" type="button" data-src="fern"><span class="zh">蕨叶（实物）</span><span class="en">Fern (object)</span></button>
-          <button class="btn" type="button" data-src="wood"><span class="zh">木纹（表面）</span><span class="en">Wood (surface)</span></button>
-          <label class="btn" id="uploadLabel"><span class="zh">上传照片</span><span class="en">Upload photo</span><input type="file" id="upload" accept="image/*" hidden></label>
-        </div>
-        <p class="hint" id="srcHint"></p>
-      </div>
     </aside>
   </main>
 
@@ -466,6 +478,16 @@ const PATTERNS = [
   {id:'lined', zh:'横线本', en:'Ruled'},
   {id:'ledger', zh:'账本', en:'Ledger'},
   {id:'security', zh:'防窥纹', en:'Security tint'},
+];
+const TRANS = [
+  {id:'am', tip:'am', zh:'AM 网点', en:'AM dots', szh:'A 点变小，B 点变大', sen:'A dots shrink as B dots grow'},
+  {id:'fm', tip:'fm', zh:'FM 颗粒', en:'FM grain', szh:'随机点的疏密', sen:'density of random dots'},
+  {id:'bayer', tip:'bayer', zh:'有序抖动', en:'Ordered dither', szh:'固定的格纹图样', sen:'a fixed cross-hatch pattern'},
+  {id:'overlap', tip:'overlap', zh:'叠印渐层', en:'Overlap', szh:'中间叠出第三色', sen:'a third colour in the middle'},
+  {id:'split', tip:'split', zh:'分墨渐变', en:'Split fountain', szh:'一个墨槽里的两种墨', sen:'two inks in one tray'},
+  {id:'steps', tip:'steps', zh:'平网阶梯', en:'Tint steps', szh:'五级固定浓度', sen:'five fixed percentages'},
+  {id:'tlines', tip:'tlines', zh:'线条粗细', en:'Line weight', szh:'横线与竖线', sen:'horizontal vs vertical lines'},
+  {id:'trap', tip:'trap', zh:'硬边与补漏白', en:'Hard edge & trap', szh:'上：白缝  下：补漏白', sen:'top: gap · bottom: trapped'},
 ];
 const STAMPS = [{id:'zhu', zh:'朱文（红字）', en:'Zhuwen (red characters)'}, {id:'bai', zh:'白文（白字）', en:'Baiwen (white characters)'}];
 const STOCKS = [
@@ -1201,6 +1223,7 @@ function buildControls(){
   seg($('blendSeg'), BLENDS, 'blend');
   seg($('stockSeg'), STOCKS, 'stock');
   seg($('patSeg'), PATTERNS, 'pattern');
+  seg($('transSeg'), TRANS, 'trans');
   swatches($('inkA'), INKS, 'inkA');
   swatches($('inkB'), INKS, 'inkB');
   swatches($('inkC'), INKS, 'inkC');
@@ -1222,7 +1245,8 @@ Object.keys(SLIDERS).forEach(k => {
 function syncControls(){
   Object.keys(SLIDERS).forEach(k => { $(k).value = P[k]; $(k+'Out').textContent = SLIDERS[k](P[k]); });
   const press = (sel, key) => document.querySelectorAll(sel+' button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===P[key]));
-  press('#screenSeg','screen'); press('#procSeg','process'); press('#stampSeg','stampType'); press('#modeSeg','mode'); press('#stockSeg','stock'); press('#patSeg','pattern');
+  press('#screenSeg','screen'); press('#procSeg','process'); press('#stampSeg','stampType'); press('#modeSeg','mode'); press('#stockSeg','stock'); press('#patSeg','pattern'); press('#transSeg','trans');
+  $('transPick').hidden = P.mode!=='trans';
   const tmode = P.mode==='trans', grad = P.mode==='grad', proc = tmode ? 'none' : (P.process || 'none');
   const light = proc==='cyano' || proc==='gram';
   const screenOn = !grad && !tmode && proc==='none';
@@ -1298,16 +1322,6 @@ function drawSeps(){
 }
 
 /* ---------- transitions: one A → B change, made with different techniques ---------- */
-const TRANS = [
-  {id:'am', tip:'am', zh:'AM 网点', en:'AM dots', szh:'A 点变小，B 点变大', sen:'A dots shrink as B dots grow'},
-  {id:'fm', tip:'fm', zh:'FM 颗粒', en:'FM grain', szh:'随机点的疏密', sen:'density of random dots'},
-  {id:'bayer', tip:'bayer', zh:'有序抖动', en:'Ordered dither', szh:'固定的格纹图样', sen:'a fixed cross-hatch pattern'},
-  {id:'overlap', tip:'overlap', zh:'叠印渐层', en:'Overlap', szh:'中间叠出第三色', sen:'a third colour in the middle'},
-  {id:'split', tip:'split', zh:'分墨渐变', en:'Split fountain', szh:'一个墨槽里的两种墨', sen:'two inks in one tray'},
-  {id:'steps', tip:'steps', zh:'平网阶梯', en:'Tint steps', szh:'五级固定浓度', sen:'five fixed percentages'},
-  {id:'tlines', tip:'tlines', zh:'线条粗细', en:'Line weight', szh:'横线与竖线', sen:'horizontal vs vertical lines'},
-  {id:'trap', tip:'trap', zh:'硬边与补漏白', en:'Hard edge & trap', szh:'上：白缝  下：补漏白', sen:'top: gap · bottom: trapped'},
-];
 function transCover(id, x, y, t, xb, yb, tb, cell){
   // returns [coverage of A, coverage of B] for tone t (0 = all A, 1 = all B); split fountain returns [-1, mix]
   const TAU = Math.PI*2;
@@ -1342,6 +1356,8 @@ function drawTrans(){
   const st = STOCKS.find(x => x.id===P.stock) || STOCKS[0];
   const cA = hex(ink(P.inkA).c), cB = hex(ink(P.mode==='mono' ? 'black' : P.inkB).c);
   const iA = desat(cA, st.sat), iB = desat(cB, st.sat), pp = hex(paper(P.paper).c);
+  const ia = ink(P.inkA), ib = ink(P.mode==='mono' ? 'black' : P.inkB);
+  $('transInks').innerHTML = `<i style="background:${ia.c}"></i>${LANG==='zh'?ia.zh:ia.en} → <i style="background:${ib.c}"></i>${LANG==='zh'?ib.zh:ib.en}`;
   const W = 640, H = 56, nz = noises(W), cell = Math.max(3, P.cell*.9), TAU = Math.PI*2;
   const spot = (x, y, ang) => { const a = ang*Math.PI/180, u = (x*Math.cos(a) + y*Math.sin(a))/cell, w = (-x*Math.sin(a) + y*Math.cos(a))/cell; return (Math.cos(TAU*u) + Math.cos(TAU*w) + 2)/4; };
   const hash = (x, y, k) => { let h = (x*374761393 + y*668265263 + k*2147483647) | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0) / 4294967296; };
@@ -1370,9 +1386,12 @@ function drawTrans(){
     }
     g.putImageData(im, 0, 0);
     const rowEl = cv.parentElement; if (rowEl) rowEl.setAttribute('aria-pressed', P.mode==='trans' && P.trans===t.id);
+    if (t.id===(P.trans||'am')){ const mc = $('transMini'), mg = mc.getContext('2d'); mg.drawImage(cv, 0, 10, W, 36, 0, 0, mc.width, mc.height); }
     if (t.id==='trap'){ g.fillStyle = 'rgba(28,27,34,.5)'; g.fillRect(0, H/2 - .5, W, 1); }
   });
 }
+
+$('toTrans').addEventListener('click', () => document.querySelector('.trans').scrollIntoView({block:'start', behavior: REDUCED_M ? 'auto' : 'smooth'}));
 
 /* source buttons */
 document.querySelectorAll('#srcRow [data-src]').forEach(b => b.addEventListener('click', () => { srcKind = b.dataset.src; refreshSource(); }));

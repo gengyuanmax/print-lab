@@ -346,49 +346,44 @@ function inkGrain(g, W, H, seed){
   g.putImageData(im,0,0);
 }
 
-/* 03: a tri-fold leaflet standing in a zigzag, printed in Riso teal and yellow; the panel turned away sits in a screened shade */
+/* 03: the kraft sheet itself is the leaflet, just unfolded: three panels, two creases (one valley, one mountain), printed in teal and black with a little opaque white */
 function drawObject(){
   const c = $('pvObject'), g = c.getContext('2d'), W = c.width, H = c.height;
-  const TEAL = '#00838A', YEL = '#FFE800', GREY = '#BF9B6F', K = '#2A1E14';
-  g.setTransform(1,0,0,1,0,0); g.globalCompositeOperation = 'source-over'; g.fillStyle = GREY; g.fillRect(0,0,W,H);
-  // kraft board: short dark and light fibres
+  const TEAL = '#00838A', KRAFT = '#BF9B6F', K = '#2A1E14', WHT = '#F2EADB', pw = W/3;
+  g.setTransform(1,0,0,1,0,0); g.globalCompositeOperation = 'source-over'; g.fillStyle = KRAFT; g.fillRect(0,0,W,H);
+  // kraft fibres
   { let q = 7; const rr = () => (q = (q*16807) % 2147483647) / 2147483647;
-    for (let k=0;k<2600;k++){ const x = rr()*W, y = rr()*H, l = 3 + rr()*9, a = rr()*Math.PI; g.strokeStyle = rr() < .5 ? 'rgba(90,60,30,.35)' : 'rgba(235,215,180,.45)'; g.lineWidth = 1; g.beginPath(); g.moveTo(x, y); g.lineTo(x + l*Math.cos(a), y + l*Math.sin(a)); g.stroke(); } }
-  // table shadow under the leaflet
+    for (let k=0;k<3000;k++){ const x = rr()*W, y = rr()*H, l = 3 + rr()*9, a = rr()*Math.PI; g.strokeStyle = rr() < .5 ? 'rgba(90,60,30,.32)' : 'rgba(235,215,180,.42)'; g.lineWidth = 1; g.beginPath(); g.moveTo(x, y); g.lineTo(x + l*Math.cos(a), y + l*Math.sin(a)); g.stroke(); } }
   g.globalCompositeOperation = 'multiply';
-  screenFill(g, K, 45, 10, (x, y) => Math.max(0, .55 - Math.hypot((x - 420)/330, (y - 815)/58)), [40, 730, 780, 900]);
-  const xs = [110, 320, 490, 700], tops = [300, 220, 300, 220], ph = 500, pw = 220;
-  const panel = i => { const x0 = xs[i], x1 = xs[i+1], y0 = tops[i], y1 = tops[i+1]; g.setTransform((x1-x0)/pw, (y1-y0)/pw, 0, 1, x0, y0); };
-  const paperBase = i => { panel(i); g.globalCompositeOperation = 'source-over'; g.fillStyle = '#FBF9F2'; g.fillRect(0, 0, pw, ph); g.globalCompositeOperation = 'multiply'; };
-  // panel 1, the cover: a yellow flood, a teal halftone sun and the title
-  paperBase(0);
-  g.fillStyle = YEL; g.fillRect(0, 0, pw, ph);
-  screenFill(g, TEAL, 75, 12, (x, y) => { const d = Math.hypot(x - 110, y - 170)/95; return d < 1 ? .35 + .6*(1 - d) : 0; }, [0, 60, pw, 280], 3, 2);
-  g.fillStyle = TEAL; g.font = '800 64px "Bricolage Grotesque", "Archivo", sans-serif'; g.textBaseline = 'alphabetic'; g.fillText('FOLD', 14, 360); g.fillText('OUT', 14, 418);
-  g.font = '600 13px "JetBrains Mono", monospace'; g.fillText('NO. 03 · TRI-FOLD', 16, 470);
-  // panel 2, turned away from the light: teal rules and type over yellow tints, in a screened shade
-  paperBase(1);
-  g.fillStyle = TEAL; g.fillRect(18, 40, pw - 36, 8);
-  screenFill(g, YEL, 15, 11, () => .55, [18, 70, pw - 18, 200]);
-  g.fillStyle = TEAL; g.font = '800 40px "Bricolage Grotesque", "Archivo", sans-serif'; g.fillText('02', 26, 160);
-  for (let r=0;r<9;r++){ g.fillRect(18, 236 + r*22, (pw - 36)*(r===8 ? .5 : .9 + .1*Math.sin(r*3)), 6); }
-  screenFill(g, K, 45, 7, () => .32, [0, 0, pw, ph]);
-  // panel 3: a teal flood with a yellow screened map of dots and a big folio
-  paperBase(2);
-  g.fillStyle = TEAL; g.globalAlpha = .9; g.fillRect(0, 0, pw, ph); g.globalAlpha = 1;
-  screenFill(g, YEL, 15, 16, (x, y) => .5 + .5*Math.sin(x*.035)*Math.cos(y*.03), [16, 30, pw - 16, 300], 4, 3);
-  g.globalCompositeOperation = 'source-over'; g.fillStyle = '#FBF9F2'; g.font = '800 150px "Bricolage Grotesque", "Archivo", sans-serif'; g.fillText('3', 20, 460);
-  // fold edges
-  g.setTransform(1,0,0,1,0,0); g.globalCompositeOperation = 'source-over'; g.strokeStyle = K; g.lineWidth = 2;
-  for (let i=0;i<3;i++){ g.beginPath(); g.moveTo(xs[i], tops[i]); g.lineTo(xs[i+1], tops[i+1]); g.lineTo(xs[i+1], tops[i+1] + ph); g.lineTo(xs[i], tops[i] + ph); g.closePath(); g.stroke(); }
-  // a fold diagram in the corner: valley and mountain marks
-  g.font = '600 18px "JetBrains Mono", monospace'; g.fillStyle = K; g.fillText('TRI-FOLD · Z', 56, 92);
-  g.setLineDash([10, 7]); g.beginPath(); g.moveTo(56, 128); g.lineTo(150, 128); g.stroke(); g.setLineDash([2, 6]); g.beginPath(); g.moveTo(170, 128); g.lineTo(264, 128); g.stroke(); g.setLineDash([]);
-  g.font = '500 13px "JetBrains Mono", monospace'; g.fillText('VALLEY', 56, 150); g.fillText('MOUNTAIN', 170, 150);
-  // ink grain over the printed panels
+  // panel 1 (inside left): a fold diagram and a column of teal rules
+  g.fillStyle = TEAL; g.fillRect(40, 70, pw - 80, 10);
+  g.font = '800 56px "Bricolage Grotesque", "Archivo", sans-serif'; g.textBaseline = 'alphabetic'; g.fillText('01', 40, 150);
+  for (let r=0;r<12;r++) { g.fillStyle = r % 4===3 ? TEAL : K; g.fillRect(40, 190 + r*26, (pw - 80)*(r===11 ? .45 : .82 + .18*Math.abs(Math.sin(r*2.3))), 7); }
+  g.fillStyle = K; g.font = '600 15px "JetBrains Mono", monospace'; g.fillText('VALLEY', 40, 560); g.fillText('MOUNTAIN', 40, 640);
+  g.strokeStyle = K; g.lineWidth = 2.5; g.setLineDash([12, 8]); g.beginPath(); g.moveTo(40, 580); g.lineTo(pw - 40, 580); g.stroke();
+  g.setLineDash([3, 7]); g.beginPath(); g.moveTo(40, 660); g.lineTo(pw - 40, 660); g.stroke(); g.setLineDash([]);
+  // panel 2 (inside middle): a big teal halftone sun over a black horizon
+  screenFill(g, TEAL, 15, 15, (x, y) => { const d = Math.hypot(x - 1.5*pw, y - 330)/190; return d < 1 ? .3 + .7*(1 - d) : 0; }, [pw + 10, 120, 2*pw - 10, 540]);
+  screenFill(g, K, 75, 11, (x, y) => y > 480 ? .15 + .4*(y - 480)/310 : 0, [pw + 30, 470, 2*pw - 30, 790], 3, 2);
+  g.fillStyle = K; g.font = '800 56px "Bricolage Grotesque", "Archivo", sans-serif'; g.fillText('02', pw + 40, 150);
+  // panel 3 (the cover, outside right): teal flood, the title knocked out to kraft and an opaque-white folio
+  g.fillStyle = TEAL; g.globalAlpha = .92; g.fillRect(2*pw + 30, 60, pw - 60, H - 210); g.globalAlpha = 1;
+  g.globalCompositeOperation = 'source-over'; g.fillStyle = KRAFT; g.font = '800 70px "Bricolage Grotesque", "Archivo", sans-serif';
+  g.fillText('FOLD', 2*pw + 46, 660); g.fillText('OUT', 2*pw + 46, 730);
+  g.fillStyle = WHT; g.font = '800 130px "Bricolage Grotesque", "Archivo", sans-serif'; g.fillText('3', 2*pw + 50, 190);
+  g.fillStyle = K; g.font = '600 16px "JetBrains Mono", monospace'; g.fillText('TRI-FOLD · KRAFT · 2 INKS + WHITE', 2*pw - 210, H - 70);
+  // the creases: a just-unfolded sheet still bends, so each panel takes a little light or shade, and each crease has a highlight and a shadow
+  const shade = (x0, x1, a0, a1) => { const lg = g.createLinearGradient(x0, 0, x1, 0); lg.addColorStop(0, `rgba(40,25,10,${a0})`); lg.addColorStop(1, `rgba(40,25,10,${a1})`); g.fillStyle = lg; g.fillRect(x0, 0, x1 - x0, H); };
+  g.globalCompositeOperation = 'multiply'; shade(0, pw, 0, .12); shade(pw, 2*pw, .16, .02); shade(2*pw, W, 0, .1);
+  g.globalCompositeOperation = 'source-over';
+  [[pw, 'valley'], [2*pw, 'mountain']].forEach(([x, kind]) => {
+    g.fillStyle = kind==='valley' ? 'rgba(40,25,10,.35)' : 'rgba(255,240,215,.55)'; g.fillRect(x - 1.5, 0, 3, H);
+    g.fillStyle = kind==='valley' ? 'rgba(255,240,215,.35)' : 'rgba(40,25,10,.3)'; g.fillRect(x + 1.5, 0, 2, H);
+  });
+  // ink grain: kraft shows through the ink
   let s = 41; const rnd = () => (s = (s*16807) % 2147483647) / 2147483647;
   const im = g.getImageData(0,0,W,H), d = im.data;
-  for (let i=0;i<d.length;i+=4){ if (rnd() < .05 && d[i]+d[i+1]+d[i+2] < 640){ const k = .3 + .4*rnd(); d[i]+=(251-d[i])*k; d[i+1]+=(249-d[i+1])*k; d[i+2]+=(242-d[i+2])*k; } }
+  for (let i=0;i<d.length;i+=4){ if (rnd() < .06 && d[i]+d[i+1]+d[i+2] < 420){ const k = .3 + .4*rnd(); d[i]+=(0xBF-d[i])*k; d[i+1]+=(0x9B-d[i+1])*k; d[i+2]+=(0x6F-d[i+2])*k; } }
   g.putImageData(im,0,0);
 }
 

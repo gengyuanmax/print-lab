@@ -13,6 +13,11 @@
 @media (min-width:901px){.stage{position:sticky;top:calc(16px + env(safe-area-inset-top, 0px))}}
 .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
 .toolbar .row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.cfgbox{border:1px solid var(--rule);background:var(--sheet);padding:10px 12px}
+.cfgbox summary{cursor:pointer;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.cfgbox[open] summary{margin-bottom:8px}
+.cfgbox textarea{width:100%;box-sizing:border-box;font:12px/1.45 var(--mono);margin:8px 0;resize:vertical}
+.cfgbox .row{display:flex;flex-wrap:wrap;gap:6px}
 .seedtag{font-family:var(--mono);font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
 .proof{background:var(--sheet);border:1px solid var(--rule);padding:20px;position:relative}
 .posterwrap{position:relative;width:100%;overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,.04),0 10px 30px -12px rgba(28,27,34,.25)}
@@ -145,6 +150,18 @@ textarea.txt{min-height:76px;resize:vertical;line-height:1.45}
           <button class="btn" type="button" id="exSvg"><span class="zh">导出 SVG</span><span class="en">Export SVG</span></button>
         </div>
       </div>
+      <details class="cfgbox" id="cfgBox">
+        <summary><span class="zh">配置：保存、复用、分享</span><span class="en">Config: save, reuse, share</span></summary>
+        <p class="hint"><span class="zh">下面是当前海报的全部设置，包括随机种子和文字内容。复制或下载后，粘贴回来点“应用”，就能得到完全相同的海报；也可以直接改里面的数值再应用。上传的照片不会写进配置。</span><span class="en">Every setting of the current poster, including the seed and the text. Copy or download it, paste it back and press Apply to get the identical poster, or edit values and apply. An uploaded photo is not stored in the config.</span></p>
+        <textarea id="cfgText" class="txt" spellcheck="false" rows="10" aria-label="Config JSON"></textarea>
+        <div class="row">
+          <button class="btn" type="button" id="cfgCopy"><span class="zh">复制</span><span class="en">Copy</span></button>
+          <button class="btn" type="button" id="cfgDown"><span class="zh">下载 .json</span><span class="en">Download .json</span></button>
+          <label class="btn"><span class="zh">打开 .json</span><span class="en">Open .json</span><input type="file" id="cfgFile" accept="application/json,.json" hidden></label>
+          <button class="btn" type="button" id="cfgLink"><span class="zh">复制分享链接</span><span class="en">Copy share link</span></button>
+          <button class="btn" type="button" id="cfgApply"><span class="zh">应用</span><span class="en">Apply</span></button>
+        </div>
+      </details>
       <p class="status" id="status" aria-live="polite"></p>
       <div class="notecard" id="notecard" aria-live="polite"><span class="nk"><span class="zh">说明</span><span class="en">Notes</span></span><span class="tt"><span class="zh">将鼠标移到参数旁的 i 上查看简介；点击后，可在这里阅读完整说明和参考资料。</span><span class="en">Hover the i next to a setting for a short note; click it to pin the note and its source links here.</span></span></div>
       <div class="metrics" id="metrics"></div>
@@ -1483,6 +1500,63 @@ async function doExport(kind){
   }
 }
 
+/* ---------- config: every setting as JSON, so a poster can be saved, shared and rebuilt exactly ---------- */
+const CFG_VERSION = 1;
+function configObj(){
+  const text = {}; Object.keys(TEXT).forEach(k => { if (TEXT[k]!=null) text[k] = TEXT[k]; });
+  const o = {lab:'print-labs/layout', version:CFG_VERSION, preset:activePreset || null, seed:P.seed, params:clone(P), text};
+  if (uploaded) o.note = 'An uploaded photo was used; it is not stored here.';
+  return o;
+}
+function cfgString(){ return JSON.stringify(configObj(), null, 2); }
+// apply a config: only keys the lab knows, each with the same type as its default; nested option groups merge key by key
+function applyConfig(o){
+  if (!o || typeof o!=='object') throw new Error('not an object');
+  const src = o.params && typeof o.params==='object' ? o.params : o;
+  const next = clone(Object.assign({}, BASE)), skipped = [];
+  Object.keys(src).forEach(k => {
+    if (!(k in BASE)){ skipped.push(k); return; }
+    const d = BASE[k], v = src[k];
+    if (d===null || v===null){ next[k] = v; return; }
+    if (typeof d==='object' && typeof v==='object' && !Array.isArray(v)){ Object.keys(v).forEach(kk => { if (typeof v[kk]==='boolean') next[k][kk] = v[kk]; }); return; }
+    if (typeof d===typeof v) next[k] = v; else skipped.push(k);
+  });
+  if (o.seed!=null && Number.isFinite(+o.seed)) next.seed = +o.seed;
+  Object.keys(P).forEach(k => delete P[k]); Object.assign(P, next);
+  Object.keys(TEXT).forEach(k => TEXT[k] = o.text && typeof o.text[k]==='string' ? o.text[k] : null);
+  activePreset = o.preset && PRESETS[o.preset] && JSON.stringify(clone(Object.assign({}, BASE, PRESETS[o.preset].p, {seed:P.seed}))) === JSON.stringify(Object.assign({}, P, {seed:P.seed})) ? o.preset : null;
+  if (o.preset && PRESETS[o.preset]) lastPreset = o.preset;
+  syncPanel(); syncStyleCard(); render();
+  return skipped;
+}
+const b64 = str => btoa(unescape(encodeURIComponent(str))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+const unb64 = str => decodeURIComponent(escape(atob(str.replace(/-/g,'+').replace(/_/g,'/'))));
+function cfgStatus(okZh, okEn){ status(LANG==='zh' ? okZh : okEn); }
+async function copyText(t){
+  try { await navigator.clipboard.writeText(t); return true; }
+  catch(e){ const ta = $('cfgText'); ta.focus(); ta.select(); try { return document.execCommand('copy'); } catch(_){ return false; } }
+}
+$('cfgBox').addEventListener('toggle', () => { if ($('cfgBox').open) $('cfgText').value = cfgString(); });
+$('cfgCopy').addEventListener('click', async () => { $('cfgText').value = cfgString(); const ok = await copyText($('cfgText').value);
+  cfgStatus(ok ? '配置已复制。' : '浏览器不允许自动复制：文本框里的内容已选中，请按 Ctrl/⌘ + C。', ok ? 'Config copied.' : 'The browser blocked copying: the text is selected, press Ctrl/⌘ + C.'); });
+$('cfgDown').addEventListener('click', () => {
+  if (!LOCAL){ cfgStatus('claude.ai 的预览会拦截下载：请用“复制”，或在 GitHub Pages 版本里下载。', 'Downloads are blocked in the claude.ai preview: use Copy, or download from the GitHub Pages version.'); return; }
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([cfgString()], {type:'application/json'})); a.download = `layout-lab-${P.seed}.json`; document.body.appendChild(a); a.click(); a.remove();
+  cfgStatus(`已下载 layout-lab-${P.seed}.json`, `Downloaded layout-lab-${P.seed}.json`);
+});
+$('cfgFile').addEventListener('change', e => { const f = e.target.files && e.target.files[0]; if (!f) return; const rd = new FileReader();
+  rd.onload = () => { $('cfgText').value = rd.result; $('cfgApply').click(); }; rd.readAsText(f); e.target.value = ''; });
+$('cfgApply').addEventListener('click', () => {
+  try { const skipped = applyConfig(JSON.parse($('cfgText').value)); $('cfgText').value = cfgString();
+    cfgStatus('已应用配置' + (skipped.length ? `；忽略了无法识别的设置：${skipped.join('、')}` : '。'), 'Config applied' + (skipped.length ? `; ignored unknown settings: ${skipped.join(', ')}` : '.')); }
+  catch(e){ cfgStatus('无法读取：请确认粘贴的是完整的 JSON。', 'Could not read it: make sure the pasted text is complete JSON.'); }
+});
+$('cfgLink').addEventListener('click', async () => {
+  const url = 'https://gengyuanmax.github.io/print-lab/layout.html#cfg=' + b64(JSON.stringify(configObj()));
+  const ok = await copyText(url); if (!ok) $('cfgText').value = url;
+  cfgStatus(ok ? '分享链接已复制：打开它会直接得到这张海报。' : '浏览器不允许自动复制：链接已放进文本框，请手动复制。', ok ? 'Share link copied: opening it rebuilds this poster.' : 'The browser blocked copying: the link is in the text box, copy it by hand.');
+});
+
 /* ---------- toolbar ---------- */
 $('shuffle').addEventListener('click', () => { P.seed = Math.floor(Math.random()*9999)+1; render(); });
 $('play').addEventListener('click', play);
@@ -1507,6 +1581,7 @@ document.querySelectorAll('[data-setlang]').forEach(b => b.addEventListener('cli
 
 
 applyLang(LANG);
+if (location.hash.startsWith('#cfg=')){ try { applyConfig(JSON.parse(unb64(location.hash.slice(5)))); } catch(e){} }
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => render());
 })();
 </script>

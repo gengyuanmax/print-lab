@@ -184,7 +184,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
       </div>
     </div>
     <h1 class="mis" id="title"><span aria-hidden="true"><span class="zh">版式实验室</span><span class="en">Layout Lab</span></span><span aria-hidden="true"><span class="zh">版式实验室</span><span class="en">Layout Lab</span></span></h1>
-    <p class="lede"><span class="zh">把 Swiss、半调海报、Riso zine 和杂志的版式拆成参数：网格、字体、构图、动线、形状、油墨、印刷质感、约束规则、多页节奏和动效。换一个随机种子，同一套规则会生成另一张海报。</span><span class="en">The layouts of Swiss posters, halftone posters, Riso zines and magazines, broken into parameters: grid, type, composition, reading flow, shapes, inks, print texture, constraint rules, multi-page rhythm and motion. Change the seed and the same rules produce another poster.</span></p>
+    <p class="lede"><span class="zh">把 Swiss、半调海报、Riso zine 和杂志的版式拆成参数：网格、字体、构图、动线、形状、油墨、印刷质感、拼贴与印章、约束规则、多页节奏和动效。换一个随机种子，同一套规则会生成另一张海报。</span><span class="en">The layouts of Swiss posters, halftone posters, Riso zines and magazines, broken into parameters: grid, type, composition, reading flow, shapes, inks, print texture, collage and seals, constraint rules, multi-page rhythm and motion. Change the seed and the same rules produce another poster.</span></p>
   </header>
 
   <main class="lab">
@@ -229,6 +229,13 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
       <li><a href="https://en.wikipedia.org/wiki/Constructivism_(art)" target="_blank" rel="noopener">Constructivism</a><span><span class="zh">Wikipedia · 构成主义：斜向构图与几何形</span><span class="en">Wikipedia · diagonal composition and geometric form</span></span></li>
       <li><a href="https://www.nngroup.com/articles/f-shaped-pattern-reading-web-content/" target="_blank" rel="noopener">F-Shaped Pattern of Reading on the Web</a><span><span class="zh">Nielsen Norman Group · 网页文本的 F 型阅读路径</span><span class="en">Nielsen Norman Group · the F-shaped scanning pattern</span></span></li>
       <li><a href="https://en.wikipedia.org/wiki/Paper_size#A_series" target="_blank" rel="noopener">Paper size · A series</a><span><span class="zh">Wikipedia · √2 纸张比例</span><span class="en">Wikipedia · the √2 page ratio</span></span></li>
+      <li><a href="https://www.w3.org/TR/clreq/" target="_blank" rel="noopener">Requirements for Chinese Text Layout 中文排版需求</a><span><span class="zh">W3C 国际化工作组 · Group Note Draft：避头尾、标点宽度、中西文混排、孤行与孤字</span><span class="en">W3C Internationalization Working Group · Group Note Draft: line-start and line-end rules, punctuation width, mixed Chinese–Western text, widows and orphans</span></span></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/text-wrap-style" target="_blank" rel="noopener">text-wrap-style</a><span><span class="zh">MDN · balance 用于标题，pretty 用于正文、减少孤字</span><span class="en">MDN · balance for headings, pretty for body text with fewer orphans</span></span></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/text-autospace" target="_blank" rel="noopener">text-autospace</a><span><span class="zh">MDN · 汉字与拉丁字母、数字之间的自动间距</span><span class="en">MDN · automatic spacing between Han characters and Latin letters or numerals</span></span></li>
+      <li><a href="https://en.wikipedia.org/wiki/Trap_(printing)" target="_blank" rel="noopener">Trap (printing)</a><span><span class="zh">Wikipedia · 套色错位造成白缝，补漏白用外扩和内缩来补</span><span class="en">Wikipedia · misregistration leaves gaps; trapping spreads or chokes to cover them</span></span></li>
+      <li><a href="https://en.wikipedia.org/wiki/Collage" target="_blank" rel="noopener">Collage</a><span><span class="zh">Wikipedia · Braque 与 Picasso 的 papier collé，1912 年</span><span class="en">Wikipedia · Braque and Picasso's papier collé, 1912</span></span></li>
+      <li><a href="https://en.wikipedia.org/wiki/Marilyn_Diptych" target="_blank" rel="noopener">Marilyn Diptych</a><span><span class="zh">Wikipedia · Warhol 1962 年，同一张照片丝网重复 50 次</span><span class="en">Wikipedia · Warhol, 1962: one photograph screen-printed 50 times</span></span></li>
+      <li><a href="https://en.wikipedia.org/wiki/Seal_(East_Asia)" target="_blank" rel="noopener">Seal (East Asia)</a><span><span class="zh">Wikipedia · 朱文与白文，朱砂印泥</span><span class="en">Wikipedia · zhuwen and baiwen seals, cinnabar paste</span></span></li>
       <li><a href="https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html" target="_blank" rel="noopener">WCAG 2.1 · Contrast (Minimum)</a><span><span class="zh">W3C · 正文对比度 4.5:1 的依据</span><span class="en">W3C · the basis for the 4.5:1 text contrast check</span></span></li>
     </ol>
     <p class="note" style="margin-top:14px"><span class="zh">说明：参数清单是根据设计实践综合整理的，并非出自某一本书。留白率、对齐度、重心等指标是本页定义的近似算法。</span><span class="en">Note: the parameter list is a synthesis of common design practice, not taken from any single book. Whitespace, alignment and balance are approximations defined for this page.</span></p>
@@ -266,7 +273,7 @@ const MONO = '"JetBrains Mono",ui-monospace,monospace';
 const DEFAULT_TEXT = {
   title:{zh:'网点', en:'Halftone'},
   subtitle:{zh:'关于网点、油墨与网格的一次印刷研究', en:'Dots, inks and grids: a study in print'},
-  body:{zh:'在数字化之前，报纸上的每一张照片都要经过玻璃网屏，被拆成大小不一的网点。点的大小承载明暗，网角让颜色彼此错开，网格让整页保持秩序。', en:'Before screens went digital, every photograph in a newspaper passed through a glass screen and was broken into dots. Their size carried the tone, the screen angle kept the colours apart, and the grid held the page together.'},
+  body:{zh:'在数字化之前，报纸上的每一张照片都要经过玻璃网屏（halftone screen），被拆成大小不一的网点。点的大小承载明暗，网角让颜色彼此错开，网格让整页保持秩序。', en:'Before screens went digital, every photograph in a newspaper passed through a glass screen and was broken into dots. Their size carried the tone, the screen angle kept the colours apart, and the grid held the page together.'},
   body2:{zh:'网格是一组提前做好的决定，让之后的每一个决定都能很快做出。', en:'A grid is a set of decisions made once, so that every later decision can be made quickly.'},
   body3:{zh:'破格之所以有力量，是因为它周围的一切都还守着规则。', en:'Breaking the grid only works because everything around the break still keeps to it.'},
   caption:{zh:'图 1 — 测试画面', en:'Fig. 1 — Test scene'},
@@ -285,6 +292,7 @@ const BASE = {format:'poster', vw:1280, cols:6, margin:.07, gutter:.02, baseline
   rules:{grid:false, avoid:false, max3:false, scale:false, tiers:false}, strict:1,
   pages:1, rhythm:'alternate',
   hoverShift:false, parallax:false, dur:700, ease:'out',
+  flood:'none', floodTint:1, imgRepeat:1, imgKnock:'off', collage:{cut:false, torn:false, tape:false, shadow:false}, seal:'none', cjk:true, pretty:true,
   furn:{reg:true, crop:false, bar:true, folio:true},
   seed:7, grid:false, mass:false, showPath:false, compare:null};
 const PRESETS = {
@@ -304,7 +312,7 @@ const PRESETS = {
     breakS:.85, white:.22, asym:.6, jitter:4, layers:3, axis:-8, focal:'center', bleed:true, titleCrop:.05, path:'radial', guide:true, sizeSeq:true, frame:'block', ladder:false, numbers:true,
     vocab:{circle:true, rect:true, line:true, tri:true}, nShapes:7, sizeExp:2.4, fill:.55, radius:0, strokeW:.008, angles:'free', snap:false,
     inks:3, inkA:'fpink', inkB:'blue', inkC:'yellow', paper:'white', textInk:'ink', colorRatio:'even', accent:6, overprint:true, tMisX:6, tMisY:4, tGrain:.55, tStarve:.4, tPaper:.45,
-    img:true, treat:'fs', cell:7, imgSpan:.62, mask:'cutout', crop:'tight', rules:{grid:false, avoid:false, max3:false, scale:false, tiers:false}, strict:.3,
+    img:true, treat:'fs', cell:7, imgSpan:.62, mask:'cutout', crop:'tight', collage:{cut:false, torn:true, tape:true, shadow:true}, rules:{grid:false, avoid:false, max3:false, scale:false, tiers:false}, strict:.3,
     furn:{reg:true, crop:true, bar:true, folio:true}, seed:21}},
   editorial:{name:{zh:'杂志',en:'Editorial'}, tag:{zh:'衬线留白',en:'serif & air'}, p:{cols:6, margin:.085, gutter:.022, pair:'editorial', ratio:1.333, levels:5, titleScale:.17, tWeight:400, tWidth:100, tLead:.95, track:-.01, measure:60, upper:false, align:'left', titleStyle:'solid',
     breakS:.12, white:.58, asym:.75, jitter:0, layers:0, axis:0, focal:'golden', bleed:false, titleCrop:0, path:'auto', guide:false, sizeSeq:false, frame:'none', ladder:true, numbers:true,
@@ -366,10 +374,12 @@ const GROUPS = [
     {type:'range', key:'tLead', label:L('标题行距','Title leading'), min:.75, max:1.3, step:.01, fmt:v=>(+v).toFixed(2)},
     {type:'range', key:'track', label:L('标题字距','Title tracking'), min:-.08, max:.1, step:.005, fmt:v=>(v>0?'+':'')+(+v).toFixed(3)+'em'},
     {type:'range', key:'measure', label:L('正文行宽','Body measure'), min:25, max:80, step:1, fmt:v=>v+(LANG==='zh'?' 字':' ch')},
-    {type:'seg', key:'titleStyle', label:L('标题处理','Title treatment'), opts:[['solid',L('实心','Solid')],['ink',L('油墨色','In ink')],['outline',L('描边','Outline')],['knock',L('镂空','Knockout')]]},
+    {type:'seg', key:'titleStyle', label:L('标题处理','Title treatment'), opts:[['solid',L('实心','Solid')],['ink',L('油墨色','In ink')],['outline',L('描边','Outline')],['knock',L('镂空','Knockout')],['double',L('双版叠印','Two plates')]]},
     {type:'seg', key:'align', label:L('对齐','Alignment'), opts:[['left',L('左对齐','Flush left')],['center',L('居中','Centred')]]},
     {type:'toggle', key:'upper', label:L('标题全大写','Uppercase title')},
     {type:'toggle', key:'vertical', label:L('标题竖排','Vertical title')},
+    {type:'toggle', key:'cjk', label:L('中文排印','CJK typesetting')},
+    {type:'toggle', key:'pretty', label:L('避免孤字','Avoid orphans')},
   ]},
   {t:L('构图','Composition'), s:'LAYOUT', hint:L('破格强度从 0（纯 Swiss）到 1（Zine 拼贴）。主轴把标题、副标题和图像整体转成斜向构图。','Rule-breaking runs from 0 (pure Swiss) to 1 (zine collage). The axis tilts title, subtitle and image together into a diagonal composition.'), items:[
     {type:'range', key:'breakS', label:L('破格强度','Rule-breaking'), min:0, max:1, step:.01, fmt:pct},
@@ -409,6 +419,8 @@ const GROUPS = [
     {type:'seg', key:'textInk', label:L('文字油墨','Text ink'), opts:[['black',L('黑','Black')],['ink',L('用油墨','An ink')]]},
     {type:'seg', key:'colorRatio', label:L('面积比例','Area ratio'), opts:[['even',L('均分','Even')],['603010',L('60 / 30 / 10','60 / 30 / 10')],['9010',L('主色 90 / 10','90 / 10')]]},
     {type:'range', key:'accent', label:L('强调色元素','Accent elements'), min:0, max:8, step:1, fmt:v=>v},
+    {type:'seg', key:'flood', label:L('满版底色','Flood'), opts:[['none',L('无','None')],['A',L('油墨 A','Ink A')],['B',L('油墨 B','Ink B')]]},
+    {type:'range', key:'floodTint', label:L('底色浓度','Flood tint'), min:.1, max:1, step:.05, fmt:pct, when:()=>P.flood!=='none'},
     {type:'toggle', key:'overprint', label:L('叠印混色','Overprint')},
   ]},
   {t:L('印刷质感','Print texture'), s:'PRESS', hint:L('和印痕实验室同一组瑕疵，这里作用在整张海报上：每种油墨按自己的版位错开，墨层带颗粒和缺墨。','The same flaws as the print lab, applied to the whole poster: each ink shifts on its own plate, and the ink layer gets grain and starvation.'), items:[
@@ -425,7 +437,13 @@ const GROUPS = [
     {type:'range', key:'imgSpan', label:L('图像宽度','Image width'), min:.25, max:1, step:.01, fmt:pct},
     {type:'seg', key:'mask', label:L('外形','Shape'), opts:[['rect',L('矩形','Rectangle')],['circle',L('圆形','Circle')],['arch',L('拱形','Arch')],['cutout',L('去背','Cutout')]]},
     {type:'seg', key:'crop', label:L('裁切','Crop'), opts:[['tight',L('紧裁','Tight')],['loose',L('宽裁','Loose')]]},
+    {type:'range', key:'imgRepeat', label:L('重复次数','Repeats'), min:1, max:4, step:1, fmt:v=>'×'+v},
+    {type:'seg', key:'imgKnock', label:L('空印','Knockout'), opts:[['off',L('关','Off')],['paper',L('留纸色','Paper')],['ink',L('填另一色','Fill ink')]]},
     {type:'upload', label:L('原图','Source')},
+  ]},
+  {t:L('拼贴与印章','Collage & seal'), s:'PASTE-UP', hint:L('拼贴材料是印好之后再贴上去的东西：剪下或撕下的纸片、胶带、纸片投下的影子。印章是单独盖上去的一色。','Collage materials are things added after printing: cut or torn scraps, tape, the shadow a scrap casts. A seal is a separate colour stamped on by hand.'), items:[
+    {type:'checks', key:'collage', label:L('图像拼贴','Image paste-up'), opts:[['cut',L('剪边','Cut edge')],['torn',L('撕边','Torn edge')],['tape',L('胶带','Tape')],['shadow',L('纸片阴影','Shadow')]]},
+    {type:'seg', key:'seal', label:L('印章','Seal'), opts:[['none',L('无','None')],['zhu',L('朱文','Zhuwen')],['bai',L('白文','Baiwen')]]},
   ]},
   {t:L('约束规则','Rules'), s:'RULES', hint:L('和谐不只是约束：共同的比例和线宽让元素彼此呼应，明确的主角提供对比，破格强度留出少量有意的例外。严格度是每个元素遵守规则的概率。','Harmony is more than constraint: a shared scale and line weights make elements relate, one clear hero supplies contrast, and rule-breaking leaves room for a few deliberate exceptions. Strictness is the chance that each element obeys.'), items:[
     {type:'checks', key:'rules', label:L('规则','Rules'), opts:[['grid',L('一切贴网格','Everything on the grid')],['avoid',L('形状不压文字','Shapes avoid text')],['max3',L('最多 3 种字号','At most 3 sizes')],['scale',L('比例和谐','Harmonic scale')],['tiers',L('一个主角','One hero')]]},
@@ -464,7 +482,7 @@ const TIPS = {
   tLead:{t:L('行距（leading）得名于手工排版时插在字行之间的铅条，所以英文读作 “ledding”。大标题常用小于 1 的行距，让行与行贴紧。','Leading is named after the strips of lead placed between lines of hand-set type, which is why it is pronounced “ledding”. Large titles often use leading below 1 so the lines sit tight.'), l:[['Leading',WK('Leading')]]},
   track:{t:L('字距（tracking）是统一调整一段文字的字母间距。大标题常收紧，全大写的小标签常放宽。','Tracking adjusts the letter spacing of a whole run of text. Large titles are often tightened; small all-caps labels are often opened up.'), l:[['Letter spacing',WK('Letter_spacing')]]},
   measure:{t:L('Robert Bringhurst 在《The Elements of Typographic Style》中建议印刷正文每行 45–75 个字符，66 个最理想。本页中文按汉字个数近似换算。','Robert Bringhurst\'s The Elements of Typographic Style recommends 45–75 characters per line for printed text, with 66 as the ideal. Chinese is approximated by counting characters.'), l:[['Line length',WK('Line_length')]]},
-  titleStyle:{t:L('叠印是把一种颜色直接印在另一种颜色上；镂空（knockout）是在下层颜色里挖空，让纸色露出来。数码印前流程（PostScript）默认生成镂空。描边字只保留字形轮廓。','Overprinting puts one colour directly on top of another; a knockout removes the colour underneath so the paper shows through. PostScript creates knockouts by default. Outline type keeps only the letter contours.'), l:[['Overprinting',WK('Overprinting')]]},
+  titleStyle:{t:L('叠印是把一种颜色直接印在另一种颜色上；镂空（knockout）是在下层颜色里挖空，让纸色露出来。数码印前流程（PostScript）默认生成镂空。描边字只保留字形轮廓。双版叠印把标题同时印在两块版上、略微错开，重叠处叠出第三种颜色。','Overprinting puts one colour directly on top of another; a knockout removes the colour underneath so the paper shows through. PostScript creates knockouts by default. Outline type keeps only the letter contours. Two plates prints the title on both ink plates, slightly offset, so the overlap becomes a third colour.'), l:[['Overprinting',WK('Overprinting')]]},
   align:{t:L('左对齐、右侧不齐的文字，是国际主义风格的标志之一；它的其他标志还有不对称版面、网格和无衬线字体。','Flush-left, ragged-right text is one of the hallmarks of the International Typographic Style, alongside asymmetric layouts, grids and sans-serif type.'), l:[['International Typographic Style',WK('International_Typographic_Style')]]},
   upper:{t:L('Miles Tinker 的研究发现，全大写会明显降低阅读速度，他建议连续阅读的文字不要用全大写。所以全大写只适合标题和短标签。','Miles Tinker\'s research found that all-capital text slows reading noticeably, and he advised against it for continuous reading. Keep all caps for titles and short labels.'), l:[['All caps',WK('All_caps')]]},
   vertical:{t:L('中文、日文可以竖排，传统上从右往左排列；CSS 的 writing-mode: vertical-rl 对应这种排法，拉丁字母在其中会旋转 90°。','Chinese and Japanese can be set vertically, traditionally right to left; CSS writing-mode: vertical-rl does the same, and Latin letters inside it turn 90°.'), l:[['Horizontal and vertical writing',WK('Horizontal_and_vertical_writing_in_East_Asian_scripts')]]},
@@ -503,13 +521,20 @@ const TIPS = {
   mask:{t:L('印前流程里的去背通常用剪切路径实现：只保留路径以内的图像。本页用亮度阈值近似去掉接近白色的背景，所以只适合白底图片。','In prepress, cutouts are usually made with a clipping path that keeps only the image inside it. This page approximates it by removing near-white pixels, so it works best on images with a white background.'), l:[['Clipping path',WK('Clipping_path')]]},
   crop:{t:L('紧裁只留局部，更有冲击力；宽裁保留环境，更像记录。','A tight crop keeps a detail and hits harder; a loose crop keeps the context and reads more like a record.'), own:true},
   rules:{t:L('Gerstner 1964 年的《Designing Programmes》被出版社介绍为“计算机时代开端的系统化设计模型”；Rune Madsen 把其中的“设计程序”解读为由设计者定义、用来生成审美决定的规则集。严格度是每个元素遵守规则的概率。“比例和谐”和“一个主角”是本页的规则：前者让形状、间距、线宽和角度都取自字号比例与主轴，后者让形状和图像始终明显小于最大的两个元素。','Gerstner\'s Designing Programmes (1964) is described by its publisher as a model for systematic design at the dawn of the computer era; Rune Madsen reads a design programme as a designer-defined rule set that shapes aesthetic decisions. Strictness is the chance that each element obeys. Harmonic scale and One hero are this page\'s own rules: the first takes shape sizes, spacing, line weights and angles from the type scale and the main axis; the second keeps shapes and the image clearly smaller than the two largest elements.'), l:[['Designing Programmes (Lars Müller)','https://www.lars-mueller-publishers.com/designing-programmes'],['Rune Madsen on Gerstner','https://runemadsen.com/blog/karl-gerstner-designing-programmes/']]},
+  cjk:{t:L('W3C《中文排版需求》（clreq，Group Note Draft）专门讨论了行首行尾禁则（避头尾）、标点宽度和中西文混排。开启时本页用 CSS line-break: strict 做避头尾，用 text-spacing-trim 压缩行首开括号，用 text-autospace 在汉字和拉丁字母、数字之间加空隙（浏览器不支持时用四分之一 em 空格代替）。关闭时用 line-break: anywhere，标点可能出现在行首。','The W3C Requirements for Chinese Text Layout (clreq, a Group Note Draft) covers line-start and line-end prohibitions, punctuation width and mixed Chinese–Western text. When on, this page uses CSS line-break: strict for the prohibitions, text-spacing-trim to halve opening brackets at line start, and text-autospace to add space between Han characters and Latin letters or numerals (a quarter-em space where the browser lacks it). When off it uses line-break: anywhere, so punctuation can start a line.'), l:[['clreq 中文排版需求','https://www.w3.org/TR/clreq/'],['line-break (MDN)','https://developer.mozilla.org/en-US/docs/Web/CSS/line-break'],['text-autospace (MDN)','https://developer.mozilla.org/en-US/docs/Web/CSS/text-autospace'],['text-spacing-trim (MDN)','https://developer.mozilla.org/en-US/docs/Web/CSS/text-spacing-trim']]},
+  pretty:{t:L('孤字是段落最后一行只剩一两个字。CSS text-wrap: pretty 用更慢、更讲究的算法断行，MDN 说它适合正文，可以尽量减少孤字。下方“孤字”指标统计第 1 页正文里最后一行只剩一个汉字或一个单词的段落。','An orphan here is a last line holding only one or two characters. CSS text-wrap: pretty breaks lines with a slower, more careful algorithm; MDN describes it as meant for body copy where the number of orphans should be kept down. The Orphans metric below counts page-1 paragraphs whose last line holds a single Han character or a single word.'), l:[['text-wrap-style (MDN)','https://developer.mozilla.org/en-US/docs/Web/CSS/text-wrap-style'],['clreq §7.1.2 孤行与孤字','https://www.w3.org/TR/clreq/']]},
+  flood:{t:L('满版底色本身就是一块油墨版：整页印满一种颜色，出血到纸边外。大面积实地最容易暴露缺墨、颗粒和辊痕。浓度低于 100% 时，实际印刷会用网点做出浅色（平网），本页用透明度近似。','A flood is an ink plate of its own: the whole sheet printed in one colour, bleeding off the edges. Large solids are where starvation, grain and roller marks show most. Below 100%, real printing makes the lighter tint with a halftone; this page approximates it with transparency.'), l:[['Bleed (printing)',WK('Bleed_(printing)')]]},
+  imgRepeat:{t:L('同一张图重复摆放、每次换一种颜色，是丝网印刷海报的经典手法。Warhol 1962 年的《Marilyn Diptych》用丝网把同一张照片重复了 50 次，丝网让每次印出来都略有不同。','Repeating one image, changing its colours each time, is a classic of screen-printed posters. Warhol\'s Marilyn Diptych (1962) repeats the same photograph 50 times; silkscreen made each impression slightly different.'), l:[['Marilyn Diptych',WK('Marilyn_Diptych')]]},
+  imgKnock:{t:L('空印：在一块满版油墨里把图像的轮廓挖空，露出纸色；也可以在空出的位置填进另一色。两块版对不准时，交界处会露出白缝或叠出深色细边，印前用“补漏白”（trapping：外扩或内缩）来缓解。把套色错位调大可以看到这些细缝。','A knockout cuts the image\'s silhouette out of a solid ink block so the paper shows, or fills the hole with another ink. When the two plates do not line up, the edge shows a white gap or a dark overlap; prepress trapping (spreads and chokes) reduces this. Raise misregistration to see the slivers.'), l:[['Trap (printing)',WK('Trap_(printing)')],['Overprinting',WK('Overprinting')]]},
+  collage:{t:L('collage 来自法语 coller（粘贴）。Braque 和 Picasso 在 20 世纪初用剪下的墙纸、报纸做“papier collé”，很多机构把拼贴作为艺术手法的开端定在 1912 年。Zine 延续了这种剪、撕、贴的做法。','Collage comes from the French coller, to glue. Braque and Picasso made papier collé from cut wallpaper and newspaper in the early 20th century, and many institutions date collage as an art practice to 1912. Zines carried on the cut, tear and paste approach.'), l:[['Collage',WK('Collage')],['Zine',WK('Zine')]]},
+  seal:{t:L('东亚印章分两种：朱文印把字印成红色；白文印把底印成红色、字留白。印泥通常用朱砂加油调成。收藏者也会在书画上盖鉴藏印。','East Asian seals come in two kinds: zhuwen seals print the characters in red; baiwen seals print the ground red and leave the characters white. The paste is usually cinnabar mixed with oil. Collectors also stamped their seals on paintings and calligraphy.'), l:[['Seal (East Asia)',WK('Seal_(East_Asia)')]]},
   pages:{t:L('多页时，页与页之间的变化形成翻阅节奏：满版图、密集文字和留白页交替出现。','Across several pages, changes from page to page create a reading rhythm: full-bleed images, dense text and airy pages alternate.'), own:true},
   hoverShift:{t:L('悬停时油墨版位继续错开，模拟 Riso 的套色错位。','On hover the ink plates drift further apart, imitating Riso misregistration.'), own:true},
   parallax:{t:L('视差源自传统动画的多平面摄影机技术（1930 年代起），后来用于游戏和网页：各层以不同速度移动，产生纵深感。','Parallax grew out of the multiplane camera of traditional animation (from the 1930s) and later spread to games and the web: layers move at different speeds to create depth.'), l:[['Parallax scrolling',WK('Parallax_scrolling')]]},
   dur:{t:L('prefers-reduced-motion 让网页检测用户是否在系统里要求减少非必要的动效；检测到时，本页会关闭所有动画。','prefers-reduced-motion lets a page detect that the user has asked their system to minimise non-essential motion; when it is set, this page turns all animation off.'), l:[['prefers-reduced-motion (MDN)','https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion']]},
   furn:{t:L('这些标记来自印刷生产：裁切线标出裁切位置，出血超出裁切线；套准标记用来检查各色版是否对齐。今天它们常被当成装饰，强化“印刷品”的感觉。','These marks come from print production: crop marks show where to trim, bleed runs past them, and registration marks check that the colour plates line up. Today they are often reused as ornament to signal print.'), l:[['Bleed (printing)',WK('Bleed_(printing)')],['Registration mark',WK('Registration_mark')]]},
 };
-const TIP_ALIAS = {tWidth:'tWeight', tMisX:'tMis', tMisY:'tMis', tGrain:'tTex', tStarve:'tTex', tPaper:'tTex', treat:'img', cell:'img', imgSpan:'img', strict:'rules', rhythm:'pages', ease:'dur'};
+const TIP_ALIAS = {tWidth:'tWeight', tMisX:'tMis', tMisY:'tMis', tGrain:'tTex', tStarve:'tTex', tPaper:'tTex', treat:'img', cell:'img', imgSpan:'img', floodTint:'flood', strict:'rules', rhythm:'pages', ease:'dur'};
 const tipFor = k => TIPS[k] || TIPS[TIP_ALIAS[k]];
 function tipHTML(key, full){
   const tp = tipFor(key); if (!tp) return '';
@@ -807,6 +832,50 @@ function pageParams(i){
 const ROLE_NAME = {cover:L('封面','Cover'), image:L('满版图','Full image'), text:L('密集文字','Dense text'), air:L('留白页','Airy page')};
 
 /* ---------- one page ---------- */
+const HAN = /[\u3400-\u9fff\uf900-\ufaff]/;
+const AUTOSPACE = !!(window.CSS && CSS.supports && CSS.supports('text-autospace', 'normal'));
+// fallback for browsers without text-autospace: a quarter-em space between Han characters and Latin letters or numerals
+const autospace = str => str.replace(/([\u3400-\u9fff])([A-Za-z0-9])/g, '$1\u2005$2').replace(/([A-Za-z0-9])([\u3400-\u9fff])/g, '$1\u2005$2');
+function isOrphan(el){
+  const tn = el.firstChild; if (!tn || tn.nodeType!==3) return false;
+  const str = tn.data, r = document.createRange(), tops = [];
+  for (let i=0;i<str.length;i++){ r.setStart(tn,i); r.setEnd(tn,i+1); const b = r.getBoundingClientRect(); tops.push(b.height ? b.top : null); }
+  const v = tops.filter(t => t!=null); if (!v.length) return false;
+  const last = Math.max(...v), first = Math.min(...v); if (last - first < 2) return false;
+  let tail = ''; for (let i=0;i<str.length;i++) if (tops[i]!=null && Math.abs(tops[i]-last) < 2) tail += str[i];
+  const core = tail.replace(/[\s\p{P}\u2005]/gu, ''); if (!core) return false;
+  if (HAN.test(core)) return [...core].length <= 1;
+  return tail.trim().split(/\s+/).length === 1;
+}
+// cut scraps get four slightly crooked corners; torn scraps get a ragged edge, a white fibre rim when inset is 0
+function scrapPoly(rng, torn, inset){
+  const N = torn ? 22 : 1, pts = [];
+  const j = () => torn ? inset + rng()*1.8 : inset + rng()*1.8;
+  for (let i=0;i<N;i++) pts.push([i/N*100, j()]);
+  for (let i=0;i<N;i++) pts.push([100-j(), i/N*100]);
+  for (let i=0;i<N;i++) pts.push([100-i/N*100, 100-j()]);
+  for (let i=0;i<N;i++) pts.push([j(), 100-i/N*100]);
+  return 'polygon(' + pts.map(([x,y]) => `${x.toFixed(2)}% ${y.toFixed(2)}%`).join(',') + ')';
+}
+function tapeClip(rng){
+  const L = [], R = []; for (let i=0;i<=6;i++){ const y = i/6*100; L.push(`${(rng()*4).toFixed(1)}% ${y.toFixed(1)}%`); R.unshift(`${(100-rng()*4).toFixed(1)}% ${y.toFixed(1)}%`); }
+  return 'polygon(' + L.concat(R).join(',') + ')';
+}
+// the image's meaningful shape: everything that is not near-white background (or the dark half of a photo without one)
+const silCache = new Map();
+function silhouette(n, tight){
+  const key = [n, tight, uploaded ? uploaded.src.length : 0].join('|'); if (silCache.has(key)) return silCache.get(key);
+  const c = sourceCanvas(n, tight), g = c.getContext('2d'), im = g.getImageData(0,0,n,n), d = im.data, N = n*n;
+  const Lm = new Float32Array(N), bg = new Uint8Array(N); let nb = 0, sum = 0;
+  for (let i=0;i<N;i++){ const r=d[i*4]/255, gg=d[i*4+1]/255, b=d[i*4+2]/255; Lm[i] = .299*r+.587*gg+.114*b; sum += Lm[i];
+    if (Lm[i] > .88 && Math.max(r,gg,b)-Math.min(r,gg,b) < .14){ bg[i] = 1; nb++; } }
+  const useBg = nb > N*.05, mean = sum/N;
+  for (let i=0;i<N;i++){ const on = useBg ? !bg[i] : Lm[i] < mean; d[i*4]=d[i*4+1]=d[i*4+2]=0; d[i*4+3] = on ? 255 : 0; }
+  g.putImageData(im,0,0);
+  if (silCache.size > 12) silCache.clear();
+  silCache.set(key, c); return c;
+}
+
 function renderPage(poster, Q, pageIdx){
   const {W, H} = dims(Q), cols = colsEff(Q), rng = rngOf(Q.seed*7919 + 13), pid = 'pg'+pageIdx;
   const paperC = paper(Q.paper).c, pair = PAIRS[Q.pair];
@@ -878,14 +947,27 @@ function renderPage(poster, Q, pageIdx){
   const flat = document.createElement('div'); flat.style.cssText = 'position:absolute;inset:0';
   const hero = document.createElement('div'); hero.style.cssText = `position:absolute;inset:0;${Q.axis ? `transform:rotate(${Q.axis}deg);transform-origin:50% 45%;` : ''}`;
   content.append(hero, flat);
-  inkGroup.append(paperRect, back, content, front);
+  // flood: a whole-page ink plate under everything else, bleeding past the trim
+  let floodEl = null;
+  if (Q.flood!=='none'){
+    const fi = Q.flood==='B' && inkList.length>1 ? 1 : 0;
+    floodEl = document.createElement('div'); floodEl.className = fi ? 'ink'+fi : '';
+    floodEl.style.cssText = `position:absolute;inset:-24px;background:${inkList[fi]};opacity:${Q.floodTint};mix-blend-mode:${blend}`;
+  }
+  inkGroup.append(...[paperRect, floodEl, back, content, front].filter(Boolean));
   poster.appendChild(inkGroup);
 
-  const boxes = [], order = [], textRects = [];
+  const boxes = [], order = [], textRects = [], shapeBoxes = [];
   const colourOf = idx => idx<0 ? '#161616' : inkList[idx];
   const addText = (parent, str, css, opts={}) => {
+    // Chinese typesetting: kinsoku (line-break: strict), opening-bracket trim and Han–Latin spacing, or none of it
+    let tcss = '';
+    if (HAN.test(str)){
+      if (Q.cjk){ tcss = ';line-break:strict;text-spacing-trim:trim-start;text-autospace:normal'; if (!AUTOSPACE) str = autospace(str); }
+      else tcss = ';line-break:anywhere;text-spacing-trim:space-all;text-autospace:no-autospace';
+    }
     const e = document.createElement('div'); e.className = 'el ' + (opts.cls!=null ? opts.cls : textCls); e.textContent = str;
-    e.style.cssText = `position:absolute;margin:0;${css};color:${opts.color||textC};mix-blend-mode:${opts.blend||blend}`;
+    e.style.cssText = `position:absolute;margin:0;${css}${tcss};color:${opts.color||textC};mix-blend-mode:${opts.blend||blend}`;
     if (opts.op!=null && opts.op<1) e.style.opacity = opts.op;
     parent.appendChild(e); if (opts.measure!==false) boxes.push(e); return e;
   };
@@ -910,8 +992,8 @@ function renderPage(poster, Q, pageIdx){
   const tStyle = Q.titleStyle;
   const titleCss = `font-family:${pair.d};font-weight:${Q.pair==='editorial'?400:Q.tWeight};font-stretch:${Q.pair==='swiss'?Q.tWidth:100}%;font-size:${titleSize}px;line-height:${Q.tLead};letter-spacing:${Q.track}em;${Q.upper?'text-transform:uppercase;':''}text-align:${align};text-wrap:balance`
     + (tStyle==='outline' ? `;-webkit-text-stroke:${Math.max(1.5, titleSize*.016).toFixed(1)}px ${textC};color:transparent` : '');
-  const titleColour = tStyle==='ink' ? inkList[0] : tStyle==='knock' ? paperC : tStyle==='outline' ? 'transparent' : textC;
-  const titleOpts = {color:titleColour, cls: tStyle==='ink' || tStyle==='knock' ? '' : textCls, blend: tStyle==='knock' ? 'normal' : blend};
+  const titleColour = tStyle==='ink' || tStyle==='double' ? inkList[0] : tStyle==='knock' ? paperC : tStyle==='outline' ? 'transparent' : textC;
+  const titleOpts = {color:titleColour, cls: tStyle==='ink' || tStyle==='knock' || tStyle==='double' ? '' : textCls, blend: tStyle==='knock' ? 'normal' : blend};
   let title;
   if (Q.vertical){
     const vx = flip ? W - m - titleSize*1.05 : m + bleedX*.5 + cropX*.3;
@@ -921,6 +1003,13 @@ function renderPage(poster, Q, pageIdx){
     title = addText(hero, txt('title'), `${titleCss};left:${tx0 + shift}px;top:${ty}px;width:${spanW(k) + Math.abs(shift)}px;${rot(jit())}`, titleOpts);
   }
   if (tStyle==='outline') title.style.webkitTextStroke = `${Math.max(1.5, titleSize*.016).toFixed(1)}px ${textC}`;
+  // two plates: the same title on ink A and ink B, slightly offset, so the overlap prints a third colour
+  if (tStyle==='double'){
+    const two = inkList.length>1, cp = title.cloneNode(true);
+    cp.className = 'el ' + (two ? 'ink1' : textCls); cp.style.color = two ? inkList[1] : textC;
+    cp.style.marginLeft = (titleSize*.035).toFixed(1)+'px'; cp.style.marginTop = (titleSize*.025).toFixed(1)+'px';
+    hero.insertBefore(cp, title.nextSibling);
+  }
   const tR = {x:title.offsetLeft, y:title.offsetTop, w:title.offsetWidth, h:title.offsetHeight};
   // knockout: a solid ink block under the title, the letters left in paper colour
   if (tStyle==='knock'){
@@ -959,7 +1048,7 @@ function renderPage(poster, Q, pageIdx){
   const bk = Math.max(1, Math.min(cols, Math.ceil((Q.measure*charW + g) / (colW + g))));
   const bottomY = H - m - (Q.furn.bar || Q.furn.folio ? base*1.6 : 0);
   const lineH = Q.baseline*Math.max(1, Math.round(base*1.45/Q.baseline));
-  const bodyCss = `font-family:${pair.b};font-weight:${pair.bw};font-size:${base}px;line-height:${lineH}px`;
+  const bodyCss = `font-family:${pair.b};font-weight:${pair.bw};font-size:${base}px;line-height:${lineH}px;text-wrap:${Q.pretty?'pretty':'wrap'}`;
   const texts = [txt('body'), T(DEFAULT_TEXT.body2), T(DEFAULT_TEXT.body3)];
   let bodyTop = bottomY;
   const blocks = [];
@@ -996,7 +1085,7 @@ function renderPage(poster, Q, pageIdx){
   });
 
   // image
-  let imgBox = null;
+  let imgBox = null; const tapes = [];
   if (Q.img){
     let ki = Math.max(2, Math.min(cols, Math.round(cols*Q.imgSpan)));
     if (path==='z') ki = Math.max(2, Math.min(cols, Math.round(cols*Math.min(Q.imgSpan,.55))));
@@ -1021,13 +1110,50 @@ function renderPage(poster, Q, pageIdx){
       const tLin = Math.sqrt(tR.w*tR.h), iLin = Math.sqrt(iw*ih);
       if (iLin < tLin*1.3 && iLin > tLin/1.3){ iw /= Q.ratio; ih /= Q.ratio; }
     }
-    const cv = screenImage(Q, inkList, paperC, textIdx>=0 ? textC : '#161616', Math.max(iw, ih));
+    // repeats: the same image several times, each with the inks rotated; knockout: the silhouette cut out of an ink block
+    const darkC = textIdx>=0 ? textC : '#161616';
+    const nRep = Math.max(1, Math.round(Q.imgRepeat||1)), gr = nRep===4 ? [2,2] : [nRep,1];
+    const gapI = nRep>1 ? Math.max(4, g*.6) : 0;
+    const cw = (iw - gapI*(gr[0]-1))/gr[0], ch = (ih - gapI*(gr[1]-1))/gr[1];
+    const coll = Q.collage || {}, paste = !!(coll.cut || coll.torn);
     const holder = document.createElement('div'); holder.className = 'el';
-    const radius = Q.mask==='circle' ? 'border-radius:50%;' : Q.mask==='arch' ? `border-radius:${iw/2}px ${iw/2}px 0 0;` : '';
-    holder.style.cssText = `position:absolute;left:${ix}px;top:${iy}px;width:${iw}px;height:${ih}px;overflow:hidden;mix-blend-mode:${blend};${radius}${rot(jit())}`;
-    const side = Math.max(iw, ih), img = document.createElement('canvas'); img.width = cv.width; img.height = cv.height; img.getContext('2d').drawImage(cv,0,0);
-    img.style.cssText = `position:absolute;width:${side}px;height:${side}px;left:${(iw-side)/2}px;top:${(ih-side)/2}px`;
-    holder.appendChild(img);
+    holder.style.cssText = `position:absolute;left:${ix}px;top:${iy}px;width:${iw}px;height:${ih}px;mix-blend-mode:${paste ? 'normal' : blend};${rot(jit() + (paste ? (rng()*2-1)*2.5 : 0))}${coll.shadow ? 'filter:drop-shadow(3px 5px 5px rgba(20,18,16,.3));' : ''}`;
+    for (let j=0;j<nRep;j++){
+      const px = (j % gr[0])*(cw+gapI), py = Math.floor(j / gr[0])*(ch+gapI);
+      const inksJ = inkList.length>1 ? inkList.map((_,q) => inkList[(q+j)%inkList.length]) : inkList;
+      const side = Math.max(cw, ch), n = Math.max(120, Math.min(900, Math.round(side)));
+      const piece = document.createElement('div'); piece.style.cssText = `position:absolute;left:${px}px;top:${py}px;width:${cw}px;height:${ch}px`;
+      if (paste){
+        if (coll.torn){ const rim = document.createElement('div'); rim.style.cssText = `position:absolute;inset:0;background:#FBFAF4;clip-path:${scrapPoly(rng, true, 0)}`; piece.appendChild(rim); }
+        piece.style.clipPath = coll.torn ? 'none' : scrapPoly(rng, false, 0);
+      }
+      const inner = document.createElement('div');
+      const radius = Q.mask==='circle' ? 'border-radius:50%;' : Q.mask==='arch' ? `border-radius:${cw/2}px ${cw/2}px 0 0;` : '';
+      inner.style.cssText = `position:absolute;inset:0;overflow:hidden;${radius}${paste ? `background:${paperC};` : ''}${coll.torn ? `clip-path:${scrapPoly(rng, true, 1.6)};` : ''}`;
+      if (paste && radius) { inner.style.background = 'transparent'; piece.style.background = paperC; }
+      const place = c => { c.style.cssText = `position:absolute;width:${side}px;height:${side}px;left:${(cw-side)/2}px;top:${(ch-side)/2}px`; return c; };
+      if (Q.imgKnock==='off'){
+        const cv = screenImage(Q, inksJ, paperC, darkC, side);
+        const img = document.createElement('canvas'); img.width = cv.width; img.height = cv.height; img.getContext('2d').drawImage(cv,0,0);
+        inner.appendChild(place(img));
+      } else {
+        const sil = silhouette(n, Q.crop==='tight');
+        const blk = document.createElement('canvas'); blk.width = blk.height = n; const bg = blk.getContext('2d');
+        bg.fillStyle = inksJ[0]; bg.fillRect(0,0,n,n); bg.globalCompositeOperation = 'destination-out'; bg.drawImage(sil,0,0);
+        place(blk); blk.style.mixBlendMode = blend; inner.appendChild(blk);
+        if (Q.imgKnock==='ink'){
+          const fill = document.createElement('canvas'); fill.width = fill.height = n; const fg = fill.getContext('2d');
+          fg.drawImage(sil,0,0); fg.globalCompositeOperation = 'source-in'; fg.fillStyle = inksJ[1] || darkC; fg.fillRect(0,0,n,n);
+          place(fill); fill.style.mixBlendMode = blend; if (inkList.length>1) fill.className = 'ink1'; inner.appendChild(fill);
+        }
+      }
+      piece.appendChild(inner); holder.appendChild(piece);
+      if (coll.tape){
+        const tw = Math.max(W*.07, Math.min(W*.15, cw*.34)), th = tw*.3;
+        const ends = j===0 || nRep===1 ? [[px + cw*.12, -1], [px + cw*.88 - tw, 1]] : [[px + cw/2 - tw/2, rng()<.5?-1:1]];
+        ends.forEach(([x0, sg]) => tapes.push({x:ix + x0, y:iy + py - th*.45, w:tw, h:th, a:sg*(18 + rng()*22)}));
+      }
+    }
     hero.insertBefore(holder, hero.firstChild);
     boxes.push(holder); imgBox = {x:ix, y:iy, w:iw, h:ih}; order.push(holder);
     if (Q.levels >= 4 && Q.layers===0){
@@ -1049,6 +1175,28 @@ function renderPage(poster, Q, pageIdx){
     else { order.push(q); textRects.push(qr); }
   }
   blocks.forEach(bl => order.push(bl.e));
+
+  // seal: a separate hand-stamped colour, placed where it does not cover text
+  if (Q.seal!=='none'){
+    const ss = harm ? toScale(W*.075) : W*.075, sealC = ink('red').c;
+    const cands = [];
+    if (imgBox && !Q.axis) cands.push([imgBox.x + imgBox.w - ss*.7, imgBox.y + imgBox.h - ss*.7]);
+    if (!Q.axis) cands.push([tR.x + tR.w - ss, tR.y + tR.h + gap*.4]);
+    cands.push([W - m - ss, bodyTop - gap - ss], [m, bodyTop - gap - ss], [W - m - ss, m*1.3], [m, m*1.3]);
+    const pos = cands.find(([x,y]) => x>=m*.5 && y>=m*.5 && x+ss<=W-m*.5 && y+ss<=H-m*.5 && !textRects.some(r => inter(r, {x,y,w:ss,h:ss}, 4)));
+    if (pos){
+      const [x, y] = pos, sid = pid+'-seal', bai = Q.seal==='bai', fs = ss*.4;
+      const chars = [['版',.73,.29],['式',.73,.71],['实',.27,.29],['验',.27,.71]];   // read top-to-bottom, right column first
+      const sg = svgEl('g', {transform:`rotate(${((rng()*2-1)*3).toFixed(2)} ${x+ss/2} ${y+ss/2})`, mask:`url(#${sid}m)`});
+      sg.innerHTML = `<defs><linearGradient id="${sid}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".55" stop-color="#fff"/><stop offset="1" stop-color="#8a8a8a"/></linearGradient>`
+        + `<mask id="${sid}m" maskUnits="userSpaceOnUse" x="${x-ss}" y="${y-ss}" width="${ss*3}" height="${ss*3}"><rect x="${x-2}" y="${y-2}" width="${ss+4}" height="${ss+4}" fill="url(#${sid}g)"/></mask></defs>`
+        + (bai ? `<rect x="${x}" y="${y}" width="${ss}" height="${ss}" rx="${ss*.03}" fill="${sealC}"/>` : `<rect x="${x+ss*.03}" y="${y+ss*.03}" width="${ss*.94}" height="${ss*.94}" rx="${ss*.03}" fill="none" stroke="${sealC}" stroke-width="${ss*.06}"/>`)
+        + chars.map(([c,u,v]) => `<text x="${x+ss*u}" y="${y+ss*v}" text-anchor="middle" dominant-baseline="central" font-family="'Noto Serif SC',serif" font-weight="900" font-size="${fs}" fill="${bai ? paperC : sealC}">${c}</text>`).join('');
+      sg.style.mixBlendMode = bai ? 'normal' : blend;
+      front.appendChild(sg);
+      const sb = {x, y, w:ss, h:ss}; shapeBoxes.push(sb); textRects.push(sb);
+    }
+  }
 
   // colour choice for accents: area ratio weights across the available inks
   const W3 = {even:[1,1,1], '603010':[.6,.3,.1], '9010':[.9,.1,0]}[Q.colorRatio].slice(0, inkList.length);
@@ -1079,7 +1227,6 @@ function renderPage(poster, Q, pageIdx){
   // shapes
   const vocab = Object.keys(Q.vocab).filter(k => Q.vocab[k]); if (!vocab.length) vocab.push('rect');
   const nS = Math.round(Q.nShapes * (1.35 - Q.white*.7));
-  const shapeBoxes = [];
   // one hero: shapes stay clearly below the two largest elements. The first shape may reach one scale step below
   // the second-largest element, every other shape two steps below.
   const tLin = Math.sqrt(tR.w*tR.h), iLin = imgBox ? Math.sqrt(imgBox.w*imgBox.h) : 0;
@@ -1160,6 +1307,17 @@ function renderPage(poster, Q, pageIdx){
     }
   }
 
+  // tape sits on top of the print, outside the ink layer, and follows the main axis like the image does
+  if (tapes.length){
+    const tl = document.createElement('div'); tl.style.cssText = `position:absolute;inset:0;pointer-events:none;${hero.style.transform ? `transform:${hero.style.transform};transform-origin:${hero.style.transformOrigin};` : ''}`;
+    tapes.forEach(t => { const e = document.createElement('div');
+      e.style.cssText = `position:absolute;left:${t.x}px;top:${t.y}px;width:${t.w}px;height:${t.h}px;background:linear-gradient(180deg,rgba(240,233,206,.72),rgba(226,218,188,.66));box-shadow:0 1px 2px rgba(0,0,0,.12);transform:rotate(${t.a.toFixed(1)}deg);clip-path:${tapeClip(rng)}`;
+      tl.appendChild(e); });
+    poster.appendChild(tl);
+  }
+  // orphans: body paragraphs whose last line holds a single Han character or a single word
+  const orphans = blocks.filter(bl => isOrphan(bl.e)).length;
+
   // paper texture on top of everything printed
   if (Q.tPaper > 0){
     const pt = svgEl('svg', {width:W, height:H}); pt.style.cssText = `position:absolute;left:0;top:0;pointer-events:none;mix-blend-mode:multiply;opacity:${(Q.tPaper*.55).toFixed(2)}`;
@@ -1192,12 +1350,12 @@ function renderPage(poster, Q, pageIdx){
     poster.appendChild(ov);
   }
   order.forEach((e,i) => e.dataset.order = i);
-  return {W, H, m, cols, colX, colW, g, boxes, shapeBoxes, order, textC, paperC, titleSize, cap: Q.rules.max3 ? base : cap, bodyOp, poster, pid};
+  return {W, H, m, cols, colX, colW, g, boxes, shapeBoxes, order, textC, paperC, titleSize, cap: Q.rules.max3 ? base : cap, bodyOp, poster, pid, orphans, nBody: blocks.length};
 }
 
 /* ---------- render all pages ---------- */
 let layouts = [];
-const CMP_KEYS = ['breakS','white','asym','cols','pair','ratio','titleScale','levels','titleStyle','path','axis','angles','layers','inks','colorRatio','treat','tMisX','tGrain','rules'];
+const CMP_KEYS = ['breakS','white','asym','cols','pair','ratio','titleScale','levels','titleStyle','path','axis','angles','layers','inks','colorRatio','flood','treat','imgRepeat','imgKnock','collage','seal','tMisX','tGrain','rules'];
 function render(){
   const wrap = $('pages'); wrap.innerHTML = '';
   const cmp = P.compare && PRESETS[P.compare] ? P.compare : null;
@@ -1284,7 +1442,8 @@ function computeMetrics(){
     M(zh?'对齐度':'Alignment', Math.round(align*100)+'%', zh?'左边缘落在栏线上':'left edges on columns') +
     M(zh?'视觉重心':'Balance', `${Math.round(cx*100)} / ${Math.round(cy*100)}`, zh?'中心为 50 / 50':'centre is 50 / 50') +
     M(zh?'字号比':'Type ratio', Math.round(scale)+':1', zh?'标题 : 最小字':'title : smallest') +
-    M(zh?'正文对比度':'Body contrast', contrast.toFixed(1)+':1', contrast>=4.5 ? (zh?'达到 WCAG AA':'passes WCAG AA') : (zh?'低于 4.5:1':'below 4.5:1'), contrast>=4.5);
+    M(zh?'正文对比度':'Body contrast', contrast.toFixed(1)+':1', contrast>=4.5 ? (zh?'达到 WCAG AA':'passes WCAG AA') : (zh?'低于 4.5:1':'below 4.5:1'), contrast>=4.5) +
+    M(zh?'孤字':'Orphans', `${Ly.orphans} / ${Ly.nBody}`, zh?'末行只剩一个字的段落':'paragraphs ending on one word', Ly.orphans===0);
   layouts.forEach(L2 => L2.poster.querySelectorAll('.ovl').forEach(e => e.remove()));
   if (P.mass){
     const s = svgEl('svg', {class:'ovl', width:Ly.W, height:Ly.H}); s.style.cssText = 'position:absolute;left:0;top:0;pointer-events:none';

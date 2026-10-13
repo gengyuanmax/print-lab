@@ -87,6 +87,29 @@
 .lv-e{background:var(--ink);color:var(--sheet)}
 .lv-r{background:transparent}
 .lv-o{border-style:dashed;color:var(--muted)}
+/* preset dock: flip presets without leaving the proof */
+.dock{position:fixed;right:max(16px, env(safe-area-inset-right));bottom:calc(16px + env(safe-area-inset-bottom, 0px));z-index:40;display:flex;align-items:stretch;background:var(--sheet);border:1.5px solid var(--ink);box-shadow:4px 4px 0 var(--pink);transition:opacity .2s ease, transform .2s ease}
+.dock.away{opacity:0;transform:translateY(10px);pointer-events:none}
+.dock button{font:500 13px/1.2 var(--body);color:var(--ink);background:transparent;border:0;cursor:pointer;min-height:44px;padding:0 12px}
+.dock button:hover{background:rgba(28,27,34,.07)}
+.dock .step{font-family:var(--mono);font-size:15px;min-width:44px;padding:0}
+.dock .cur{border-inline:1.5px solid var(--ink);display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:1px;max-width:min(15em, calc(100vw - 150px));text-align:left}
+.dock .cur small{font:400 10px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.dock .cur b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.dock .cur[aria-expanded="true"]{background:var(--ink);color:var(--sheet)}
+.dock .cur[aria-expanded="true"] small{color:rgba(251,251,248,.7)}
+.tray{position:fixed;right:max(16px, env(safe-area-inset-right));bottom:calc(16px + 52px + env(safe-area-inset-bottom, 0px));z-index:40;width:min(380px, calc(100vw - 32px));max-height:min(62vh, 560px);overflow:auto;background:var(--sheet);border:1.5px solid var(--ink);box-shadow:4px 4px 0 var(--pink);padding:12px;display:flex;flex-direction:column;gap:10px}
+.tray[hidden]{display:none!important}
+.tray header{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.tray header b{font-family:var(--display);font-weight:800;font-size:18px}
+.qps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.qp{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;font:500 13px/1.25 var(--body);color:var(--ink);background:transparent;border:1.5px solid var(--ink);padding:7px 9px;cursor:pointer;min-height:44px}
+.qp small{font:400 10.5px/1.3 var(--mono);color:var(--muted)}
+.qp:hover{background:rgba(28,27,34,.07)}
+.qp[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
+.qp[aria-pressed="true"] small{color:rgba(251,251,248,.7)}
+.tray .all{align-self:flex-start;font-size:12.5px;color:var(--ink);text-decoration-color:var(--pink);text-decoration-thickness:2px;text-underline-offset:3px;background:none;border:0;padding:0;cursor:pointer}
+@media (prefers-reduced-motion:reduce){.dock{transition:none}}
 </style>
 
 <div class="wrap">
@@ -193,6 +216,17 @@
     <header><h2><span class="zh">预设样张</span><span class="en">Preset proofs</span></h2><span class="hint"><span class="zh">点一张，把它的参数载入上面的实验台</span><span class="en">Click one to load its settings into the lab above</span></span></header>
     <div class="sheet" id="sheet"></div>
   </section>
+
+  <div class="tray" id="tray" hidden role="dialog" data-aria-zh="快速切换预设" data-aria-en="Quick preset switcher">
+    <header><b><span class="zh">预设</span><span class="en">Presets</span></b><span class="hint"><span class="zh">点一个直接载入，画布不动</span><span class="en">Click to load; the proof stays in view</span></span></header>
+    <div class="qps" id="qps"></div>
+    <button type="button" class="all" id="toSheet"><span class="zh">看全部样张缩略图 ↓</span><span class="en">See all proofs as thumbnails ↓</span></button>
+  </div>
+  <div class="dock" id="dock" role="group" data-aria-zh="预设快捷切换" data-aria-en="Preset shortcuts">
+    <button type="button" class="step" id="prevP" data-aria-zh="上一个预设" data-aria-en="Previous preset">‹</button>
+    <button type="button" class="cur" id="curP" aria-expanded="false" aria-controls="tray"><small><span class="zh">预设</span><span class="en">Preset</span></small><b id="curName"></b></button>
+    <button type="button" class="step" id="nextP" data-aria-zh="下一个预设" data-aria-en="Next preset">›</button>
+  </div>
 
   <section class="refs" data-aria-zh="参考资料" data-aria-en="References">
     <header><h2><span class="zh">参考资料</span><span class="en">References</span></h2><span class="hint"><span class="zh">算法、印刷特性和油墨色值的出处</span><span class="en">Sources for the algorithms, print behaviour and ink colours</span></span></header>
@@ -844,7 +878,7 @@ function render(canvas, p, srcCanvas){
 /* ---------- UI ---------- */
 const out = $('out');
 let queued = false, lastResult = null;
-function schedule(){ if (queued) return; queued = true; requestAnimationFrame(() => { queued = false; lastResult = render(out, P, srcC); syncInfo(); drawSeps(); }); }
+function schedule(){ if (queued) return; queued = true; requestAnimationFrame(() => { queued = false; lastResult = render(out, P, srcC); syncInfo(); drawSeps(); syncDock(); }); }
 
 function seg(el, items, key){
   el.innerHTML = '';
@@ -1011,18 +1045,21 @@ function srcFor(kind){
   if (!srcCache[kind]){ const c = document.createElement('canvas'); c.width = c.height = S; drawSource(c, kind); srcCache[kind] = c; }
   return srcCache[kind];
 }
+const REDUCED_M = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function choosePreset(i){
+  const pr = PRESETS[i];
+  featOff = new Set(); applyPreset(i); activePreset = i;
+  if (pr.src && srcKind!=='upload'){ srcKind = pr.src; drawSource(); }
+  else if (!pr.src && srcKind==='seal'){ srcKind = 'scene'; drawSource(); }
+  syncControls(); schedule();
+}
 PRESETS.forEach((pr, i) => {
   const card = document.createElement('button'); card.type='button'; card.className='card';
   const cv = document.createElement('canvas'); cv.width = cv.height = 220;
   card.appendChild(cv);
   const st = document.createElement('strong'), sp = document.createElement('span');
   card.append(st, sp); cardText.push([st, sp, pr]);
-  card.addEventListener('click', () => {
-    featOff = new Set(); applyPreset(i); activePreset = i;
-    if (pr.src && srcKind!=='upload'){ srcKind = pr.src; drawSource(); }
-    else if (!pr.src && srcKind==='seal'){ srcKind = 'scene'; drawSource(); }
-    syncControls(); schedule(); window.scrollTo({top:0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
-  });
+  card.addEventListener('click', () => { choosePreset(i); window.scrollTo({top:0, behavior: REDUCED_M ? 'auto' : 'smooth'}); });
   $('sheet').appendChild(card); thumbs.push([cv, Object.assign({}, DEFAULTS, pr.p), pr.src]);
 });
 function renderThumbs(){
@@ -1035,6 +1072,34 @@ function refreshSource(){ Object.keys(srcCache).forEach(k => delete srcCache[k])
 function syncSrcHint(){
   $('srcHint').textContent = srcHintState==='using' && uploadName ? T(UI.using)(uploadName) : srcHintState==='bad' ? T(UI.bad) : T(UI.srcHint);
 }
+/* preset dock: ‹ › flip through presets, the middle button opens a list; the proof stays in view */
+function syncDock(){
+  $('curName').textContent = activePreset==null ? (LANG==='zh' ? '自定义参数' : 'Custom settings') : T(PRESETS[activePreset].name);
+  document.querySelectorAll('#qps .qp').forEach(b => b.setAttribute('aria-pressed', +b.dataset.i===activePreset));
+}
+function buildTray(){
+  $('qps').innerHTML = PRESETS.map((pr, i) => `<button type="button" class="qp" data-i="${i}">${T(pr.name)}<small>${T(pr.tag)}</small></button>`).join('');
+  $('qps').querySelectorAll('.qp').forEach(b => b.addEventListener('click', () => { pick(+b.dataset.i); }));
+  syncDock();
+}
+function proofInView(){ const r = document.querySelector('.frame').getBoundingClientRect(); return r.bottom > 80 && r.top < innerHeight - 80; }
+function pick(i){
+  choosePreset(i); syncDock();
+  if (!proofInView()) document.querySelector('.frame').scrollIntoView({block:'start', behavior: REDUCED_M ? 'auto' : 'smooth'});
+}
+const step = d => pick(((activePreset==null ? (d>0 ? -1 : 0) : activePreset) + d + PRESETS.length) % PRESETS.length);
+$('prevP').addEventListener('click', () => step(-1));
+$('nextP').addEventListener('click', () => step(1));
+function setTray(open){ $('tray').hidden = !open; $('curP').setAttribute('aria-expanded', open); }
+$('curP').addEventListener('click', () => setTray($('tray').hidden));
+$('toSheet').addEventListener('click', () => { setTray(false); document.querySelector('.presets').scrollIntoView({block:'start', behavior: REDUCED_M ? 'auto' : 'smooth'}); });
+document.addEventListener('keydown', e => { if (e.key==='Escape' && !$('tray').hidden){ setTray(false); $('curP').focus(); } });
+document.addEventListener('pointerdown', e => { if (!$('tray').hidden && !e.target.closest('#tray, #dock')) setTray(false); });
+// the dock steps aside once the full contact sheet of presets is on screen
+if ('IntersectionObserver' in window){
+  new IntersectionObserver(es => es.forEach(en => { $('dock').classList.toggle('away', en.isIntersecting); if (en.isIntersecting) setTray(false); }), {threshold:.15}).observe(document.querySelector('.presets'));
+}
+
 function applyLang(l){
   LANG = l;
   const root = document.documentElement;
@@ -1045,6 +1110,7 @@ function applyLang(l){
   document.querySelectorAll('[data-setlang]').forEach(b => b.setAttribute('aria-pressed', b.dataset.setlang===l));
   buildControls();
   cardText.forEach(([st, sp, pr]) => { st.textContent = T(pr.name); sp.textContent = T(pr.tag); });
+  buildTray();
   syncSrcHint(); syncControls(); syncInfo(); drawSeps();
   try { localStorage.setItem('printlab-lang', l); } catch(e){}
 }

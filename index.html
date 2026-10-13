@@ -176,17 +176,19 @@ a.labcard:focus-visible{outline:2.5px solid var(--blue);outline-offset:4px}
       <span class="btn go"><span class="zh">打开 →</span><span class="en">Open →</span></span>
     </a>
 
-    <div class="labcard soon" aria-disabled="true">
+    <a class="labcard" data-page="object" href="object.html">
       <div class="proofbox"><svg id="pvObject" viewBox="0 0 400 500" aria-hidden="true"></svg></div>
-      <div class="lhead"><span class="num">03</span><span class="status soon"><span class="zh">下一个</span><span class="en">Next</span></span></div>
+      <div class="lhead"><span class="num">03</span><span class="status"><span class="zh">可用 · 简版</span><span class="en">Open · lite</span></span></div>
       <h2><span class="zh">实物实验室</span><span class="en">Object Lab</span><small><span class="zh">Object lab</span><span class="en">实物实验室</span></small></h2>
-      <p><span class="zh">纸怎么变成拿在手里的东西。正在筹备。</span><span class="en">How paper becomes something you hold. In preparation.</span></p>
+      <p><span class="zh">纸怎么变成拿在手里的东西：拼版、折线、裁切和印前检查。</span><span class="en">How paper becomes something you hold: imposition, folds, cuts and preflight.</span></p>
       <ul>
         <li><span class="zh">画幅与出血</span><span class="en">Formats and bleed</span></li>
         <li><span class="zh">一张纸折成 8 页的 zine</span><span class="en">An 8-page zine from one sheet</span></li>
-        <li><span class="zh">印前检查</span><span class="en">Preflight checks</span></li>
+        <li><span class="zh">对折、三折页、骑马钉小册与爬移</span><span class="en">Bi-folds, tri-folds, saddle-stitch booklets and creep</span></li>
+        <li><span class="zh">印前检查，含 Riso 印不到的纸边</span><span class="en">Preflight, including the Riso no-print edge</span></li>
       </ul>
-    </div>
+      <span class="btn go"><span class="zh">打开 →</span><span class="en">Open →</span></span>
+    </a>
   </main>
 
   <section class="split" data-aria-zh="三个实验室怎么分工" data-aria-en="How the labs divide the work">
@@ -210,11 +212,12 @@ a.labcard:focus-visible{outline:2.5px solid var(--blue);outline-offset:4px}
 (() => {
   const h = location.hostname;
   const local = h.endsWith('github.io') || location.protocol === 'file:' || h === 'localhost' || h === '127.0.0.1';
-  const FILE = {home:'index.html', print:'print.html', layout:'layout.html'};
+  const FILE = {home:'index.html', print:'print.html', layout:'layout.html', object:'object.html'};
   const ART = {
     home:'https://claude.ai/artifact/PeE1kDmTykEsa3FWtq1ujK',
     print:'https://claude.ai/artifact/BEBGEYAVkseDmEd78EbxS4',
     layout:'https://claude.ai/artifact/3kpSy3NxXfTr8N6h2EhqAB',
+    object:'https://claude.ai/artifact/MDsc8WCa1yWzZArUPnWvAo',
   };
   const wire = () => document.querySelectorAll('a[data-page]').forEach(a => {
     const k = a.dataset.page;

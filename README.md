@@ -7,7 +7,7 @@
 | `index.html` | 入口：三个实验室和它们的分工 |
 | `print.html` | 01 印痕实验室：图像怎么变成墨点，墨点怎么落在纸上 |
 | `layout.html` | 02 版式实验室：元素怎么在页面上排 |
-| — | 03 实物实验室：画幅、出血、折页、印前检查（筹备中） |
+| `object.html` | 03 实物实验室（简版）：拼版、出血、安全区、折线与裁切、骑马钉爬移、印前检查 |
 
 ## 目录结构与构建
 
@@ -56,7 +56,7 @@ python3 build.py
 
 ## English
 
-**Print Labs** is a set of interactive experiments with Swiss, Riso and halftone print styles. `index.html` is the hub; `print.html` is the Print Texture Lab and `layout.html` the Layout Lab; an Object Lab (formats, bleed, folding, preflight) is next. Sources live in `src/` (`shared.css` holds the styles every page shares, `links.js` the links between pages); run `python3 build.py` to generate the pages in the repo root for GitHub Pages and body-only versions in `dist/` for claude.ai. Do not edit the generated root html files.
+**Print Labs** is a set of interactive experiments with Swiss, Riso and halftone print styles. `index.html` is the hub; `print.html` is the Print Texture Lab and `layout.html` the Layout Lab; `object.html` is a lite Object Lab (imposition, bleed, safe area, folds and cuts, saddle-stitch creep, preflight). Sources live in `src/` (`shared.css` holds the styles every page shares, `links.js` the links between pages); run `python3 build.py` to generate the pages in the repo root for GitHub Pages and body-only versions in `dist/` for claude.ai. Do not edit the generated root html files.
 
 **Print Texture Lab** is a browser playground for print textures: halftone screens, Riso-style overprinting, print flaws, related print processes and duotones. It is a single self-contained `print.html`; uploaded photos are processed locally and never leave the browser.
 

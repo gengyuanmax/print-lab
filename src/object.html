@@ -1,0 +1,322 @@
+<title>实物实验室</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@400;700;900&display=swap">
+<style>
+/*@shared*/
+/* Object lab: the same proof sheet, but the proof is the press sheet itself: trim, bleed, safe area, folds, cuts and page order. */
+@media (max-width:900px){.lab{grid-template-columns:minmax(0,1fr)}}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.toolbar .row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.proof{background:var(--sheet);border:1px solid var(--rule);padding:20px;display:flex;flex-direction:column;gap:18px}
+.side{display:flex;flex-direction:column;gap:6px}
+.side svg{display:block;width:100%;height:auto;overflow:visible}
+.spreads{display:flex;flex-wrap:wrap;gap:18px 14px;align-items:flex-end}
+.spreads .side{flex:none}
+.cap{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.04em}
+.legend i{display:inline-block;width:18px;height:0;border-top:2px solid;vertical-align:middle;margin-right:6px}
+.checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.checks li{display:grid;grid-template-columns:4.2em minmax(0,1fr);gap:10px;align-items:baseline;font-size:13.5px;border-top:1px solid var(--rule);padding-top:6px}
+.checks li b{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;padding:2px 6px;border:1.5px solid var(--ink);justify-self:start}
+.checks li.ok b{background:var(--ink);color:var(--sheet)}
+.checks li.warn b{border-color:#C2183C;color:#C2183C}
+.checks li.info b{border-style:dashed;color:var(--muted);border-color:var(--muted)}
+.checks li span{text-wrap:pretty}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+.metric{border-top:1.5px solid var(--ink);padding-top:6px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.metric span{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.metric b{font-family:var(--display);font-weight:800;font-size:22px;line-height:1.1;font-variant-numeric:tabular-nums}
+.metric i{font-style:normal;font-size:12px;color:var(--muted)}
+.row2{display:grid;grid-template-columns:8em minmax(0,1fr);gap:10px;align-items:start;font-size:13.5px}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{flex:1 1 auto}
+.field.off,.row2.off{opacity:.4;pointer-events:none}
+.refs h2{margin:0 0 14px;font-family:var(--display);font-weight:800;font-size:28px;letter-spacing:-.01em}
+.refs ol{margin:0;padding-left:1.6em;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px 32px;font-size:14px}
+.refs li > span{font-size:12.5px;color:var(--muted)}
+</style>
+
+<div class="wrap">
+  <header class="mast">
+    <div class="mast-top">
+      <div class="eyebrow"><a data-page="home" href="index.html"><span class="zh">← 印刷实验室</span><span class="en">← Print Labs</span></a><span>03 · Object lab · <span class="zh">画幅 / 出血 / 折页 / 印前</span><span class="en">Format / Bleed / Folding / Preflight</span></span><a data-page="layout" href="layout.html"><span class="zh">← 版式实验室</span><span class="en">← Layout Lab</span></a></div>
+      <div class="langsw" role="group" aria-label="Language / 语言">
+        <button type="button" data-setlang="zh" lang="zh-CN">中文</button>
+        <button type="button" data-setlang="en" lang="en">EN</button>
+      </div>
+    </div>
+    <h1 class="mis"><span aria-hidden="true"><span class="zh">实物实验室</span><span class="en">Object Lab</span></span><span><span class="zh">实物实验室</span><span class="en">Object Lab</span></span></h1>
+    <p class="lede"><span class="zh">印好的纸怎么变成一件东西：选成品和尺寸，看它在印刷机的纸上怎么拼版、哪里折、哪里裁、出血和安全区在哪，再过一遍印前检查。</span><span class="en">How a printed sheet becomes an object: pick a product and a size, then see how its pages are imposed on the press sheet, where it folds and cuts, where the bleed and safe area are, and run a preflight check.</span></p>
+  </header>
+
+  <main class="lab">
+    <section class="stage" data-aria-zh="拼版预览" data-aria-en="Imposition preview">
+      <div class="toolbar">
+        <div class="row" role="group">
+          <button class="btn" type="button" data-view="sheet"><span class="zh">印张（拼版）</span><span class="en">Press sheet</span></button>
+          <button class="btn" type="button" data-view="read"><span class="zh">读者看到的顺序</span><span class="en">Reading order</span></button>
+        </div>
+        <span class="cap" id="dimTag"></span>
+      </div>
+      <div class="proof" id="proof"></div>
+      <div class="legend">
+        <span><i style="border-color:#FF48B0"></i><span class="zh">出血</span><span class="en">Bleed</span></span>
+        <span><i style="border-color:#1C1B22"></i><span class="zh">裁切线</span><span class="en">Trim</span></span>
+        <span><i style="border-color:#0078BF;border-top-style:dashed"></i><span class="zh">安全区</span><span class="en">Safe area</span></span>
+        <span><i style="border-color:#1C1B22;border-top-style:dashed"></i><span class="zh">折线</span><span class="en">Fold</span></span>
+        <span><i style="border-color:#C2183C"></i><span class="zh">裁开</span><span class="en">Cut</span></span>
+        <span id="lgRiso"><i style="border-color:#8a8794;border-top-style:dotted"></i><span class="zh">Riso 印不到的边</span><span class="en">Riso no-print edge</span></span>
+      </div>
+      <div class="metrics" id="metrics"></div>
+      <ul class="checks" id="checks" aria-live="polite"></ul>
+      <p class="note"><span class="zh">检查项按常见的印厂要求给出，最终以你的印厂为准。爬移（creep）按“（纸张数 − 1）× 纸厚”估算，纸厚由克重粗略换算，最好实际量一下。</span><span class="en">Checks follow common print-shop requirements; your shop's own spec wins. Creep is estimated as (sheets − 1) × caliper, with caliper roughly derived from paper weight; measure your stock if you can.</span></p>
+    </section>
+
+    <aside class="panel" id="panel" data-aria-zh="参数" data-aria-en="Settings"></aside>
+  </main>
+
+  <section class="refs" data-aria-zh="参考资料" data-aria-en="References">
+    <h2><span class="zh">参考资料</span><span class="en">References</span></h2>
+    <ol>
+      <li><a href="https://en.wikipedia.org/wiki/Paper_size#A_series" target="_blank" rel="noopener">Paper size · A series</a><span><span class="zh">Wikipedia · ISO 216 的 A 系列尺寸，对折后比例不变</span><span class="en">Wikipedia · ISO 216 A sizes; halving a sheet keeps its proportions</span></span></li>
+      <li><a href="https://en.wikipedia.org/wiki/Bleed_(printing)" target="_blank" rel="noopener">Bleed (printing)</a><span><span class="zh">Wikipedia · 出血：印到裁切线外，裁掉后不留白边</span><span class="en">Wikipedia · printing past the trim so no white edge is left after cutting</span></span></li>
+      <li><a href="https://en.wikipedia.org/wiki/Imposition" target="_blank" rel="noopener">Imposition</a><span><span class="zh">Wikipedia · 拼版：把页面排到印张上，方便印刷和装订</span><span class="en">Wikipedia · arranging pages on the press sheet for printing and binding</span></span></li>
+      <li><a href="https://v2.4over4.com/guide/booklet-page-counts-multiples-of-four-and-creep-explained" target="_blank" rel="noopener">Booklet page counts and creep</a><span><span class="zh">4over4 · 页数为什么是 4 的倍数；爬移约等于（纸张数 − 1）× 纸厚；出血 0.125 英寸，安全距离 0.25 英寸</span><span class="en">4over4 · why page counts come in fours; creep ≈ (sheets − 1) × caliper; 0.125 in bleed, 0.25 in safe margin</span></span></li>
+      <li><a href="https://oxfordgreenprint.com/home/design-for-riso/" target="_blank" rel="noopener">Design for Riso</a><span><span class="zh">Oxford Greenprint · Riso 印不到纸边，A3 四边约 5mm 印得不好，建议留至少 7mm</span><span class="en">Oxford Greenprint · Riso cannot print to the edge; the 5 mm near each A3 edge prints poorly; leave at least 7 mm</span></span></li>
+      <li><a href="https://thesandwichclub.cargo.site/file-setup" target="_blank" rel="noopener">File setup · The Sandwich Club</a><span><span class="zh">Riso 工作室 · A3 四周固定留 10mm 白边，满版需要 3mm 出血并裁切</span><span class="en">Riso studio · a fixed 10 mm border around A3; full bleed needs 3 mm bleed and trimming</span></span></li>
+    </ol>
+    <p class="note" style="margin-top:14px"><span class="zh">8 页小折 zine 的拼版是常见的一张纸折法；三折页内折页略窄，是常见做法，具体数值以印厂为准。</span><span class="en">The 8-page mini zine follows the common one-sheet fold; the narrower inside flap of a tri-fold is common practice, with exact values set by the print shop.</span></p>
+  </section>
+</div>
+
+<script>/*@links*/</script>
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+const L = (zh, en) => ({zh, en});
+let LANG = 'zh';
+try { const v = localStorage.getItem('printlab-lang'); LANG = v==='en'||v==='zh' ? v : ((navigator.language||'').toLowerCase().startsWith('zh') ? 'zh' : 'en'); }
+catch(e){ LANG = (navigator.language||'').toLowerCase().startsWith('zh') ? 'zh' : 'en'; }
+const T = o => (o && typeof o==='object' && 'zh' in o) ? o[LANG] : o;
+
+const SIZES = {A6:[105,148], A5:[148,210], A4:[210,297], A3:[297,420]};
+const P = {product:'zine', size:'A4', orient:'portrait', pages:16, gsm:100, bleed:3, safe:6, press:'riso', view:'sheet'};
+
+const PRODUCTS = [
+  ['poster', L('单张海报','Poster')], ['zine', L('8 页小折','8-page zine')], ['bifold', L('对折','Bi-fold')], ['trifold', L('三折页','Tri-fold')], ['booklet', L('骑马钉小册','Saddle-stitch')]];
+const GROUPS = [
+  {t:L('成品','Product'), s:'PRODUCT', hint:L('先决定做成什么：一张、一折、还是一本。','First decide what it becomes: a sheet, a fold or a booklet.'), items:[
+    {type:'seg', key:'product', label:L('类型','Type'), opts:PRODUCTS},
+    {type:'seg', key:'size', label:()=>P.product==='zine' || P.product==='trifold' ? L('印张尺寸','Sheet size') : L('成品尺寸','Finished size'), opts:Object.keys(SIZES).map(k => [k, L(k,k)])},
+    {type:'seg', key:'orient', label:L('方向','Orientation'), opts:[['portrait',L('竖','Portrait')],['landscape',L('横','Landscape')]], when:()=>P.product==='poster' || P.product==='bifold'},
+    {type:'range', key:'pages', label:L('页数','Pages'), min:8, max:48, step:4, fmt:v=>v+(LANG==='zh'?' 页':' pp'), when:()=>P.product==='booklet'},
+  ]},
+  {t:L('纸与边','Paper & edges'), s:'EDGES', hint:L('出血让色块印到裁切线外；安全区让文字离裁切线足够远。','Bleed carries colour past the trim; the safe area keeps text far enough from it.'), items:[
+    {type:'range', key:'bleed', label:L('出血','Bleed'), min:0, max:5, step:.5, fmt:v=>v+' mm'},
+    {type:'range', key:'safe', label:L('安全距离','Safe margin'), min:2, max:15, step:1, fmt:v=>v+' mm'},
+    {type:'seg', key:'gsm', label:L('纸张克重','Paper weight'), opts:[[80,L('80 g','80 g')],[100,L('100 g','100 g')],[120,L('120 g','120 g')],[160,L('160 g','160 g')],[250,L('250 g','250 g')]]},
+  ]},
+  {t:L('印刷','Press'), s:'PRESS', hint:L('Riso 只能印到 A3，而且纸边一圈印不到；满版要印在更大的纸上再裁。','Riso prints up to A3 and cannot reach the sheet edge; full bleed means printing on a bigger sheet and trimming.'), items:[
+    {type:'seg', key:'press', label:L('印刷方式','Press'), opts:[['riso',L('Riso','Riso')],['digital',L('数码 / 胶印','Digital / offset')]]},
+  ]},
+];
+
+/* ---------- imposition: every product becomes a list of press-sheet sides; each side is a grid of panels ---------- */
+// panel: {n: page number or label, rot: 180 for upside-down, w: width in mm}
+function impose(){
+  const [sw, sh] = SIZES[P.size], land = P.orient==='landscape';
+  const pw = land ? sh : sw, ph = land ? sw : sh;
+  if (P.product==='poster') return {page:[pw,ph], sides:[{name:L('正面','Front'), cols:1, rows:1, panels:[{n:1}]}], folds:[], cuts:[], sheets:1, pages:1};
+  if (P.product==='zine'){
+    const W = Math.max(sw,sh), H = Math.min(sw,sh);       // the sheet lies landscape, 4 × 2 pages
+    return {page:[W/4, H/2], sides:[{name:L('单面印刷','One side'), cols:4, rows:2, panels:[{n:5,rot:180},{n:4,rot:180},{n:3,rot:180},{n:2,rot:180},{n:6},{n:7},{n:8},{n:1}]}],
+      folds:'zine', cuts:'zine', sheets:1, pages:8, sheet:[W,H]};
+  }
+  if (P.product==='bifold') return {page:[pw,ph], sides:[{name:L('外面','Outside'), cols:2, rows:1, panels:[{n:4},{n:1}]},{name:L('里面','Inside'), cols:2, rows:1, panels:[{n:2},{n:3}]}], folds:'cols', cuts:[], sheets:1, pages:4};
+  if (P.product==='trifold'){
+    // the size is the flat sheet, lying landscape and folded in thirds; the panel that folds in is 2 mm narrower so it tucks in
+    const W = Math.max(sw,sh), H = Math.min(sw,sh), a = (W + 2)/3, inner = a - 2;
+    return {page:[a,H], sides:[{name:L('外面','Outside'), cols:3, rows:1, panels:[{n:5,w:inner},{n:6},{n:1}]},{name:L('里面','Inside'), cols:3, rows:1, panels:[{n:2},{n:3},{n:4,w:inner}]}], folds:'cols', cuts:[], sheets:1, pages:6, narrow:true};
+  }
+  // saddle stitch: N pages on N/4 sheets, each sheet printed both sides as printer's spreads
+  const N = P.pages, S = N/4, sides = [];
+  for (let k=0;k<S;k++){
+    sides.push({name:L(`第 ${k+1} 张 · 正面`, `Sheet ${k+1} · front`), cols:2, rows:1, panels:[{n:N-2*k},{n:1+2*k}]});
+    sides.push({name:L(`第 ${k+1} 张 · 背面`, `Sheet ${k+1} · back`), cols:2, rows:1, panels:[{n:2+2*k},{n:N-1-2*k}]});
+  }
+  return {page:[pw,ph], sides, folds:'cols', cuts:[], sheets:S, pages:N};
+}
+
+/* ---------- drawing ---------- */
+const PINK = '#FF48B0', BLUE = '#0078BF', INK = '#1C1B22', RED = '#C2183C', PAPER = '#FFFFFF';
+function pageArt(x, y, w, h, n, rot, isCover, ext){
+  // a tiny layout inside each page, so the orientation and the safe area read at a glance
+  const s = P.safe, cx = x + w/2, cy = y + h/2;
+  const fs = Math.min(w, h)*.32;
+  let g = `<g${rot ? ` transform="rotate(180 ${cx} ${cy})"` : ''}>`;
+  if (isCover){ const e = ext || {}, bl = P.bleed, l = e.l ? bl : 0, r = e.r ? bl : 0, bt = e.b ? bl : 0;
+    g += `<rect x="${x - l}" y="${y + h*.55}" width="${w + l + r}" height="${h*.45 + bt}" fill="${PINK}" opacity=".85"/>`; }
+  g += `<text x="${x + s}" y="${y + s + fs*.8}" font-family="Bricolage Grotesque, sans-serif" font-weight="800" font-size="${fs}" fill="${n===1 ? BLUE : INK}">${n}</text>`;
+  const lw = w - 2*s, lh = Math.max(.6, h*.012);
+  for (let i=0;i<4;i++) g += `<rect x="${x + s}" y="${y + h*.42 + i*lh*3.2}" width="${lw*(i===3 ? .5 : .9)}" height="${lh}" fill="${INK}" opacity=".35"/>`;
+  return g + '</g>';
+}
+function drawSide(side, im, idx){
+  const [pw, ph] = im.page, b = P.bleed, s = P.safe;
+  const widths = side.panels.map(p => p.w || pw);
+  const cols = side.cols, rows = side.rows;
+  const trimW = widths.slice(0, cols).reduce((a,c)=>a+c,0), trimH = ph*rows;
+  const pad = 14 + b;                                    // room for crop marks
+  const VW = trimW + 2*pad, VH = trimH + 2*pad, ox = pad, oy = pad;
+  let svg = `<svg viewBox="0 0 ${VW} ${VH}" role="img" aria-label="${T(side.name)}">`;
+  // bleed and trim
+  svg += `<rect x="${ox-b}" y="${oy-b}" width="${trimW+2*b}" height="${trimH+2*b}" fill="${b>0 ? 'rgba(255,72,176,.12)' : 'none'}" stroke="${b>0 ? PINK : 'none'}" stroke-width=".5"/>`;
+  svg += `<rect x="${ox}" y="${oy}" width="${trimW}" height="${trimH}" fill="${PAPER}" stroke="${INK}" stroke-width=".6"/>`;
+  // panels
+  let px = ox;
+  side.panels.forEach((p, i) => {
+    const c = i % cols, r = Math.floor(i / cols), w = widths[i];
+    if (c===0) px = ox;
+    const x = px, y = oy + r*ph;
+    svg += `<rect x="${x + s}" y="${y + s}" width="${Math.max(0, w - 2*s)}" height="${Math.max(0, ph - 2*s)}" fill="none" stroke="${BLUE}" stroke-width=".45" stroke-dasharray="2 1.5"/>`;
+    svg += pageArt(x, y, w, ph, p.n, p.rot, p.n===1 && im.pages>1 || (P.product==='poster'), {l:c===0, r:c===cols-1, b:r===rows-1});
+    px += w;
+  });
+  // folds and cuts
+  const dash = `stroke="${INK}" stroke-width=".45" stroke-dasharray="3 2"`;
+  if (im.folds==='cols' || im.folds==='zine'){
+    let fx = ox; for (let c=0;c<cols-1;c++){ fx += widths[c]; svg += `<line x1="${fx}" y1="${oy}" x2="${fx}" y2="${oy+trimH}" ${dash}/>`; }
+  }
+  if (im.folds==='zine'){
+    svg += `<line x1="${ox}" y1="${oy+ph}" x2="${ox+trimW}" y2="${oy+ph}" ${dash}/>`;
+    svg += `<line x1="${ox+widths[0]}" y1="${oy+ph}" x2="${ox+trimW-widths[3]}" y2="${oy+ph}" stroke="${RED}" stroke-width="1.2"/>`;
+  }
+  // crop marks at the trim corners, outside the bleed
+  const cm = (x, y, sx, sy) => `<path d="M${x} ${y - sy*(b+2)}V${y - sy*(b+10)}M${x - sx*(b+2)} ${y}H${x - sx*(b+10)}" stroke="${INK}" stroke-width=".35" fill="none"/>`;
+  svg += cm(ox, oy, 1, 1) + cm(ox+trimW, oy, -1, 1) + cm(ox, oy+trimH, 1, -1) + cm(ox+trimW, oy+trimH, -1, -1);
+  svg += '</svg>';
+  return {svg, trimW, trimH};
+}
+function drawRiso(trimW, trimH){
+  // the trimmed piece plus bleed, placed on an A3 Riso sheet with its no-print border
+  const A3 = [297, 420], land = trimW > trimH, SW = land ? A3[1] : A3[0], SH = land ? A3[0] : A3[1], edge = 5;
+  const b = P.bleed, w = trimW + 2*b, h = trimH + 2*b, x = (SW - w)/2, y = (SH - h)/2;
+  return `<svg viewBox="-6 -6 ${SW+12} ${SH+12}" role="img" aria-label="A3"><rect x="0" y="0" width="${SW}" height="${SH}" fill="#fff" stroke="${INK}" stroke-width="1"/>`
+    + `<rect x="${edge}" y="${edge}" width="${SW-2*edge}" height="${SH-2*edge}" fill="none" stroke="#8a8794" stroke-width="1" stroke-dasharray="1 3"/>`
+    + `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="rgba(255,72,176,.18)" stroke="${PINK}" stroke-width="1"/>`
+    + `<rect x="${x+b}" y="${y+b}" width="${trimW}" height="${trimH}" fill="none" stroke="${INK}" stroke-width="1"/>`
+    + `<text x="${SW/2}" y="${SH-14}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#5E5C66">A3 · ${SW} × ${SH} mm</text></svg>`;
+}
+function drawReading(im){
+  // reader spreads: the cover alone on the right, then facing pages, the back cover alone on the left
+  const [pw, ph] = im.page, n = im.pages;
+  const spreads = n===1 ? [[1]] : P.product==='trifold' ? [[1],[2,3,4],[5,6]] : (() => { const out = [[null,1]]; for (let i=2;i<n;i+=2) out.push([i, i+1]); out.push([n, null]); return out; })();
+  return '<div class="spreads">' + spreads.map(sp => {
+    const W = pw*sp.length, VW = W + 8, VH = ph + 8;
+    let g = `<svg viewBox="-4 -4 ${VW} ${VH}" style="width:${sp.length*Math.min(110, 300*pw/Math.max(pw,ph)) }px">`;
+    sp.forEach((p, i) => {
+      const x = i*pw;
+      if (p==null){ g += `<rect x="${x}" y="0" width="${pw}" height="${ph}" fill="none" stroke="${INK}" stroke-width=".3" stroke-dasharray="2 2" opacity=".4"/>`; return; }
+      g += `<rect x="${x}" y="0" width="${pw}" height="${ph}" fill="#fff" stroke="${INK}" stroke-width=".5"/>` + pageArt(x, 0, pw, ph, p, 0, p===1 && n>1 || n===1, {});
+    });
+    if (sp.length===2 && sp[0]!=null && sp[1]!=null) g += `<line x1="${pw}" y1="0" x2="${pw}" y2="${ph}" stroke="${INK}" stroke-width=".4" stroke-dasharray="3 2"/>`;
+    return `<div class="side">${g}</svg></div>`;
+  }).join('') + '</div>';
+}
+
+/* ---------- numbers and preflight ---------- */
+const caliper = gsm => gsm * .00125;                     // mm; uncoated stock is roughly 1.25 cm³/g, so 100 g ≈ 0.125 mm
+function render(){
+  const im = impose(), proof = $('proof');
+  const sides = im.sides.map(sd => ({sd, ...drawSide(sd, im)}));
+  const {trimW, trimH} = sides[0];
+  if (P.view==='sheet'){
+    proof.innerHTML = sides.map(o => `<div class="side"><span class="cap">${T(o.sd.name)}</span>${o.svg}</div>`).join('')
+      + (P.press==='riso' ? `<div class="side"><span class="cap">${LANG==='zh'?'放在 Riso 的 A3 纸上（虚线以外印不到）':'On a Riso A3 sheet (nothing prints outside the dotted line)'}</span>${drawRiso(trimW, trimH)}</div>` : '');
+  } else {
+    proof.innerHTML = `<span class="cap">${LANG==='zh'?'翻开时读者看到的页面':'What the reader sees when turning the pages'}</span>` + drawReading(im);
+  }
+  $('lgRiso').hidden = P.press!=='riso' || P.view!=='sheet';
+  $('dimTag').textContent = `${LANG==='zh'?'成品页':'Page'} ${Math.round(im.page[0])} × ${Math.round(im.page[1])} mm · ${LANG==='zh'?'印张':'Sheet'} ${Math.round(trimW)} × ${Math.round(trimH)} mm`;
+
+  // metrics
+  const cal = caliper(P.gsm), creep = (im.sheets - 1) * cal;
+  const M = (k, v, sub) => `<div class="metric"><span>${k}</span><b>${v}</b><i>${sub}</i></div>`;
+  const zh = LANG==='zh';
+  $('metrics').innerHTML = M(zh?'页数':'Pages', im.pages, zh?'含封面':'including covers') + M(zh?'印张':'Sheets', im.sheets, zh?'每本':'per copy')
+    + M(zh?'纸厚':'Caliper', cal.toFixed(2)+' mm', zh?'由克重估算':'estimated from weight') + M(zh?'爬移':'Creep', creep.toFixed(2)+' mm', zh?'中间页向外推出':'middle pages push out');
+
+  // preflight
+  const C = [], add = (lvl, zhT, enT) => C.push([lvl, zh ? zhT : enT]);
+  if (P.bleed >= 3) add('ok', `出血 ${P.bleed} mm，满足常见的 3 mm 要求。`, `${P.bleed} mm bleed meets the common 3 mm requirement.`);
+  else if (P.bleed > 0) add('warn', `出血只有 ${P.bleed} mm，常见要求是 3 mm；裁切稍有偏差就会露白边。`, `Only ${P.bleed} mm bleed; 3 mm is the common requirement, and a slightly off cut will show a white edge.`);
+  else add('warn', '没有出血：任何碰到纸边的色块，裁切后都可能留下白边。', 'No bleed: anything that touches the edge may end up with a white sliver after trimming.');
+  if (P.safe >= 6) add('ok', `安全距离 ${P.safe} mm，文字不容易被裁到。`, `${P.safe} mm safe margin keeps text clear of the cut.`);
+  else add('warn', `安全距离 ${P.safe} mm 偏小，常见建议至少 6 mm（约 1/4 英寸）。`, `${P.safe} mm is tight; around 6 mm (¼ in) is the usual minimum.`);
+  if (P.product==='booklet'){
+    add(P.pages % 4 === 0 ? 'ok' : 'warn', `${P.pages} 页是 4 的倍数：每张纸对折后正反面共 4 页，封面也算在内。`, `${P.pages} pages is a multiple of 4: each folded sheet carries four pages, covers included.`);
+    if (creep > .5) add('warn', `爬移约 ${creep.toFixed(2)} mm：中间页的外侧内容会更靠近裁切线，外侧安全距离要再留宽一些，交给印厂在拼版时补偿，不要自己挪。`, `About ${creep.toFixed(2)} mm of creep: the middle pages' outer content sits closer to the trim. Widen the fore-edge margin and let the shop compensate in imposition rather than shifting the artwork yourself.`);
+    else add('ok', `爬移约 ${creep.toFixed(2)} mm，可以忽略。`, `About ${creep.toFixed(2)} mm of creep, small enough to ignore.`);
+  }
+  if (P.product==='zine') add('info', '中间那条红线要裁开，再沿折线折成 8 页小册；上排页面倒着印，折好后正好朝上。', 'Cut along the red line in the middle, then fold into an 8-page booklet; the top row is printed upside down so it ends up the right way round.');
+  if (P.product==='trifold') add('info', '往里折的那一页比另外两页窄约 2 mm，这样折进去时不会顶住折线。', 'The panel that folds in is about 2 mm narrower so it tucks in without buckling at the fold.');
+  if (P.press==='riso'){
+    const A3 = [297, 420], fits = (w, h) => (w <= A3[0] && h <= A3[1]) || (w <= A3[1] && h <= A3[0]);
+    const big = [trimW + 2*P.bleed, trimH + 2*P.bleed], printable = [A3[0]-10, A3[1]-10];
+    if (!fits(trimW, trimH)) add('warn', 'Riso 最大只能印 A3，这张印张放不下。', 'Riso prints up to A3; this sheet does not fit.');
+    else if (P.bleed > 0 && !fits(...big.map((v,i)=>v)) ) add('warn', '加上出血后超过 A3：Riso 做不了满版，去掉出血或缩小成品。', 'With bleed it exceeds A3: Riso cannot print it full bleed. Drop the bleed or make the piece smaller.');
+    else if (P.bleed > 0 && !((big[0] <= printable[0] && big[1] <= printable[1]) || (big[0] <= printable[1] && big[1] <= printable[0]))) add('warn', '出血范围落进了 A3 纸边印不到的一圈：满版需要印在更大的纸上再裁，或者成品做小一号。', 'The bleed falls into the unprintable border of the A3 sheet: full bleed needs a bigger sheet and a trim, or a smaller piece.');
+    else add('ok', '印张加出血能放进 A3 的可印区域，印完裁掉多余的纸就是满版。', 'Sheet plus bleed fits inside the printable area of A3; trim off the excess for a full-bleed result.');
+    add('info', 'Riso 的套色会差 1–2 mm，不同颜色的元素之间留点距离，或者干脆让它们叠在一起。', 'Riso colours miss by 1–2 mm; keep different-coloured elements apart or let them overlap on purpose.');
+  }
+  $('checks').innerHTML = C.map(([lvl, t]) => `<li class="${lvl}"><b>${lvl==='ok' ? (zh?'通过':'OK') : lvl==='warn' ? (zh?'注意':'Check') : (zh?'提示':'Note')}</b><span>${t}</span></li>`).join('');
+  document.querySelectorAll('[data-view]').forEach(b => b.setAttribute('aria-pressed', b.dataset.view===P.view));
+}
+
+/* ---------- panel ---------- */
+function buildPanel(){
+  const panel = $('panel'); panel.innerHTML = '';
+  GROUPS.forEach(g => {
+    const box = document.createElement('div'); box.className = 'group';
+    box.innerHTML = `<h2>${T(g.t)} <small>${g.s}</small></h2>` + (g.hint ? `<p class="hint">${T(g.hint)}</p>` : '');
+    g.items.forEach(it => {
+      let d;
+      const lab = () => T(typeof it.label==='function' ? it.label() : it.label);
+      if (it.type==='range'){
+        d = document.createElement('div'); d.className = 'field';
+        d.innerHTML = `<label for="c_${it.key}">${lab()}</label><input type="range" id="c_${it.key}" min="${it.min}" max="${it.max}" step="${it.step}"><output></output>`;
+        const inp = d.querySelector('input'), o = d.querySelector('output');
+        inp.addEventListener('input', () => { P[it.key] = parseFloat(inp.value); sync(); render(); });
+        d._sync = () => { inp.value = P[it.key]; o.textContent = it.fmt(P[it.key]); };
+      } else {
+        d = document.createElement('div'); d.className = 'row2';
+        d.innerHTML = `<span class="lb"></span><div class="seg" role="group"></div>`;
+        const s = d.querySelector('.seg');
+        it.opts.forEach(([v, l]) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = T(l); b.dataset.v = v;
+          b.addEventListener('click', () => { P[it.key] = typeof P[it.key]==='number' ? +v : v; sync(); render(); }); s.appendChild(b); });
+        d._sync = () => { d.querySelector('.lb').textContent = lab(); s.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(P[it.key])===b.dataset.v)); };
+      }
+      const base = d._sync; d._sync = () => { base(); if (it.when) d.classList.toggle('off', !it.when()); };
+      box.appendChild(d);
+    });
+    panel.appendChild(box);
+  });
+  sync();
+}
+function sync(){ document.querySelectorAll('#panel .field, #panel .row2').forEach(d => d._sync && d._sync()); }
+document.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => { P.view = b.dataset.view; render(); }));
+
+function applyLang(l){
+  LANG = l; const r = document.documentElement;
+  r.dataset.lang = l; r.lang = l==='zh' ? 'zh-CN' : 'en';
+  document.title = l==='zh' ? '实物实验室' : 'Object Lab';
+  document.querySelectorAll('[data-setlang]').forEach(b => b.setAttribute('aria-pressed', b.dataset.setlang===l));
+  document.querySelectorAll('[data-aria-zh]').forEach(e => e.setAttribute('aria-label', e.dataset['aria' + (l==='zh' ? 'Zh' : 'En')]));
+  try { localStorage.setItem('printlab-lang', l); } catch(e){}
+  buildPanel(); render();
+}
+document.querySelectorAll('[data-setlang]').forEach(b => b.addEventListener('click', () => { if (b.dataset.setlang!==LANG) applyLang(b.dataset.setlang); }));
+applyLang(LANG);
+})();
+</script>

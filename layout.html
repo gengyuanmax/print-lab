@@ -140,6 +140,36 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
 .notecard em{font-style:normal}
 .notecard a{color:var(--ink);text-decoration-color:var(--blue);text-decoration-thickness:1.5px;text-underline-offset:3px}
 .notecard i{font-style:normal;margin:0 .45em;color:var(--rule)}
+
+/* style cards and comparison */
+.scard{border:1.5px solid var(--ink);background:var(--sheet);padding:14px 14px 12px;display:flex;flex-direction:column;gap:6px;font-size:13.5px}
+.scard p{margin:0;text-wrap:pretty}
+.scard ul{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:3px}
+.shead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.shead b{font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:-.01em}
+.kind{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;border:1.5px solid var(--ink);padding:3px 7px}
+.era{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.ess{font-size:15px;color:var(--ink);border-left:3px solid var(--pink);padding-left:10px}
+.scard .sub{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+.pchips{display:flex;flex-wrap:wrap;gap:6px}
+.pchip{display:inline-flex;gap:6px;align-items:baseline;border:1.5px solid var(--ink);background:transparent;color:var(--ink);font:12.5px var(--body);padding:5px 8px;cursor:pointer}
+.pchip b{font-family:var(--mono);font-size:11.5px}
+.pchip:hover{background:rgba(28,27,34,.07)}
+.mod{font-size:12.5px;color:var(--muted)}
+.src{font-size:12.5px;margin-top:4px}
+.src a{color:var(--ink);text-decoration-color:var(--blue);text-decoration-thickness:1.5px;text-underline-offset:3px}
+.src i{font-style:normal;margin:0 .45em;color:var(--rule)}
+.flash{animation:flash 1.2s ease-out}
+@keyframes flash{0%{background:rgba(255,72,176,.35)}100%{background:transparent}}
+@media (prefers-reduced-motion:reduce){.flash{animation:none;outline:2px solid var(--pink)}}
+.cmptable{overflow-x:auto}
+.cmptable table{width:100%;border-collapse:collapse;font-size:13px}
+.cmptable th,.cmptable td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--rule);vertical-align:top}
+.cmptable thead th{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;border-bottom:1.5px solid var(--ink)}
+.cmptable tbody th{font-weight:500;color:var(--muted);white-space:nowrap;width:1%}
+.cmptable td{font-family:var(--mono);font-size:12px}
+.cmptable tr.diff td{background:rgba(255,72,176,.12)}
+.cmptable .note{margin-top:6px}
 </style>
 
 </head>
@@ -172,6 +202,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
         </div>
       </div>
       <div class="proof"><div class="pages" id="pages"></div></div>
+      <div class="cmptable" id="cmpTable" hidden></div>
       <div class="toolbar">
         <div class="row">
           <button class="btn" type="button" id="exPng"><span class="zh">导出 PNG</span><span class="en">Export PNG</span></button>
@@ -255,7 +286,7 @@ const BASE = {format:'poster', vw:1280, cols:6, margin:.07, gutter:.02, baseline
   pages:1, rhythm:'alternate',
   hoverShift:false, parallax:false, dur:700, ease:'out',
   furn:{reg:true, crop:false, bar:true, folio:true},
-  seed:7, grid:false, mass:false, showPath:false};
+  seed:7, grid:false, mass:false, showPath:false, compare:null};
 const PRESETS = {
   swiss:{name:{zh:'Swiss',en:'Swiss'}, tag:{zh:'严格网格',en:'strict grid'}, p:{cols:12, margin:.065, gutter:.016, pair:'swiss', ratio:1.5, levels:4, titleScale:.15, tWeight:700, tWidth:100, tLead:.92, track:-.035, measure:50, upper:false, align:'left', titleStyle:'solid',
     breakS:0, white:.62, asym:.95, jitter:0, layers:0, axis:0, focal:'thirds', bleed:false, titleCrop:0, path:'f', guide:false, sizeSeq:false, frame:'none', ladder:true, numbers:true,
@@ -506,23 +537,106 @@ document.addEventListener('click', e => { const b = e.target.closest('.info'); i
 window.addEventListener('scroll', () => { tipEl.hidden = true; }, {passive:true});
 const infoBtn = (key, label) => tipFor(key) ? `<button type="button" class="info" data-tip="${key}" data-label="${label}" aria-label="${LANG==='zh'?'说明：':'About: '}${label}">i</button>` : '';
 
+/* ---------- style cards: what each preset is, where it comes from, how it differs (fact-checked against the links) ---------- */
+const KIND = {movement:L('设计运动','Design movement'), technique:L('图像技法','Image technique'), production:L('生产方式与亚文化','Production & subculture'), genre:L('出版类型','Publication genre')};
+const STYLE = {
+  swiss:{kind:'movement', era:L('1930–50 年代成形 · 瑞士巴塞尔、苏黎世','Took shape 1930s–50s · Basel and Zurich, Switzerland'),
+    essence:L('客观、中立地传达信息：设计者是信息的通道，而不是在表达自己。','Present information objectively and neutrally: the designer is a conduit for the message, not a voice of their own.'),
+    traits:[L('以数学网格为起点','Every design starts from a mathematical grid'), L('不对称版面','Asymmetric layouts'), L('无衬线字体，如 Akzidenz-Grotesk、Helvetica','Sans-serif type such as Akzidenz-Grotesk and Helvetica'), L('左对齐、右侧不齐','Flush-left, ragged-right text'), L('偏爱摄影而不是插画','Photography preferred over illustration')],
+    people:L('Ernst Keller、Théo Ballmer、Max Bill、Josef Müller-Brockmann','Ernst Keller, Théo Ballmer, Max Bill, Josef Müller-Brockmann'),
+    vs:[[ 'constructivist', L('同样用几何形和无衬线字，但 Swiss 沿正交网格、追求中立；构成主义为宣传服务，更有鼓动性。','Both use geometry and sans-serif type, but Swiss stays on an orthogonal grid and aims for neutrality; Constructivism served propaganda and is more agitational.')],
+        [ 'editorial', L('两者都依赖网格，但 Swiss 用无衬线字、单页即可成立；杂志用衬线标题，更看重多页之间的节奏。','Both rely on the grid, but Swiss uses sans-serif type and works on a single page; editorial design uses serif headlines and cares about rhythm across pages.')]],
+    keys:['breakS','cols','pair','path','inks','rules'],
+    l:[['International Typographic Style',WK('International_Typographic_Style')],['Helvetica',WK('Helvetica')]]},
+  halftone:{kind:'technique', era:L('1880 年报纸首次印出全色调照片；1950 年代中后期波普艺术把网点放大成风格','1880: the first full-tone newspaper photograph; mid-to-late 1950s: pop art enlarges the dot into a style'),
+    essence:L('让网点本身成为主角：一张放大加网的照片，配上同样巨大的字。“半调海报”是本页对这一类做法的概括，不是一个有明确起点的运动。','Make the dot itself the subject: one enlarged, screened photograph with type just as big. “Halftone poster” is this page\'s name for a family of approaches, not a movement with a clear starting point.'),
+    traits:[L('一张大图，常常出血','One big image, often bleeding off the page'), L('网点粗到肉眼可见','Dots coarse enough to see'), L('超大标题，尺度对比极强','An oversized title and extreme scale contrast'), L('颜色少而饱和','Few, saturated colours')],
+    people:L('Roy Lichtenstein：用 Ben-Day 网点模仿照相制版的效果','Roy Lichtenstein, who used Ben-Day dots to imitate photographic reproduction'),
+    vs:[[ 'zine', L('两者都有网点和少量油墨；半调海报靠一张大图和尺度冲击，Riso zine 靠多层叠印、错位和拼贴。','Both use dots and few inks; the halftone poster relies on one big image and scale, the Riso zine on layered overprints, misregistration and collage.')],
+        [ 'swiss', L('Swiss 也偏爱照片，但照片服从网格；半调海报让照片压过网格。','Swiss also prefers photography, but the photo serves the grid; the halftone poster lets the photo overpower it.')]],
+    keys:['titleScale','imgSpan','cell','bleed','titleCrop','path'],
+    l:[['Halftone',WK('Halftone')],['Pop art',WK('Pop_art')],['Ben-Day dots',WK('Ben-Day_dots')]]},
+  zine:{kind:'production', era:L('1976 年起朋克 zine 用复印机自出版；Risograph 1980 年推出，2010 年代在艺术家、zine 和漫画圈流行','From 1976 punk zines self-published on photocopiers; the Risograph launched in 1980 and became popular with artists, zine makers and comics creators in the 2010s'),
+    essence:L('用便宜、快速的印刷方式自己出版：限制本身成了美学。','Publish it yourself with cheap, fast printing: the constraints become the aesthetic.'),
+    traits:[L('2–3 种专色，叠印出第三种颜色','Two or three spot colours that overprint into a third'), L('各色之间 1–2 mm 的套色错位','1–2 mm misregistration between colours'), L('手工拼贴，元素歪斜叠压','Hand collage: tilted, overlapping elements'), L('保留颗粒、缺墨等“瑕疵”','Grain and ink starvation kept, not fixed')],
+    people:L('《Sniffin\' Glue》（Mark Perry，1976），英国最早也最有名的朋克 zine 之一','Sniffin\' Glue (Mark Perry, 1976), one of the first and best-known UK punk zines'),
+    vs:[[ 'swiss', L('在“秩序 ↔ 混乱”这条轴上，它和 Swiss 位于两端。','On the order ↔ chaos axis, it sits at the opposite end from Swiss.')],
+        [ 'halftone', L('半调海报追求一张图的冲击力，Riso zine 追求多层叠印的手工感。','The halftone poster aims for the impact of one image; the Riso zine for the handmade feel of layered prints.')]],
+    keys:['breakS','inks','tMisX','tGrain','jitter','layers'],
+    l:[['Zine',WK('Zine')],['Risograph',WK('Risograph')],['Design for Riso','https://oxfordgreenprint.com/?p=223']]},
+  editorial:{kind:'genre', era:L('报纸、杂志和书籍出版的长期传统，后来延续到网页','A long tradition in newspapers, magazines and books, later carried onto the web'),
+    essence:L('为连续阅读和翻阅而设计：页与页之间的节奏，比单张的冲击更重要。','Designed for continuous reading and page-turning: the rhythm across pages matters more than the impact of one page.'),
+    traits:[L('衬线展示标题','Display serif headlines'), L('多栏网格','Multi-column grids'), L('精心构图的摄影','Art-directed photography'), L('引文与图注','Pull quotes and captions'), L('快慢交替的节奏：满版图与多栏阅读页交替','Varied pacing: full-bleed spreads alternate with multi-column reading pages')],
+    people:L('它是一个专业领域，而不是单一的视觉运动','A professional field rather than a single visual movement'),
+    vs:[[ 'swiss', L('Swiss 重中立和单页的秩序，杂志重叙事和多页的节奏。','Swiss values neutrality and single-page order; editorial design values narrative and rhythm across pages.')],
+        [ 'halftone', L('杂志里的图像服务于叙事和节奏，不追求单张的冲击力。','Images in a magazine serve the story and the pacing rather than single-page impact.')]],
+    keys:['pair','levels','white','measure','pages','treat'],
+    l:[['Editorial design (daisyUI Trends)','https://trends.daisyui.com/trend/editorial-design/'],['Magazine design for the web','https://webdesignerdepot.com/magazine-design-principles-applied-to-web-design']]},
+  constructivist:{kind:'movement', era:L('1915 年 · 俄国，由 Vladimir Tatlin 与 Alexander Rodchenko 创立','1915 · Russia, founded by Vladimir Tatlin and Alexander Rodchenko'),
+    essence:L('艺术为宣传和社会目的服务，而不是自我表达。本页用斜向主轴表现它的动势，这是本页的诠释。','Art in the service of propaganda and social purpose rather than self-expression. This page expresses its momentum with a diagonal axis; that is this page\'s interpretation.'),
+    traits:[L('几何形状、鲜明色彩、粗壮字体（宣传海报）','Geometric shapes, bright colours and bold lettering in its posters'), L('鼓动性的照相蒙太奇','Agitational photomontage'), L('代表作：红色三角刺入白色圆形（El Lissitzky，1919）','Landmark: a red triangle driven into a white circle (El Lissitzky, 1919)')],
+    people:L('Alexander Rodchenko、El Lissitzky、Varvara Stepanova、Gustav Klutsis','Alexander Rodchenko, El Lissitzky, Varvara Stepanova, Gustav Klutsis'),
+    vs:[[ 'swiss', L('Swiss 中立客观，目的是传达信息；构成主义带有鼓动性，目的是宣传。','Swiss is neutral and objective, aiming to inform; Constructivism is agitational, aiming to persuade.')],
+        [ 'zine', L('两者都会叠压和打破水平线，但构成主义的几何形是有方向的构图，zine 的拼贴更随意。','Both overlap elements and break the horizontal, but Constructivist geometry is directed composition, while zine collage is looser.')]],
+    keys:['axis','titleStyle','frame','angles','inks','layers'],
+    l:[['Constructivism',WK('Constructivism_(art)')],['Beat the Whites with the Red Wedge',WK('Beat_the_Whites_with_the_Red_Wedge')]]},
+};
+let lastPreset = 'zine';
+const ITEM = {}; GROUPS.forEach(g => g.items.forEach(it => { if (it.key) ITEM[it.key] = it; }));
+function fmtVal(key, Q){
+  const it = ITEM[key], v = Q[key];
+  if (!it) return String(v);
+  if (it.type==='range') return it.fmt(v);
+  if (it.type==='seg'){ const o = it.opts.find(([x]) => String(x)===String(v)); return o ? T(o[1]) : String(v); }
+  if (it.type==='checks'){ const on = it.opts.filter(([x]) => v && v[x]).map(([,lab]) => T(lab)); return on.length ? on.join(' · ') : (LANG==='zh'?'无':'none'); }
+  if (it.type==='toggle') return v ? (LANG==='zh'?'开':'On') : (LANG==='zh'?'关':'Off');
+  return String(v);
+}
+const presetQ = id => clone(Object.assign({}, BASE, PRESETS[id].p));
+function styleCard(){
+  const id = lastPreset, st = STYLE[id], pr = PRESETS[id], zh = LANG==='zh';
+  const Q = activePreset===id ? P : presetQ(id);
+  const chips = st.keys.map(k => `<button type="button" class="pchip" data-goto="${k}"><span>${T(ITEM[k].label)}</span><b>${fmtVal(k, Q)}</b></button>`).join('');
+  const others = Object.keys(PRESETS).filter(x => x!==id).map(x => `<button type="button" data-cmp="${x}" aria-pressed="${P.compare===x}">${T(PRESETS[x].name)}</button>`).join('');
+  return `<div class="scard">
+    <div class="shead"><b>${T(pr.name)}</b><span class="kind">${T(KIND[st.kind])}</span></div>
+    <p class="era">${T(st.era)}</p>
+    <p class="ess">${T(st.essence)}</p>
+    <div class="sub">${zh?'特征':'Traits'}</div><ul>${st.traits.map(t => `<li>${T(t)}</li>`).join('')}</ul>
+    <div class="sub">${zh?'代表':'Key figures'}</div><p>${T(st.people)}</p>
+    <div class="sub">${zh?'和其他风格的区别':'How it differs'}</div><ul>${st.vs.map(([o,t]) => `<li><b>${zh?'对比':'vs'} ${T(PRESETS[o].name)}：</b>${T(t)}</li>`).join('')}</ul>
+    <div class="sub">${zh?'定义它的参数（点击跳到控件）':'Defining settings (click to jump)'}</div><div class="pchips">${chips}</div>
+    ${activePreset!==id ? `<p class="mod">${zh?'你已在这个预设的基础上修改了参数，上面显示的是预设原值。':'You have changed settings since loading this preset; the values above are the preset\'s originals.'}</p>` : ''}
+    <div class="sub">${zh?'并排对比':'Compare side by side'}</div><div class="seg cmpbar">${others}${P.compare ? `<button type="button" data-cmp="">${zh?'关闭对比':'Close'}</button>` : ''}</div>
+    <p class="src">${st.l.map(([t,u]) => `<a href="${u}" target="_blank" rel="noopener">${t}</a>`).join('<i>·</i>')}</p>
+  </div>`;
+}
+function syncStyleCard(){ const c = $('styleCard'); if (c) c.innerHTML = styleCard(); }
+document.addEventListener('click', e => {
+  const g = e.target.closest('.pchip');
+  if (g){ const ctl = document.querySelector(`#panel [data-ctl="${g.dataset.goto}"]`); if (ctl){ ctl.scrollIntoView({behavior: REDUCED ? 'auto' : 'smooth', block:'center'}); ctl.classList.remove('flash'); void ctl.offsetWidth; ctl.classList.add('flash'); } return; }
+  const c = e.target.closest('[data-cmp]');
+  if (c){ P.compare = c.dataset.cmp || null; syncStyleCard(); render(); }
+});
+
 /* ---------- panel ---------- */
 function buildPanel(){
   const panel = $('panel'); panel.innerHTML = '';
   const pb = document.createElement('div'); pb.className = 'presetbar'; pb.setAttribute('role','group');
-  pb.style.gridTemplateColumns = 'repeat(auto-fill,minmax(110px,1fr))';
+  pb.style.gridTemplateColumns = 'repeat(auto-fill,minmax(150px,1fr))';
   Object.entries(PRESETS).forEach(([id,pr]) => {
     const b = document.createElement('button'); b.type='button'; b.dataset.preset=id;
-    b.innerHTML = `${T(pr.name)}<small>${T(pr.tag)}</small>`;
+    b.innerHTML = `${T(pr.name)}<small>${T(KIND[STYLE[id].kind])} · ${T(pr.tag)}</small>`;
     b.addEventListener('click', () => {
-      const keep = {format:P.format, vw:P.vw, grid:P.grid, mass:P.mass, showPath:P.showPath, pages:P.pages, rhythm:P.rhythm, hoverShift:P.hoverShift, parallax:P.parallax, dur:P.dur, ease:P.ease};
+      const keep = {format:P.format, vw:P.vw, grid:P.grid, mass:P.mass, showPath:P.showPath, pages:P.pages, rhythm:P.rhythm, hoverShift:P.hoverShift, parallax:P.parallax, dur:P.dur, ease:P.ease, compare: P.compare===id ? null : P.compare};
       Object.keys(P).forEach(k => delete P[k]);
       Object.assign(P, clone(Object.assign({}, BASE, pr.p)), keep);
-      activePreset = id; syncPanel(); render();
+      activePreset = id; lastPreset = id; syncPanel(); syncStyleCard(); render();
     });
     pb.appendChild(b);
   });
   panel.appendChild(pb);
+  const sc = document.createElement('div'); sc.id = 'styleCard'; panel.appendChild(sc); syncStyleCard();
   GROUPS.forEach(g => {
     const box = document.createElement('div'); box.className='group';
     box.innerHTML = `<h2>${T(g.t)} <small>${g.s}</small></h2>` + (g.hint ? `<p class="ghint">${T(g.hint)}</p>` : '');
@@ -580,11 +694,12 @@ function control(it){
     });
     d._sync = () => sb.setAttribute('aria-pressed', !uploaded);
   }
+  if (it.key) d.dataset.ctl = it.key;
   const base = d._sync;
   d._sync = () => { base(); if (it.when) d.classList.toggle('off', !it.when()); if (it.need) d.classList.toggle('off', P.inks < it.need); };
   return d;
 }
-function manual(){ activePreset = null; }
+function manual(){ if (activePreset){ activePreset = null; syncStyleCard(); } }
 function syncPanel(){
   document.querySelectorAll('#panel .field, #panel .row2').forEach(d => d._sync && d._sync());
   document.querySelectorAll('.presetbar button').forEach(b => b.setAttribute('aria-pressed', b.dataset.preset===activePreset));
@@ -1082,20 +1197,37 @@ function renderPage(poster, Q, pageIdx){
 
 /* ---------- render all pages ---------- */
 let layouts = [];
+const CMP_KEYS = ['breakS','white','asym','cols','pair','ratio','titleScale','levels','titleStyle','path','axis','angles','layers','inks','colorRatio','treat','tMisX','tGrain','rules'];
 function render(){
   const wrap = $('pages'); wrap.innerHTML = '';
-  wrap.className = 'pages' + (P.pages > 1 ? ' multi' : '');
+  const cmp = P.compare && PRESETS[P.compare] ? P.compare : null;
+  // compare mode: the current settings next to another preset, both as single pages in the same format
+  const list = [];
+  if (cmp){
+    const A = pageParams(0); A.role = 'cover';
+    const B = presetQ(cmp); ['format','vw','grid','mass','showPath','hoverShift','parallax','dur','ease'].forEach(k => B[k] = P[k]); B.role = 'cover'; B.pages = 1;
+    list.push([A, activePreset ? T(PRESETS[activePreset].name) : (LANG==='zh'?'当前参数':'Current settings')], [B, T(PRESETS[cmp].name)]);
+  } else for (let i=0;i<P.pages;i++){ const Q = pageParams(i); list.push([Q, P.pages>1 ? `${String(i+1).padStart(2,'0')} · ${T(ROLE_NAME[Q.role])}` : '']); }
+  wrap.className = 'pages' + (list.length > 1 ? ' multi' : '');
   layouts = [];
-  for (let i=0;i<P.pages;i++){
-    const Q = pageParams(i), box = document.createElement('div'), cell = document.createElement('div');
+  list.forEach(([Q, label], i) => {
+    const box = document.createElement('div'), cell = document.createElement('div');
     box.className = 'pagebox'; const poster = document.createElement('div');
-    poster.setAttribute('role','img'); poster.setAttribute('aria-label', (LANG==='zh'?'生成的海报，第 ':'Generated poster, page ') + (i+1) + (LANG==='zh'?' 页':''));
+    poster.setAttribute('role','img'); poster.setAttribute('aria-label', (LANG==='zh'?'生成的海报：':'Generated poster: ') + (label || (i+1)));
     box.appendChild(poster); cell.appendChild(box);
-    if (P.pages > 1){ const lab = document.createElement('div'); lab.className = 'plabel'; lab.textContent = `${String(i+1).padStart(2,'0')} · ${T(ROLE_NAME[Q.role])}`; cell.appendChild(lab); }
+    if (label){ const lab = document.createElement('div'); lab.className = 'plabel'; lab.textContent = label; cell.appendChild(lab); }
     wrap.appendChild(cell);
     const Ly = renderPage(poster, Q, i); Ly.box = box; Ly.Q = Q; layouts.push(Ly);
     attachMotion(poster, Q);
-  }
+  });
+  // comparison table: the settings that define the two styles, with differences marked
+  const ct = $('cmpTable');
+  if (cmp){
+    const A = list[0][0], B = list[1][0], zh = LANG==='zh';
+    const rows = CMP_KEYS.filter(k => ITEM[k]).map(k => { const a = fmtVal(k, A), b = fmtVal(k, B); return `<tr class="${a!==b?'diff':''}"><th>${T(ITEM[k].label)}</th><td>${a}</td><td>${b}</td></tr>`; }).join('');
+    ct.innerHTML = `<table><thead><tr><th>${zh?'参数':'Setting'}</th><th>${list[0][1]}</th><th>${list[1][1]}</th></tr></thead><tbody>${rows}</tbody></table><p class="note">${zh?'高亮的行是两者不同的参数。':'Highlighted rows are the settings that differ.'}</p>`;
+    ct.hidden = false;
+  } else { ct.hidden = true; ct.innerHTML = ''; }
   fit(); computeMetrics(); syncPanel();
 }
 function fit(){

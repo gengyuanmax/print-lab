@@ -53,6 +53,19 @@ a.labcard:focus-visible{outline:2.5px solid var(--blue);outline-offset:4px}
 .layer b{font-family:var(--display);font-weight:800;font-size:18px}
 .layer .q{color:var(--ink)}
 .layer .k{font-family:var(--mono);font-size:11.5px;color:var(--muted);line-height:1.6}
+.pipe{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0;border:1.5px solid var(--ink);counter-reset:st}
+@media (max-width:1100px){.pipe{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:640px){.pipe{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stage-c{position:relative;display:flex;flex-direction:column;gap:6px;padding:12px;min-width:0;border-right:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink);margin:0 -1.5px -1.5px 0}
+.stage-c canvas{display:block;width:100%;height:auto;aspect-ratio:4/5;background:var(--sheet);border:1px solid var(--rule)}
+.stage-c h3{margin:2px 0 0;font-family:var(--display);font-weight:800;font-size:17px;display:flex;align-items:baseline;gap:8px}
+.stage-c h3 i{font-style:normal;font-family:var(--mono);font-weight:400;font-size:11px;color:var(--muted)}
+.stage-c h3::after{content:"→";margin-left:auto;font-family:var(--mono);font-weight:400;color:var(--muted)}
+.stage-c:last-child h3::after{content:""}
+.stage-c p{margin:0;font-size:12.5px;color:var(--muted);text-wrap:pretty}
+.stage-c .labs-of{display:flex;flex-wrap:wrap;gap:4px;margin-top:auto;padding-top:4px}
+.stage-c .labs-of a{font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;padding:2px 6px;border:1.5px solid var(--ink);color:var(--ink);text-decoration:none}
+.stage-c .labs-of a:hover{background:var(--ink);color:var(--sheet)}
 .foot{margin-top:40px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
 .foot a{color:var(--ink);text-decoration-color:var(--pink);text-decoration-thickness:2px;text-underline-offset:3px}
 </style>
@@ -145,6 +158,19 @@ a.labcard:focus-visible{outline:2.5px solid var(--blue);outline-offset:4px}
       <div class="layer"><b><span class="zh">02 版式</span><span class="en">02 Layout</span></b><span class="q"><span class="zh">如何编排文字、图像和形状？</span><span class="en">How are type, images and shapes arranged on the page?</span></span><span class="k"><span class="zh">网格 · 字体 · 构图 · 动线 · 形状 · 拼贴 · 印章 · 规则</span><span class="en">Grid · type · composition · flow · shapes · collage · seals · rules</span></span></div>
       <div class="layer"><b><span class="zh">03 实物</span><span class="en">03 Object</span></b><span class="q"><span class="zh">纸张如何折叠、裁切和装订成册？</span><span class="en">How does a printed sheet become an object?</span></span><span class="k"><span class="zh">画幅 · 出血 · 折页 · 装订 · 印前检查</span><span class="en">Format · bleed · folding · binding · preflight</span></span></div>
       <div class="layer"><b><span class="zh">04 元素</span><span class="en">04 Element</span></b><span class="q"><span class="zh">如何让组件、图形和照片融入整体的印刷风格？</span><span class="en">What form must one thing take to go through the same print pipeline as everything else?</span></span><span class="k"><span class="zh">专色 · 造型 · 线条 · 单色图标 · 网点 · 对齐 · 字体</span><span class="en">Spot inks · no skeuomorphism · ink rules · one-ink small parts · screened tints · grid · type</span></span></div>
+    </div>
+  </section>
+
+  <section class="split" data-aria-zh="模拟管线" data-aria-en="The simulation pipeline">
+    <h2><span class="zh">模拟管线</span><span class="en">The simulation pipeline</span></h2>
+    <p><span class="zh">四个实验室共用一条管线：先把元素排进版面，再拆成每种墨一块的灰度版，加网，按透明油墨叠印到纸上，最后裁切、折叠成实物。下面六张图是同一张小样走完这条管线的每一步，都是页面现场算出来的。</span><span class="en">All four labs share one pipeline: arrange the elements on the page, split it into one greyscale plate per ink, screen each plate, overprint the translucent inks on paper, then trim and fold it into an object. The six images below are one small proof going through each step, computed live on this page.</span></p>
+    <div class="pipe">
+      <div class="stage-c"><canvas id="pp1" width="240" height="300" aria-hidden="true"></canvas><h3><i>01</i><span class="zh">元素</span><span class="en">Element</span></h3><p><span class="zh">一个元素：渐变、阴影、全彩，还没有走印刷管线。</span><span class="en">One element: gradients, shading, full colour, not yet in the print pipeline.</span></p><div class="labs-of"><a data-page="element" href="element.html">04</a></div></div>
+      <div class="stage-c"><canvas id="pp2" width="240" height="300" aria-hidden="true"></canvas><h3><i>02</i><span class="zh">排版</span><span class="en">Layout</span></h3><p><span class="zh">元素和文字落进网格，决定位置、大小和层叠。</span><span class="en">The element and the type go onto the grid: position, size, stacking.</span></p><div class="labs-of"><a data-page="layout" href="layout.html">02</a><a data-page="element" href="element.html">04</a></div></div>
+      <div class="stage-c"><canvas id="pp3" width="240" height="300" aria-hidden="true"></canvas><h3><i>03</i><span class="zh">分版</span><span class="en">Plates</span></h3><p><span class="zh">每种墨一张灰度图：A 版走亮部和中间调，B 版走暗部和文字。</span><span class="en">One greyscale image per ink: plate A takes the lights and midtones, plate B the darks and the type.</span></p><div class="labs-of"><a data-page="print" href="print.html">01</a><a data-page="element" href="element.html">04</a></div></div>
+      <div class="stage-c"><canvas id="pp4" width="240" height="300" aria-hidden="true"></canvas><h3><i>04</i><span class="zh">加网</span><span class="en">Screen</span></h3><p><span class="zh">深浅变成网点：A 版 15°，B 版 75°，墨越多点越大。</span><span class="en">Tone becomes dots: plate A at 15°, B at 75°; more ink, bigger dots.</span></p><div class="labs-of"><a data-page="print" href="print.html">01</a></div></div>
+      <div class="stage-c"><canvas id="pp5" width="240" height="300" aria-hidden="true"></canvas><h3><i>05</i><span class="zh">印刷</span><span class="en">Print</span></h3><p><span class="zh">透明油墨相乘叠到纸上，B 版错开一点，再加颗粒和缺墨。</span><span class="en">Translucent inks multiply on paper, plate B slips a little, then grain and starved ink.</span></p><div class="labs-of"><a data-page="print" href="print.html">01</a><a data-page="layout" href="layout.html">02</a></div></div>
+      <div class="stage-c"><canvas id="pp6" width="240" height="300" aria-hidden="true"></canvas><h3><i>06</i><span class="zh">成品</span><span class="en">Object</span></h3><p><span class="zh">带出血印在大纸上，沿裁切线裁下，再沿折线对折。</span><span class="en">Printed with bleed on a larger sheet, cut at the trim, folded at the crease.</span></p><div class="labs-of"><a data-page="object" href="object.html">03</a></div></div>
     </div>
   </section>
 
@@ -338,7 +364,82 @@ function applyLang(l){
 }
 document.querySelectorAll('[data-setlang]').forEach(b => b.addEventListener('click', () => applyLang(b.dataset.setlang)));
 applyLang(LANG);
-drawPrint(); drawLayout(); drawObject(); drawElement();
-if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { drawLayout(); drawObject(); drawElement(); });
+
+/* the pipeline: one proof computed step by step; every stage reads the stage before it */
+function drawPipeline(){
+  const W = 240, H = 300, N = W*H, PK = [0xFF,0x48,0xB0], BL = [0x00,0x78,0xBF], PP = [0xFB,0xFB,0xF8], CR = [0xF6,0xF2,0xE8];
+  const ctxOf = id => $(id).getContext('2d', {willReadFrequently:true});
+  // 01 the element: a shaded, full-colour sphere with a soft drop shadow, on white
+  const g1 = ctxOf('pp1'); g1.fillStyle = '#fff'; g1.fillRect(0, 0, W, H);
+  const sphere = (g, cx, cy, r) => {
+    g.save(); g.fillStyle = 'rgba(30,30,60,.18)'; g.filter = 'blur(6px)'; g.beginPath(); g.ellipse(cx + r*.25, cy + r*1.02, r*.85, r*.18, 0, 0, Math.PI*2); g.fill(); g.restore();
+    const rg = g.createRadialGradient(cx - r*.35, cy - r*.4, r*.08, cx, cy, r); rg.addColorStop(0, '#FFE3C2'); rg.addColorStop(.45, '#FF7A59'); rg.addColorStop(1, '#5B2A86');
+    g.fillStyle = rg; g.beginPath(); g.arc(cx, cy, r, 0, Math.PI*2); g.fill();
+  };
+  sphere(g1, W/2, H*.44, 78);
+  // 02 layout: the element on a grid, cropped by the top edge, with a heavy title and a rule
+  const g2 = ctxOf('pp2'); g2.fillStyle = '#fff'; g2.fillRect(0, 0, W, H);
+  g2.strokeStyle = 'rgba(0,120,191,.25)'; g2.lineWidth = 1; for (let c=0;c<=4;c++){ const x = 18 + c*(W-36)/4; g2.beginPath(); g2.moveTo(x, 12); g2.lineTo(x, H-12); g2.stroke(); }
+  sphere(g2, 150, 92, 70);
+  g2.fillStyle = '#1C1B22'; g2.font = '800 70px "Bricolage Grotesque", "Archivo", sans-serif'; g2.textBaseline = 'alphabetic'; g2.fillText('INK', 16, 222);
+  g2.fillRect(18, 238, W-36, 5); for (let k=0;k<3;k++) g2.fillRect(18, 254 + k*11, (W-36)*(k===2 ? .5 : .85), 4);
+  // 03 plates: from the layout's pixels, A = lights and mids, B = darks (the type lands on B)
+  const src = g2.getImageData(0, 0, W, H).data, A = new Float32Array(N), B = new Float32Array(N);
+  for (let i=0;i<N;i++){ const d = 1 - (.299*src[i*4] + .587*src[i*4+1] + .114*src[i*4+2])/255; A[i] = d > .86 ? 0 : Math.min(1, Math.pow(d, .75)*1.1); B[i] = d > .86 ? 1 : Math.pow(d, 1.9); }   // solid black type goes to B only
+  // the type and rules are a separate, solid layer: they go to plate B only, with no anti-aliased ghost on A
+  { const tc = document.createElement('canvas'); tc.width = W; tc.height = H; const tg = tc.getContext('2d');
+    tg.font = '800 70px "Bricolage Grotesque", "Archivo", sans-serif'; tg.lineWidth = 3; tg.strokeText('INK', 16, 222); tg.fillText('INK', 16, 222);
+    tg.fillRect(16, 236, W-32, 9); for (let k=0;k<3;k++) tg.fillRect(16, 252 + k*11, (W-36)*(k===2 ? .5 : .85) + 4, 8);
+    const td = tg.getImageData(0, 0, W, H).data; for (let i=0;i<N;i++) if (td[i*4+3] > 10){ A[i] = 0; } }
+  // the grid guides are not printed
+  for (let i=0;i<N;i++){ const b = src[i*4+2], r = src[i*4]; if (b > r + 20 && b > 150 && src[i*4+1] > 120) { A[i] = 0; B[i] = 0; } }
+  // two plates side by side, each the whole proof at half size, as greyscale films
+  const showHalves = (g, fA, fB) => {
+    g.fillStyle = '#E4E0D6'; g.fillRect(0, 0, W, H);
+    const film = f => { const c = document.createElement('canvas'); c.width = W; c.height = H; const cg = c.getContext('2d'), im = cg.createImageData(W, H), d = im.data;
+      for (let y=0;y<H;y++) for (let x=0;x<W;x++){ const i = y*W + x, v = 255*(1 - f(i, x, y)); d[i*4] = d[i*4+1] = d[i*4+2] = v; d[i*4+3] = 255; }
+      cg.putImageData(im, 0, 0); return c; };
+    const fw = 108, fh = 135;
+    g.drawImage(film(fA), 8, 40, fw, fh); g.drawImage(film(fB), W - 8 - fw, 125, fw, fh);
+    g.strokeStyle = '#1C1B22'; g.lineWidth = 1; g.strokeRect(8.5, 40.5, fw, fh); g.strokeRect(W - 8 - fw + .5, 125.5, fw, fh);
+    g.fillStyle = '#1C1B22'; g.font = '600 12px "JetBrains Mono", monospace'; g.fillText(g.canvas.id==='pp4' ? 'A · 15°' : 'A', 8, 32); g.fillText(g.canvas.id==='pp4' ? 'B · 75°' : 'B', W - 8 - fw, 117);
+  };
+  showHalves(ctxOf('pp3'), i => A[i], i => B[i]);
+  // 04 screen: each plate becomes dots at its own angle
+  const cell = 5, TAU = Math.PI*2;
+  const dot = (x, y, ang) => { const a = ang*Math.PI/180, u = (x*Math.cos(a) + y*Math.sin(a))/cell, w = (-x*Math.sin(a) + y*Math.cos(a))/cell; return (Math.cos(TAU*u) + Math.cos(TAU*w) + 2)/4; };
+  const SA = new Uint8Array(N), SB = new Uint8Array(N);
+  const cellBig = 1;
+  for (let y=0;y<H;y++) for (let x=0;x<W;x++){ const i = y*W + x; SA[i] = dot(x, y, 15) > 1 - A[i] ? 1 : 0; SB[i] = B[i] > .85 || dot(x, y, 75) > 1 - B[i] ? 1 : 0; }
+  showHalves(ctxOf('pp4'), i => SA[i], i => SB[i]);
+  // 05 print: paper, plate A in pink, plate B in blue slipped by (3, 2), multiplied; grain and a starved band
+  const g5 = ctxOf('pp5'), im5 = g5.createImageData(W, H), d5 = im5.data; let sd = 9; const rnd = () => (sd = (sd*16807) % 2147483647)/2147483647;
+  for (let y=0;y<H;y++) for (let x=0;x<W;x++){
+    const i = y*W + x, xb = x - 3, yb = y - 2, b = (xb>=0 && yb>=0) ? SB[yb*W + xb] : 0;
+    const starve = 1 - .45*Math.max(0, Math.sin(y*.045 + 1.2) - .6)/.4, s = (.93 - .2*rnd())*starve;
+    let c = CR.slice();
+    if (SA[i]) c = c.map((v,k) => v*(1 - s*(1 - PK[k]/255)));
+    if (b) c = c.map((v,k) => v*(1 - s*(1 - BL[k]/255)));
+    d5[i*4] = c[0]; d5[i*4+1] = c[1]; d5[i*4+2] = c[2]; d5[i*4+3] = 255;
+  }
+  g5.putImageData(im5, 0, 0);
+  // 06 object: the print with bleed on a larger sheet, crop marks, then folded in half along the long side
+  const g6 = ctxOf('pp6'); g6.fillStyle = '#E4E0D6'; g6.fillRect(0, 0, W, H);
+  const pw = 150, ph = 188, px = (W - pw)/2, py = 30, bl = 6;
+  g6.fillStyle = '#fff'; g6.fillRect(px - 20, py - 18, pw + 40, ph + 36);
+  g6.drawImage($('pp5'), px - bl, py - bl, pw + 2*bl, ph + 2*bl);
+  g6.strokeStyle = '#1C1B22'; g6.lineWidth = 1;
+  [[px, py, -1, -1], [px+pw, py, 1, -1], [px, py+ph, -1, 1], [px+pw, py+ph, 1, 1]].forEach(([x, y, sx, sy]) => { g6.beginPath(); g6.moveTo(x + sx*(bl+2), y); g6.lineTo(x + sx*(bl+12), y); g6.moveTo(x, y + sy*(bl+2)); g6.lineTo(x, y + sy*(bl+12)); g6.stroke(); });
+  g6.setLineDash([4, 3]); g6.beginPath(); g6.moveTo(px, py + ph/2); g6.lineTo(px + pw, py + ph/2); g6.stroke(); g6.setLineDash([]);
+  // the folded piece below: top half folds back, so we see the lower half with a crease shadow
+  const fy = py + ph + 26, fh = ph/2*.5, fw = pw*.5, fx = W - fw - 14;
+  g6.save(); g6.translate(fx, fy); g6.drawImage($('pp5'), 0, H/2, W, H/2, 0, 0, fw, fh);
+  const sh = g6.createLinearGradient(0, 0, 0, 10); sh.addColorStop(0, 'rgba(0,0,0,.25)'); sh.addColorStop(1, 'rgba(0,0,0,0)'); g6.fillStyle = sh; g6.fillRect(0, 0, fw, 10);
+  g6.strokeStyle = '#1C1B22'; g6.strokeRect(0, 0, fw, fh); g6.restore();
+  g6.fillStyle = '#1C1B22'; g6.font = '600 10px "JetBrains Mono", monospace'; g6.fillText('TRIM · FOLD', 10, H - 10);
+}
+
+drawPrint(); drawLayout(); drawObject(); drawElement(); drawPipeline();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { drawLayout(); drawObject(); drawElement(); drawPipeline(); });
 })();
 </script>

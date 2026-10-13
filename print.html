@@ -80,11 +80,11 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
 
 /* lab */
 @media (max-width:860px){.lab{grid-template-columns:minmax(0,1fr)}}
-/* the proof stays in view while the settings scroll (as in the layout lab); notes below it scroll under it */
+/* same rule as the layout lab: the whole stage (proof and the notes under it) stays in view while the settings scroll */
+.stick{display:flex;flex-direction:column;gap:10px}
 @media (min-width:861px){
-  .stage{align-self:stretch}
-  .stick{position:sticky;top:calc(12px + env(safe-area-inset-top, 0px));z-index:5;background:var(--paper);box-shadow:0 -14px 0 0 var(--paper);padding-bottom:10px;display:flex;flex-direction:column;gap:10px}
-  .stick .frame{width:min(100%, calc(100vh - 120px))}
+  .stage{position:sticky;top:calc(16px + env(safe-area-inset-top, 0px))}
+  .stick .frame{width:min(100%, calc(100vh - 220px))}
 }
 .tcomp{display:flex;flex-direction:column;gap:8px;border:1.5px solid var(--ink);background:var(--sheet);padding:12px}
 .tcomp[hidden]{display:none}
@@ -517,7 +517,7 @@ const MODES = [
   {id:'trans', zh:'过渡映射', en:'Transition map'},
 ];
 const MODE_DESC = {
-  trans:{zh:'过渡映射：图像从亮到暗，对应从油墨 A 过渡到油墨 B，过渡方式在画布下方的“过渡”里选。', en:'Transition map: the image\'s tones, light to dark, become a change from ink A to ink B, made with the technique chosen under Transitions below the proof.'},
+  trans:{zh:'过渡映射：图像从亮到暗，对应从油墨 A 过渡到油墨 B，过渡方式在“油墨”组的“过渡方式”里选。', en:'Transition map: the image\'s tones, light to dark, become a change from ink A to ink B, made with the technique chosen under Transition in the Ink group.'},
   mono:{zh:'单色：只用一种油墨。', en:'Mono: a single ink.'},
   sep:{zh:'双色叠印：把原图拆成两块版，两种油墨叠在一起会混出第三种颜色。', en:'Two-colour overprint: the image is split into two plates, and where the inks overlap they mix into a third colour.'},
   tri:{zh:'三色叠印：按类似 CMY 的方式拆成三块版，每块版有自己的网角和错位，叠出更丰富的混色。', en:'Three-colour overprint: a CMY-like split into three plates, each with its own screen angle and misregistration, for richer mixes.'},

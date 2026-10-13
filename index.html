@@ -74,6 +74,9 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
 .hint,.note{font-size:12.5px;color:var(--muted);margin:0;text-wrap:pretty}
 
 /* Hub: the same proof-sheet identity as the labs. Three numbered "plates", one per lab, each with a small live proof. */
+.intro{display:flex;flex-direction:column;gap:10px;max-width:34em}
+.byline{margin:0;font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--ink)}
+.byline span::before{content:"";display:inline-block;width:18px;height:2px;background:var(--pink);vertical-align:middle;margin-right:8px}
 .labs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
 @media (max-width:980px){.labs{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:640px){.labs{grid-template-columns:minmax(0,1fr)}.labcard .proofbox{aspect-ratio:1}}
@@ -122,7 +125,10 @@ a.labcard:focus-visible{outline:2.5px solid var(--blue);outline-offset:4px}
       </div>
     </div>
     <h1 class="mis"><span aria-hidden="true"><span class="zh">印刷实验室</span><span class="en">Print Labs</span></span><span><span class="zh">印刷实验室</span><span class="en">Print Labs</span></span></h1>
-    <p class="lede"><span class="zh">一组关于 Swiss、Riso 和半调网点的交互实验。每个实验室把一类印刷风格拆成可以调的参数：图像怎么变成墨点，页面怎么排，纸怎么变成拿在手里的东西。</span><span class="en">Interactive experiments with Swiss, Riso and halftone print styles. Each lab breaks one part of the look into settings you can adjust: how an image becomes ink, how a page is laid out, and how paper becomes an object you hold.</span></p>
+    <div class="intro">
+      <p class="lede"><span class="zh">一组关于 Swiss、Riso 和半调网点的交互实验。每个实验室把一类印刷风格拆成可以调的参数：图像怎么变成墨点，页面怎么排，纸怎么变成拿在手里的东西。</span><span class="en">Interactive experiments with Swiss, Riso and halftone print styles. Each lab breaks one part of the look into settings you can adjust: how an image becomes ink, how a page is laid out, and how paper becomes an object you hold.</span></p>
+      <p class="byline"><span class="zh">Gengyuan 的设计学习之旅 · vibing with Claude</span><span class="en">A learning journey by Gengyuan · vibing with Claude</span></p>
+    </div>
   </header>
 
   <main class="labs">
@@ -141,7 +147,7 @@ a.labcard:focus-visible{outline:2.5px solid var(--blue);outline-offset:4px}
     </a>
 
     <a class="labcard" data-page="layout" href="layout.html">
-      <div class="proofbox"><svg id="pvLayout" viewBox="0 0 400 500" aria-hidden="true"></svg></div>
+      <div class="proofbox"><canvas id="pvLayout" width="800" height="1000" aria-hidden="true"></canvas></div>
       <div class="lhead"><span class="num">02</span><span class="status"><span class="zh">可用</span><span class="en">Open</span></span></div>
       <h2><span class="zh">版式实验室</span><span class="en">Layout Lab</span><small><span class="zh">Layout lab</span><span class="en">版式实验室</span></small></h2>
       <p><span class="zh">元素怎么在页面上排：同一套规则，换一个种子就是另一张海报。</span><span class="en">How elements sit on the page: one set of rules, a new poster with every seed.</span></p>
@@ -231,19 +237,51 @@ function drawPrint(){
   plate(BLUE, 75, 9, 5, 3, t => Math.max(0, t*1.25 - .45));
 }
 
-/* 02: a small Swiss-ish poster on a grid, the accent plate off register */
+/* 02: a small poster built the way the layout lab builds one: a grid, a cropped title, an overprinted halftone circle, a flood block, column text */
 function drawLayout(){
-  const s = $('pvLayout'), W = 400, H = 500, m = 28, cols = 6, gut = 8, cw = (W - 2*m - gut*(cols-1))/cols;
-  const x = i => m + i*(cw+gut);
-  let out = `<rect width="${W}" height="${H}" fill="${PAPER}"/>`;
-  for (let i=0;i<cols;i++) out += `<rect x="${x(i)}" y="${m}" width="${cw}" height="${H-2*m}" fill="rgba(255,72,176,.07)"/>`;
-  out += `<g style="mix-blend-mode:multiply"><circle cx="${x(4)+cw*.4}" cy="150" r="96" fill="${PINK}"/><rect x="${x(0)+5}" y="292" width="${x(3)+cw-x(0)}" height="46" fill="${BLUE}"/></g>`;
-  out += `<text x="${x(0)}" y="118" font-family="Bricolage Grotesque, Noto Sans SC, sans-serif" font-weight="800" font-size="78" letter-spacing="-2" fill="${INK}" style="mix-blend-mode:multiply">GRID</text>`;
-  out += `<rect x="${x(0)}" y="380" width="${x(5)+cw-x(0)}" height="4" fill="${INK}"/>`;
-  for (let r=0;r<5;r++) out += `<rect x="${x(3)}" y="${398 + r*12}" width="${(x(5)+cw-x(3))*(r===4?.55:1)}" height="4" fill="${INK}" opacity=".55"/>`;
-  for (let r=0;r<3;r++) out += `<rect x="${x(0)}" y="${398 + r*12}" width="${x(1)+cw-x(0)}" height="4" fill="${INK}" opacity=".35"/>`;
-  out += `<text x="${x(0)}" y="${H-m+16}" font-family="JetBrains Mono, monospace" font-size="10" fill="${INK}" letter-spacing="1.5">— 02 / 06 —</text>`;
-  s.innerHTML = out;
+  const c = $('pvLayout'), g = c.getContext('2d'), W = c.width, H = c.height;
+  const m = 56, cols = 6, gut = 16, cw = (W - 2*m - gut*(cols-1))/cols, X = i => m + i*(cw+gut), span = k => k*cw + (k-1)*gut;
+  const PAPER2 = '#F3EEE2', ORANGE = '#FF6C2F', FED = '#3D5588';
+  let seed = 11; const rnd = () => (seed = (seed*16807) % 2147483647) / 2147483647;
+  g.fillStyle = PAPER2; g.fillRect(0,0,W,H);
+  // grid guides, the way the lab's grid overlay draws them
+  g.fillStyle = 'rgba(255,72,176,.035)'; for (let i=0;i<cols;i++) g.fillRect(X(i), m, cw, H-2*m);
+  g.strokeStyle = 'rgba(0,120,191,.22)'; g.lineWidth = 1; for (let y=m; y<H-m; y+=24){ g.beginPath(); g.moveTo(m-10,y); g.lineTo(m-2,y); g.stroke(); }
+  g.globalCompositeOperation = 'multiply';
+  // plate 1 (orange): flood block behind the title, slightly off register
+  g.fillStyle = ORANGE; g.fillRect(X(0)-m, 182, span(4)+m, 150);
+  // plate 2 (federal blue): an AM halftone circle overprinting the block and the title
+  const cx = X(4)+cw*.2, cy = 300, R = 210;
+  g.fillStyle = FED;
+  const cell = 15, a = 45*Math.PI/180, ca = Math.cos(a), sa = Math.sin(a);
+  for (let u=-R*1.6; u<R*1.6; u+=cell) for (let v=-R*1.6; v<R*1.6; v+=cell){
+    const x = cx + u*ca - v*sa, y = cy + u*sa + v*ca, dx = (x-cx)/R, dy = (y-cy)/R, d2 = dx*dx+dy*dy;
+    if (d2 > 1) continue;
+    const t = Math.max(.04, Math.min(1, .5 + .5*(dx*.62 + dy*.62) + .25*(1 - Math.sqrt(1-d2))));
+    g.beginPath(); g.arc(x+4, y+3, cell*.66*Math.sqrt(t), 0, Math.PI*2); g.fill();
+  }
+  // title: cropped off the left edge, two lines, in black
+  g.fillStyle = INK; g.textBaseline = 'alphabetic';
+  g.font = '800 196px "Bricolage Grotesque", "Archivo", sans-serif';
+  g.fillText('LAY', X(0)-22, 330); g.fillText('OUT', X(0)+span(1)+gut, 500);
+  g.globalCompositeOperation = 'source-over';
+  // a thick rule, numbered column text on the baseline grid, a guide arrow
+  g.fillStyle = INK; g.fillRect(X(0), 580, span(6), 7);
+  g.font = '600 20px "JetBrains Mono", monospace'; g.fillStyle = ORANGE; g.fillText('01', X(0), 632); g.fillText('02', X(3), 632);
+  g.fillStyle = INK;
+  const lines = (x, w, y0, n, last) => { for (let r=0;r<n;r++){ const ww = r===n-1 ? w*last : w*(.86 + .14*rnd()); g.globalAlpha = .62; g.fillRect(x, y0 + r*24, ww, 7); } g.globalAlpha = 1; };
+  lines(X(0), span(3), 662, 9, .45); lines(X(3), span(3), 662, 6, .7);
+  g.strokeStyle = FED; g.lineWidth = 6; g.beginPath(); g.moveTo(X(3), 850); g.lineTo(X(5)+cw*.4, 850); g.stroke();
+  g.fillStyle = FED; g.beginPath(); g.moveTo(X(5)+cw*.9, 850); g.lineTo(X(5)+cw*.35, 830); g.lineTo(X(5)+cw*.35, 870); g.closePath(); g.fill();
+  // print furniture: registration marks, colour bar, folio
+  g.strokeStyle = INK; g.lineWidth = 1.5;
+  [[m/2,m/2],[W-m/2,m/2],[m/2,H-m/2],[W-m/2,H-m/2]].forEach(([x,y]) => { g.beginPath(); g.arc(x,y,8,0,Math.PI*2); g.moveTo(x-14,y); g.lineTo(x+14,y); g.moveTo(x,y-14); g.lineTo(x,y+14); g.stroke(); });
+  [ORANGE, FED, '#2A2A3A', INK].forEach((col,i) => { g.fillStyle = col; g.fillRect(W-m-4*30+i*30, H-m/2-11, 22, 22); });
+  g.fillStyle = INK; g.font = '500 17px "JetBrains Mono", monospace'; g.fillText('— 02 / 06 —  LAYOUT LAB', m, H-m/2+6);
+  // ink grain: knock tiny specks of paper back into the inked areas
+  const im = g.getImageData(0,0,W,H), d = im.data, pp = [0xF3,0xEE,0xE2];
+  for (let i=0;i<d.length;i+=4){ const r = rnd(); if (r < .06 && d[i]+d[i+1]+d[i+2] < 600){ const k = .35 + .4*rnd(); d[i]+= (pp[0]-d[i])*k; d[i+1]+=(pp[1]-d[i+1])*k; d[i+2]+=(pp[2]-d[i+2])*k; } }
+  g.putImageData(im,0,0);
 }
 
 /* 03: the classic one-sheet 8-page zine imposition: top row upside down, a cut along the middle fold */
@@ -277,6 +315,7 @@ function applyLang(l){
 document.querySelectorAll('[data-setlang]').forEach(b => b.addEventListener('click', () => applyLang(b.dataset.setlang)));
 applyLang(LANG);
 drawPrint(); drawLayout(); drawObject();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawLayout);
 })();
 </script>
 </body>

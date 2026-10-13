@@ -47,7 +47,7 @@ Switch between English and Chinese in the top-right corner of any page. The site
 - **Layout controls:** grids, margins, type hierarchy, spacing, alignment, whitespace, reading paths, shapes and ink colours. Chinese typesetting includes line-break rules and Chinese–Latin spacing.
 - **Print and collage:** halftones, cutouts, torn edges, tape, seals and whole-poster texture. Try multi-page layouts, print marks and optional motion.
 - **Compare and export:** compare presets side by side, inspect grid and reading-order overlays, and export PNG or SVG from the hosted site. Layout metrics are simplified estimates for comparing experiments.
-- **Reusable config:** copy, download or paste back a JSON config with every setting, the seed and the text, or share a link that rebuilds the same poster.
+- **Describe the poster:** a design brief for people and AI (style, grid, type, colour, composition, texture, every setting), an English prompt for image models, CSS design tokens, and a JSON config with the seed that rebuilds the identical poster here or through a share link.
 
 </details>
 

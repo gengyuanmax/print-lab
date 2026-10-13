@@ -316,7 +316,7 @@ const BASE = {format:'poster', vw:1280, cols:6, margin:.07, gutter:.02, baseline
   inks:2, inkA:'fpink', inkB:'blue', inkC:'yellow', paper:'white', textInk:'black', colorRatio:'even', accent:2, overprint:true,
   tMisX:0, tMisY:0, tGrain:0, tStarve:0, tPaper:0,
   img:true, treat:'am', cell:7, imgSpan:.6, mask:'rect', crop:'tight',
-  rules:{grid:false, avoid:false, max3:false, scale:false, tiers:false}, strict:1,
+  rules:{grid:false, avoid:false, max3:false, scale:false, tiers:false, unify:false}, strict:1,
   pages:1, rhythm:'alternate',
   hoverShift:false, parallax:false, dur:700, ease:'out',
   flood:'none', floodTint:1, imgRepeat:1, imgKnock:'off', collage:{cut:false, torn:false, tape:false, shadow:false}, seal:'none', cjk:true, pretty:true,
@@ -333,7 +333,7 @@ const PRESETS = {
     breakS:.45, white:.38, asym:.85, jitter:0, layers:1, axis:0, focal:'edge', bleed:true, titleCrop:.12, path:'z', guide:true, sizeSeq:false, frame:'none', ladder:false, numbers:false,
     vocab:{circle:true, rect:false, line:false, tri:false}, nShapes:2, sizeExp:3, fill:1, radius:0, strokeW:.006, angles:'ortho', snap:true,
     inks:2, inkA:'orange', inkB:'fedblue', paper:'recycled', textInk:'black', colorRatio:'603010', accent:2, overprint:true, tMisX:3, tMisY:2, tGrain:.25, tStarve:.15, tPaper:.35,
-    img:true, treat:'am', cell:12, imgSpan:.95, mask:'circle', crop:'tight', rules:{grid:false, avoid:true, max3:true, scale:true, tiers:true}, strict:.8,
+    img:true, treat:'am', cell:12, imgSpan:.95, mask:'circle', crop:'tight', rules:{grid:false, avoid:true, max3:true, scale:true, tiers:true, unify:true}, strict:.8,
     furn:{reg:true, crop:false, bar:true, folio:true}, seed:3}},
   zine:{name:{zh:'Riso zine',en:'Riso zine'}, tag:{zh:'拼贴叠印',en:'collage'}, p:{cols:8, margin:.05, gutter:.02, pair:'zine', ratio:1.6, levels:5, titleScale:.24, tWeight:800, tWidth:100, tLead:.86, track:-.02, measure:40, upper:true, align:'left', titleStyle:'outline',
     breakS:.85, white:.22, asym:.6, jitter:4, layers:3, axis:-8, focal:'center', bleed:true, titleCrop:.05, path:'radial', guide:true, sizeSeq:true, frame:'block', ladder:false, numbers:true,
@@ -473,7 +473,7 @@ const GROUPS = [
     {type:'seg', key:'seal', label:L('印章','Seal'), opts:[['none',L('无','None')],['zhu',L('朱文','Zhuwen')],['bai',L('白文','Baiwen')]]},
   ]},
   {t:L('约束规则','Rules'), s:'RULES', hint:L('和谐不只是约束：共同的比例和线宽让元素彼此呼应，明确的主角提供对比，破格强度留出少量有意的例外。严格度是每个元素遵守规则的概率。','Harmony is more than constraint: a shared scale and line weights make elements relate, one clear hero supplies contrast, and rule-breaking leaves room for a few deliberate exceptions. Strictness is the chance that each element obeys.'), items:[
-    {type:'checks', key:'rules', label:L('规则','Rules'), opts:[['grid',L('一切贴网格','Everything on the grid')],['avoid',L('形状不压文字','Shapes avoid text')],['max3',L('最多 3 种字号','At most 3 sizes')],['scale',L('比例和谐','Harmonic scale')],['tiers',L('一个主角','One hero')]]},
+    {type:'checks', key:'rules', label:L('规则','Rules'), opts:[['grid',L('一切贴网格','Everything on the grid')],['avoid',L('形状不压文字','Shapes avoid text')],['max3',L('最多 3 种字号','At most 3 sizes')],['scale',L('比例和谐','Harmonic scale')],['tiers',L('一个主角','One hero')],['unify',L('质感统一','Unified texture')]]},
     {type:'range', key:'strict', label:L('严格度','Strictness'), min:0, max:1, step:.05, fmt:pct},
   ]},
   {t:L('页面与节奏','Pages & rhythm'), s:'PAGES', hint:L('多页时，“交替”会轮流生成封面、满版图、密集文字和留白页，“重复”只换随机种子。','With several pages, Alternate cycles cover, full image, dense text and an airy page; Repeat only changes the seed.'), items:[
@@ -547,7 +547,7 @@ const TIPS = {
   img:{t:L('图像使用印痕实验室的加网算法；每种加网方式的历史和来源，见印痕实验室里的溯源。','The image uses the print lab\'s screening algorithms; see the print lab\'s provenance notes for each screen\'s history and sources.'), own:true},
   mask:{t:L('印前流程里的去背通常用剪切路径实现：只保留路径以内的图像。本页用亮度阈值近似去掉接近白色的背景，所以只适合白底图片。','In prepress, cutouts are usually made with a clipping path that keeps only the image inside it. This page approximates it by removing near-white pixels, so it works best on images with a white background.'), l:[['Clipping path',WK('Clipping_path')]]},
   crop:{t:L('紧裁只留局部，更有冲击力；宽裁保留环境，更像记录。','A tight crop keeps a detail and hits harder; a loose crop keeps the context and reads more like a record.'), own:true},
-  rules:{t:L('Gerstner 1964 年的《Designing Programmes》被出版社介绍为“计算机时代开端的系统化设计模型”；Rune Madsen 把其中的“设计程序”解读为由设计者定义、用来生成审美决定的规则集。严格度是每个元素遵守规则的概率。“比例和谐”和“一个主角”是本页的规则：前者让形状、间距、线宽和角度都取自字号比例与主轴，后者让形状和图像始终明显小于最大的两个元素。','Gerstner\'s Designing Programmes (1964) is described by its publisher as a model for systematic design at the dawn of the computer era; Rune Madsen reads a design programme as a designer-defined rule set that shapes aesthetic decisions. Strictness is the chance that each element obeys. Harmonic scale and One hero are this page\'s own rules: the first takes shape sizes, spacing, line weights and angles from the type scale and the main axis; the second keeps shapes and the image clearly smaller than the two largest elements.'), l:[['Designing Programmes (Lars Müller)','https://www.lars-mueller-publishers.com/designing-programmes'],['Rune Madsen on Gerstner','https://runemadsen.com/blog/karl-gerstner-designing-programmes/']]},
+  rules:{t:L('Gerstner 1964 年的《Designing Programmes》被出版社介绍为“计算机时代开端的系统化设计模型”；Rune Madsen 把其中的“设计程序”解读为由设计者定义、用来生成审美决定的规则集。严格度是每个元素遵守规则的概率。“比例和谐”和“一个主角”是本页的规则：前者让形状、间距、线宽和角度都取自字号比例与主轴，后者让形状和图像始终明显小于最大的两个元素。“质感统一”让页面上的浅色面积也用图像的同一套网点来印，而不是数码透明度，一张作品里只出现一种网点体系。','Gerstner\'s Designing Programmes (1964) is described by its publisher as a model for systematic design at the dawn of the computer era; Rune Madsen reads a design programme as a designer-defined rule set that shapes aesthetic decisions. Strictness is the chance that each element obeys. Harmonic scale and One hero are this page\'s own rules: the first takes shape sizes, spacing, line weights and angles from the type scale and the main axis; the second keeps shapes and the image clearly smaller than the two largest elements. Unified texture prints light tints with the image\'s own screen instead of digital transparency, so a piece uses a single screening system.'), l:[['Designing Programmes (Lars Müller)','https://www.lars-mueller-publishers.com/designing-programmes'],['Rune Madsen on Gerstner','https://runemadsen.com/blog/karl-gerstner-designing-programmes/']]},
   cjk:{t:L('W3C《中文排版需求》（clreq，Group Note Draft）专门讨论了行首行尾禁则（避头尾）、标点宽度和中西文混排。开启时本页用 CSS line-break: strict 做避头尾，用 text-spacing-trim 压缩行首开括号，用 text-autospace 在汉字和拉丁字母、数字之间加空隙（浏览器不支持时用四分之一 em 空格代替）。关闭时用 line-break: anywhere，标点可能出现在行首。','The W3C Requirements for Chinese Text Layout (clreq, a Group Note Draft) covers line-start and line-end prohibitions, punctuation width and mixed Chinese–Western text. When on, this page uses CSS line-break: strict for the prohibitions, text-spacing-trim to halve opening brackets at line start, and text-autospace to add space between Han characters and Latin letters or numerals (a quarter-em space where the browser lacks it). When off it uses line-break: anywhere, so punctuation can start a line.'), l:[['clreq 中文排版需求','https://www.w3.org/TR/clreq/'],['line-break (MDN)','https://developer.mozilla.org/en-US/docs/Web/CSS/line-break'],['text-autospace (MDN)','https://developer.mozilla.org/en-US/docs/Web/CSS/text-autospace'],['text-spacing-trim (MDN)','https://developer.mozilla.org/en-US/docs/Web/CSS/text-spacing-trim']]},
   pretty:{t:L('孤字是段落最后一行只剩一两个字。CSS text-wrap: pretty 用更慢、更讲究的算法断行，MDN 说它适合正文，可以尽量减少孤字。下方“孤字”指标统计第 1 页正文里最后一行只剩一个汉字或一个单词的段落。','An orphan here is a last line holding only one or two characters. CSS text-wrap: pretty breaks lines with a slower, more careful algorithm; MDN describes it as meant for body copy where the number of orphans should be kept down. The Orphans metric below counts page-1 paragraphs whose last line holds a single Han character or a single word.'), l:[['text-wrap-style (MDN)','https://developer.mozilla.org/en-US/docs/Web/CSS/text-wrap-style'],['clreq §7.1.2 孤行与孤字','https://www.w3.org/TR/clreq/']]},
   flood:{t:L('满版底色本身就是一块油墨版：整页印满一种颜色，出血到纸边外。大面积实地最容易暴露缺墨、颗粒和辊痕。浓度低于 100% 时，实际印刷会用网点做出浅色（平网），本页用透明度近似。','A flood is an ink plate of its own: the whole sheet printed in one colour, bleeding off the edges. Large solids are where starvation, grain and roller marks show most. Below 100%, real printing makes the lighter tint with a halftone; this page approximates it with transparency.'), l:[['Bleed (printing)',WK('Bleed_(printing)')]]},
@@ -980,6 +980,15 @@ function renderPage(poster, Q, pageIdx){
     const fi = Q.flood==='B' && inkList.length>1 ? 1 : 0;
     floodEl = document.createElement('div'); floodEl.className = fi ? 'ink'+fi : '';
     floodEl.style.cssText = `position:absolute;inset:-24px;background:${inkList[fi]};opacity:${Q.floodTint};mix-blend-mode:${blend}`;
+    // unified texture: a light tint is printed as a screen, with the image's own dot size, instead of digital transparency
+    if (Q.rules.unify && Q.floodTint < .98){
+      const c = Math.max(3, Q.cell), t = Q.floodTint, col = inkList[fi];
+      const tile = Q.treat==='line'
+        ? `<svg xmlns="http://www.w3.org/2000/svg" width="${c}" height="${c}"><rect y="0" width="${c}" height="${(c*t).toFixed(2)}" fill="${col}"/></svg>`
+        : `<svg xmlns="http://www.w3.org/2000/svg" width="${c}" height="${c}">${[[0,0],[c,0],[0,c],[c,c],[c/2,c/2]].map(([x,y]) => `<circle cx="${x}" cy="${y}" r="${(c*.5*Math.sqrt(t)).toFixed(2)}" fill="${col}"/>`).join('')}</svg>`;
+      floodEl.style.background = `url("data:image/svg+xml,${encodeURIComponent(tile)}") 0 0/${c}px ${c}px`;
+      floodEl.style.opacity = 1;
+    }
   }
   inkGroup.append(...[paperRect, floodEl, back, content, front].filter(Boolean));
   poster.appendChild(inkGroup);

@@ -110,6 +110,16 @@
 .qp[aria-pressed="true"] small{color:rgba(251,251,248,.7)}
 .tray .all{align-self:flex-start;font-size:12.5px;color:var(--ink);text-decoration-color:var(--pink);text-decoration-thickness:2px;text-underline-offset:3px;background:none;border:0;padding:0;cursor:pointer}
 @media (prefers-reduced-motion:reduce){.dock{transition:none}}
+/* transitions: one A→B change rendered several ways, with the current inks, paper and flaws */
+.trans{display:flex;flex-direction:column;gap:10px;border-top:1.5px solid var(--ink);padding-top:12px}
+.trans h3{margin:0;display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:-.01em}
+.trans h3 small{font-family:var(--mono);font-weight:400;font-size:10.5px;letter-spacing:.14em;color:var(--muted)}
+.trows{display:flex;flex-direction:column;gap:8px}
+.trow{display:grid;grid-template-columns:9.5em minmax(0,1fr);gap:12px;align-items:center}
+.trow .tl{display:flex;flex-direction:column;gap:1px;font-size:13px;line-height:1.3;cursor:help}
+.trow .tl small{font-family:var(--mono);font-size:10.5px;color:var(--muted)}
+.trow canvas{display:block;width:100%;height:auto;border:1px solid var(--rule)}
+@media (max-width:520px){.trow{grid-template-columns:minmax(0,1fr);gap:4px}}
 </style>
 
 <div class="wrap">
@@ -137,7 +147,12 @@
       <div class="seps" id="seps" hidden></div>
       <div class="feat" id="feat"></div>
       <div class="desc" id="desc" aria-live="polite"></div>
-    </section>
+          <section class="trans" data-aria-zh="过渡" data-aria-en="Transitions">
+        <h3><span><span class="zh">过渡</span><span class="en">Transitions</span></span><small>A → B</small></h3>
+        <p class="hint"><span class="zh">同一个从油墨 A 到油墨 B 的变化，用不同的印刷手段做出来。用的是上面选的油墨、纸张和瑕疵；把鼠标停在名字上看来源。</span><span class="en">The same change from ink A to ink B, made with different print techniques, using the inks, paper and flaws chosen above. Hover a name for its source.</span></p>
+        <div class="trows" id="trows"></div>
+      </section>
+</section>
 
     <aside class="panel" data-aria-zh="参数" data-aria-en="Settings">
       <div class="group">
@@ -183,6 +198,8 @@
         <h2><span class="zh">纸张</span><span class="en">Paper</span> <small class="zh">PAPER</small><small class="en">纸张</small></h2>
         <p class="hint"><span class="zh">非涂布纸更吸墨，网点会扩大、颜色更灰；涂布纸更锐利。深色纸上可以试试白墨。</span><span class="en">Uncoated paper absorbs more ink, so dots grow and colours dull; coated paper is crisper. On dark paper, try white ink.</span></p>
         <div class="seg" id="stockSeg"></div>
+        <div class="sublabel"><span class="zh">纸面图案</span><span class="en">Printed-on pattern</span> <span class="note"><span class="zh">纸本身带的格线或底纹，印在油墨下面</span><span class="en">ruling or tint already on the stock, under the ink</span></span></div>
+        <div class="seg" id="patSeg"></div>
         <div class="inkrow"><span><span class="zh">纸色</span><span class="en">Colour</span></span><div class="sw" id="paper"></div><span class="inkname" id="paperName"></span></div>
       </div>
 
@@ -205,6 +222,8 @@
           <button class="btn" type="button" data-src="scene"><span class="zh">测试画面</span><span class="en">Test scene</span></button>
           <button class="btn" type="button" data-src="ramp"><span class="zh">色阶条</span><span class="en">Tone ramps</span></button>
           <button class="btn" type="button" data-src="seal"><span class="zh">印文</span><span class="en">Seal text</span></button>
+          <button class="btn" type="button" data-src="fern"><span class="zh">蕨叶（实物）</span><span class="en">Fern (object)</span></button>
+          <button class="btn" type="button" data-src="wood"><span class="zh">木纹（表面）</span><span class="en">Wood (surface)</span></button>
           <label class="btn" id="uploadLabel"><span class="zh">上传照片</span><span class="en">Upload photo</span><input type="file" id="upload" accept="image/*" hidden></label>
         </div>
         <p class="hint" id="srcHint"></p>
@@ -344,6 +363,17 @@ const PROCESSES = [
   {id:'rub', zh:'拓印', en:'Rubbing', d:{zh:'把纸覆在有起伏的表面上拍墨或摩擦：高处着墨，低处留白。照片的暗部被当作刻痕，所以结果像碑拓一样是黑底白字。', en:'Paper over a raised surface is dabbed or rubbed with ink: high points take ink, low points stay white. Dark areas of the photo are treated as carving, so the result reads like a stele rubbing, white on black.'}},
   {id:'xerox', zh:'复印', en:'Photocopy', d:{zh:'静电复印的高反差黑白。复印代数越高，就是“复印件的复印件”：细节丢失、黑色变重、噪点和碳粉斑增加。', en:'High-contrast xerographic black and white. Raise the copy generation for a copy of a copy: detail drops out, blacks grow heavier, and noise and toner specks pile up.'}},
 ];
+PROCESSES.push(
+  {id:'cyano', zh:'蓝晒', en:'Cyanotype', d:{zh:'蓝晒：纸上涂铁盐，放上实物在阳光下曝光，受光处变成普鲁士蓝，被挡住的地方留白，所以是蓝底白影。颜色来自化学反应，不用选油墨；刷涂的药液边缘不齐。', en:'Cyanotype: paper coated with iron salts, objects laid on top and exposed to sunlight. Exposed areas turn Prussian blue and shaded areas stay white, giving pale silhouettes on blue. The colour comes from the chemistry, not an ink, and the brushed-on coating leaves a ragged edge.'}},
+  {id:'gram', zh:'实物投影', en:'Photogram', d:{zh:'实物投影（photogram）：不用相机，把东西直接放在相纸上曝光。完全受光处全黑，被挡住处留白，半透明的地方是灰，物体离纸越远，影子边缘越虚。', en:'Photogram: a photograph made without a camera, objects placed straight on photographic paper and exposed. Fully exposed areas go black, shaded areas stay white, translucent parts turn grey, and the further an object sits from the paper the softer its shadow.'}});
+const PATTERNS = [
+  {id:'none', zh:'无', en:'None'},
+  {id:'grid', zh:'坐标纸', en:'Graph paper'},
+  {id:'dots', zh:'点阵', en:'Dot grid'},
+  {id:'lined', zh:'横线本', en:'Ruled'},
+  {id:'ledger', zh:'账本', en:'Ledger'},
+  {id:'security', zh:'防窥纹', en:'Security tint'},
+];
 const STAMPS = [{id:'zhu', zh:'朱文（红字）', en:'Zhuwen (red characters)'}, {id:'bai', zh:'白文（白字）', en:'Baiwen (white characters)'}];
 const STOCKS = [
   {id:'uncoated', zh:'非涂布', en:'Uncoated', gain:.18, sat:.88, tex:.15},
@@ -422,6 +452,23 @@ const PROV = {
     l:[['Generation loss',W('Generation_loss')],['Xerography',W('Xerography')],['Zine',W('Zine')]]},
   uncoated:{o:{zh:'非涂布纸吸墨更多，网点扩大更明显，颜色也更灰。Riso 和大多数 zine 用的就是这类纸。', en:'Uncoated paper absorbs more ink, so it shows more dot gain and duller colour. Riso prints and most zines use this kind of paper.'}, l:[['Dot gain',W('Dot_gain')]]},
   coated:{o:{zh:'涂布纸表面有涂层，油墨停在表面，网点扩大少，颜色更饱和、更锐利。', en:'Coated paper keeps ink on its surface, so dot gain is low and colour stays sharp and saturated.'}, l:[['Dot gain',W('Dot_gain')]]},
+  cyano:{o:{zh:'John Herschel 在 1842 年发表了蓝晒法。Anna Atkins 从 1843 年起用它把海藻直接晒成图版，做成《Photographs of British Algae: Cyanotype Impressions》，被认为是最早用照片做插图的书。后来它长期用来复制建筑和工程图纸，也就是“蓝图”。', en:'John Herschel published the cyanotype in 1842. From 1843 Anna Atkins used it to print algae specimens directly for Photographs of British Algae: Cyanotype Impressions, effectively the first photographically illustrated book. It later became the standard way to copy architectural and engineering plans: the blueprint.'},
+    l:[['Cyanotype',W('Cyanotype')],['Anna Atkins',W('Anna_Atkins')]]},
+  gram:{o:{zh:'Talbot 早年把树叶、蕾丝放在感光纸上晒，称为“photogenic drawing”。1922 年 12 月，Man Ray 出版了实物投影集《Champs délicieux》，Tzara 把这类作品叫作 rayograph；Moholy-Nagy 同一时期也在做。', en:'Talbot laid leaves and lace on sensitised paper in sunlight and called the results “photogenic drawings”. In December 1922 Man Ray published the rayograph collection Champs délicieux (Tzara named them rayographs), and Moholy-Nagy was experimenting with photograms at the same time.'},
+    l:[['Photogram',W('Photogram')],['Rayograph',W('Rayograph')]]},
+  grid:{o:{zh:'坐标纸是印着规则方格的书写纸。欧洲常见 5 mm 方格，线是浅蓝或灰色；最早的商业坐标纸通常归于 1794 年取得专利的英国 Buxton 博士。', en:'Graph paper is writing paper printed with a fine regular grid. European quad paper usually has 5 mm squares in light blue or grey; the first commercially published coordinate paper is usually credited to a Dr Buxton of England, patented in 1794.'}, l:[['Graph paper',W('Graph_paper')]]},
+  dots:{o:{zh:'点阵纸只在格点上印小点，保留了网格的定位作用，但比方格更安静。', en:'Dot-grid paper prints only the grid intersections: it keeps the grid for alignment but sits quieter than full squares.'}, own:true},
+  lined:{o:{zh:'横线本：等距的浅蓝横线，左侧一条红色页边线。', en:'Ruled paper: evenly spaced light-blue lines with a red margin rule on the left.'}, own:true},
+  ledger:{o:{zh:'账本纸：浅绿横线加竖向分栏线，用来对齐数字。', en:'Ledger paper: pale green rows with vertical column rules for lining up figures.'}, own:true},
+  security:{o:{zh:'防窥纹印在信封内侧，用密集的线条和形状挡住里面的内容，常见于账单、银行和工资单信封。', en:'A security tint is printed on the inside of an envelope: busy lines and shapes screen the contents, typical for bills, bank statements and payslips.'},
+    l:[['Envelope security patterns (Loughborough)','https://lbas.lboro.ac.uk/pattern/envelope-security-pattern.html']]},
+  split:{o:{zh:'分墨渐变（split-fount）：在一个墨槽里同时放两种以上的油墨，墨辊把它们混成连续渐变，不用分色就能印出彩虹般的过渡。至少从 1870 年代就有人用，1960 年代的迷幻海报很常见。', en:'Split-fount inking: two or more inks in one ink tray, blended by the rollers into a continuous gradient, without colour separation. Used since at least the 1870s and common on 1960s psychedelic posters.'},
+    l:[['Split-fount inking',W('Split-fount_inking')]]},
+  trap:{o:{zh:'两色硬碰硬地接在一起时，版对不准就会露出白缝。印前的补漏白（trapping）让浅色稍微外扩、压到深色下面，用一条深色细边换掉白缝。', en:'When two colours butt edge to edge, misregistration opens a white gap. Prepress trapping spreads the lighter colour slightly under the darker one, trading the gap for a thin dark overlap.'},
+    l:[['Trap (printing)',W('Trap_(printing)')]]},
+  overlap:{o:{zh:'两种透明油墨各自渐隐、在中间重叠，重叠处叠出第三种颜色。这是 Riso 和丝网常用的过渡方式。', en:'Two transparent inks each fade out and overlap in the middle, where they print a third colour. A common transition in Riso and screen printing.'}, own:true},
+  steps:{o:{zh:'平网阶梯：不做连续渐变，只用几级固定浓度的网点，层次分明。', en:'Tint steps: no continuous gradient, just a few fixed screen percentages, each step clearly visible.'}, own:true},
+  tlines:{o:{zh:'线条粗细的变化代替网点大小：一种色是横线，另一种是竖线。', en:'Line weight instead of dot size: one ink in horizontal lines, the other in vertical lines.'}, own:true},
   tracing:{o:{zh:'硫酸纸半透明，颜色看起来像蒙了一层薄雾。本页用降低饱和度和加一层浅灰来近似。', en:'Tracing paper is translucent, so colour looks veiled. This page approximates it with lower saturation and a light grey veil.'}},
   // modes
   mono:{o:{zh:'一块版、一种油墨是最基本的印刷方式；要几种颜色，就要准备几块版、印几次。',
@@ -449,7 +496,7 @@ const PROV = {
   opaque:{o:{zh:'不透明遮盖：油墨厚而不透明，后印的颜色直接盖住先印的，丝网印刷里很常见。', en:'Opaque: thick ink that covers whatever was printed before it, common in screen printing.'}},
 };
 const linkList = l => l ? l.map(([t,u]) => `<a href="${u}" target="_blank" rel="noopener">${t}</a>`).join('<i>·</i>') : '';
-const DEFAULTS = {shape:'round', gain:0, ca:0, inkC:'yellow', blend:'multiply', process:'none', stampType:'zhu', copyGen:0, black:0, white:1, gamma:1, posterize:0, stock:'uncoated', invA:false, invB:false};
+const DEFAULTS = {pattern:'none', shape:'round', gain:0, ca:0, inkC:'yellow', blend:'multiply', process:'none', stampType:'zhu', copyGen:0, black:0, white:1, gamma:1, posterize:0, stock:'uncoated', invA:false, invB:false};
 /* presets describe a final effect. Each lists the visible features that make it recognisable:
    e = essential, r = representative, o = optional; where each comes from: d = design decision, p = process, m = material;
    and what switching the feature off changes (used by the feature switches). */
@@ -499,6 +546,16 @@ const PRESETS = [
     f:[F('e','m','深色纸','Dark paper',{paper:'white',inkA:'black',invA:false}), F('e','p','半透明的白墨','Semi-opaque white ink',{inkA:'yellow'}), F('r','p','白墨的颗粒感','Grainy white ink',{grain:0,starve:0})]},
   {name:{zh:'反白空印', en:'Knockout'}, tag:{zh:'满版蓝 · 图形留成纸色', en:'Blue flood · image left as paper'}, p:{screen:'thresh',cell:6,angle:0,contrast:1.5,black:.1,white:.9,mode:'mono',inkA:'blue',inkB:'black',paper:'white',mx:0,my:0,grain:.3,starve:.2,band:.15,tex:.3,invA:true},
     f:[F('e','d','形状从满版油墨里空出来','The shape is knocked out of a solid flood',{invA:false}), F('r','p','大面积实地上的颗粒和缺墨','Grain and starvation in the large solid',{grain:0,starve:0,band:0})]},
+  {name:{zh:'蓝晒蕨叶', en:'Cyanotype fern'}, tag:{zh:'蓝晒 · 蓝底白影', en:'Cyanotype · white on blue'}, src:'fern', p:{screen:'am',process:'cyano',cell:8,angle:0,contrast:1.15,mode:'mono',inkA:'blue',inkB:'black',paper:'white',mx:0,my:0,grain:.35,starve:.3,band:0,tex:.45,stock:'uncoated'},
+    f:[F('e','p','普鲁士蓝底上的白色剪影','White silhouettes on Prussian blue',{process:'none',screen:'thresh',inkA:'blue',invA:true}), F('r','p','药液不匀的斑驳','Uneven, mottled coating',{grain:0,starve:0}), F('o','m','粗纹水彩纸','Rough watercolour paper',{tex:0,stock:'coated'})]},
+  {name:{zh:'实物投影', en:'Photogram'}, tag:{zh:'相纸 · 黑底白影', en:'Photo paper · white on black'}, src:'fern', p:{screen:'am',process:'gram',cell:8,angle:0,contrast:1.2,mode:'mono',inkA:'black',inkB:'black',paper:'white',mx:0,my:0,grain:.15,starve:0,band:0,tex:.05,stock:'coated'},
+    f:[F('e','p','黑底上的白色剪影，半透明处是灰','White silhouettes on black, translucent parts grey',{process:'none',screen:'thresh',invA:true}), F('r','p','灰尘留下的白点','White specks from dust',{grain:0}), F('o','m','光面相纸','Glossy photo paper',{stock:'uncoated',tex:.3})]},
+  {name:{zh:'木纹拓印', en:'Floorboard frottage'}, tag:{zh:'拓印 · 木纹表面', en:'Rubbing · wood surface'}, src:'wood', p:{screen:'am',process:'rub',cell:6,angle:0,contrast:1.2,mode:'mono',inkA:'black',inkB:'black',paper:'news',mx:0,my:0,grain:.4,starve:.35,band:0,tex:.5},
+    f:[F('e','p','凸起处着墨，木纹的沟槽留白','Raised grain takes ink, the grooves stay white',{process:'none',screen:'thresh'}), F('r','p','摩擦留下的斑驳','Patchy marks from rubbing',{grain:0,starve:0}), F('o','m','薄新闻纸','Thin newsprint',{paper:'white',tex:0})]},
+  {name:{zh:'坐标纸 zine', en:'Graph-paper zine'}, tag:{zh:'复印 · 方格纸', en:'Photocopy · graph paper'}, p:{screen:'am',process:'xerox',copyGen:1,cell:8,angle:0,contrast:1.4,mode:'mono',inkA:'black',inkB:'black',paper:'white',mx:0,my:0,grain:.3,starve:.2,band:.15,tex:.15,pattern:'grid'},
+    f:[F('e','m','纸上自带的浅蓝方格','Light-blue grid already on the paper',{pattern:'none'}), F('e','p','高反差的复印黑','High-contrast photocopy black',{process:'none',screen:'am'}), F('o','p','辊痕','Roller marks',{band:0})]},
+  {name:{zh:'防窥纹信封', en:'Security envelope'}, tag:{zh:'防窥纹 · 单色网点', en:'Security tint · one-colour dots'}, p:{screen:'am',cell:7,angle:45,contrast:1.2,mode:'mono',inkA:'fedblue',inkB:'black',paper:'white',mx:0,my:0,grain:.15,starve:.1,band:0,tex:.15,pattern:'security'},
+    f:[F('e','m','信封内侧的密集防窥纹','The busy security tint inside the envelope',{pattern:'none'}), F('r','d','单色联邦蓝','A single federal blue',{inkA:'black'})]},
 ];
 /* language */
 const UI = {
@@ -542,6 +599,43 @@ function drawSource(c = srcC, kind = srcKind){
     g.textAlign = 'center'; g.textBaseline = 'middle';
     [['印',.69,.3],['痕',.69,.71],['实',.31,.3],['验',.31,.71]].forEach(([ch,x,y]) => g.fillText(ch, n*x, n*y));
     g.textAlign = 'start'; g.textBaseline = 'alphabetic';
+    return;
+  }
+  if (kind === 'fern'){
+    // objects for cameraless printing: two fern fronds and a few seeds, slightly translucent at the leaflet tips
+    const frond = (x0, y0, len, ang, bend, alpha) => {
+      const pts = []; for (let i=0;i<=40;i++){ const t = i/40, a = ang + bend*t; pts.push([x0 + Math.cos(a)*len*t, y0 + Math.sin(a)*len*t, a]); }
+      g.strokeStyle = 'rgba(20,30,18,.95)'; g.lineWidth = n*.008; g.beginPath(); pts.forEach(([x,y],i) => i ? g.lineTo(x,y) : g.moveTo(x,y)); g.stroke();
+      for (let i=2;i<40;i++){
+        const [x,y,a] = pts[i], t = i/40, L = len*.2*Math.pow(1-t, .7)*(.6 + .4*Math.sin(Math.PI*Math.min(1, t*1.4)));
+        [1,-1].forEach(sd => {
+          const b = a + sd*(1.15 - .3*t);
+          g.save(); g.translate(x, y); g.rotate(b);
+          g.fillStyle = `rgba(20,32,18,${alpha})`; g.beginPath(); g.ellipse(L/2, 0, L/2, L*.17, 0, 0, Math.PI*2); g.fill();
+          g.fillStyle = `rgba(20,32,18,${alpha*.45})`; g.beginPath(); g.ellipse(L*.9, 0, L*.14, L*.1, 0, 0, Math.PI*2); g.fill();
+          g.restore();
+        });
+      }
+    };
+    frond(n*.2, n*.92, n*.82, -1.25, .55, .92);
+    frond(n*.62, n*.95, n*.6, -1.75, -.5, .8);
+    g.fillStyle = 'rgba(30,30,30,.9)'; [[.78,.2,.018],[.84,.26,.012],[.73,.3,.014],[.18,.18,.02]].forEach(([x,y,r]) => { g.beginPath(); g.arc(n*x, n*y, n*r, 0, Math.PI*2); g.fill(); });
+    return;
+  }
+  if (kind === 'wood'){
+    // a relief surface for rubbing: floorboards with growth rings and knots; dark = groove, light = raised grain
+    const im = g.getImageData(0,0,n,n), d = im.data, r = rng(77);
+    const knots = [[.3,.35,.07],[.72,.7,.05],[.55,.18,.04]].map(([x,y,k]) => [x*n, y*n, k*n]);
+    const boards = 3, bw = n/boards, wob = new Float32Array(boards).map(() => r()*10);
+    for (let y=0;y<n;y++) for (let x=0;x<n;x++){
+      const b = Math.min(boards-1, Math.floor(x/bw)), lx = x - b*bw;
+      let v = y/n*26 + wob[b] + 1.6*Math.sin(lx/bw*3.1 + wob[b]) + .4*Math.sin(y/n*40 + b);
+      knots.forEach(([kx,ky,kr]) => { const dx = x-kx, dy = (y-ky)*.55, dd = Math.sqrt(dx*dx+dy*dy); if (Math.floor(kx/bw)===b) v += 5*Math.exp(-dd/kr) + (dd < kr*.6 ? 6*(1 - dd/(kr*.6)) : 0); });
+      const f = v - Math.floor(v), groove = f < .34 ? Math.min(1, 1.6*(1 - f/.34)) : 0, seam = lx < n*.006 || lx > bw - n*.006 ? 1 : 0;
+      const L = 236 - 200*Math.min(1, Math.max(groove, seam)) - 14*r();
+      d[(y*n+x)*4] = d[(y*n+x)*4+1] = d[(y*n+x)*4+2] = L; d[(y*n+x)*4+3] = 255;
+    }
+    g.putImageData(im, 0, 0);
     return;
   }
   if (kind === 'upload' && uploaded){
@@ -773,6 +867,65 @@ function screen(pl, n, type, cell, angDeg, idx, nz, shape){
 
 /* ---------- render ---------- */
 const desat = (c, k) => { const l = .299*c[0]+.587*c[1]+.114*c[2]; return c.map(v => l + (v-l)*k); };
+/* patterns printed on the stock: returns [mask, colour] layers that multiply onto the paper before any ink */
+function paperPattern(n, kind, sc){
+  if (!kind || kind==='none') return [];
+  const N = n*n, step = 22*sc, lw = Math.max(1, .9*sc), m = new Float32Array(N), m2 = new Float32Array(N);
+  const near = (v, period, w) => { const f = ((v % period) + period) % period; return f < w || f > period - w*.15; };
+  for (let y=0;y<n;y++) for (let x=0;x<n;x++){
+    const i = y*n+x;
+    if (kind==='grid'){ const bold = near(x, step*5, lw*1.9) || near(y, step*5, lw*1.9); m[i] = bold ? .85 : (near(x, step, lw) || near(y, step, lw)) ? .55 : 0; }
+    else if (kind==='dots'){ const dx = ((x % step) + step) % step, dy = ((y % step) + step) % step, rx = Math.min(dx, step-dx), ry = Math.min(dy, step-dy); m[i] = rx*rx + ry*ry < (1.5*sc)*(1.5*sc) ? .75 : 0; }
+    else if (kind==='lined'){ m[i] = y > step*2 && near(y, step*1.25, lw) ? .6 : 0; m2[i] = Math.abs(x - n*.14) < lw ? .75 : 0; }
+    else if (kind==='ledger'){ m[i] = near(y, step, lw) ? .55 : 0; const cols = [.16,.6,.78]; if (cols.some(c => Math.abs(x - n*c) < lw || Math.abs(x - n*c - 3*sc) < lw)) m[i] = .7; }
+    else if (kind==='security'){ const v = Math.sin(x*.55/sc + Math.sin(y*.21/sc)*2.2) + Math.sin((x + y)*.31/sc) + .6*Math.sin((x - y)*.12/sc); m[i] = v > .95 ? .8 : 0; }
+  }
+  const C = {grid:[.52,.7,.86], dots:[.45,.5,.6], lined:[.5,.68,.86], ledger:[.45,.68,.5], security:[.3,.36,.55]}[kind];
+  const out = [[m, C]]; if (kind==='lined') out.push([m2, [.88,.33,.38]]);
+  return out;
+}
+function boxBlur(src, n, r){
+  const tmp = new Float32Array(n*n), out = new Float32Array(n*n), w = 2*r+1;
+  for (let y=0;y<n;y++){ let acc = 0; for (let x=-r;x<=r;x++) acc += src[y*n + Math.min(n-1, Math.max(0,x))];
+    for (let x=0;x<n;x++){ tmp[y*n+x] = acc/w; acc += src[y*n + Math.min(n-1, x+r+1)] - src[y*n + Math.max(0, x-r)]; } }
+  for (let x=0;x<n;x++){ let acc = 0; for (let y=-r;y<=r;y++) acc += tmp[Math.min(n-1, Math.max(0,y))*n + x];
+    for (let y=0;y<n;y++){ out[y*n+x] = acc/w; acc += tmp[Math.min(n-1, y+r+1)*n + x] - tmp[Math.max(0, y-r)*n + x]; } }
+  return out;
+}
+/* cyanotype and photogram: light through or around objects, not ink; exposed = dark, shaded = paper */
+function renderLight(data, n, sc, p, nz, kind){
+  const {g1, low, low2} = nz, N = n*n, E = new Float32Array(N);
+  for (let i=0;i<N;i++){ const L = (.299*data[i*4] + .587*data[i*4+1] + .114*data[i*4+2])/255; let e = (L - .5)*p.contrast + .5; E[i] = e<0?0:e>1?1:e; }
+  const soft = boxBlur(E, n, Math.max(1, Math.round((kind==='gram' ? 2.6 : 1.6)*sc)));
+  const PB = [.07,.24,.45], STAIN = [.9,.94,.98], DARK = [.06,.06,.07];
+  const pp = kind==='gram' ? [.97,.97,.95] : hex(paper(p.paper).c), r = rng(91), ragged = new Float32Array(n*4).map(() => r());
+  const edge = (t, k) => { const a = Math.floor(t), f = t - a; return ragged[(k*n + a) % (n*4)]*(1-f) + ragged[(k*n + a + 1) % (n*4)]*f; };
+  for (let y=0;y<n;y++) for (let x=0;x<n;x++){
+    const i = y*n+x, e = soft[i];
+    let col;
+    if (kind==='cyano'){
+      // brushed coating: ragged, streaky borders; inside it, exposure turns Prussian blue with a mottled density
+      const m = n*.06, w = n*.035;
+      const inside = x > m + w*edge(y/6, 0) && x < n - m - w*edge(y/6, 1) && y > m + w*edge(x/6, 2) && y < n - m - w*edge(x/6, 3);
+      if (!inside){ const pt = 1 - p.tex*(.1*nz.g2[i] + .08*low2[i]); col = pp.map(v => v*pt); }
+      else {
+        let d = Math.pow(e, .85) * (.8 + .2*low2[i]) * (1 - p.grain*.35*Math.pow(g1[i], 2)) * (1 - p.starve*.25*low[i]);
+        const pt = 1 - p.tex*(.1*nz.g2[i] + .08*low2[i]);
+        col = [0,1,2].map(k => (STAIN[k]*(1-d) + PB[k]*d) * pp[k] / Math.max(pp[0],pp[1],pp[2]) * pt);
+      }
+    } else {
+      // photogram on glossy paper with a white easel border; dust leaves tiny white specks
+      const b = n*.045, inside = x > b && x < n-b && y > b && y < n-b;
+      if (!inside) col = pp;
+      else {
+        let d = e*e*(3 - 2*e);
+        if (g1[i] > .997 - p.grain*.004) d *= .15;
+        col = [0,1,2].map(k => pp[k]*(1-d) + DARK[k]*d);
+      }
+    }
+    data[i*4] = col[0]*255; data[i*4+1] = col[1]*255; data[i*4+2] = col[2]*255; data[i*4+3] = 255;
+  }
+}
 function render(canvas, p, srcCanvas){
   const n = canvas.width, sc = n/S, nz = noises(n);
   const ctx = canvas.getContext('2d', {willReadFrequently:true});
@@ -789,8 +942,11 @@ function render(canvas, p, srcCanvas){
   const proc = p.process || 'none';
   const eff = proc==='xerox' ? 'thresh' : (proc==='none' ? p.screen : proc);   // a process makes its own marks
   let result = null;
+  const patL = paperPattern(n, p.pattern, sc);
 
-  if (p.mode==='grad'){
+  if (proc==='cyano' || proc==='gram'){
+    renderLight(data, n, sc, p, nz, proc);
+  } else if (p.mode==='grad'){
     // digital gradient map: highlights -> ink A, shadows -> ink B
     for (let i=0;i<N;i++){
       const d = 1-(.299*data[i*4]+.587*data[i*4+1]+.114*data[i*4+2])/255;
@@ -854,6 +1010,7 @@ function render(canvas, p, srcCanvas){
         if (x>0 && y>0 && mA[i-n-1]) pt *= .91; else if (x<n-1 && y<n-1 && mA[i+n+1]) pt *= 1.03;
       }
       col[0]=Math.min(1,pp[0]*pt); col[1]=Math.min(1,pp[1]*pt); col[2]=Math.min(1,pp[2]*pt);
+      for (let q=0;q<patL.length;q++){ const mm = patL[q][0][i]; if (mm){ const pc = patL[q][1]; col[0]*=1-mm*(1-pc[0]); col[1]*=1-mm*(1-pc[1]); col[2]*=1-mm*(1-pc[2]); } }
       const a = mA[i]; if (a) lay(iA, strength(i, y, (letter||stamp) && eA[i], x) * a, kA.white);
       if (mB){ const xs=x-dx, ys=y-dy;
         if (xs>=0&&xs<n&&ys>=0&&ys<n){ const j=ys*n+xs, b=mB[j]; if (b) lay(iB, strength(N-1-i, ys, (letter||stamp) && eB[j], xs) * b, kB.white); } }
@@ -878,7 +1035,7 @@ function render(canvas, p, srcCanvas){
 /* ---------- UI ---------- */
 const out = $('out');
 let queued = false, lastResult = null;
-function schedule(){ if (queued) return; queued = true; requestAnimationFrame(() => { queued = false; lastResult = render(out, P, srcC); syncInfo(); drawSeps(); syncDock(); }); }
+function schedule(){ if (queued) return; queued = true; requestAnimationFrame(() => { queued = false; lastResult = render(out, P, srcC); syncInfo(); drawSeps(); syncDock(); drawTrans(); }); }
 
 function seg(el, items, key){
   el.innerHTML = '';
@@ -916,6 +1073,7 @@ function buildControls(){
   seg($('shapeSeg'), SHAPES, 'shape');
   seg($('blendSeg'), BLENDS, 'blend');
   seg($('stockSeg'), STOCKS, 'stock');
+  seg($('patSeg'), PATTERNS, 'pattern');
   swatches($('inkA'), INKS, 'inkA');
   swatches($('inkB'), INKS, 'inkB');
   swatches($('inkC'), INKS, 'inkC');
@@ -937,8 +1095,9 @@ Object.keys(SLIDERS).forEach(k => {
 function syncControls(){
   Object.keys(SLIDERS).forEach(k => { $(k).value = P[k]; $(k+'Out').textContent = SLIDERS[k](P[k]); });
   const press = (sel, key) => document.querySelectorAll(sel+' button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===P[key]));
-  press('#screenSeg','screen'); press('#procSeg','process'); press('#stampSeg','stampType'); press('#modeSeg','mode'); press('#stockSeg','stock');
+  press('#screenSeg','screen'); press('#procSeg','process'); press('#stampSeg','stampType'); press('#modeSeg','mode'); press('#stockSeg','stock'); press('#patSeg','pattern');
   const grad = P.mode==='grad', proc = P.process || 'none';
+  const light = proc==='cyano' || proc==='gram';
   const screenOn = !grad && proc==='none';
   document.querySelectorAll('#screenSeg button').forEach(b => b.disabled = !screenOn);
   const shapeOk = screenOn && (P.screen==='am' || P.screen==='benday');
@@ -948,9 +1107,9 @@ function syncControls(){
   $('copyGenRow').hidden = proc!=='xerox';
   document.querySelectorAll('#blendSeg button').forEach(b => { b.setAttribute('aria-pressed', b.dataset.v===P.blend); b.disabled = grad || P.mode==='mono'; });
   document.querySelectorAll('#invSeg button').forEach(b => { b.setAttribute('aria-pressed', !!P[b.dataset.k]); b.disabled = grad || (b.dataset.k==='invB' && P.mode==='mono'); });
-  const angleOk = !grad && (proc==='wood' || (screenOn && ['am','line','hatch','benday'].includes(P.screen)));
-  const cellOk = !grad && !(screenOn && (P.screen==='cont' || P.screen==='thresh')) && proc!=='xerox';
-  [['cell',cellOk],['angle',angleOk],['grain',!grad],['starve',!grad],['band',!grad],['gain',!grad],['black',!grad],['white',!grad],['gamma',!grad],['posterize',!grad]].forEach(([k,ok]) => { $(k).disabled = !ok; $(k).closest('.field').classList.toggle('off', !ok); });
+  const angleOk = !grad && !light && (proc==='wood' || (screenOn && ['am','line','hatch','benday'].includes(P.screen)));
+  const cellOk = !grad && !light && !(screenOn && (P.screen==='cont' || P.screen==='thresh')) && proc!=='xerox';
+  [['cell',cellOk],['angle',angleOk],['grain',!grad],['starve',!grad && proc!=='gram'],['band',!grad && !light],['gain',!grad && !light],['black',!grad && !light],['white',!grad && !light],['gamma',!grad && !light],['posterize',!grad && !light]].forEach(([k,ok]) => { $(k).disabled = !ok; $(k).closest('.field').classList.toggle('off', !ok); });
   ['inkA','inkB','inkC','paper'].forEach(k => document.querySelectorAll('#'+k+' button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===P[k])));
   $('inkBRow').hidden = P.mode==='mono';
   $('inkCRow').hidden = P.mode!=='tri';
@@ -991,7 +1150,7 @@ $('sepBtn').addEventListener('click', () => { sepView = !sepView; $('seps').hidd
 function drawSeps(){
   const box = $('seps');
   if (!sepView){ box.innerHTML = ''; return; }
-  if (!lastResult){ box.innerHTML = `<p class="hint">${LANG==='zh'?'渐变映射不模拟印刷，所以没有分版。':'The gradient map does not simulate printing, so there are no plates.'}</p>`; return; }
+  if (!lastResult){ box.innerHTML = `<p class="hint">${(P.process==='cyano'||P.process==='gram') ? (LANG==='zh'?'蓝晒和实物投影靠光和化学反应成像，不用印版，所以没有分版。':'Cyanotypes and photograms are made with light and chemistry, not plates, so there is nothing to separate.') : (LANG==='zh'?'渐变映射不模拟印刷，所以没有分版。':'The gradient map does not simulate printing, so there are no plates.')}</p>`; return; }
   const {n, masks, cont} = lastResult, names = [P.inkA, P.inkB, P.inkC];
   box.innerHTML = '';
   masks.forEach((m, k) => {
@@ -1002,6 +1161,68 @@ function drawSeps(){
     g.putImageData(im, 0, 0);
     const cap = document.createElement('figcaption'); cap.textContent = `${LANG==='zh'?'版':'Plate'} ${'ABC'[k]} · ${ink(names[k])[LANG]||ink(names[k]).en}${cont ? (LANG==='zh'?' · 连续调（机器会再加网）':' · continuous (the press will screen it)') : ''}`;
     cell.append(cv, cap); box.appendChild(cell);
+  });
+}
+
+/* ---------- transitions: one A → B change, made with different techniques ---------- */
+const TRANS = [
+  {id:'am', tip:'am', zh:'AM 网点', en:'AM dots', szh:'A 点变小，B 点变大', sen:'A dots shrink as B dots grow'},
+  {id:'fm', tip:'fm', zh:'FM 颗粒', en:'FM grain', szh:'随机点的疏密', sen:'density of random dots'},
+  {id:'bayer', tip:'bayer', zh:'有序抖动', en:'Ordered dither', szh:'固定的格纹图样', sen:'a fixed cross-hatch pattern'},
+  {id:'overlap', tip:'overlap', zh:'叠印渐层', en:'Overlap', szh:'中间叠出第三色', sen:'a third colour in the middle'},
+  {id:'split', tip:'split', zh:'分墨渐变', en:'Split fountain', szh:'一个墨槽里的两种墨', sen:'two inks in one tray'},
+  {id:'steps', tip:'steps', zh:'平网阶梯', en:'Tint steps', szh:'五级固定浓度', sen:'five fixed percentages'},
+  {id:'tlines', tip:'tlines', zh:'线条粗细', en:'Line weight', szh:'横线与竖线', sen:'horizontal vs vertical lines'},
+  {id:'trap', tip:'trap', zh:'硬边与补漏白', en:'Hard edge & trap', szh:'上：白缝  下：补漏白', sen:'top: gap · bottom: trapped'},
+];
+const BAYER4 = [0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5].map(v => (v+.5)/16);
+const transCv = {};
+function buildTrans(){
+  const box = $('trows'); box.innerHTML = '';
+  TRANS.forEach(t => {
+    const row = document.createElement('div'); row.className = 'trow';
+    row.innerHTML = `<span class="tl" data-tip="${t.tip}">${T(t)}<small>${LANG==='zh'?t.szh:t.sen}</small></span>`;
+    const cv = document.createElement('canvas'); cv.width = 640; cv.height = 56; row.appendChild(cv); transCv[t.id] = cv;
+    box.appendChild(row);
+  });
+}
+function drawTrans(){
+  const st = STOCKS.find(x => x.id===P.stock) || STOCKS[0];
+  const cA = hex(ink(P.inkA).c), cB = hex(ink(P.mode==='mono' ? 'black' : P.inkB).c);
+  const iA = desat(cA, st.sat), iB = desat(cB, st.sat), pp = hex(paper(P.paper).c);
+  const W = 640, H = 56, nz = noises(W), cell = Math.max(3, P.cell*.9), TAU = Math.PI*2;
+  const spot = (x, y, ang) => { const a = ang*Math.PI/180, u = (x*Math.cos(a) + y*Math.sin(a))/cell, w = (-x*Math.sin(a) + y*Math.cos(a))/cell; return (Math.cos(TAU*u) + Math.cos(TAU*w) + 2)/4; };
+  const hash = (x, y, k) => { let h = (x*374761393 + y*668265263 + k*2147483647) | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0) / 4294967296; };
+  const mx = Math.round(P.mx*.6), my = Math.round(P.my*.6);
+  TRANS.forEach(t => {
+    const cv = transCv[t.id]; if (!cv) return;
+    const g = cv.getContext('2d'), im = g.createImageData(W, H), d = im.data;
+    for (let y=0;y<H;y++) for (let x=0;x<W;x++){
+      const j = (y % W)*W + x, s = .95*(1 - P.grain*.8*Math.pow(nz.g1[j], 1.6))*(1 - P.starve*.55*Math.max(0, nz.low[j] - .45)*1.8);
+      const pt = 1 - P.tex*(.08*nz.g2[j] + .06*nz.low2[j]);
+      let col = pp.map(v => v*pt);
+      const lay = (c, a) => { if (a > 0) col = col.map((v,k) => v*(1 - a*s*(1 - c[k]))); };
+      const tx = x/(W-1), xb = x - mx, yb = y - my, tb = xb/(W-1);
+      if (t.id==='am'){ lay(iA, (1-tx) > 1 - spot(x, y, 15) ? 1 : 0); lay(iB, tb > 1 - spot(xb, yb, 75) ? 1 : 0); }
+      else if (t.id==='fm'){ lay(iA, hash(x>>1, y>>1, 1) < 1-tx ? 1 : 0); lay(iB, hash(xb>>1, yb>>1, 2) < tb ? 1 : 0); }
+      else if (t.id==='bayer'){ const q = 2; lay(iA, (1-tx) > BAYER4[((y/q|0)&3)*4 + ((x/q|0)&3)] ? 1 : 0); lay(iB, tb > BAYER4[(((yb/q|0)+1)&3)*4 + (((xb/q|0)+2)&3)] ? 1 : 0); }
+      else if (t.id==='overlap'){ lay(iA, Math.min(1, Math.max(0, (.68 - tx)/.36))); lay(iB, Math.min(1, Math.max(0, (tb - .32)/.36))); }
+      else if (t.id==='split'){
+        // one opaque layer whose colour drifts from A to B, with streaks along the roller direction
+        const k = Math.min(1, Math.max(0, tx + .035*Math.sin(y*.9 + tx*7) + .02*(nz.low[j] - .5))), c = iA.map((v,q) => v + (iB[q]-v)*(k*k*(3-2*k)));
+        col = col.map((v,q) => v + (c[q]*v - v)*s);
+      }
+      else if (t.id==='steps'){ const lv = Math.min(4, Math.floor(tx*5))/4; lay(iA, (1-lv) > 1 - spot(x, y, 15) ? 1 : 0); lay(iB, lv > 1 - spot(xb, yb, 75) ? 1 : 0); }
+      else if (t.id==='tlines'){ const pa = (y % cell)/cell, pb = (xb % cell + cell) % cell / cell; lay(iA, pa < (1-tx) ? 1 : 0); lay(iB, pb < tb ? 1 : 0); }
+      else if (t.id==='trap'){
+        const top = y < H/2, edge = W/2, shift = Math.max(4, Math.abs(mx)), spreadPx = top ? 0 : shift + 3;
+        lay(iA, x < edge ? 1 : 0);
+        lay(iB, x - shift >= edge - spreadPx ? 1 : 0);
+      }
+      d[(y*W+x)*4] = col[0]*255; d[(y*W+x)*4+1] = col[1]*255; d[(y*W+x)*4+2] = col[2]*255; d[(y*W+x)*4+3] = 255;
+    }
+    g.putImageData(im, 0, 0);
+    if (t.id==='trap'){ g.fillStyle = 'rgba(28,27,34,.5)'; g.fillRect(0, H/2 - .5, W, 1); }
   });
 }
 
@@ -1050,7 +1271,7 @@ function choosePreset(i){
   const pr = PRESETS[i];
   featOff = new Set(); applyPreset(i); activePreset = i;
   if (pr.src && srcKind!=='upload'){ srcKind = pr.src; drawSource(); }
-  else if (!pr.src && srcKind==='seal'){ srcKind = 'scene'; drawSource(); }
+  else if (!pr.src && ['seal','fern','wood'].includes(srcKind)){ srcKind = 'scene'; drawSource(); }
   syncControls(); schedule();
 }
 PRESETS.forEach((pr, i) => {
@@ -1064,7 +1285,7 @@ PRESETS.forEach((pr, i) => {
 });
 function renderThumbs(){
   let i = 0;
-  const step = () => { if (i>=thumbs.length) return; const [cv,p,src] = thumbs[i++]; render(cv, p, src && srcKind!=='upload' ? srcFor(src) : (srcKind==='seal' && !src ? srcFor('scene') : srcC)); setTimeout(step, 0); };
+  const step = () => { if (i>=thumbs.length) return; const [cv,p,src] = thumbs[i++]; render(cv, p, src && srcKind!=='upload' ? srcFor(src) : (['seal','fern','wood'].includes(srcKind) && !src ? srcFor('scene') : srcC)); setTimeout(step, 0); };
   step();
 }
 function refreshSource(){ Object.keys(srcCache).forEach(k => delete srcCache[k]); drawSource(); syncControls(); schedule(); renderThumbs(); }
@@ -1111,6 +1332,7 @@ function applyLang(l){
   buildControls();
   cardText.forEach(([st, sp, pr]) => { st.textContent = T(pr.name); sp.textContent = T(pr.tag); });
   buildTray();
+  buildTrans();
   syncSrcHint(); syncControls(); syncInfo(); drawSeps();
   try { localStorage.setItem('printlab-lang', l); } catch(e){}
 }

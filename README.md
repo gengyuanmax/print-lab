@@ -28,7 +28,9 @@ python3 build.py
 ## 功能
 
 - **加网方式**：AM 圆点（圆 / 椭圆 / 菱形 / 方形）、线条网、交叉排线、Ben-Day、有序抖动（Bayer）、误差扩散（Floyd–Steinberg）、FM 调频网、阈值位图、连续调
-- **工艺**：丝网、凸版、木刻、印章（朱文 / 白文）、拓印、复印（可调复印代数）；选了工艺后由工艺自己决定痕迹
+- **工艺**：丝网、凸版、木刻、印章（朱文 / 白文）、拓印、复印（可调复印代数）、蓝晒、实物投影；选了工艺后由工艺自己决定痕迹。原图可选蕨叶（实物）和木纹（表面）
+- **纸面图案**：坐标纸、点阵、横线本、账本、防窥纹
+- **过渡对照**：同一个 A → B 变化用 AM 网点、FM 颗粒、有序抖动、叠印渐层、分墨渐变、平网阶梯、线条粗细、硬边与补漏白八种方式做出来
 - **影调**：对比度、黑场、白场、中间调、色调分离
 - **纸张**：非涂布 / 涂布 / 硫酸纸，9 种纸色（含牛皮纸和黑卡），白墨
 - **反白**：每块版可单独反白，做空印和黑卡白墨
@@ -36,7 +38,7 @@ python3 build.py
 - **油墨模式**：单色、双色叠印、三色叠印、双色调、渐变映射（数字 duotone）；透明叠印 / 不透明遮盖
 - **油墨**：12 种 Riso 油墨近似色（含白墨）
 - **瑕疵**：套色错位、墨色颗粒、缺墨漏白、辊痕条带、纸张纹理、溢墨扩散、RGB 色差
-- **预设**：22 张样张，每张都描述最终效果，列出必要 / 代表 / 可选特征和来源（设计、工艺、材料），特征可以逐个关掉
+- **预设**：27 张样张，每张都描述最终效果，列出必要 / 代表 / 可选特征和来源（设计、工艺、材料），特征可以逐个关掉
 - **溯源**：每种加网方式、工艺、纸张、油墨模式和网点形状都附有历史来源与链接（悬停按钮可看简介）
 - **中英双语**：右上角切换，选择会记在浏览器里
 
@@ -61,7 +63,9 @@ python3 build.py
 **Print Texture Lab** is a browser playground for print textures: halftone screens, Riso-style overprinting, print flaws, related print processes and duotones. It is a single self-contained `print.html`; uploaded photos are processed locally and never leave the browser.
 
 - **Screens**: AM dots (round / ellipse / diamond / square), line screen, cross-hatch, Ben-Day, ordered dither (Bayer), error diffusion (Floyd–Steinberg), FM stochastic, threshold, continuous tone
-- **Processes**: screen print, letterpress, woodcut, seal stamp (zhuwen / baiwen), rubbing, photocopy with copy generations; a process makes its own marks
+- **Processes**: screen print, letterpress, woodcut, seal stamp (zhuwen / baiwen), rubbing, photocopy with copy generations, cyanotype, photogram; a process makes its own marks. Sources include a fern (object) and wood grain (surface)
+- **Printed-on patterns**: graph paper, dot grid, ruled, ledger, security tint
+- **Transitions**: one A → B change made eight ways: AM dots, FM grain, ordered dither, overlap, split fountain, tint steps, line weight, hard edge and trapping
 - **Tone**: contrast, black point, white point, midtones, posterize
 - **Paper**: uncoated / coated / tracing stock, 9 paper colours including kraft and black card, white ink
 - **Knockout**: invert any plate on its own for knockouts and white-on-black
@@ -69,7 +73,7 @@ python3 build.py
 - **Ink modes**: mono, two-colour, three-colour, duotone, gradient map (digital duotone); overprint or opaque coverage
 - **Inks**: 12 approximate Riso ink colours, including white
 - **Flaws**: misregistration, ink grain, ink starvation, roller banding, paper texture, dot gain, RGB split
-- **Presets**: 22 proofs, each described by its final look, with essential / representative / optional features and where each comes from (design, process, material); switch features off one by one
+- **Presets**: 27 proofs, each described by its final look, with essential / representative / optional features and where each comes from (design, process, material); switch features off one by one
 - **Provenance**: every screen, process, paper stock, ink mode and dot shape carries a fact-checked origin note with links (hover a button for a summary)
 - **Bilingual**: switch between 中文 and English in the top-right corner
 

@@ -126,6 +126,20 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
 .status{font-size:12.5px;color:var(--muted);margin:0;min-height:1.2em}
 .status a{color:var(--ink);text-decoration-color:var(--pink);text-underline-offset:3px}
 .field.off,.row2.off{opacity:.4}
+/* knowledge notes */
+.lb{display:inline-flex;align-items:center;gap:6px;min-width:0}
+.info{flex:none;width:18px;height:18px;border-radius:50%;border:1.5px solid var(--ink);background:transparent;color:var(--ink);font:italic 700 11px/1 Georgia,"Instrument Serif",serif;cursor:pointer;padding:0;display:inline-flex;align-items:center;justify-content:center}
+.info:hover{background:var(--ink);color:var(--sheet)}
+.tip{position:absolute;z-index:30;max-width:320px;padding:10px 12px;background:var(--ink);color:var(--sheet);font-size:12.5px;line-height:1.5;box-shadow:4px 4px 0 var(--pink);pointer-events:none;display:flex;flex-direction:column;gap:5px}
+.tip[hidden]{display:none!important}
+.tip strong{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;font-weight:600}
+.tip em{font-style:normal;font-family:var(--mono);font-size:10.5px;opacity:.72}
+.notecard{border-left:3px solid var(--pink);padding:4px 0 4px 12px;font-size:13.5px;color:var(--muted);display:flex;flex-direction:column;gap:4px;min-height:3.2em}
+.notecard .nk{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+.notecard .tt{text-wrap:pretty}
+.notecard em{font-style:normal}
+.notecard a{color:var(--ink);text-decoration-color:var(--blue);text-decoration-thickness:1.5px;text-underline-offset:3px}
+.notecard i{font-style:normal;margin:0 .45em;color:var(--rule)}
 </style>
 
 </head>
@@ -165,6 +179,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
         </div>
       </div>
       <p class="status" id="status" aria-live="polite"></p>
+      <div class="notecard" id="notecard" aria-live="polite"><span class="nk"><span class="zh">说明</span><span class="en">Notes</span></span><span class="tt"><span class="zh">把鼠标停在参数旁的 i 上可以看简介；点一下，说明和来源链接会固定在这里。</span><span class="en">Hover the i next to a setting for a short note; click it to pin the note and its source links here.</span></span></div>
       <div class="metrics" id="metrics"></div>
       <p class="note"><span class="zh">指标针对第 1 页、按元素外框近似计算：留白率 = 未被元素覆盖的面积；对齐度 = 左边缘落在栏线上的比例；重心以页面中心为 50 / 50；对比度按正文的实际颜色计算。</span><span class="en">Metrics describe page 1 and are approximated from element bounding boxes: whitespace is the area no element covers; alignment is the share of left edges on column lines; balance puts the page centre at 50 / 50; contrast uses the body text's actual colour.</span></p>
     </section>
@@ -400,6 +415,97 @@ const GROUPS = [
   ]},
 ];
 
+/* ---------- knowledge notes: what each parameter means, where it comes from (fact-checked against the linked sources) ---------- */
+const WK = t => 'https://en.wikipedia.org/wiki/' + t;
+const OWN = L('本页做法：这是版式实验室自己的实现方式，没有外部出处。', 'This page\'s own approach: how Layout Lab implements it, with no outside source.');
+const TIPS = {
+  format:{t:L('A 系列纸张（ISO 216）的长宽比是 √2 ≈ 1.414：对半裁切或折叠后比例不变，所以海报画幅用 1 : 1.414。','A-series paper (ISO 216) has an aspect ratio of √2 ≈ 1.414, so halving or folding a sheet keeps its proportions. The poster format uses 1 : 1.414.'), l:[['ISO 216',WK('ISO_216')]]},
+  vw:{t:L('Ethan Marcotte 在 2010 年 5 月的 A List Apart 文章里提出“响应式网页设计”：流动网格、弹性图片加媒体查询。本页在手机（< 600px）和平板（< 1000px）断点把栏数折叠成 4 和 8。','Ethan Marcotte coined “responsive web design” in a May 2010 A List Apart article: fluid grids, flexible images and media queries. Here the columns fold to 4 and 8 at the mobile (< 600px) and tablet (< 1000px) breakpoints.'), l:[['Responsive web design',WK('Responsive_web_design')]]},
+  cols:{t:L('网格是组织版面元素的骨架。二战后，Max Bill、Emil Ruder、Müller-Brockmann 等设计师发展出灵活的网格系统，它与国际主义（瑞士）风格紧密相连；Müller-Brockmann 的《Grid Systems in Graphic Design》让网格在欧洲和北美普及。','A grid is the framework a designer uses to organise elements. After the Second World War, designers including Max Bill, Emil Ruder and Müller-Brockmann developed flexible grid systems tied to the International Typographic Style; Müller-Brockmann\'s Grid Systems in Graphic Design spread the grid through Europe and North America.'), l:[['Grid (graphic design)',WK('Grid_(graphic_design)')],['International Typographic Style',WK('International_Typographic_Style')]]},
+  margin:{t:L('页边距、栏间距和元素之间的空隙都属于留白。留白太少，页面会显得拥挤、难读；刻意留出大片空白，可以让设计显得经典、优雅。','Margins, gutters and the gaps between elements are all white space. Too little makes a page look cluttered and hard to read; generous white space can make a design look classic and elegant.'), l:[['White space',WK('White_space_(visual_arts)')]]},
+  gutter:{t:L('栏间距是栏与栏之间的空隙，也属于留白的一部分，让相邻的文字和图片彼此分开。','The gutter is the gap between columns. It is part of the page\'s white space and keeps neighbouring text and images apart.'), l:[['White space',WK('White_space_(visual_arts)')]]},
+  baseline:{t:L('基线网格让所有文字行落在同一组水平线上，跨栏的文字因此能对齐。本页的正文行高取基线的整数倍。','A baseline grid puts every line of text on the same set of horizontal lines, so text in different columns lines up. Here the body line height is a whole multiple of the baseline.'), l:[['Müller-Brockmann, Grid Systems in Graphic Design (1981)','']]},
+  pair:{t:L('Helvetica（原名 Neue Haas Grotesk）由 Max Miedinger 与 Eduard Hoffmann 于 1957 年设计，成为国际主义风格的标志。本页用开源的 Archivo 代表这类怪诞体；另外两种是杂志常用的衬线组合和 Zine 常用的等宽组合。','Helvetica (originally Neue Haas Grotesk), designed in 1957 by Max Miedinger with Eduard Hoffmann, became a hallmark of the International Typographic Style. Here the open-source Archivo stands in for that grotesk; the other two pairings are an editorial serif and a zine monospace.'), l:[['Helvetica',WK('Helvetica')]]},
+  ratio:{t:L('模块化比例：从一个基准字号出发，按固定比例相乘或相除得到其他字号。Tim Brown 2011 年在 A List Apart 介绍了这种方法，并引用 Bringhurst 把它比作音阶。1.25、1.333、1.5 对应 5:4、4:3、3:2 三种音程比，1.618 是黄金比。','A modular scale starts from one size and multiplies or divides by a fixed ratio. Tim Brown introduced it on A List Apart in 2011, quoting Bringhurst\'s comparison to a musical scale. 1.25, 1.333 and 1.5 are the interval ratios 5:4, 4:3 and 3:2; 1.618 is the golden ratio.'), l:[['More Meaningful Typography (2011)','https://alistapart.com/article/more-meaningful-typography/']]},
+  levels:{t:L('视觉层级决定读者先看什么、后看什么。本页每多一级就多一种字号：2 级只有标题和正文，3 级加副标题，4 级加页眉和图注，5 级加引文。','Visual hierarchy decides what the reader sees first and next. Each level here adds one type size: 2 is title and body, 3 adds a subtitle, 4 adds running heads and a caption, 5 adds a pull quote.'), l:[['Visual hierarchy',WK('Visual_hierarchy')]]},
+  titleScale:{t:L('标题与最小字号的比值越大，画面越像海报。这个比值显示在下方的“字号比”指标里。','The larger the ratio between the title and the smallest type, the more the page reads as a poster. The ratio appears in the Type ratio metric below.'), own:true},
+  tWeight:{t:L('OpenType 1.8 的可变字体由 Adobe、Apple、Microsoft 在 2016 年 9 月宣布，一个字体文件里可以连续调节字重等设计轴。Archivo 支持字重和字宽两个轴。','OpenType 1.8 variable fonts, announced by Adobe, Apple and Microsoft in September 2016, let one font file vary continuously along design axes such as weight. Archivo has both weight and width axes.'), l:[['Variable font',WK('Variable_font')]]},
+  tLead:{t:L('行距（leading）得名于手工排版时插在字行之间的铅条，所以英文读作 “ledding”。大标题常用小于 1 的行距，让行与行贴紧。','Leading is named after the strips of lead placed between lines of hand-set type, which is why it is pronounced “ledding”. Large titles often use leading below 1 so the lines sit tight.'), l:[['Leading',WK('Leading')]]},
+  track:{t:L('字距（tracking）是统一调整一段文字的字母间距。大标题常收紧，全大写的小标签常放宽。','Tracking adjusts the letter spacing of a whole run of text. Large titles are often tightened; small all-caps labels are often opened up.'), l:[['Letter spacing',WK('Letter_spacing')]]},
+  measure:{t:L('Robert Bringhurst 在《The Elements of Typographic Style》中建议印刷正文每行 45–75 个字符，66 个最理想。本页中文按汉字个数近似换算。','Robert Bringhurst\'s The Elements of Typographic Style recommends 45–75 characters per line for printed text, with 66 as the ideal. Chinese is approximated by counting characters.'), l:[['Line length',WK('Line_length')]]},
+  titleStyle:{t:L('叠印是把一种颜色直接印在另一种颜色上；镂空（knockout）是在下层颜色里挖空，让纸色露出来。数码印前流程（PostScript）默认生成镂空。描边字只保留字形轮廓。','Overprinting puts one colour directly on top of another; a knockout removes the colour underneath so the paper shows through. PostScript creates knockouts by default. Outline type keeps only the letter contours.'), l:[['Overprinting',WK('Overprinting')]]},
+  align:{t:L('左对齐、右侧不齐的文字，是国际主义风格的标志之一；它的其他标志还有不对称版面、网格和无衬线字体。','Flush-left, ragged-right text is one of the hallmarks of the International Typographic Style, alongside asymmetric layouts, grids and sans-serif type.'), l:[['International Typographic Style',WK('International_Typographic_Style')]]},
+  upper:{t:L('Miles Tinker 的研究发现，全大写会明显降低阅读速度，他建议连续阅读的文字不要用全大写。所以全大写只适合标题和短标签。','Miles Tinker\'s research found that all-capital text slows reading noticeably, and he advised against it for continuous reading. Keep all caps for titles and short labels.'), l:[['All caps',WK('All_caps')]]},
+  vertical:{t:L('中文、日文可以竖排，传统上从右往左排列；CSS 的 writing-mode: vertical-rl 对应这种排法，拉丁字母在其中会旋转 90°。','Chinese and Japanese can be set vertically, traditionally right to left; CSS writing-mode: vertical-rl does the same, and Latin letters inside it turn 90°.'), l:[['Horizontal and vertical writing',WK('Horizontal_and_vertical_writing_in_East_Asian_scripts')]]},
+  breakS:{t:L('Timothy Samara 的《Making and Breaking the Grid》讨论先建立网格、再有意识地打破它。本页把越界、出血、旋转和叠压合并成一个“破格强度”。','Timothy Samara\'s Making and Breaking the Grid covers building a grid and then breaking it on purpose. This page folds overshoot, bleed, rotation and overlap into a single rule-breaking strength.'), l:[['Samara, Making and Breaking the Grid (2002)','']]},
+  white:{t:L('留白是页面上没有内容的部分，包括页边距、栏间距和元素之间的空隙。本页的留白倾向会改变元素之间的间距、形状数量和正文段数。','White space is the unmarked part of a page: margins, gutters and the gaps between elements. Here the whitespace setting changes spacing, the number of shapes and the number of body blocks.'), l:[['White space',WK('White_space_(visual_arts)')]]},
+  asym:{t:L('Jan Tschichold 在 1928 年的《Die neue Typographie》中主张不居中的版面，并只接受无衬线字体；不对称版面后来成为国际主义风格的标志之一。','In Die neue Typographie (1928), Jan Tschichold favoured non-centred layouts and accepted only sans-serif type; asymmetric layouts later became a hallmark of the International Typographic Style.'), l:[['Jan Tschichold',WK('Jan_Tschichold')],['International Typographic Style',WK('International_Typographic_Style')]]},
+  jitter:{t:L('手工拼贴时，剪下来的元素很难贴得完全水平。本页用随机旋转模拟这种痕迹。','Hand-made collage rarely lands perfectly level. Random rotation here imitates that trace of the hand.'), own:true},
+  layers:{t:L('拼贴是把不同材料叠在一起组成新画面的手法。本页的叠压层数决定图像、文字和形状彼此压住的程度。','Collage builds an image by layering different materials. Here the overlap setting decides how far image, type and shapes cover one another.'), l:[['Collage',WK('Collage')]]},
+  axis:{t:L('El Lissitzky 1919 年的海报《用红楔子打白军》用一个红色三角刺入白色圆形，是构成主义几何构成的代表作。本页的主轴参数把标题、副标题和图像整体转成斜向。','El Lissitzky\'s 1919 poster Beat the Whites with the Red Wedge drives a red triangle into a white circle, a landmark of Constructivist geometric composition. The axis setting here tilts title, subtitle and image together.'), l:[['Beat the Whites with the Red Wedge',WK('Beat_the_Whites_with_the_Red_Wedge')]]},
+  titleCrop:{t:L('出血（bleed）是把油墨延伸到裁切线之外，裁切后边缘不留白。让大字故意被页边切掉，就是利用了这一点。','Bleed extends ink past the trim line so no white edge remains after cutting. Letting a big title run off the page uses exactly that.'), l:[['Bleed (printing)',WK('Bleed_(printing)')]]},
+  bleed:{t:L('出血（bleed）是把油墨延伸到裁切线之外，裁切后边缘不留白。打开后，标题、图像和形状可以越过页边。','Bleed extends ink past the trim line so no white edge remains after cutting. With it on, title, image and shapes may run off the page.'), l:[['Bleed (printing)',WK('Bleed_(printing)')]]},
+  focal:{t:L('“三分法”由 John Thomas Smith 在 1797 年首次写下：把画面分成九格，把重点放在分割线或交点上。黄金分割点位于约 0.382 处。','The rule of thirds was first written down by John Thomas Smith in 1797: divide the frame into nine parts and put key elements on the lines or their intersections. The golden-section point sits at about 0.382.'), l:[['Rule of thirds',WK('Rule_of_thirds')],['Golden ratio',WK('Golden_ratio')]]},
+  path:{t:L('Nielsen Norman Group 的眼动研究发现，读者扫描网页文本时常呈 F 型。Z 型和中心放射是排版里常用的经验布局，本页把它们实现为三种排布规则。','Nielsen Norman Group\'s eye-tracking research found that people often scan web text in an F shape. Z and radial are common layout conventions; this page implements all three as arrangement rules.'), l:[['F-Shaped Pattern (NN/g)','https://www.nngroup.com/articles/f-shaped-pattern-reading-web-content/']]},
+  guide:{t:L('箭头总是从阅读顺序里的第一个元素指向第二个，打开工具栏的“阅读顺序”可以看到完整顺序。','The arrow always runs from the first element in the reading order to the second; turn on Reading order in the toolbar to see the whole sequence.'), own:true},
+  sizeSeq:{t:L('一串由小到大的形状会形成方向感。本页让这串形状从页面一角指向标题。','A run of shapes growing in size creates a sense of direction. Here the run points from a corner toward the title.'), own:true},
+  frame:{t:L('图底关系：人会把一块区域看成“图形”，把周围看成“背景”。在重点后面垫一个圆或色块，可以让它从背景中跳出来。','Figure–ground: we read one region as the figure and the rest as background. A circle or block behind the key element lifts it out of the background.'), l:[['Figure–ground',WK('Figure%E2%80%93ground_(perception)')]]},
+  ladder:{t:L('对比度阶梯：最重要的元素对比最高，次要和辅助信息逐级变淡，以此强化视觉层级。正文仍需达到 WCAG 4.5:1 的对比度。','A contrast ladder gives the most important element the highest contrast and fades secondary and supporting text step by step, reinforcing the hierarchy. Body text still needs WCAG\'s 4.5:1.'), l:[['Visual hierarchy',WK('Visual_hierarchy')],['WCAG 2.1 contrast','https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html']]},
+  numbers:{t:L('编号让读者看到内容的先后和数量。只在内容真的有顺序时使用。','Numbering shows the order and count of the content. Use it only when the content really has an order.'), own:true},
+  vocab:{t:L('只选几种基本形，并在全页重复使用，形状才会像一个统一的系统。','Choose a few basic shapes and repeat them across the page so they read as one system.'), own:true},
+  nShapes:{t:L('形状数量还会受“留白倾向”影响：留白越多，形状越少。','The shape count also follows the whitespace setting: more white space, fewer shapes.'), own:true},
+  sizeExp:{t:L('形状尺寸服从幂律分布 u^k：k 越大，越是少数很大、多数很小，比平均分布更有张力。','Shape sizes follow a power law u^k: the larger k is, the more a few shapes are big and most are small, which reads as more tension than an even spread.'), own:true},
+  fill:{t:L('实心形状像色块，描边形状更轻，更像图示。','Filled shapes act as colour fields; outlined shapes are lighter and more diagrammatic.'), own:true},
+  radius:{t:L('国际主义风格和 Riso 海报里的形状通常是直角；圆角会让画面变柔和、更像界面。','Swiss and Riso posters usually keep square corners; rounded corners soften the page and make it feel more like an interface.'), own:true},
+  strokeW:{t:L('描边粗细以 840px 宽的画面为准。','Stroke width is measured on the 840px-wide page.'), own:true},
+  angles:{t:L('只允许 0° 和 90° 时画面最有秩序；加入 45° 带来构成主义式的斜线；自由角度更像拼贴。','Allowing only 0° and 90° gives the most order; adding 45° brings Constructivist diagonals; free angles feel like collage.'), own:true},
+  snap:{t:L('打开后，形状的位置和尺寸都落在栏和模块行上。','When on, shape positions and sizes land on columns and module rows.'), own:true},
+  inks:{t:L('专色每种颜色用一块版、单独印一次。Risograph 一次印一种专色，多色要逐层叠印，所以油墨数量本身就是风格。','A spot colour gets its own plate and its own pass. The Risograph prints one spot colour at a time and builds colour in layers, so the number of inks is a style in itself.'), l:[['Spot color',WK('Spot_color')],['Risograph',WK('Risograph')]]},
+  paper:{t:L('叠印时纸色会参与混色：本页按“相乘”计算，所以同一种油墨印在米色纸上会更暗、更暖。','Paper takes part in overprinting: this page multiplies colours, so the same ink looks darker and warmer on cream paper.'), own:true},
+  textInk:{t:L('选“用油墨”时，文字用油墨 B（只有一种油墨时用油墨 A）来印，并且会跟着这块版一起错位。','With An ink, text prints in ink B (or ink A when there is only one ink) and shifts with that plate.'), own:true},
+  colorRatio:{t:L('60 / 30 / 10 是室内设计和界面设计里常说的配色经验法则：主色 60%、辅色 30%、点缀 10%。它是经验做法，不是严格理论；本页用它给强调色元素分配油墨。','60 / 30 / 10 is a rule of thumb from interior and interface design: a dominant colour at 60%, a secondary at 30%, an accent at 10%. It is a convention, not a theory; here it weights which ink the accent elements get.'), own:true},
+  accent:{t:L('冯·雷斯托夫效应：一组相似的东西里，与众不同的那一个更容易被记住（Hedwig von Restorff，1933）。所以强调色只给少数几个元素。','The von Restorff effect: among similar items, the one that differs is more likely to be remembered (Hedwig von Restorff, 1933). That is why only a few elements get the accent.'), l:[['Von Restorff effect',WK('Von_Restorff_effect')]]},
+  overprint:{t:L('叠印是把一种颜色直接印在另一种颜色上，重叠处会混出新的颜色。','Overprinting puts one colour directly on another, and the overlap mixes into a new colour.'), l:[['Overprinting',WK('Overprinting')]]},
+  tMis:{t:L('Riso 每种颜色单独过一次机器，各色之间会有 1–2 mm 的错位。印刷厂用套准标记检查各色版是否对齐。','A Riso prints each colour in a separate pass, so colours land 1–2 mm apart. Printers use registration marks to check that the plates line up.'), l:[['Design for Riso (Oxford Greenprint)','https://oxfordgreenprint.com/?p=223'],['Registration mark',WK('Registration_mark')]]},
+  tTex:{t:L('与印痕实验室相同的瑕疵，这里用 SVG 噪声滤镜作用在整个油墨层上；每种瑕疵的说明和来源见印痕实验室。','The same flaws as the print lab, applied here with SVG noise filters to the whole ink layer; see the print lab for each flaw\'s notes and sources.'), own:true},
+  img:{t:L('图像使用印痕实验室的加网算法；每种加网方式的历史和来源，见印痕实验室里的溯源。','The image uses the print lab\'s screening algorithms; see the print lab\'s provenance notes for each screen\'s history and sources.'), own:true},
+  mask:{t:L('印前流程里的去背通常用剪切路径实现：只保留路径以内的图像。本页用亮度阈值近似去掉接近白色的背景，所以只适合白底图片。','In prepress, cutouts are usually made with a clipping path that keeps only the image inside it. This page approximates it by removing near-white pixels, so it works best on images with a white background.'), l:[['Clipping path',WK('Clipping_path')]]},
+  crop:{t:L('紧裁只留局部，更有冲击力；宽裁保留环境，更像记录。','A tight crop keeps a detail and hits harder; a loose crop keeps the context and reads more like a record.'), own:true},
+  rules:{t:L('Gerstner 1964 年的《Designing Programmes》被出版社介绍为“计算机时代开端的系统化设计模型”；Rune Madsen 把其中的“设计程序”解读为由设计者定义、用来生成审美决定的规则集。严格度是每个元素遵守规则的概率。','Gerstner\'s Designing Programmes (1964) is described by its publisher as a model for systematic design at the dawn of the computer era; Rune Madsen reads a design programme as a designer-defined rule set that shapes aesthetic decisions. Strictness is the chance that each element obeys.'), l:[['Designing Programmes (Lars Müller)','https://www.lars-mueller-publishers.com/designing-programmes'],['Rune Madsen on Gerstner','https://runemadsen.com/blog/karl-gerstner-designing-programmes/']]},
+  pages:{t:L('多页时，页与页之间的变化形成翻阅节奏：满版图、密集文字和留白页交替出现。','Across several pages, changes from page to page create a reading rhythm: full-bleed images, dense text and airy pages alternate.'), own:true},
+  hoverShift:{t:L('悬停时油墨版位继续错开，模拟 Riso 的套色错位。','On hover the ink plates drift further apart, imitating Riso misregistration.'), own:true},
+  parallax:{t:L('视差源自传统动画的多平面摄影机技术（1930 年代起），后来用于游戏和网页：各层以不同速度移动，产生纵深感。','Parallax grew out of the multiplane camera of traditional animation (from the 1930s) and later spread to games and the web: layers move at different speeds to create depth.'), l:[['Parallax scrolling',WK('Parallax_scrolling')]]},
+  dur:{t:L('prefers-reduced-motion 让网页检测用户是否在系统里要求减少非必要的动效；检测到时，本页会关闭所有动画。','prefers-reduced-motion lets a page detect that the user has asked their system to minimise non-essential motion; when it is set, this page turns all animation off.'), l:[['prefers-reduced-motion (MDN)','https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion']]},
+  furn:{t:L('这些标记来自印刷生产：裁切线标出裁切位置，出血超出裁切线；套准标记用来检查各色版是否对齐。今天它们常被当成装饰，强化“印刷品”的感觉。','These marks come from print production: crop marks show where to trim, bleed runs past them, and registration marks check that the colour plates line up. Today they are often reused as ornament to signal print.'), l:[['Bleed (printing)',WK('Bleed_(printing)')],['Registration mark',WK('Registration_mark')]]},
+};
+const TIP_ALIAS = {tWidth:'tWeight', tMisX:'tMis', tMisY:'tMis', tGrain:'tTex', tStarve:'tTex', tPaper:'tTex', treat:'img', cell:'img', imgSpan:'img', strict:'rules', rhythm:'pages', ease:'dur'};
+const tipFor = k => TIPS[k] || TIPS[TIP_ALIAS[k]];
+function tipHTML(key, full){
+  const tp = tipFor(key); if (!tp) return '';
+  const links = (tp.l||[]).map(([t,u]) => u ? (full ? `<a href="${u}" target="_blank" rel="noopener">${t}</a>` : t) : `<span>${t}</span>`).join(full ? '<i>·</i>' : ' · ');
+  return `<span class="tt">${T(tp.t)}</span>` + (tp.own ? `<em>${T(OWN)}</em>` : (links ? `<em>${links}</em>` : ''));
+}
+const NOTE_DEFAULT = $('notecard').innerHTML;
+const tipEl = document.createElement('div'); tipEl.className = 'tip'; tipEl.setAttribute('role','tooltip'); tipEl.hidden = true; document.body.appendChild(tipEl);
+function showTip(btn){
+  tipEl.innerHTML = `<strong>${btn.dataset.label}</strong>` + tipHTML(btn.dataset.tip, false);
+  tipEl.hidden = false;
+  const r = btn.getBoundingClientRect(), tw = tipEl.offsetWidth, th = tipEl.offsetHeight;
+  let left = r.left + r.width/2 - tw/2; left = Math.max(12, Math.min(left, window.innerWidth - tw - 12));
+  let top = r.bottom + 8; if (top + th > window.innerHeight - 8) top = r.top - th - 8;
+  tipEl.style.left = (left + window.scrollX) + 'px'; tipEl.style.top = (top + window.scrollY) + 'px';
+}
+function pinNote(btn){
+  $('notecard').innerHTML = `<span class="nk">${LANG==='zh'?'说明':'Note'} · ${btn.dataset.label}</span>` + tipHTML(btn.dataset.tip, true);
+}
+document.addEventListener('mouseover', e => { const b = e.target.closest('.info'); if (b) showTip(b); });
+document.addEventListener('mouseout', e => { if (e.target.closest('.info')) tipEl.hidden = true; });
+document.addEventListener('focusin', e => { const b = e.target.closest('.info'); if (b && b.matches(':focus-visible')) showTip(b); else tipEl.hidden = true; });
+document.addEventListener('focusout', () => { tipEl.hidden = true; });
+document.addEventListener('click', e => { const b = e.target.closest('.info'); if (b){ e.preventDefault(); pinNote(b); tipEl.hidden = true; } });
+window.addEventListener('scroll', () => { tipEl.hidden = true; }, {passive:true});
+const infoBtn = (key, label) => tipFor(key) ? `<button type="button" class="info" data-tip="${key}" data-label="${label}" aria-label="${LANG==='zh'?'说明：':'About: '}${label}">i</button>` : '';
+
 /* ---------- panel ---------- */
 function buildPanel(){
   const panel = $('panel'); panel.innerHTML = '';
@@ -430,13 +536,13 @@ function control(it){
   let d;
   if (it.type==='range'){
     d = document.createElement('div'); d.className='field';
-    d.innerHTML = `<label for="${id}">${T(it.label)}</label><input type="range" id="${id}" min="${it.min}" max="${it.max}" step="${it.step}"><output></output>`;
+    d.innerHTML = `<span class="lb"><label for="${id}">${T(it.label)}</label>${infoBtn(it.key, T(it.label))}</span><input type="range" id="${id}" min="${it.min}" max="${it.max}" step="${it.step}"><output></output>`;
     const inp = d.querySelector('input'), o = d.querySelector('output');
     inp.addEventListener('input', () => { P[it.key] = parseFloat(inp.value); o.textContent = it.fmt(P[it.key]); manual(); render(); });
     d._sync = () => { inp.value = P[it.key]; o.textContent = it.fmt(P[it.key]); };
   } else if (it.type==='seg' || it.type==='checks'){
     d = document.createElement('div'); d.className='row2';
-    d.innerHTML = `<span>${T(it.label)}</span><div class="seg" role="group"></div>`;
+    d.innerHTML = `<span class="lb">${T(it.label)}${infoBtn(it.key, T(it.label))}</span><div class="seg" role="group"></div>`;
     const s = d.querySelector('.seg');
     it.opts.forEach(([v,lab]) => { const b = document.createElement('button'); b.type='button'; b.textContent=T(lab); b.dataset.v=v;
       b.addEventListener('click', () => { if (it.type==='seg') P[it.key] = v; else P[it.key][v] = !P[it.key][v]; manual(); syncPanel(); render(); });
@@ -444,14 +550,14 @@ function control(it){
     d._sync = () => s.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', it.type==='seg' ? String(P[it.key])===b.dataset.v : !!P[it.key][b.dataset.v]));
   } else if (it.type==='toggle'){
     d = document.createElement('div'); d.className='row2';
-    d.innerHTML = `<span>${T(it.label)}</span><div class="seg"><button type="button" id="${id}"></button></div>`;
+    d.innerHTML = `<span class="lb">${T(it.label)}${infoBtn(it.key, T(it.label))}</span><div class="seg"><button type="button" id="${id}"></button></div>`;
     const b = d.querySelector('button');
     b.addEventListener('click', () => { P[it.key] = !P[it.key]; manual(); syncPanel(); render(); });
     d._sync = () => { b.setAttribute('aria-pressed', !!P[it.key]); b.textContent = P[it.key] ? (LANG==='zh'?'开':'On') : (LANG==='zh'?'关':'Off'); };
   } else if (it.type==='swatch'){
     d = document.createElement('div'); d.className='row2';
     const list = it.list==='inks' ? INKS : PAPERS;
-    d.innerHTML = `<span>${T(it.label)}</span><div class="sw"></div>`;
+    d.innerHTML = `<span class="lb">${T(it.label)}${infoBtn(it.key, T(it.label))}</span><div class="sw"></div>`;
     const s = d.querySelector('.sw');
     list.forEach(x => { const b = document.createElement('button'); b.type='button'; b.style.background=x.c; b.dataset.v=x.id; b.title = LANG==='zh' ? `${x.zh} · ${x.en}` : x.en; b.setAttribute('aria-label', b.title);
       b.addEventListener('click', () => { P[it.key]=x.id; manual(); syncPanel(); render(); }); s.appendChild(b); });
@@ -1082,7 +1188,7 @@ function applyLang(l){
   document.querySelectorAll('[data-aria-zh]').forEach(el => el.setAttribute('aria-label', l==='zh' ? el.dataset.ariaZh : el.dataset.ariaEn));
   document.querySelectorAll('[data-setlang]').forEach(b => b.setAttribute('aria-pressed', b.dataset.setlang===l));
   try { localStorage.setItem('printlab-lang', l); } catch(e){}
-  status(''); buildPanel(); render();
+  status(''); $('notecard').innerHTML = NOTE_DEFAULT; buildPanel(); render();
 }
 document.querySelectorAll('[data-setlang]').forEach(b => b.addEventListener('click', () => { if (b.dataset.setlang!==LANG) applyLang(b.dataset.setlang); }));
 

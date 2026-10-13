@@ -258,8 +258,11 @@ function inkGrain(g, W, H, seed){
 /* 03: a tri-fold leaflet standing in a zigzag, printed in Riso teal and yellow; the panel turned away sits in a screened shade */
 function drawObject(){
   const c = $('pvObject'), g = c.getContext('2d'), W = c.width, H = c.height;
-  const TEAL = '#00838A', YEL = '#FFE800', GREY = '#E6E2D8', K = '#22201E';
+  const TEAL = '#00838A', YEL = '#FFE800', GREY = '#BF9B6F', K = '#2A1E14';
   g.setTransform(1,0,0,1,0,0); g.globalCompositeOperation = 'source-over'; g.fillStyle = GREY; g.fillRect(0,0,W,H);
+  // kraft board: short dark and light fibres
+  { let q = 7; const rr = () => (q = (q*16807) % 2147483647) / 2147483647;
+    for (let k=0;k<2600;k++){ const x = rr()*W, y = rr()*H, l = 3 + rr()*9, a = rr()*Math.PI; g.strokeStyle = rr() < .5 ? 'rgba(90,60,30,.35)' : 'rgba(235,215,180,.45)'; g.lineWidth = 1; g.beginPath(); g.moveTo(x, y); g.lineTo(x + l*Math.cos(a), y + l*Math.sin(a)); g.stroke(); } }
   // table shadow under the leaflet
   g.globalCompositeOperation = 'multiply';
   screenFill(g, K, 45, 10, (x, y) => Math.max(0, .55 - Math.hypot((x - 420)/330, (y - 815)/58)), [40, 730, 780, 900]);
@@ -298,29 +301,31 @@ function drawObject(){
   g.putImageData(im,0,0);
 }
 
-/* 04: two elements combined, in Riso bright red and green on a warm paper: giant dots, a star with a paper keyline, type with a hard shadow */
+/* 04: two elements combined on black stock with opaque white and fluorescent yellow: giant dots, a star with a keyline of black paper, type with a hard shadow */
 function drawElement(){
   const c = $('pvElement'), g = c.getContext('2d'), W = c.width, H = c.height;
-  const RED = '#F15060', GRN = '#00A95C', PAP = '#F6EED8';
+  const WHT = '#F2EFE6', YEL = '#FFE600', PAP = '#1C1A1D';
   g.setTransform(1,0,0,1,0,0); g.globalCompositeOperation = 'source-over'; g.fillStyle = PAP; g.fillRect(0,0,W,H);
-  g.globalCompositeOperation = 'multiply';
-  // A: a red circle in giant dots, darker towards the lower right
+  // A: giant dots in opaque white, heavier towards the upper left
   const cx = 360, cy = 380, R = 290;
-  screenFill(g, RED, 15, 34, (x, y) => { const dx = (x-cx)/R, dy = (y-cy)/R, d2 = dx*dx + dy*dy; return d2 < 1 ? .25 + .55*(dx*.5 + dy*.5 + .7) : 0; }, [cx-R, cy-R, cx+R, cy+R]);
-  // B: a green star on top, with a ring of paper cut around it so the miss never shows
+  screenFill(g, WHT, 15, 34, (x, y) => { const dx = (x-cx)/R, dy = (y-cy)/R, d2 = dx*dx + dy*dy; return d2 < 1 ? .2 + .55*(.7 - dx*.5 - dy*.5) : 0; }, [cx-R, cy-R, cx+R, cy+R]);
+  // B: a yellow star printed over a white underlay, a ring of black paper cut around it; the yellow misses the underlay a little
   const star = (x, y, r1, r2, rot) => { g.beginPath(); for (let k=0;k<10;k++){ const r = k%2 ? r2 : r1, a = rot - Math.PI/2 + k*Math.PI/5; g.lineTo(x + r*Math.cos(a), y + r*Math.sin(a)); } g.closePath(); };
-  g.globalCompositeOperation = 'source-over'; g.fillStyle = PAP; g.lineJoin = 'round'; g.strokeStyle = PAP; g.lineWidth = 34; star(520, 470, 210, 92, .2); g.fill(); g.stroke();
-  g.globalCompositeOperation = 'multiply'; g.fillStyle = GRN; star(520 + 5, 470 + 4, 210, 92, .2); g.fill();
-  // type with a hard shadow: the red copy offset under the green
+  g.lineJoin = 'round'; g.fillStyle = PAP; g.strokeStyle = PAP; g.lineWidth = 34; star(520, 470, 210, 92, .2); g.fill(); g.stroke();
+  g.fillStyle = WHT; star(520, 470, 210, 92, .2); g.fill();
+  g.globalCompositeOperation = 'multiply'; g.fillStyle = YEL; star(526, 475, 210, 92, .2); g.fill(); g.globalCompositeOperation = 'source-over';
+  // type: a white hard shadow, then yellow over its own white underlay
   g.font = '800 230px "Bricolage Grotesque", "Archivo", sans-serif'; g.textBaseline = 'alphabetic';
-  g.fillStyle = RED; g.fillText('A+B', 52 + 14, 900 + 11);
-  g.fillStyle = GRN; g.fillText('A+B', 52, 900);
-  g.globalCompositeOperation = 'source-over'; g.fillStyle = '#2A2422'; g.font = '600 18px "JetBrains Mono", monospace';
-  g.fillText('GIANT DOTS', 60, 80); g.fillText('+ KEYLINE', 60, 104); g.fillText('+ HARD SHADOW', 60, 128);
-  g.textAlign = 'right'; g.fillText('04', W - 60, 80); g.textAlign = 'left';
+  g.fillStyle = WHT; g.fillText('A+B', 52 + 14, 900 + 11);
+  g.fillStyle = PAP; g.fillText('A+B', 52, 900);
+  g.globalCompositeOperation = 'lighter'; g.fillStyle = '#E3CC00'; g.fillText('A+B', 52, 900); g.globalCompositeOperation = 'source-over';
+  g.fillStyle = WHT; g.font = '600 18px "JetBrains Mono", monospace';
+  g.fillText('BLACK STOCK · WHITE + FLUO YELLOW', 60, 66);
+  g.textAlign = 'right'; g.fillText('04', W - 60, 66); g.textAlign = 'left';
+  // grain: specks of black paper show through the ink
   let s = 53; const rnd = () => (s = (s*16807) % 2147483647) / 2147483647;
   const im = g.getImageData(0,0,W,H), d = im.data;
-  for (let i=0;i<d.length;i+=4){ if (rnd() < .06 && d[i]+d[i+1]+d[i+2] < 620){ const k = .3 + .4*rnd(); d[i]+=(0xF6-d[i])*k; d[i+1]+=(0xEE-d[i+1])*k; d[i+2]+=(0xD8-d[i+2])*k; } }
+  for (let i=0;i<d.length;i+=4){ if (rnd() < .07 && d[i]+d[i+1]+d[i+2] > 200){ const k = .35 + .45*rnd(); d[i]+=(0x1C-d[i])*k; d[i+1]+=(0x1A-d[i+1])*k; d[i+2]+=(0x1D-d[i+2])*k; } }
   g.putImageData(im,0,0);
 }
 

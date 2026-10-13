@@ -168,13 +168,17 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
       </div>
       <div class="group" id="imgGroup" hidden>
         <h2><span class="zh">单张图片的处理</span><span class="en">Moves on one image</span> <small>IMAGE</small></h2>
-        <p class="hint"><span class="zh">在翻译之前先动图片本身：裁切、镜像、抠图、切条、重复、错位复制。它们决定图片在版面上“说什么”，翻译步骤决定它“怎么印”。改造前后都会套用。</span><span class="en">Work on the picture itself before translating it: crop, mirror, cut out, slice, repeat, echo. These decide what the image says on the page; the steps decide how it prints. Both before and after use them.</span></p>
+        <p class="hint"><span class="zh">在翻译之前先动图片本身：裁切、镜像、抠图、切条、重复、错位复制、斜放、剪影 / 线稿、放大网点、扫描拖影。它们决定图片在版面上“说什么”，翻译步骤决定它“怎么印”。改造前后都会套用。</span><span class="en">Work on the picture itself before translating it: crop, mirror, cut out, slice, repeat, echo, tilt, silhouette or line art, giant dots, scanner drag. These decide what the image says on the page; the steps decide how it prints. Both before and after use them.</span></p>
         <div class="row2"><span class="zh">裁切</span><span class="en">Crop</span><div class="seg" id="imCrop"></div></div>
         <div class="row2"><span class="zh">镜像</span><span class="en">Mirror</span><div class="seg" id="imMirror"></div></div>
         <div class="row2"><span class="zh">抠图</span><span class="en">Cut-out</span><div class="seg" id="imCut"></div></div>
         <div class="row2"><span class="zh">切条</span><span class="en">Slice</span><div class="seg" id="imSlice"></div></div>
         <div class="row2"><span class="zh">重复</span><span class="en">Repeat</span><div class="seg" id="imRepeat"></div></div>
         <div class="row2"><span class="zh">错位复制</span><span class="en">Echo</span><div class="seg" id="imEcho"></div></div>
+        <div class="row2"><span class="zh">斜放</span><span class="en">Tilt</span><div class="seg" id="imRotate"></div></div>
+        <div class="row2"><span class="zh">形式</span><span class="en">Form</span><div class="seg" id="imForm"></div></div>
+        <div class="row2"><span class="zh">网点尺寸</span><span class="en">Dot size</span><div class="seg" id="imDots"></div></div>
+        <div class="row2"><span class="zh">拖影</span><span class="en">Drag</span><div class="seg" id="imDrag"></div></div>
         <p class="hint" id="imNote"></p>
       </div>
       <div class="group">
@@ -249,7 +253,7 @@ catch(e){ LANG = (navigator.language||'').toLowerCase().startsWith('zh') ? 'zh' 
 const T = o => (o && typeof o==='object' && 'zh' in o) ? o[LANG] : o;
 
 /* ---------- data ---------- */
-const ELEMENTS = [['nav',L('导航','Navigation')],['button',L('按钮','Buttons')],['card',L('卡片','Card')],['icon',L('图标','Icons')],['divider',L('分隔线','Dividers')]];
+const ELEMENTS = [['nav',L('导航','Navigation')],['button',L('按钮','Buttons')],['card',L('卡片','Card')],['icon',L('图标','Icons')],['divider',L('分隔线','Dividers')],['link',L('链接与状态','Links & states')],['tags',L('标签','Tags')],['list',L('作品列表','Work list')]];
 const VISUALS = [['geo',L('几何','Geometry')],['obj',L('拟物','Objects')],['photo',L('摄影','Photo')],['hand',L('手绘','Drawing')]];
 const SCHEMES = {
   swiss:{vh:L('一种墨（通常是黑）加一种浅色网点，形状落在网格上，像 Swiss 海报里的照片和图形。','One ink, usually black, plus one screened tint, shapes on the grid, like the images in a Swiss poster.'), n:L('Swiss · 线与字','Swiss · rules & type'), h:L('只用字、编号和油墨线：当前状态是一根粗墨线或一块实底，像杂志的目录和索引。','Type, numbers and ink rules only: the current state is a heavy rule or a solid bar, like a magazine contents page.')},
@@ -275,7 +279,7 @@ const STEPS = [
 function VSTEPS_IDS(){ return ['v_spot','v_tone','v_contrast','v_screen','v_detail','v_angle','v_line','v_single','v_edge']; }
 const SRC_LBL = {c:L('印刷','Press'), m:L('系统','System'), o:L('本页','This page')};
 
-const S = {img:{crop:'none', mirror:'none', cut:'none', slice:'none', repeat:'1', echo:'none'}, pair:'shapes', mis:true, cat:'web', el:'nav', scheme:'swiss', inks:'orange', on:Object.fromEntries(STEPS.map(s => [s.id, true]).concat(VSTEPS_IDS().map(id => [id, true])))};
+const S = {img:{crop:'none', mirror:'none', cut:'none', slice:'none', repeat:'1', echo:'none', rotate:'0', form:'photo', dots:'normal', drag:'none'}, pair:'shapes', mis:true, cat:'web', el:'nav', scheme:'swiss', inks:'orange', on:Object.fromEntries(STEPS.map(s => [s.id, true]).concat(VSTEPS_IDS().map(id => [id, true])))};
 
 /* ---------- specimen page ---------- */
 const NAV = [['01',L('索引','Index')],['02',L('作品','Works')],['03',L('工作坊','Workshops')],['04',L('关于','About')]];
@@ -289,7 +293,7 @@ function hero(f, small){
 function page(el, f, sc, ink, before){
   const v = `--paper:${f.spot ? ink.paper : ink.paper};--k:${ink.k};--a:${ink.a};--b:${ink.b}`;
   const frame = !f.spot;                                     // a second "paper" around the page and a different tab-bar tone
-  const body = VISUALS.some(v => v[0]===el) ? `<canvas class="vis" data-kind="${el}" width="640" height="300"></canvas>` : {nav, button, card, icon, divider}[el](f, sc, ink);
+  const body = VISUALS.some(v => v[0]===el) ? `<canvas class="vis" data-kind="${el}" width="640" height="300"></canvas>` : {nav, button, card, icon, divider, link, tags, list}[el](f, sc, ink);
   const order = el==='nav' ? body + hero(f) : hero(f, true) + body;
   return `<div class="pg${frame ? ' frame' : ''}" style="${v}">${order}</div>`;
 }
@@ -399,6 +403,58 @@ function icon(f, sc, ink){
   return `<div style="margin-left:${off}px;display:grid;grid-template-columns:repeat(4,minmax(0,90px));gap:16px;${bg}">${[0,1,2,3].map(box).join('')}</div>`;
 }
 
+const WORKS = [['2026', L('双色 Riso 海报','Two-colour Riso poster'), L('海报 · 粉 + 蓝','Poster · pink + blue')], ['2025', L('复印 zine 第 3 期','Photocopy zine No. 3'), L('Zine · 24 页','Zine · 24 pp')], ['2024', L('木刻字体实验','Woodcut type study'), L('字体 · 凸版','Type · letterpress')]];
+const TAGS = [L('Riso','Riso'), L('丝网','Screen print'), L('Zine','Zine'), L('2026','2026'), L('工作坊','Workshop')];
+// links in three states: default, hover, keyboard focus
+function link(f, sc, ink){
+  const off = f.grid ? 0 : 40, words = LANG==='zh' ? ['往期样张', '油墨色卡', '报名表'] : ['past proofs', 'ink swatches', 'sign-up form'];
+  const lbl = st => `<span style="${numFont};color:${ink.k};opacity:.7;margin-right:8px">${st}</span>`;
+  const st = LANG==='zh' ? ['默认','悬停','聚焦'] : ['default','hover','focus'];
+  const one = (w, state) => {
+    if (!f.flat){
+      const base = `color:${activeC(f, ink)};text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px;${labelFont(f)}`;
+      if (state===1) return `<a style="${base};color:#60A5FA;text-decoration:none;text-shadow:0 0 8px rgba(96,165,250,.6)">${esc(w)}</a>`;
+      if (state===2) return `<a style="${base};outline:none;box-shadow:0 0 0 3px rgba(37,99,235,.35);border-radius:6px;padding:0 3px">${esc(w)}</a>`;
+      return `<a style="${base}">${esc(w)}</a>`;
+    }
+    const lc = f.ink ? ink.k : '#9AA0AA', lw = f.ink ? 2.5 : 1, acc = f.active ? (sc==='swiss' ? ink.k : ink.a) : '#2563EB';
+    if (sc==='swiss'){
+      if (state===1) return `<a style="${labelFont(f)};background:${ink.k};color:${ink.paper};padding:0 3px">${esc(w)}</a>`;
+      if (state===2) return `<a style="${labelFont(f)};color:${ink.k};outline:3px solid ${acc};outline-offset:2px">${esc(w)}</a>`;
+      return `<a style="${labelFont(f)};color:${ink.k};text-decoration:underline;text-decoration-color:${lc};text-decoration-thickness:${lw}px;text-underline-offset:4px">${esc(w)}</a>`;
+    }
+    if (sc==='riso'){
+      const mark = f.screen ? dots(acc, .42, 5) : acc + '66';
+      if (state===1) return `<a style="${labelFont(f)};color:${ink.k};background:${mark};padding:0 3px">${esc(w)}</a>`;
+      if (state===2) return `<a style="${labelFont(f)};color:${ink.k};outline:2.5px dashed ${ink.k};outline-offset:3px">${esc(w)}</a>`;
+      return `<a style="${labelFont(f)};color:${ink.k};box-shadow:inset 0 -${f.ink ? 6 : 2}px 0 ${f.screen ? acc + 'AA' : acc}">${esc(w)}</a>`;
+    }
+    if (state===1) return `<a style="${labelFont(f)};color:${ink.k};background:#FBFAF5;padding:1px 5px;display:inline-block;transform:rotate(-2deg);box-shadow:2px 2px 0 ${ink.k}">${esc(w)}</a>`;
+    if (state===2) return `<a style="${labelFont(f)};color:${ink.k};padding:0 6px;background:linear-gradient(${ink.k},${ink.k}) 0 0/8px 2px no-repeat, linear-gradient(${ink.k},${ink.k}) 0 0/2px 8px no-repeat, linear-gradient(${ink.k},${ink.k}) 100% 100%/8px 2px no-repeat, linear-gradient(${ink.k},${ink.k}) 100% 100%/2px 8px no-repeat">${esc(w)}</a>`;
+    return `<a style="${labelFont(f)};color:${ink.k};border-bottom:${lw}px dashed ${ink.k}">${esc(w)}</a>`;
+  };
+  return `<div style="margin-left:${off}px;display:flex;flex-direction:column;gap:10px;font-size:15px;color:${ink.k}">${[0,1,2].map(k => `<p style="margin:0">${lbl(st[k])}${LANG==='zh' ? '看看' : 'See the '}${one(words[k], k)}${LANG==='zh' ? '。' : '.'}</p>`).join('')}</div>`;
+}
+function tags(f, sc, ink){
+  const off = f.grid ? 0 : 40, pastel = ['#FCE7F3','#DCFCE7','#FEF9C3','#E0E7FF','#FFEDD5'], txt = ['#BE185D','#15803D','#A16207','#4338CA','#C2410C'];
+  const one = (t, k) => {
+    if (!f.flat) return `<span style="display:inline-flex;padding:4px 10px;border-radius:999px;font-size:12.5px;${labelFont(f)};background:${f.spot ? (k%2 ? ink.a : ink.b) + '33' : pastel[k]};color:${f.spot ? ink.k : txt[k]};box-shadow:0 1px 3px rgba(0,0,0,.12);border:${lineW(f)}px ${lineS(f)} ${f.ink ? ink.k : 'rgba(0,0,0,.08)'}">${esc(T(t))}</span>`;
+    if (sc==='swiss') return `<span style="display:inline-flex;padding:3px 7px;${numFont};text-transform:uppercase;color:${ink.k};border:${f.ink ? 2 : 1}px solid ${f.ink ? ink.k : '#9AA0AA'}">${esc(T(t))}</span>`;
+    if (sc==='riso'){ const c = f.spot ? [ink.a, ink.b][k%2] : pastel[k]; return `<span style="display:inline-flex;padding:4px 9px;${labelFont(f)};font-size:12.5px;color:${f.spot ? ink.paper : ink.k};font-weight:600;background:${f.spot ? c : c + '55'};${f.screen ? `box-shadow:3px 3px 0 ${k%2 ? ink.a : ink.b}` : ''}">${esc(T(t))}</span>`; }
+    return `<span style="display:inline-flex;padding:3px 8px;${numFont};text-transform:uppercase;color:${f.single ? ink.k : ink.a};border:2.5px double ${f.single ? ink.k : ink.a};transform:rotate(${[-3,2,-1,3,-2][k]}deg);opacity:.92">${esc(T(t))}</span>`;
+  };
+  return `<div style="margin-left:${off}px;display:flex;flex-wrap:wrap;gap:8px;max-width:420px">${TAGS.map(one).join('')}</div>`;
+}
+function list(f, sc, ink){
+  const off = f.grid ? 0 : 40;
+  if (!f.flat){
+    return `<div style="margin-left:${off}px;display:flex;flex-direction:column;gap:10px;max-width:440px">${WORKS.map(([y, t, m], k) => `<div style="display:flex;gap:12px;align-items:center;padding:10px;border-radius:12px;background:${f.spot ? 'transparent' : 'rgba(255,255,255,.6)'};box-shadow:${k===0 ? '0 8px 20px rgba(0,0,0,.12)' : '0 1px 3px rgba(0,0,0,.06)'};border:${lineW(f)}px ${lineS(f)} ${lineC(f, ink)}"><span style="flex:none;width:44px;height:44px;border-radius:8px;background:${f.spot ? (k%2 ? ink.b : ink.a) : ['linear-gradient(135deg,#F472B6,#60A5FA)','linear-gradient(135deg,#FBBF24,#F87171)','linear-gradient(135deg,#34D399,#3B82F6)'][k]}"></span><span style="display:flex;flex-direction:column;gap:2px"><span style="${labelFont(f)};font-size:14.5px;color:${k===0 ? activeC(f, ink) : ink.k}">${esc(T(t))}</span><span style="font-size:12px;color:#8a8794">${esc(T(m))} · ${y}</span></span></div>`).join('')}</div>`;
+  }
+  if (sc==='swiss') return `<div style="margin-left:${off}px;max-width:460px;border-top:${f.ink ? 5 : 1}px solid ${ink.k}">${WORKS.map(([y, t, m], k) => `<div style="display:grid;grid-template-columns:3.2em 1fr auto;gap:12px;align-items:baseline;padding:8px 0;border-bottom:${f.ink ? 2 : 1}px ${f.ink ? 'solid' : 'dotted'} ${f.ink ? ink.k : '#9AA0AA'}"><span style="${numFont};color:${ink.k}">${y}</span><span style="${labelFont(f)};font-size:16px;color:${ink.k};${k===0 && f.active ? `box-shadow:inset 0 -4px 0 ${ink.k}` : ''}">${esc(T(t))}</span><span style="${numFont};color:${ink.k};opacity:.75">${esc(T(m))}</span></div>`).join('')}</div>`;
+  if (sc==='riso') return `<div style="margin-left:${off}px;max-width:460px;display:flex;flex-direction:column">${WORKS.map(([y, t, m], k) => `<div style="display:grid;grid-template-columns:3.2em 1fr;gap:12px;align-items:baseline;padding:9px 10px;background:${k%2 ? 'transparent' : (f.screen ? dots(ink.a, .22, 5) : ink.a + '33')}"><span style="${numFont};color:${ink.k}">${y}</span><span style="display:flex;flex-direction:column;gap:2px"><span style="${labelFont(f)};font-size:16px;color:${ink.k}">${esc(T(t))}</span><span style="${numFont};color:${ink.k};opacity:.75">${esc(T(m))}</span></span></div>`).join('')}</div>`;
+  // print objects: numbered tickets with a punched hole
+  return `<div style="margin-left:${off}px;display:flex;flex-direction:column;gap:8px;max-width:460px">${WORKS.map(([y, t, m], k) => `<div style="position:relative;display:grid;grid-template-columns:4.4em 1fr;gap:12px;align-items:center;padding:8px 12px 8px 26px;background:#FBFAF5;border:2.5px solid ${ink.k};transform:rotate(${[-1,.8,-.6][k]}deg)"><span style="position:absolute;left:8px;top:50%;width:9px;height:9px;margin-top:-4.5px;border-radius:50%;background:${ink.paper};box-shadow:inset 0 0 0 2px ${ink.k}"></span><span style="${numFont};color:${ink.k}">No.${String(k+1).padStart(2,'0')}<br>${y}</span><span style="display:flex;flex-direction:column;gap:2px"><span style="${labelFont(f)};font-size:16px;color:${ink.k}">${esc(T(t))}</span><span style="${numFont};color:${ink.k};opacity:.75">${esc(T(m))}</span></span></div>`).join('')}</div>`;
+}
 function divider(f, sc, ink){
   const off = f.grid ? 0 : 40, txt = `<p class="lede" style="margin:0">${LANG==='zh'?'每次工作坊只用两种油墨：先印浅色，再印深色。':'Each workshop uses just two inks: the light one first, then the dark.'}</p>`;
   let rule;
@@ -595,7 +651,7 @@ function drawPhoto(g, f, sc, ink){
     const t = new Float32Array(Lm); for (let y=1;y<VH-1;y++) for (let x=1;x<VW-1;x++){ const i = y*VW+x; Lm[i] = (t[i]*4 + t[i-1] + t[i+1] + t[i-VW] + t[i+VW])/8; } }
   if (f.v_tone) for (let i=0;i<N;i++) Lm[i] = Math.round(Lm[i]*3)/3;
   const im = g.createImageData(VW, VH), d = im.data, P = hx(ink.paper), A = hx(sc==='swiss' ? ink.k : ink.a), B = hx(ink.b);
-  const cell = 6, TAU = Math.PI*2, spot = (x, y, ang) => { const a = ang*Math.PI/180, u = (x*Math.cos(a) + y*Math.sin(a))/cell, w = (-x*Math.sin(a) + y*Math.cos(a))/cell; return (Math.cos(TAU*u) + Math.cos(TAU*w) + 2)/4; };
+  const cell = S.img.dots==='giant' ? 17 : 6, TAU = Math.PI*2, spot = (x, y, ang) => { const a = ang*Math.PI/180, u = (x*Math.cos(a) + y*Math.sin(a))/cell, w = (-x*Math.sin(a) + y*Math.cos(a))/cell; return (Math.cos(TAU*u) + Math.cos(TAU*w) + 2)/4; };
   const mul = (c, k, t) => c.map((v,i) => v * (1 - t*(1 - k[i]/255)));
   const nRep = +S.img.repeat, echo = S.img.echo==='ink';
   for (let y=0;y<VH;y++) for (let x=0;x<VW;x++){
@@ -634,6 +690,10 @@ const IMOPTS = {
   imSlice:['slice', [['none',L('无','None')],['strips',L('横条错开','Shifted strips')]]],
   imRepeat:['repeat', [['1',L('×1','×1')],['2',L('×2','×2')],['3',L('×3','×3')]]],
   imEcho:['echo', [['none',L('无','None')],['ink',L('另一色错开','Offset in ink B')]]],
+  imRotate:['rotate', [['0',L('不转','Straight')],['7',L('斜放 7°','Tilt 7°')],['-12',L('斜放 −12°','Tilt −12°')]]],
+  imForm:['form', [['photo',L('照片','Photo')],['sil',L('剪影','Silhouette')],['line',L('线稿','Line art')]]],
+  imDots:['dots', [['normal',L('常规','Normal')],['giant',L('放大网点','Giant dots')]]],
+  imDrag:['drag', [['none',L('无','None')],['drag',L('扫描拖影','Scanner drag')]]],
 };
 const IMNOTE = {
   crop:L('裁切决定主角和尺度：紧裁让局部变成图形，长条像电影画幅。','Cropping decides the subject and the scale: a tight crop turns a detail into a shape, a strip reads like a film frame.'),
@@ -642,6 +702,10 @@ const IMNOTE = {
   slice:L('切条错开是拼贴和 zine 常用的手法，把“照片”变成“被处理过的照片”。','Shifted strips are a collage and zine move that turns a photo into a handled photo.'),
   repeat:L('重复且每次换墨，是丝网海报的经典做法（Warhol 的《Marilyn Diptych》把同一张照片印了 50 次）。','Repeating with a different ink each time is a screen-print classic (Warhol\'s Marilyn Diptych repeats one photo 50 times).'),
   echo:L('用第二种墨把同一张图错开再印一遍，是刻意放大的套色错位。','Printing the same image again in a second ink, offset, is misregistration on purpose.'),
+  rotate:L('斜放让照片像一张被随手贴上去的纸片，和网格形成对比；角度别太多种，一张作品里一两个就够。','A tilt makes the photo read as a scrap stuck on by hand, against the grid; keep to one or two angles per piece.'),
+  form:L('剪影只留轮廓，线稿只留边缘：照片被压成和几何、文字同一抽象程度的图形。','A silhouette keeps only the outline, line art only the edges: the photo is pressed down to the same level of abstraction as the geometry and type.'),
+  dots:L('网点放大到成为图形本身，像波普漫画；放大后读起来更像图案而不是照片。打开“一种网点体系”才看得到。','Dots enlarged until they become the graphic, as in pop comics; it reads as pattern more than photo. Needs “One screening system” on.'),
+  drag:L('扫描或复印时移动原稿，画面被拉出一道道拖痕，是复印 zine 的标志性手法。','Moving the original while it is scanned or photocopied drags the image into streaks, a signature move of photocopied zines.'),
 };
 const prepCache = {};
 function imgPrep(){
@@ -675,6 +739,36 @@ function imgPrep(){
     const out = new Uint8ClampedArray(d.length), al = new Uint8Array(alpha.length), band = 26;
     for (let y=0;y<VH;y++){ const sh = (Math.floor(y/band) % 2 ? 1 : -1) * 22; for (let x=0;x<VW;x++){ const xs = x - sh, i = y*VW + x; if (xs < 0 || xs >= VW){ al[i] = 0; continue; } const j = y*VW + xs; out.set(d.subarray(j*4, j*4+4), i*4); al[i] = alpha[j]; } }
     d.set(out); alpha.set(al);
+  }
+  // form: silhouette (one flat dark shape) or line art (edges only)
+  if (o.form!=='photo'){
+    const L0 = new Float32Array(VW*VH); for (let i=0;i<VW*VH;i++) L0[i] = (.299*d[i*4] + .587*d[i*4+1] + .114*d[i*4+2])/255;
+    const mean = L0.reduce((a,b)=>a+b,0)/L0.length;
+    for (let y=0;y<VH;y++) for (let x=0;x<VW;x++){
+      const i = y*VW + x; let v;
+      if (o.form==='sil') v = (o.cut==='bg' ? alpha[i] : L0[i] < mean) ? 25 : 255;
+      else { const xl = Math.max(0,x-2), xr = Math.min(VW-1,x+2), yu = Math.max(0,y-2), yd = Math.min(VH-1,y+2);
+        const gx = L0[y*VW+xr] - L0[y*VW+xl], gy = L0[yd*VW+x] - L0[yu*VW+x]; v = Math.hypot(gx, gy) > .07 ? 25 : 255; }
+      d[i*4] = d[i*4+1] = d[i*4+2] = v;
+    }
+  }
+  // scanner drag: below a wavering line the image is smeared down the page, along the scan direction
+  if (o.drag==='drag'){
+    for (let x=0;x<VW;x++){ const y0 = Math.round(VH*.42 + 18*Math.sin(x*.03) + 7*Math.sin(x*.13)), j0 = (y0*VW + x)*4;
+      for (let y=y0+1;y<VH;y++){ const i = (y*VW + x)*4, t = Math.min(1, (y - y0)/(VH*.6)); for (let k=0;k<3;k++) d[i+k] = d[j0+k]*(1 - t*.3) + d[i+k]*t*.3; alpha[y*VW+x] = alpha[y0*VW+x]; } }
+  }
+  // tilt: the whole picture turns like a scrap; corners outside it become paper
+  if (o.rotate!=='0'){
+    g.putImageData(im, 0, 0);
+    const t = document.createElement('canvas'); t.width = VW; t.height = VH; const tg = t.getContext('2d');
+    const am = document.createElement('canvas'); am.width = VW; am.height = VH; const ag = am.getContext('2d'), ai = ag.createImageData(VW, VH);
+    for (let i=0;i<VW*VH;i++){ ai.data[i*4+3] = alpha[i] ? 255 : 0; }
+    ag.putImageData(ai, 0, 0);
+    const ang = +o.rotate*Math.PI/180, sc2 = .82;
+    [[tg, c], [ag, am]].forEach(([gg, srcC]) => { const tmp = document.createElement('canvas'); tmp.width = VW; tmp.height = VH; tmp.getContext('2d').drawImage(srcC, 0, 0);
+      gg.clearRect(0, 0, VW, VH); gg.save(); gg.translate(VW/2, VH/2); gg.rotate(ang); gg.scale(sc2, sc2); gg.drawImage(tmp, -VW/2, -VH/2); gg.restore(); });
+    const td = tg.getImageData(0, 0, VW, VH).data, ad = ag.getImageData(0, 0, VW, VH).data;
+    for (let i=0;i<VW*VH;i++){ alpha[i] = td[i*4+3] > 128 && ad[i*4+3] > 128 ? 1 : 0; const w = td[i*4+3]/255, pw = 255*(1-w); d[i*4] = td[i*4]*w + pw; d[i*4+1] = td[i*4+1]*w + pw; d[i*4+2] = td[i*4+2]*w + pw; }
   }
   g.putImageData(im, 0, 0);
   return (prepCache[key] = {c, alpha});
@@ -746,9 +840,13 @@ const OPS = [
   {id:'union', t:L('合并','Union'), d:L('A 和 B 合成一个形状，印在同一块版上。','A and B merge into one shape on one plate.'), safe:true},
   {id:'inter', t:L('相交','Intersect'), d:L('只印两者重叠的部分。','Only the part where they overlap prints.'), safe:true},
   {id:'xor', t:L('异或','Exclude'), d:L('印两者不重叠的部分，重叠处留白。','The parts that do not overlap print; the overlap stays paper.'), safe:true},
+  {id:'opaque', t:L('不透明遮盖','Opaque cover'), d:L('上层直接盖住下层，不混色。需要不透明的墨或先垫一层白墨；大多数 Riso 墨是透明的，会叠出混色。','The top layer simply covers the one below, no mixing. It needs an opaque ink or a white underlay; most Riso inks are transparent and mix.'), safe:true, l:['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']},
+  {id:'shadow', t:L('硬阴影','Hard shadow'), d:L('同一个形状用另一种墨偏移一点垫在下面，当作阴影。错位只会让阴影偏多偏少。','The same shape, offset in the other ink, sits underneath as a shadow. A miss only makes the shadow a little bigger or smaller.'), safe:true},
+  {id:'keyline', t:L('留白描边','Paper keyline'), d:L('上层周围留一圈纸色，把两者隔开：错位被这圈空隙吃掉，图上压字时最常用。','A ring of paper around the top element separates the two: the gap absorbs the miss. The usual way to set type over an image.'), safe:true},
+  {id:'intext', t:L('图在字里','Image in type'), d:L('照片只出现在大字里面。字形和照片在同一块版上，所以不怕错位；和“照片装进圆形再描边”不同。','The photo appears only inside large letters. Letters and photo share one plate, so a miss cannot hurt it, unlike a photo in a circle with an outline on another plate.'), safe:true},
   {id:'clip', t:L('蒙版','Clip'), d:L('B 只出现在 A 的形状里面，比如照片装进圆形；两块版之间仍然要对位。','B only appears inside A\'s shape, like a photo inside a circle; the two plates still have to line up.'), safe:false},
 ];
-const OPS_FOR = {shapes:['over','knock','trap','reverse','union','inter','xor'], text:['over','knock','trap','reverse','union','inter','xor'], photo:['over','knock','trap','reverse','clip']};
+const OPS_FOR = {shapes:['over','opaque','knock','trap','keyline','shadow','reverse','union','inter','xor'], text:['over','opaque','knock','trap','keyline','shadow','reverse','union','inter','xor'], photo:['over','opaque','knock','trap','keyline','shadow','reverse','clip','intext']};
 const OW = 320, OH = 210;
 const opCache = {};
 function opMasks(pair){
@@ -766,9 +864,16 @@ function opMasks(pair){
       const u = (x+y)/(cell*Math.SQRT2), w = (y-x)/(cell*Math.SQRT2), thr = (Math.cos(TAU*u) + Math.cos(TAU*w) + 2)/4; o[i+3] = thr > 1 - dk ? 255 : 0; }
     gb.putImageData(im, 0, 0);
   }
-  const A = ga.getImageData(0, 0, OW, OH).data, B = gb.getImageData(0, 0, OW, OH).data, N = OW*OH, ma = new Float32Array(N), mb = new Float32Array(N);
+  const A = ga.getImageData(0, 0, OW, OH).data, B = gb.getImageData(0, 0, OW, OH).data, N = OW*OH, ma = new Float32Array(N), mb = new Float32Array(N), mt = new Float32Array(N);
   for (let i=0;i<N;i++){ ma[i] = A[i*4+3]/255; mb[i] = B[i*4+3]/255; }
-  return (opCache[key] = {ma, mb});
+  const tc = mk(), gt2 = tc.getContext('2d'); gt2.font = '800 128px "Bricolage Grotesque", "Archivo", sans-serif'; gt2.textAlign = 'center'; gt2.textBaseline = 'middle'; gt2.fillText('INK', OW/2, OH/2 + 4);
+  const TD = gt2.getImageData(0, 0, OW, OH).data; for (let i=0;i<N;i++) mt[i] = TD[i*4+3]/255;
+  return (opCache[key] = {ma, mb, mt});
+}
+function dilate(m, r){
+  const out = new Float32Array(m.length);
+  for (let y=0;y<OH;y++) for (let x=0;x<OW;x++){ let v = 0; for (let dy=-r; dy<=r && v<1; dy++) for (let dx=-r; dx<=r; dx++){ if (dx*dx + dy*dy > r*r) continue; const xx = x+dx, yy = y+dy; if (xx<0||yy<0||xx>=OW||yy>=OH) continue; v = Math.max(v, m[yy*OW+xx]); } out[y*OW+x] = v; }
+  return out;
 }
 function erode(m, r){
   const out = new Float32Array(m.length);
@@ -776,7 +881,9 @@ function erode(m, r){
   return out;
 }
 function drawOp(cv, op, pair, ink, mis){
-  const g = cv.getContext('2d'), {ma, mb} = opMasks(pair), N = OW*OH;
+  const g = cv.getContext('2d'), {ma, mb, mt} = opMasks(pair), N = OW*OH, photoPair = pair==='photo';
+  // keyline: the top element (B, or the circle over the photo) gets a ring of paper around it
+  const ring = op==='keyline' ? dilate(photoPair ? ma : mb, 6) : null;
   const dx = mis ? 5 : 0, dy = mis ? 3 : 0;                      // plate B slips by about 1–2 mm at print size
   const mbE = op==='trap' ? erode(mb, 3) : null;                 // the hole in A is choked so A runs under B
   const im = g.createImageData(OW, OH), d = im.data, P = hx(ink.paper), A = hx(ink.a), B = hx(ink.b), r = noise2(5);
@@ -793,11 +900,17 @@ function drawOp(cv, op, pair, ink, mis){
       case 'inter': cA = a*b0; break;
       case 'xor': cA = Math.abs(a - b0); break;
       case 'clip': cB = bS*aS; break;
+      case 'opaque': cA = a; cB = bS; break;
+      case 'keyline': if (photoPair){ cA = a; cB = bS*(1 - ring[i]); } else { cA = a*(1 - ring[i]); cB = bS; } break;
+      case 'shadow': { const sx = x - 9, sy = y - 7, k = (sx>=0 && sy>=0 && sx<OW && sy<OH) ? sy*OW + sx : -1;
+        // the element prints in its own ink; its offset copy prints in the other ink, underneath
+        if (photoPair){ cA = a; cB = k>=0 ? ma[k]*(1 - a) : 0; } else { cB = bS; cA = k>=0 ? mb[k]*(1 - b0) : 0; } } break;
+      case 'intext': cB = bS*(j>=0 ? mt[j] : 0); break;
     }
     let c = P.slice();
     const s = .95 - .25*r();
     if (cA) c = c.map((v,k) => v*(1 - cA*s*(1 - A[k]/255)));
-    if (cB) c = c.map((v,k) => v*(1 - cB*s*(1 - B[k]/255)));
+    if (cB) c = op==='opaque' ? c.map((v,k) => v + (B[k]*(.97 - .05*r()) - v)*cB) : c.map((v,k) => v*(1 - cB*s*(1 - B[k]/255)));
     d[i*4] = c[0]; d[i*4+1] = c[1]; d[i*4+2] = c[2]; d[i*4+3] = 255;
   }
   g.putImageData(im, 0, 0);

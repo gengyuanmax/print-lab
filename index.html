@@ -32,7 +32,8 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);f
 :root[data-lang="en"] .zh{display:none!important}
 :root:not([data-lang="en"]) .en{display:none!important}
 .mast-top{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.eyebrow a{color:var(--ink);text-decoration-color:var(--pink);text-decoration-thickness:2px;text-underline-offset:3px}
 .langsw{display:inline-flex;border:1.5px solid var(--ink)}
 .langsw button{font:600 12px/1 var(--mono);letter-spacing:.06em;padding:8px 12px;min-height:34px;border:0;background:transparent;color:var(--ink);cursor:pointer}
 .langsw button + button{border-left:1.5px solid var(--ink)}
@@ -139,7 +140,7 @@ button:focus-visible,input:focus-visible,label.btn:focus-within{outline:2.5px so
 <div class="wrap">
   <header class="mast">
     <div class="mast-top">
-      <div class="eyebrow">Print texture lab · <span class="zh">网点 / 叠印 / 瑕疵</span><span class="en">Dots / Overprint / Flaws</span></div>
+      <div class="eyebrow"><span>Print texture lab · <span class="zh">网点 / 叠印 / 瑕疵</span><span class="en">Dots / Overprint / Flaws</span></span><a id="toLayout" href="layout.html"><span class="zh">版式实验室 →</span><span class="en">Layout Lab →</span></a></div>
       <div class="langsw" role="group" aria-label="Language / 语言">
         <button type="button" data-setlang="zh" lang="zh-CN">中文</button>
         <button type="button" data-setlang="en" lang="en">EN</button>
@@ -862,6 +863,10 @@ function applyLang(l){
   try { localStorage.setItem('printlab-lang', l); } catch(e){}
 }
 document.querySelectorAll('[data-setlang]').forEach(b => b.addEventListener('click', () => { if (b.dataset.setlang!==LANG) applyLang(b.dataset.setlang); }));
+
+// link to the layout lab: relative on GitHub Pages / local files, the published artifact elsewhere
+const host = location.hostname, local = host.endsWith('github.io') || location.protocol==='file:' || host==='localhost' || host==='127.0.0.1';
+if (!local){ $('toLayout').href = 'https://claude.ai/artifact/3kpSy3NxXfTr8N6h2EhqAB'; $('toLayout').target = '_blank'; $('toLayout').rel = 'noopener'; }
 
 applyLang(LANG);
 refreshSource();

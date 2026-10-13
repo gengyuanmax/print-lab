@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>版式实验室</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@400;700;900&family=Noto+Serif+SC:wght@500;900&family=Space+Mono:wght@400;700&display=swap">
+<style>
+/* Layout: same proof-sheet identity as the print lab — sticky poster proof on the left, a "job ticket" of layout parameters on the right, live layout metrics under the proof. Single committed paper look. */
+:root{
+  --paper:#F1F0EB;
+  --sheet:#FBFBF8;
+  --ink:#1C1B22;
+  --muted:#5E5C66;
+  --rule:#CFCCC4;
+  --pink:#FF48B0;
+  --blue:#0078BF;
+  --display:"Bricolage Grotesque","Noto Sans SC",system-ui,sans-serif;
+  --body:"IBM Plex Sans","Noto Sans SC",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55}
+:root[data-lang="en"] .zh{display:none!important}
+:root:not([data-lang="en"]) .en{display:none!important}
+.wrap{max-width:1240px;margin:0 auto;padding-inline:20px;padding-block:28px 56px}
+
+/* masthead */
+.mast{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px 32px;align-items:end;border-bottom:3px solid var(--ink);padding-bottom:18px;margin-bottom:28px}
+@media (max-width:760px){.mast{grid-template-columns:1fr}}
+.mast-top{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.eyebrow a{color:var(--ink);text-decoration-color:var(--pink);text-decoration-thickness:2px;text-underline-offset:3px}
+.langsw{display:inline-flex;border:1.5px solid var(--ink)}
+.langsw button{font:600 12px/1 var(--mono);letter-spacing:.06em;padding:8px 12px;min-height:34px;border:0;background:transparent;color:var(--ink);cursor:pointer}
+.langsw button + button{border-left:1.5px solid var(--ink)}
+.langsw button[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
+.mis{display:grid;margin:0;font-family:var(--display);font-weight:900;font-size:clamp(48px,9vw,112px);line-height:.92;letter-spacing:-.02em;text-wrap:balance}
+:root[data-lang="en"] .mis{font-size:clamp(40px,7vw,92px);font-weight:800}
+.mis > span{grid-area:1/1;mix-blend-mode:multiply}
+.mis > span:first-child{color:var(--pink)}
+.mis > span:last-child{color:var(--blue);transform:translate(.045em,.03em)}
+.lede{max-width:34em;margin:0;color:var(--muted);text-wrap:pretty}
+
+/* lab */
+.lab{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:32px;align-items:start}
+@media (max-width:900px){.lab{grid-template-columns:minmax(0,1fr)}}
+.stage{min-width:0;display:flex;flex-direction:column;gap:12px}
+@media (min-width:901px){.stage{position:sticky;top:calc(16px + env(safe-area-inset-top, 0px))}}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.toolbar .row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font:500 13px var(--body);padding:7px 11px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer;min-height:36px}
+.btn:hover{background:rgba(28,27,34,.07)}
+.btn[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
+.seedtag{font-family:var(--mono);font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.proof{background:var(--sheet);border:1px solid var(--rule);padding:18px;position:relative}
+.posterwrap{position:relative;width:100%;overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,.04),0 10px 30px -12px rgba(28,27,34,.25)}
+.poster{position:absolute;left:0;top:0;transform-origin:0 0;overflow:hidden}
+.poster *{box-sizing:border-box}
+.poster .el{position:absolute;margin:0}
+.poster svg.layer{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+.metric{border-top:1.5px solid var(--ink);padding-top:6px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.metric span{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.metric b{font-family:var(--display);font-weight:800;font-size:22px;line-height:1.1;font-variant-numeric:tabular-nums}
+.metric i{font-style:normal;font-size:12px;color:var(--muted)}
+.metric.ok b{color:var(--ink)} .metric.bad b{color:#C2183C}
+.note{font-size:12.5px;color:var(--muted);margin:0;text-wrap:pretty}
+
+/* panel */
+.panel{min-width:0;display:flex;flex-direction:column;gap:20px}
+.presetbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+@media (max-width:420px){.presetbar{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.presetbar button{font:700 14px/1.2 var(--display);padding:10px 6px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer;min-height:48px;display:flex;flex-direction:column;gap:2px;align-items:flex-start;text-align:left}
+.presetbar button small{font:400 10.5px var(--mono);color:var(--muted);letter-spacing:.03em}
+.presetbar button:hover{background:rgba(28,27,34,.07)}
+.presetbar button[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
+.presetbar button[aria-pressed="true"] small{color:rgba(251,251,248,.7)}
+.group{display:flex;flex-direction:column;gap:10px;padding-top:12px;border-top:1.5px solid var(--ink)}
+.group h2{margin:0;display:flex;justify-content:space-between;align-items:baseline;font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:-.01em}
+.group h2 small{font-family:var(--mono);font-weight:400;font-size:10.5px;letter-spacing:.14em;color:var(--muted)}
+.ghint{font-size:12.5px;color:var(--muted);margin:-4px 0 2px;text-wrap:pretty}
+.field{display:grid;grid-template-columns:8.2em minmax(0,1fr) 4em;gap:10px;align-items:center;font-size:13.5px}
+.field output{font-family:var(--mono);font-size:12px;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+.field input[type=range]{width:100%;accent-color:var(--ink)}
+.row2{display:grid;grid-template-columns:8.2em minmax(0,1fr);gap:10px;align-items:start;font-size:13.5px}
+.seg{display:flex;flex-wrap:wrap;gap:5px}
+.seg button{font:500 12.5px/1.2 var(--body);padding:6px 9px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer;min-height:34px}
+.seg button:hover{background:rgba(28,27,34,.07)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
+.sw{display:flex;flex-wrap:wrap;gap:5px}
+.sw button{width:26px;height:26px;border:1.5px solid rgba(0,0,0,.18);cursor:pointer;padding:0}
+.sw button[aria-pressed="true"]{outline:2.5px solid var(--ink);outline-offset:2px}
+.txt{width:100%;font:14px var(--body);padding:7px 9px;border:1.5px solid var(--ink);background:var(--sheet);color:var(--ink);border-radius:0}
+textarea.txt{min-height:76px;resize:vertical;line-height:1.45}
+.off{opacity:.4}
+button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-within{outline:2.5px solid var(--blue);outline-offset:2px}
+.refs{margin-top:48px;border-top:3px solid var(--ink);padding-top:16px}
+.refs h2{margin:0 0 14px;font-family:var(--display);font-weight:800;font-size:28px}
+.refs ol{margin:0;padding-left:1.6em;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px 32px;font-size:14px}
+.refs li > *{display:block}
+.refs a{color:var(--ink);text-decoration-color:var(--pink);text-decoration-thickness:2px;text-underline-offset:3px}
+.refs li > span{font-size:12.5px;color:var(--muted)}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="mast">
+    <div class="mast-top">
+      <div class="eyebrow"><span>Layout lab · <span class="zh">网格 / 字体 / 构图</span><span class="en">Grid / Type / Composition</span></span><a id="toPrint" href="index.html"><span class="zh">← 印痕实验室</span><span class="en">← Print Texture Lab</span></a></div>
+      <div class="langsw" role="group" aria-label="Language / 语言">
+        <button type="button" data-setlang="zh" lang="zh-CN">中文</button>
+        <button type="button" data-setlang="en" lang="en">EN</button>
+      </div>
+    </div>
+    <h1 class="mis" id="title"><span aria-hidden="true"><span class="zh">版式实验室</span><span class="en">Layout Lab</span></span><span aria-hidden="true"><span class="zh">版式实验室</span><span class="en">Layout Lab</span></span></h1>
+    <p class="lede"><span class="zh">把 Swiss、半调海报和 Riso zine 的版式拆成参数：网格、字号比例、破格强度、留白、形状、引导线和印刷标记。换一个随机种子，同一套规则会生成另一张海报。</span><span class="en">The layouts of Swiss posters, halftone posters and Riso zines, broken into parameters: grid, type scale, rule-breaking, whitespace, shapes, guides and print marks. Change the seed and the same rules produce another poster.</span></p>
+  </header>
+
+  <main class="lab">
+    <section class="stage" data-aria-zh="海报预览" data-aria-en="Poster preview">
+      <div class="toolbar">
+        <div class="row">
+          <button class="btn" type="button" id="shuffle"><span class="zh">换一张</span><span class="en">Shuffle</span></button>
+          <span class="seedtag" id="seedtag"></span>
+        </div>
+        <div class="row">
+          <button class="btn" type="button" id="tGrid"><span class="zh">网格线</span><span class="en">Grid</span></button>
+          <button class="btn" type="button" id="tMass"><span class="zh">重心</span><span class="en">Balance</span></button>
+        </div>
+      </div>
+      <div class="proof"><div class="posterwrap" id="posterwrap"><div class="poster" id="poster" role="img"></div></div></div>
+      <div class="metrics" id="metrics"></div>
+      <p class="note"><span class="zh">指标按元素外框近似计算：留白率 = 未被元素覆盖的面积；对齐度 = 左边缘落在栏线上的比例；重心以页面中心为 50% / 50%。</span><span class="en">Metrics are approximated from element bounding boxes: whitespace is the area no element covers; alignment is the share of left edges that land on column lines; balance puts the page centre at 50% / 50%.</span></p>
+    </section>
+
+    <aside class="panel" id="panel" data-aria-zh="参数" data-aria-en="Settings"></aside>
+  </main>
+
+  <section class="refs" data-aria-zh="参考资料" data-aria-en="References">
+    <h2><span class="zh">参考资料</span><span class="en">References</span></h2>
+    <ol>
+      <li><span><i>Designing Programmes</i> · Karl Gerstner, 1964</span><span><span class="zh">把设计看作规则与变量的“程序”，参数化版式的源头</span><span class="en">Design as a programme of rules and variables; the origin of parametric layout</span></span></li>
+      <li><span><i>Grid Systems in Graphic Design</i> · Josef Müller-Brockmann, 1981</span><span><span class="zh">栏、模块、基线网格与页边距的经典方法</span><span class="en">The classic method for columns, modules, baseline grids and margins</span></span></li>
+      <li><span><i>Making and Breaking the Grid</i> · Timothy Samara, 2002</span><span><span class="zh">网格的建立与有意识的破格</span><span class="en">Building a grid, and breaking it on purpose</span></span></li>
+      <li><a href="https://en.wikipedia.org/wiki/International_Typographic_Style" target="_blank" rel="noopener">International Typographic Style</a><span><span class="zh">Wikipedia · 瑞士风格：网格、无衬线字体、左对齐、不对称构图</span><span class="en">Wikipedia · Swiss style: grids, sans-serif type, flush-left text, asymmetric layouts</span></span></li>
+      <li><a href="https://en.wikipedia.org/wiki/Paper_size#A_series" target="_blank" rel="noopener">Paper size · A series</a><span><span class="zh">Wikipedia · √2 纸张比例</span><span class="en">Wikipedia · the √2 page ratio</span></span></li>
+      <li><a href="https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html" target="_blank" rel="noopener">WCAG 2.1 · Contrast (Minimum)</a><span><span class="zh">W3C · 正文对比度 4.5:1 的依据</span><span class="en">W3C · the basis for the 4.5:1 text contrast check</span></span></li>
+    </ol>
+  </section>
+</div>
+
+<script>
+(() => {
+/* ---------- shared data ---------- */
+const INKS = [
+  {id:'fpink', zh:'荧光粉', en:'Fluorescent Pink', c:'#FF48B0'},
+  {id:'blue', zh:'蓝', en:'Blue', c:'#0078BF'},
+  {id:'fedblue', zh:'联邦蓝', en:'Federal Blue', c:'#3D5588'},
+  {id:'teal', zh:'青绿', en:'Teal', c:'#00838A'},
+  {id:'yellow', zh:'黄', en:'Yellow', c:'#FFE800'},
+  {id:'red', zh:'亮红', en:'Bright Red', c:'#F15060'},
+  {id:'orange', zh:'橙', en:'Orange', c:'#FF6C2F'},
+  {id:'green', zh:'绿', en:'Green', c:'#00A95C'},
+  {id:'purple', zh:'紫', en:'Purple', c:'#765BA7'},
+  {id:'black', zh:'黑', en:'Black', c:'#1A1A1A'},
+];
+const PAPERS = [
+  {id:'white', zh:'白卡', en:'White card', c:'#FAFAF6'},
+  {id:'recycled', zh:'再生米色', en:'Recycled cream', c:'#EEE7D6'},
+  {id:'news', zh:'新闻纸', en:'Newsprint', c:'#E4DFD1'},
+  {id:'mint', zh:'薄荷', en:'Mint', c:'#DCE7D0'},
+  {id:'blush', zh:'浅粉', en:'Blush', c:'#F6E0E4'},
+];
+const FORMATS = { poster:{W:840,H:1188}, square:{W:840,H:840}, web:{W:840,H:525} };
+const PAIRS = {
+  swiss:{d:'"Archivo","Noto Sans SC",sans-serif', dw:800, ds:'115%', b:'"Archivo","Noto Sans SC",sans-serif', bw:400, bs:'100%'},
+  editorial:{d:'"Instrument Serif","Noto Serif SC",serif', dw:400, ds:'100%', b:'"Instrument Sans","Noto Sans SC",sans-serif', bw:400, bs:'100%'},
+  zine:{d:'"Bricolage Grotesque","Noto Sans SC",sans-serif', dw:800, ds:'100%', b:'"Space Mono","Noto Sans SC",monospace', bw:400, bs:'100%'},
+};
+const MONO = '"JetBrains Mono",ui-monospace,monospace';
+
+const DEFAULT_TEXT = {
+  title:{zh:'网点', en:'Halftone'},
+  subtitle:{zh:'关于网点、油墨与网格的一次印刷研究', en:'Dots, inks and grids: a study in print'},
+  body:{zh:'在数字化之前，报纸上的每一张照片都要经过玻璃网屏，被拆成大小不一的网点。点的大小承载明暗，网角让颜色彼此错开，网格让整页保持秩序。', en:'Before screens went digital, every photograph in a newspaper passed through a glass screen and was broken into dots. Their size carried the tone, the screen angle kept the colours apart, and the grid held the page together.'},
+  body2:{zh:'网格是一组提前做好的决定，让之后的每一个决定都能很快做出。', en:'A grid is a set of decisions made once, so that every later decision can be made quickly.'},
+  caption:{zh:'图 1 — 测试画面', en:'Fig. 1 — Test scene'},
+  issue:{zh:'第 02 期 · 版式实验室', en:'No. 02 · Layout Lab'},
+};
+
+/* presets: each one is a full set of layout parameters */
+const BASE = {format:'poster', cols:6, margin:.07, gutter:.02, baseline:12, ratio:1.414, titleScale:.22, track:-.03, upper:true, vertical:false, align:'left',
+  pair:'swiss', breakS:.2, white:.5, asym:.8, jitter:0, layers:1, bleed:false, focal:'thirds',
+  vocab:{circle:true, rect:true, line:true, tri:false}, nShapes:3, sizeExp:2, snap:true, angles:'ortho', fill:.7,
+  inks:2, inkA:'fpink', inkB:'blue', inkC:'yellow', paper:'white', accent:2, overprint:true, textInk:'black',
+  img:true, treat:'am', imgSpan:.6, mask:'rect', crop:'tight', cell:7,
+  furn:{reg:true, crop:false, bar:true, folio:true}, guide:true, numbers:true, seed:7, grid:false, mass:false};
+const PRESETS = {
+  swiss:{name:{zh:'Swiss',en:'Swiss'}, tag:{zh:'严格网格',en:'strict grid'}, p:{cols:12, margin:.065, gutter:.016, ratio:1.5, titleScale:.15, track:-.035, upper:false, vertical:false, align:'left', pair:'swiss',
+    breakS:0, white:.62, asym:.9, jitter:0, layers:0, bleed:false, focal:'thirds', vocab:{circle:false, rect:true, line:true, tri:false}, nShapes:2, sizeExp:2, snap:true, angles:'ortho', fill:1,
+    inks:1, inkA:'red', inkB:'blue', inkC:'yellow', paper:'white', accent:1, overprint:false, textInk:'black', img:true, treat:'am', imgSpan:.5, mask:'rect', crop:'loose', cell:5,
+    furn:{reg:false, crop:false, bar:false, folio:true}, guide:false, numbers:true, seed:12}},
+  halftone:{name:{zh:'半调海报',en:'Halftone'}, tag:{zh:'大图出血',en:'big bleed'}, p:{cols:6, margin:.05, gutter:.02, ratio:1.8, titleScale:.3, track:-.04, upper:true, vertical:false, align:'left', pair:'swiss',
+    breakS:.45, white:.38, asym:.8, jitter:0, layers:1, bleed:true, focal:'edge', vocab:{circle:true, rect:false, line:false, tri:false}, nShapes:2, sizeExp:3, snap:true, angles:'ortho', fill:1,
+    inks:2, inkA:'orange', inkB:'fedblue', inkC:'yellow', paper:'recycled', accent:2, overprint:true, textInk:'black', img:true, treat:'am', imgSpan:.95, mask:'circle', crop:'tight', cell:12,
+    furn:{reg:true, crop:false, bar:true, folio:true}, guide:true, numbers:false, seed:3}},
+  zine:{name:{zh:'Riso zine',en:'Riso zine'}, tag:{zh:'拼贴叠印',en:'collage'}, p:{cols:8, margin:.05, gutter:.02, ratio:1.6, titleScale:.24, track:-.02, upper:true, vertical:false, align:'left', pair:'zine',
+    breakS:.85, white:.22, asym:.6, jitter:4, layers:3, bleed:true, focal:'center', vocab:{circle:true, rect:true, line:true, tri:true}, nShapes:7, sizeExp:2.4, snap:false, angles:'free', fill:.55,
+    inks:3, inkA:'fpink', inkB:'blue', inkC:'yellow', paper:'white', accent:6, overprint:true, textInk:'ink', img:true, treat:'fs', imgSpan:.62, mask:'rect', crop:'tight', cell:7,
+    furn:{reg:true, crop:true, bar:true, folio:true}, guide:true, numbers:true, seed:21}},
+  editorial:{name:{zh:'杂志',en:'Editorial'}, tag:{zh:'衬线留白',en:'serif & air'}, p:{cols:6, margin:.085, gutter:.022, ratio:1.333, titleScale:.17, track:-.01, upper:false, vertical:false, align:'left', pair:'editorial',
+    breakS:.12, white:.58, asym:.75, jitter:0, layers:0, bleed:false, focal:'golden', vocab:{circle:false, rect:false, line:true, tri:false}, nShapes:1, sizeExp:2, snap:true, angles:'ortho', fill:1,
+    inks:2, inkA:'teal', inkB:'black', inkC:'yellow', paper:'recycled', accent:1, overprint:true, textInk:'black', img:true, treat:'duo', imgSpan:.66, mask:'rect', crop:'loose', cell:7,
+    furn:{reg:false, crop:false, bar:false, folio:true}, guide:false, numbers:true, seed:5}},
+};
+
+/* ---------- language ---------- */
+let LANG = 'zh';
+try { const s = localStorage.getItem('printlab-lang'); LANG = s==='en'||s==='zh' ? s : ((navigator.language||'').toLowerCase().startsWith('zh') ? 'zh' : 'en'); }
+catch(e){ LANG = (navigator.language||'').toLowerCase().startsWith('zh') ? 'zh' : 'en'; }
+const T = o => (o && typeof o==='object' && 'zh' in o) ? o[LANG] : o;
+
+/* ---------- state ---------- */
+const P = JSON.parse(JSON.stringify(Object.assign({}, BASE, PRESETS.zine.p)));
+let activePreset = 'zine';
+const TEXT = {title:null, subtitle:null, body:null};   // null = use language default
+let uploaded = null;
+const $ = id => document.getElementById(id);
+const hex = c => [1,3,5].map(i => parseInt(c.slice(i,i+2),16)/255);
+const ink = id => INKS.find(x => x.id===id);
+const paper = id => PAPERS.find(x => x.id===id);
+const txt = k => TEXT[k]!=null ? TEXT[k] : T(DEFAULT_TEXT[k]);
+
+/* ---------- control schema ---------- */
+const pct = v => Math.round(v*100)+'%';
+const L = (zh,en) => ({zh,en});
+const GROUPS = [
+  {t:L('内容','Content'), s:'TEXT', items:[
+    {type:'text', key:'title', label:L('标题','Title')},
+    {type:'text', key:'subtitle', label:L('副标题','Subtitle')},
+    {type:'textarea', key:'body', label:L('正文','Body')},
+  ]},
+  {t:L('网格','Grid'), s:'GRID', hint:L('网格是底座：栏数、页边距、栏间距和基线决定所有元素能落在哪里。','The grid is the base: columns, margins, gutters and the baseline decide where anything can land.'), items:[
+    {type:'seg', key:'format', label:L('画幅','Format'), opts:[['poster',L('海报 √2','Poster √2')],['square',L('方形','Square')],['web',L('网页首屏','Web hero')]]},
+    {type:'range', key:'cols', label:L('栏数','Columns'), min:4, max:12, step:1, fmt:v=>v},
+    {type:'range', key:'margin', label:L('页边距','Margin'), min:.03, max:.14, step:.005, fmt:pct},
+    {type:'range', key:'gutter', label:L('栏间距','Gutter'), min:0, max:.05, step:.002, fmt:pct},
+    {type:'range', key:'baseline', label:L('基线','Baseline'), min:6, max:24, step:1, fmt:v=>v+' px'},
+  ]},
+  {t:L('字体排印','Typography'), s:'TYPE', hint:L('最大与最小字号之比，是画报感最主要的来源。','The ratio between the largest and smallest type is the main source of a poster look.'), items:[
+    {type:'seg', key:'pair', label:L('字体搭配','Pairing'), opts:[['swiss',L('Swiss 怪诞体','Swiss grotesk')],['editorial',L('杂志衬线','Editorial serif')],['zine',L('Zine 等宽','Zine mono')]]},
+    {type:'range', key:'ratio', label:L('字号比例','Type scale'), min:1.125, max:2, step:.001, fmt:v=>(+v).toFixed(3)},
+    {type:'range', key:'titleScale', label:L('标题大小','Title size'), min:.08, max:.4, step:.005, fmt:pct},
+    {type:'range', key:'track', label:L('标题字距','Title tracking'), min:-.08, max:.1, step:.005, fmt:v=>(v>0?'+':'')+(+v).toFixed(3)+'em'},
+    {type:'seg', key:'align', label:L('对齐','Alignment'), opts:[['left',L('左对齐','Flush left')],['center',L('居中','Centred')]]},
+    {type:'toggle', key:'upper', label:L('标题全大写','Uppercase title')},
+    {type:'toggle', key:'vertical', label:L('标题竖排','Vertical title')},
+  ]},
+  {t:L('构图','Composition'), s:'LAYOUT', hint:L('破格强度从 0（纯 Swiss）到 1（Zine 拼贴）：越界、出血、旋转和叠压都随它增加。','Rule-breaking runs from 0 (pure Swiss) to 1 (zine collage): bleed, rotation and overlap all grow with it.'), items:[
+    {type:'range', key:'breakS', label:L('破格强度','Rule-breaking'), min:0, max:1, step:.01, fmt:pct},
+    {type:'range', key:'white', label:L('留白倾向','Whitespace'), min:0, max:1, step:.01, fmt:pct},
+    {type:'range', key:'asym', label:L('不对称度','Asymmetry'), min:0, max:1, step:.01, fmt:pct},
+    {type:'range', key:'jitter', label:L('旋转扰动','Rotation jitter'), min:0, max:10, step:.5, fmt:v=>'±'+v+'°'},
+    {type:'range', key:'layers', label:L('叠压层数','Overlap layers'), min:0, max:3, step:1, fmt:v=>v},
+    {type:'seg', key:'focal', label:L('视觉焦点','Focal point'), opts:[['thirds',L('三分点','Thirds')],['golden',L('黄金分割','Golden')],['center',L('中心','Centre')],['edge',L('边缘','Edge')]]},
+    {type:'toggle', key:'bleed', label:L('允许出血','Allow bleed')},
+  ]},
+  {t:L('形状','Shapes'), s:'SHAPES', hint:L('选 2–3 种基本形并全局统一，形状才像一个系统。','Pick two or three basic shapes and use them everywhere so they read as a system.'), items:[
+    {type:'checks', key:'vocab', label:L('形状词汇','Vocabulary'), opts:[['circle',L('圆','Circle')],['rect',L('矩形','Rectangle')],['line',L('粗线','Rule')],['tri',L('三角','Triangle')]]},
+    {type:'range', key:'nShapes', label:L('数量','Count'), min:0, max:10, step:1, fmt:v=>v},
+    {type:'range', key:'sizeExp', label:L('大小分布','Size spread'), min:1, max:4, step:.1, fmt:v=>'u^'+(+v).toFixed(1)},
+    {type:'range', key:'fill', label:L('实心比例','Filled'), min:0, max:1, step:.05, fmt:pct},
+    {type:'seg', key:'angles', label:L('角度','Angles'), opts:[['ortho',L('0° / 90°','0° / 90°')],['d45',L('含 45°','With 45°')],['free',L('自由','Free')]]},
+    {type:'toggle', key:'snap', label:L('吸附网格','Snap to grid')},
+  ]},
+  {t:L('油墨','Ink'), s:'INK', hint:L('油墨数量本身就是风格。强调色只给少数元素，视线会被它们吸过去。','The number of inks is a style in itself. Give the accent to only a few elements and the eye goes straight to them.'), items:[
+    {type:'seg', key:'inks', label:L('油墨数','Inks'), opts:[[1,L('1 色','1')],[2,L('2 色','2')],[3,L('3 色','3')]]},
+    {type:'swatch', key:'inkA', label:L('油墨 A','Ink A'), list:'inks'},
+    {type:'swatch', key:'inkB', label:L('油墨 B','Ink B'), list:'inks', need:2},
+    {type:'swatch', key:'inkC', label:L('油墨 C','Ink C'), list:'inks', need:3},
+    {type:'swatch', key:'paper', label:L('纸张','Paper'), list:'papers'},
+    {type:'seg', key:'textInk', label:L('文字油墨','Text ink'), opts:[['black',L('黑','Black')],['ink',L('用油墨','An ink')]]},
+    {type:'range', key:'accent', label:L('强调色元素','Accent elements'), min:0, max:8, step:1, fmt:v=>v},
+    {type:'toggle', key:'overprint', label:L('叠印混色','Overprint')},
+  ]},
+  {t:L('图像','Image'), s:'IMAGE', hint:L('图像用印痕实验室里的同一套网点算法处理。','The image is screened with the same algorithms as the print lab.'), items:[
+    {type:'toggle', key:'img', label:L('显示图像','Show image')},
+    {type:'seg', key:'treat', label:L('处理','Treatment'), opts:[['am',L('AM 圆点','AM dots')],['line',L('线条网','Lines')],['fs',L('误差扩散','Dither')],['thresh',L('阈值','Threshold')],['duo',L('双色调','Duotone')]]},
+    {type:'range', key:'cell', label:L('网点尺寸','Dot size'), min:3, max:18, step:1, fmt:v=>v+' px'},
+    {type:'range', key:'imgSpan', label:L('图像宽度','Image width'), min:.25, max:1, step:.01, fmt:pct},
+    {type:'seg', key:'mask', label:L('外形','Shape'), opts:[['rect',L('矩形','Rectangle')],['circle',L('圆形','Circle')]]},
+    {type:'seg', key:'crop', label:L('裁切','Crop'), opts:[['tight',L('紧裁','Tight')],['loose',L('宽裁','Loose')]]},
+    {type:'upload', label:L('原图','Source')},
+  ]},
+  {t:L('引导与印刷标记','Guides & marks'), s:'MARKS', hint:L('引导线把视线从入口带到下一个重点；印刷标记是被当成装饰的工艺元素。','Guide lines carry the eye from the entry point to the next focus; print marks are production details reused as ornament.'), items:[
+    {type:'toggle', key:'guide', label:L('引导箭头','Guide arrow')},
+    {type:'toggle', key:'numbers', label:L('编号 01 / 02','Numbering 01 / 02')},
+    {type:'checks', key:'furn', label:L('印刷家具','Print furniture'), opts:[['reg',L('套准标记','Registration')],['crop',L('裁切线','Crop marks')],['bar',L('色彩控制条','Colour bar')],['folio',L('期号页码','Folio')]]},
+  ]},
+];
+
+/* ---------- panel builder ---------- */
+function buildPanel(){
+  const panel = $('panel'); panel.innerHTML = '';
+  const pb = document.createElement('div'); pb.className = 'presetbar'; pb.setAttribute('role','group');
+  Object.entries(PRESETS).forEach(([id,pr]) => {
+    const b = document.createElement('button'); b.type='button'; b.dataset.preset=id;
+    b.innerHTML = `${T(pr.name)}<small>${T(pr.tag)}</small>`;
+    b.addEventListener('click', () => { Object.assign(P, JSON.parse(JSON.stringify(Object.assign({}, BASE, pr.p))), {format:P.format, grid:P.grid, mass:P.mass}); activePreset=id; syncPanel(); render(); });
+    pb.appendChild(b);
+  });
+  panel.appendChild(pb);
+  GROUPS.forEach(g => {
+    const box = document.createElement('div'); box.className='group';
+    box.innerHTML = `<h2>${T(g.t)} <small>${g.s}</small></h2>` + (g.hint ? `<p class="ghint">${T(g.hint)}</p>` : '');
+    g.items.forEach(it => box.appendChild(control(it)));
+    panel.appendChild(box);
+  });
+  syncPanel();
+}
+function control(it){
+  const id = 'c_'+(it.key||it.type);
+  if (it.type==='range'){
+    const d = document.createElement('div'); d.className='field'; d.dataset.key=it.key;
+    d.innerHTML = `<label for="${id}">${T(it.label)}</label><input type="range" id="${id}" min="${it.min}" max="${it.max}" step="${it.step}"><output id="${id}o"></output>`;
+    const inp = d.querySelector('input');
+    inp.addEventListener('input', () => { P[it.key] = parseFloat(inp.value); d.querySelector('output').textContent = it.fmt(P[it.key]); manual(); render(); });
+    d._sync = () => { inp.value = P[it.key]; d.querySelector('output').textContent = it.fmt(P[it.key]); };
+    return d;
+  }
+  if (it.type==='seg' || it.type==='checks'){
+    const d = document.createElement('div'); d.className='row2'; d.dataset.key=it.key;
+    d.innerHTML = `<span>${T(it.label)}</span><div class="seg" role="group"></div>`;
+    const s = d.querySelector('.seg');
+    it.opts.forEach(([v,lab]) => { const b = document.createElement('button'); b.type='button'; b.textContent=T(lab); b.dataset.v=v;
+      b.addEventListener('click', () => { if (it.type==='seg') P[it.key] = typeof v==='number' ? v : v; else P[it.key][v] = !P[it.key][v]; manual(); syncPanel(); render(); });
+      s.appendChild(b); });
+    d._sync = () => s.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', it.type==='seg' ? String(P[it.key])===b.dataset.v : !!P[it.key][b.dataset.v]));
+    return d;
+  }
+  if (it.type==='toggle'){
+    const d = document.createElement('div'); d.className='row2'; d.dataset.key=it.key;
+    d.innerHTML = `<span>${T(it.label)}</span><div class="seg"><button type="button" id="${id}"></button></div>`;
+    const b = d.querySelector('button');
+    b.addEventListener('click', () => { P[it.key] = !P[it.key]; manual(); syncPanel(); render(); });
+    d._sync = () => { b.setAttribute('aria-pressed', !!P[it.key]); b.textContent = P[it.key] ? (LANG==='zh'?'开':'On') : (LANG==='zh'?'关':'Off'); };
+    return d;
+  }
+  if (it.type==='swatch'){
+    const d = document.createElement('div'); d.className='row2'; d.dataset.key=it.key;
+    const list = it.list==='inks' ? INKS : PAPERS;
+    d.innerHTML = `<span>${T(it.label)}</span><div class="sw"></div>`;
+    const s = d.querySelector('.sw');
+    list.forEach(x => { const b = document.createElement('button'); b.type='button'; b.style.background=x.c; b.dataset.v=x.id; b.title = LANG==='zh' ? `${x.zh} · ${x.en}` : x.en; b.setAttribute('aria-label', b.title);
+      b.addEventListener('click', () => { P[it.key]=x.id; manual(); syncPanel(); render(); }); s.appendChild(b); });
+    d._sync = () => { s.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===P[it.key])); if (it.need) d.classList.toggle('off', P.inks < it.need); };
+    return d;
+  }
+  if (it.type==='text' || it.type==='textarea'){
+    const d = document.createElement('div'); d.className='row2';
+    const tag = it.type==='text' ? 'input' : 'textarea';
+    d.innerHTML = `<label for="${id}">${T(it.label)}</label><${tag} class="txt" id="${id}"${it.type==='text'?' type="text"':''}></${tag}>`;
+    const inp = d.querySelector(tag);
+    inp.addEventListener('input', () => { TEXT[it.key] = inp.value; render(); });
+    d._sync = () => { if (document.activeElement!==inp) inp.value = txt(it.key); };
+    return d;
+  }
+  if (it.type==='upload'){
+    const d = document.createElement('div'); d.className='row2';
+    d.innerHTML = `<span>${T(it.label)}</span><div class="seg"><button type="button" id="srcScene"></button><label class="btn" style="min-height:34px;padding:6px 9px;font-size:12.5px">${LANG==='zh'?'上传照片':'Upload photo'}<input type="file" id="upload" accept="image/*" hidden></label></div>`;
+    const sb = d.querySelector('#srcScene');
+    sb.textContent = LANG==='zh' ? '测试画面' : 'Test scene';
+    sb.addEventListener('click', () => { uploaded = null; imgKey=''; render(); syncPanel(); });
+    d.querySelector('#upload').addEventListener('change', e => {
+      const f = e.target.files && e.target.files[0]; if (!f) return;
+      const rd = new FileReader(); rd.onload = () => { const im = new Image(); im.onload = () => { uploaded = im; imgKey=''; render(); syncPanel(); }; im.src = rd.result; }; rd.readAsDataURL(f);
+    });
+    d._sync = () => sb.setAttribute('aria-pressed', !uploaded);
+    return d;
+  }
+}
+function manual(){ activePreset = null; }
+function syncPanel(){
+  document.querySelectorAll('#panel .field, #panel .row2').forEach(d => d._sync && d._sync());
+  document.querySelectorAll('.presetbar button').forEach(b => b.setAttribute('aria-pressed', b.dataset.preset===activePreset));
+  $('tGrid').setAttribute('aria-pressed', !!P.grid); $('tMass').setAttribute('aria-pressed', !!P.mass);
+  $('seedtag').textContent = 'seed ' + String(P.seed).padStart(4,'0');
+}
+
+/* ---------- image screening (same algorithms as the print lab, trimmed) ---------- */
+let imgKey = '', imgCanvas = null;
+function sourceCanvas(n, tight){
+  const c = document.createElement('canvas'); c.width = c.height = n; const g = c.getContext('2d');
+  g.fillStyle='#fff'; g.fillRect(0,0,n,n);
+  const z = tight ? 1.45 : 1;
+  g.save(); g.translate(n/2,n/2); g.scale(z,z); g.translate(-n/2,-n/2);
+  if (uploaded){ const s = Math.max(n/uploaded.width, n/uploaded.height); const w = uploaded.width*s, h = uploaded.height*s; g.drawImage(uploaded,(n-w)/2,(n-h)/2,w,h); }
+  else {
+    const bg = g.createLinearGradient(0,0,0,n); bg.addColorStop(0,'#ffffff'); bg.addColorStop(1,'#e8eef5'); g.fillStyle=bg; g.fillRect(0,0,n,n);
+    const sl = g.createLinearGradient(0,n*.55,n,n); sl.addColorStop(0,'#cfe0f2'); sl.addColorStop(.6,'#2f78c6'); sl.addColorStop(1,'#0b2c66');
+    g.fillStyle=sl; g.beginPath(); g.moveTo(0,n*.7); g.lineTo(n,n*.55); g.lineTo(n,n); g.lineTo(0,n); g.closePath(); g.fill();
+    const cx=n*.46, cy=n*.44, r=n*.3, rg=g.createRadialGradient(cx-r*.38,cy-r*.42,r*.05,cx,cy,r);
+    rg.addColorStop(0,'#fff2f8'); rg.addColorStop(.35,'#f06aa9'); rg.addColorStop(.8,'#b0185f'); rg.addColorStop(1,'#5a0a30');
+    g.fillStyle=rg; g.beginPath(); g.arc(cx,cy,r,0,Math.PI*2); g.fill();
+    g.fillStyle='#ffd400'; g.beginPath(); g.moveTo(n*.78,n*.1); g.lineTo(n*.94,n*.36); g.lineTo(n*.62,n*.36); g.closePath(); g.fill();
+  }
+  g.restore();
+  return c;
+}
+function screenImage(n, inks, paperC, darkC){
+  const key = [n,P.treat,P.cell,P.crop,P.inks,P.inkA,P.inkB,P.paper,P.textInk,!!uploaded,uploaded&&uploaded.src.length].join('|');
+  if (key===imgKey && imgCanvas) return imgCanvas;
+  const src = sourceCanvas(n, P.crop==='tight'); const d = src.getContext('2d').getImageData(0,0,n,n).data;
+  const out = document.createElement('canvas'); out.width = out.height = n; const ctx = out.getContext('2d');
+  const od = ctx.createImageData(n,n), o = od.data, N = n*n;
+  const pp = hex(paperC), cA = hex(inks[0]), cB = hex(inks[1]||darkC), cD = hex(darkC);
+  const two = inks.length>=2 && P.treat!=='duo';
+  const A = new Float32Array(N), B = new Float32Array(N);
+  for (let i=0;i<N;i++){
+    const r=d[i*4]/255, g=d[i*4+1]/255, b=d[i*4+2]/255, dk = 1-(.299*r+.587*g+.114*b);
+    if (two){ A[i]=Math.min(1,Math.max(0,(1-g)-(1-r)*.6)*1.1); B[i]=Math.min(1,(1-r)*1.05); } else A[i]=Math.min(1,dk*1.1);
+  }
+  const cell = P.cell*n/400, TAU = Math.PI*2;
+  const mask = (pl, ang, idx) => {
+    const m = new Uint8Array(N), a = ang*Math.PI/180, c = Math.cos(a), s = Math.sin(a);
+    if (P.treat==='am' || P.treat==='line'){
+      for (let y=0;y<n;y++) for (let x=0;x<n;x++){ const i=y*n+x, v=pl[i], u=(x*c+y*s)/cell, w=(-x*s+y*c)/cell;
+        m[i] = P.treat==='am' ? (v > 1-(Math.cos(TAU*u)+Math.cos(TAU*w)+2)/4) : (v > (1-Math.cos(TAU*w))/2); }
+    } else if (P.treat==='thresh'){ for (let i=0;i<N;i++) m[i]=pl[i]>.5; }
+    else { // error diffusion on blocks
+      const bs = Math.max(1, Math.round(cell/3.5)), bw = Math.ceil(n/bs), bv = new Float32Array(bw*bw), bit = new Uint8Array(bw*bw);
+      for (let by=0;by<bw;by++) for (let bx=0;bx<bw;bx++){ const xx=Math.min(n-1,bx*bs+(bs>>1)), yy=Math.min(n-1,by*bs+(bs>>1)); bv[by*bw+bx]=pl[yy*n+xx]; }
+      for (let by=0;by<bw;by++) for (let bx=0;bx<bw;bx++){ const i=by*bw+bx, q=bv[i]>.5?1:0, e=bv[i]-q; bit[i]=q;
+        if (bx+1<bw) bv[i+1]+=e*7/16; if (by+1<bw){ if (bx>0) bv[i+bw-1]+=e*3/16; bv[i+bw]+=e*5/16; if (bx+1<bw) bv[i+bw+1]+=e/16; } }
+      for (let y=0;y<n;y++) for (let x=0;x<n;x++) m[y*n+x]=bit[Math.floor(y/bs)*bw+Math.floor(x/bs)];
+    }
+    return m;
+  };
+  if (P.treat==='duo'){
+    for (let i=0;i<N;i++){ const v=A[i]; let r=pp[0], g=pp[1], b=pp[2];
+      const a1=Math.pow(v,.75), a2=Math.pow(v,1.9);
+      r*=1-a1*(1-cA[0]); g*=1-a1*(1-cA[1]); b*=1-a1*(1-cA[2]);
+      r*=1-a2*(1-cD[0]); g*=1-a2*(1-cD[1]); b*=1-a2*(1-cD[2]);
+      o[i*4]=r*255; o[i*4+1]=g*255; o[i*4+2]=b*255; o[i*4+3]=255; }
+  } else {
+    const mA = mask(A, 15, 0), mB = two ? mask(B, 45, 1) : null, off = Math.round(n*.006);
+    const monoC = inks.length>=2 ? cA : cD;
+    for (let y=0;y<n;y++) for (let x=0;x<n;x++){ const i=y*n+x; let r=pp[0], g=pp[1], b=pp[2];
+      if (mA[i]){ const k = two ? cA : monoC; r*=1-.95*(1-k[0]); g*=1-.95*(1-k[1]); b*=1-.95*(1-k[2]); }
+      if (mB){ const xs=x-off, ys=y-off; if (xs>=0&&ys>=0&&mB[ys*n+xs]){ r*=1-.95*(1-cB[0]); g*=1-.95*(1-cB[1]); b*=1-.95*(1-cB[2]); } }
+      o[i*4]=r*255; o[i*4+1]=g*255; o[i*4+2]=b*255; o[i*4+3]=255; }
+  }
+  ctx.putImageData(od,0,0);
+  imgKey = key; imgCanvas = out; return out;
+}
+
+/* ---------- poster generator ---------- */
+function rngOf(seed){ let s = seed>>>0 || 1; return () => { s |= 0; s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const SVGNS = 'http://www.w3.org/2000/svg';
+let lastLayout = null;
+
+function render(){
+  const F = FORMATS[P.format], W = F.W, H = F.H, rng = rngOf(P.seed*7919 + 13);
+  const poster = $('poster'); poster.innerHTML = '';
+  const paperC = paper(P.paper).c;
+  poster.style.cssText = `width:${W}px;height:${H}px;background:${paperC}`;
+  fit();
+  const pair = PAIRS[P.pair];
+  const inkList = [P.inkA, P.inkB, P.inkC].slice(0, P.inks).map(id => ink(id).c);
+  const textC = P.textInk==='ink' ? (P.inks>=2 ? ink(P.inkB).c : ink(P.inkA).c) : '#161616';
+  const blend = P.overprint ? 'multiply' : 'normal';
+
+  // grid
+  const m = P.margin*W, g = P.gutter*W, cols = P.cols;
+  const colW = (W - 2*m - (cols-1)*g) / cols;
+  const nRows = Math.max(3, Math.round((H - 2*m + g) / (colW*1.15 + g)));
+  const rowH = (H - 2*m - (nRows-1)*g) / nRows;
+  const colX = i => m + i*(colW+g), rowY = j => m + j*(rowH+g), spanW = k => k*colW + (k-1)*g;
+  const snapB = y => Math.round(y / P.baseline) * P.baseline;
+  const base = Math.max(10, W*.0155), cap = base / P.ratio, sub = base*P.ratio*P.ratio, titleSize = P.titleScale*W;
+  const boxes = [];   // for metrics: elements to measure
+
+  const back = document.createElementNS(SVGNS,'svg'), front = document.createElementNS(SVGNS,'svg');
+  [back, front].forEach(s => { s.setAttribute('class','layer'); s.setAttribute('width',W); s.setAttribute('height',H); s.setAttribute('viewBox',`0 0 ${W} ${H}`); });
+  const content = document.createElement('div'); content.style.cssText = 'position:absolute;inset:0';
+  poster.append(back, content, front);
+
+  const addText = (str, css, measure=true) => {
+    const e = document.createElement('div'); e.className='el'; e.textContent = str;
+    e.style.cssText = css + `;color:${textC};mix-blend-mode:${blend}`;
+    content.appendChild(e); if (measure) boxes.push(e); return e;
+  };
+  const rot = (deg) => deg ? `transform:rotate(${deg.toFixed(2)}deg);transform-origin:0 0` : '';
+  const jitter = () => (rng()*2-1) * P.jitter;
+
+  // focal point
+  const FOC = {thirds:[1/3,1/3], golden:[.382,.382], center:[.5,.42], edge:[.08,.22]}[P.focal];
+  const flip = P.align!=='center' && P.asym > .55 && rng() < .3;
+
+  // title
+  let k = Math.max(2, Math.min(cols, Math.round(cols*(.5 + P.titleScale*1.6))));
+  let startCol = P.align==='center' ? Math.round((cols-k)/2) : (flip ? cols-k : 0);
+  if (P.focal==='center' && P.align!=='center') startCol = Math.max(0, Math.min(cols-k, Math.round(cols*FOC[0] - k/2)));
+  const titleRow = P.focal==='edge' ? 0 : Math.max(0, Math.min(nRows-2, Math.round(FOC[1]*nRows) - 1));
+  let tx = colX(startCol), ty = snapB(rowY(titleRow) + (P.focal==='edge' ? 0 : 0));
+  const bleedX = P.bleed ? -P.breakS*(.06 + .1*rng())*W : 0;
+  const titleCss = `font-family:${pair.d};font-weight:${pair.dw};font-stretch:${pair.ds};font-size:${titleSize}px;line-height:${P.pair==='editorial'?.95:.86};letter-spacing:${P.track}em;${P.upper?'text-transform:uppercase;':''}text-align:${P.align};text-wrap:balance`;
+  let title;
+  if (P.vertical){
+    const vx = flip ? W - m - titleSize*1.05 : m + bleedX*.5;
+    title = addText(txt('title'), `${titleCss};writing-mode:vertical-rl;left:${vx}px;top:${m}px;height:${H-2*m}px;white-space:nowrap`);
+  } else {
+    title = addText(txt('title'), `${titleCss};left:${tx + (flip ? -bleedX : bleedX)}px;top:${ty}px;width:${spanW(k) + (P.bleed ? Math.abs(bleedX) : 0)}px;${rot(jitter())}`);
+  }
+  title.dataset.role='title';
+  const tH = title.offsetHeight;
+
+  // subtitle
+  let cursorY = P.vertical ? m + rowH*.2 : ty + tH + base*1.2;
+  const subCol = P.vertical ? (flip ? 0 : Math.min(cols-1, Math.ceil(titleSize/(colW+g))+0)) : startCol;
+  const subK = Math.max(2, Math.min(cols - subCol, Math.round(cols*.55)));
+  const subtitle = addText(txt('subtitle'), `font-family:${pair.d};font-weight:${P.pair==='editorial'?400:700};font-style:${P.pair==='editorial'?'italic':'normal'};font-size:${sub}px;line-height:1.1;left:${colX(P.align==='center'?Math.round((cols-subK)/2):subCol)}px;top:${snapB(cursorY)}px;width:${spanW(subK)}px;text-align:${P.align};text-wrap:balance;${rot(jitter()*.6)}`);
+  cursorY = snapB(cursorY) + subtitle.offsetHeight;
+
+  // meta labels (top margin)
+  const metaCss = `font-family:${MONO};font-size:${Math.max(9,cap*.95)}px;letter-spacing:.12em;text-transform:uppercase;line-height:1`;
+  if (P.furn.folio){
+    addText(T(DEFAULT_TEXT.issue), `${metaCss};left:${m}px;top:${m*.42}px`);
+    addText('2026 · 10', `${metaCss};right:${m}px;top:${m*.42}px;text-align:right`);
+  }
+
+  // body blocks, bottom-aligned
+  const nBlocks = 1 + (P.white < .45 ? 1 : 0);
+  const bk = Math.max(2, Math.round(cols/3));
+  const bottomY = H - m - (P.furn.bar || P.furn.folio ? base*1.6 : 0);
+  const bodyCss = `font-family:${pair.b};font-weight:${pair.bw};font-size:${base}px;line-height:${(P.baseline*Math.max(1,Math.round(base*1.45/P.baseline))/base).toFixed(3)}`;
+  let bodyTop = bottomY;
+  const blockCols = [];
+  for (let b=0;b<nBlocks;b++){
+    const c0 = P.align==='center' ? Math.round((cols - bk*nBlocks)/2) + b*bk : (flip ? b*bk : cols - bk*(nBlocks-b));
+    blockCols.push(Math.max(0, c0));
+  }
+  blockCols.forEach((c0, b) => {
+    const e = addText(b===0 ? txt('body') : T(DEFAULT_TEXT.body2), `${bodyCss};left:${colX(c0)}px;width:${spanW(bk)}px;top:0`);
+    const h = e.offsetHeight; const top = snapB(bottomY - h); e.style.top = top+'px';
+    if (P.numbers){
+      const n = addText(String(b+1).padStart(2,'0'), `font-family:${MONO};font-weight:600;font-size:${cap*1.1}px;letter-spacing:.06em;left:${colX(c0)}px;top:${top - cap*2.2}px`);
+      n.style.color = inkList[0]; n.style.mixBlendMode = blend;
+      bodyTop = Math.min(bodyTop, top - cap*2.4);
+    } else bodyTop = Math.min(bodyTop, top);
+  });
+
+  // image
+  let imgBox = null;
+  if (P.img){
+    let ki = Math.max(2, Math.min(cols, Math.round(cols*P.imgSpan)));
+    let iw = spanW(ki), ih = P.mask==='circle' ? iw : iw*(P.crop==='tight' ? .92 : .72);
+    let ic, iy;
+    if (P.layers===0){
+      ic = P.align==='center' ? Math.round((cols-ki)/2) : (P.asym>.5 ? (flip ? 0 : cols-ki) : startCol);
+      iy = snapB(cursorY + base*2);
+      const room = bodyTop - base*2 - iy;
+      if (ih > room){ const s = Math.max(.35, room/ih); iw*=s; ih*=s; }
+    } else {
+      ic = Math.max(0, Math.min(cols-ki, startCol + Math.round((k-ki)*rng()) + (flip?-1:1)));
+      iy = ty + tH*(.25 + .3*rng());
+      if (iy + ih > bodyTop + (P.layers>=2 ? ih*.3 : 0)) iy = Math.max(m*.5, bodyTop + (P.layers>=2?ih*.3:0) - ih);
+    }
+    let ix = colX(ic);
+    if (P.bleed && P.breakS > .3){ const push = P.breakS*.14*W; ix += (ic + ki >= cols ? push : (ic===0 ? -push : 0)); }
+    const n = 420, cv = screenImage(n, inkList, paperC, P.textInk==='ink' ? textC : '#161616');
+    const holder = document.createElement('div'); holder.className = 'el';
+    holder.style.cssText = `left:${ix}px;top:${iy}px;width:${iw}px;height:${ih}px;overflow:hidden;mix-blend-mode:${blend};${P.mask==='circle'?'border-radius:50%;':''}${rot(jitter())}`;
+    const img = document.createElement('canvas'); img.width = cv.width; img.height = cv.height; img.getContext('2d').drawImage(cv,0,0);
+    img.style.cssText = `position:absolute;width:${Math.max(iw,ih)}px;height:${Math.max(iw,ih)}px;left:${(iw-Math.max(iw,ih))/2}px;top:${(ih-Math.max(iw,ih))/2}px`;
+    holder.appendChild(img);
+    content.insertBefore(holder, content.firstChild);   // image sits under the type
+    boxes.push(holder); imgBox = {x:ix, y:iy, w:iw, h:ih};
+    if (P.numbers && P.layers===0){
+      addText(T(DEFAULT_TEXT.caption), `font-family:${MONO};font-size:${Math.max(9,cap*.9)}px;letter-spacing:.06em;left:${ix}px;top:${iy+ih+cap*.8}px`);
+    }
+  }
+
+  // shapes
+  const vocab = Object.keys(P.vocab).filter(k => P.vocab[k]); if (!vocab.length) vocab.push('rect');
+  const nS = Math.round(P.nShapes * (1.35 - P.white*.7));
+  const shapeBoxes = [];
+  for (let i=0;i<nS;i++){
+    const type = vocab[Math.floor(rng()*vocab.length)];
+    const colour = i < P.accent ? inkList[i % inkList.length] : textC;
+    const u = Math.pow(rng(), P.sizeExp);
+    let x, y, s;
+    if (P.snap){
+      const spanK = 1 + Math.floor(u * Math.max(1, Math.ceil(cols*.7)));
+      s = spanW(Math.min(cols, spanK));
+      x = colX(Math.floor(rng()*Math.max(1, cols - spanK + 1)));
+      y = rowY(Math.floor(rng()*nRows));
+    } else {
+      s = (.05 + .55*u) * W;
+      x = rng()*(W - s*(P.bleed?.4:1)) - (P.bleed ? s*.3*rng() : 0);
+      y = rng()*(H - s*(P.bleed?.4:1)) - (P.bleed ? s*.3*rng() : 0);
+    }
+    let ang = P.angles==='ortho' ? (rng()<.5?0:90) : P.angles==='d45' ? [0,45,90][Math.floor(rng()*3)] : rng()*360;
+    ang += jitter();
+    const filled = rng() < P.fill, sw = Math.max(2, W*.006);
+    const layer = (P.layers>=2 && rng() < .45) ? front : back;
+    const el = document.createElementNS(SVGNS, type==='circle'?'circle':type==='tri'?'polygon':'rect');
+    let bx, by, bw, bh;
+    if (type==='circle'){ const r = s/2; el.setAttribute('cx', x+r); el.setAttribute('cy', y+r); el.setAttribute('r', filled ? r : r - sw/2); bx=x; by=y; bw=bh=s; }
+    else if (type==='rect'){ const h = P.snap ? rowH*(1 + Math.floor(rng()*2)) : s*(.4+.6*rng()); el.setAttribute('x', x); el.setAttribute('y', y); el.setAttribute('width', s); el.setAttribute('height', h); bx=x; by=y; bw=s; bh=h; }
+    else if (type==='line'){ const t = Math.max(4, W*(.006 + .014*rng())); const len = s*(P.snap?1:1.4); el.setAttribute('x', x); el.setAttribute('y', P.snap ? snapB(y) : y); el.setAttribute('width', len); el.setAttribute('height', t); bx=x; by=y; bw=len; bh=t; }
+    else { el.setAttribute('points', `${x},${y+s} ${x+s/2},${y} ${x+s},${y+s}`); bx=x; by=y; bw=bh=s; }
+    if (type==='line') ang = P.angles==='free' ? ang : (rng()<.75 ? 0 : 90) + jitter();
+    el.setAttribute('transform', `rotate(${ang.toFixed(2)} ${bx+bw/2} ${by+bh/2})`);
+    el.setAttribute('fill', filled || type==='line' ? colour : 'none');
+    if (!filled && type!=='line'){ el.setAttribute('stroke', colour); el.setAttribute('stroke-width', sw); }
+    el.style.mixBlendMode = blend;
+    layer.appendChild(el);
+    shapeBoxes.push({x:bx, y:by, w:bw, h:bh});
+  }
+
+  // guide arrow: from the end of the subtitle toward the image (or the first body block)
+  if (P.guide){
+    const tgt = imgBox ? {x:imgBox.x + imgBox.w*.5, y:imgBox.y + imgBox.h*.35} : {x:colX(blockCols[0]) + spanW(bk)*.2, y:bodyTop};
+    const sb = {x: subtitle.offsetLeft + Math.min(subtitle.offsetWidth, spanW(subK))*.9, y: subtitle.offsetTop + subtitle.offsetHeight + base};
+    const dx = tgt.x - sb.x, dy = tgt.y - sb.y, len = Math.hypot(dx,dy);
+    if (len > W*.08){
+      const ux = dx/len, uy = dy/len, endX = tgt.x - ux*W*.03, endY = tgt.y - uy*W*.03, hw = W*.018, sw = Math.max(3, W*.005);
+      const col = inkList[inkList.length>1 ? 1 : 0];
+      const ln = document.createElementNS(SVGNS,'line');
+      ln.setAttribute('x1', sb.x); ln.setAttribute('y1', sb.y); ln.setAttribute('x2', endX - ux*hw); ln.setAttribute('y2', endY - uy*hw);
+      ln.setAttribute('stroke', col); ln.setAttribute('stroke-width', sw); ln.style.mixBlendMode = blend;
+      const hd = document.createElementNS(SVGNS,'polygon');
+      hd.setAttribute('points', `${endX},${endY} ${endX - ux*hw*1.6 - uy*hw},${endY - uy*hw*1.6 + ux*hw} ${endX - ux*hw*1.6 + uy*hw},${endY - uy*hw*1.6 - ux*hw}`);
+      hd.setAttribute('fill', col); hd.style.mixBlendMode = blend;
+      front.append(ln, hd);
+    }
+  }
+
+  // print furniture
+  const furn = document.createElementNS(SVGNS,'svg'); furn.setAttribute('class','layer'); furn.setAttribute('width',W); furn.setAttribute('height',H);
+  const mk = (tag, attrs) => { const e = document.createElementNS(SVGNS, tag); Object.entries(attrs).forEach(([a,v]) => e.setAttribute(a,v)); furn.appendChild(e); return e; };
+  const fc = '#161616';
+  if (P.furn.reg){ const r = Math.min(9, m*.22); [[m*.5,m*.5],[W-m*.5,m*.5],[m*.5,H-m*.5],[W-m*.5,H-m*.5]].forEach(([x,y]) => {
+    mk('circle',{cx:x,cy:y,r:r*.62,fill:'none',stroke:fc,'stroke-width':1}); mk('path',{d:`M${x-r} ${y}H${x+r}M${x} ${y-r}V${y+r}`,stroke:fc,'stroke-width':1}); }); }
+  if (P.furn.crop){ const o = m*.25, l = m*.5; [[0,0,1,1],[W,0,-1,1],[0,H,1,-1],[W,H,-1,-1]].forEach(([x,y,sx,sy]) => {
+    mk('path',{d:`M${x+sx*o} ${y+sy*(o+l)}V${y+sy*(o+l*.35)}M${x+sx*(o+l)} ${y+sy*o}H${x+sx*(o+l*.35)}`,stroke:fc,'stroke-width':1,fill:'none'}); }); }
+  if (P.furn.bar){ const sq = Math.min(14, m*.32), y0 = H - m*.5 - sq/2; const cs = inkList.slice();
+    if (inkList.length>=2) cs.push(mulHex(inkList[0], inkList[1])); if (inkList.length>=3) cs.push(mulHex(inkList[1], inkList[2])); cs.push(fc);
+    cs.forEach((c,i) => mk('rect',{x:W - m - (cs.length-i)*sq*1.1, y:y0, width:sq, height:sq, fill:c})); }
+  if (P.furn.folio){ const t = mk('text',{x:m, y:H - m*.5 + 3, fill:fc, 'font-family':'JetBrains Mono, monospace', 'font-size':Math.max(9,cap*.85), 'letter-spacing':'1.5'}); t.textContent = `— 01 / 24 —   ${LANG==='zh'?'印痕实验室':'PRINT TEXTURE LAB'}`; }
+  poster.appendChild(furn);
+
+  // overlays
+  if (P.grid){
+    const ov = document.createElementNS(SVGNS,'svg'); ov.setAttribute('class','layer'); ov.setAttribute('width',W); ov.setAttribute('height',H);
+    const add = (tag,a) => { const e = document.createElementNS(SVGNS,tag); Object.entries(a).forEach(([k,v]) => e.setAttribute(k,v)); ov.appendChild(e); };
+    for (let i=0;i<cols;i++) add('rect',{x:colX(i), y:m, width:colW, height:H-2*m, fill:'rgba(255,72,176,.10)', stroke:'rgba(255,72,176,.55)', 'stroke-width':.8});
+    for (let j=1;j<nRows;j++) add('line',{x1:m, x2:W-m, y1:rowY(j)-g/2, y2:rowY(j)-g/2, stroke:'rgba(0,120,191,.5)', 'stroke-width':.8, 'stroke-dasharray':'4 4'});
+    for (let y=P.baseline; y<H; y+=P.baseline) add('line',{x1:0, x2:W, y1:y, y2:y, stroke:'rgba(0,120,191,.14)', 'stroke-width':.6});
+    add('rect',{x:m, y:m, width:W-2*m, height:H-2*m, fill:'none', stroke:'rgba(255,72,176,.8)', 'stroke-width':1.2});
+    poster.appendChild(ov);
+  }
+  lastLayout = {W, H, m, cols, colX, colW, g, boxes, shapeBoxes, textC, paperC, titleSize, cap, nRows};
+  computeMetrics();
+  syncPanel();
+}
+function mulHex(a,b){ const x=hex(a), y=hex(b); return '#'+x.map((v,i)=>Math.round(v*y[i]*255).toString(16).padStart(2,'0')).join(''); }
+
+/* ---------- metrics ---------- */
+function lum(c){ return hex(c).map(v => v<=.03928 ? v/12.92 : Math.pow((v+.055)/1.055, 2.4)).reduce((s,v,i)=>s+v*[.2126,.7152,.0722][i],0); }
+function computeMetrics(){
+  const Ly = lastLayout; if (!Ly) return;
+  const poster = $('poster'), pr = poster.getBoundingClientRect(), sc = pr.width / Ly.W || 1;
+  const rects = Ly.boxes.map(e => { const r = e.getBoundingClientRect(); return {x:(r.left-pr.left)/sc, y:(r.top-pr.top)/sc, w:r.width/sc, h:r.height/sc}; }).concat(Ly.shapeBoxes);
+  // coverage + centre of mass on a coarse grid
+  const GX = 84, GY = Math.round(84*Ly.H/Ly.W); let cov = 0, sx = 0, sy = 0;
+  for (let j=0;j<GY;j++) for (let i=0;i<GX;i++){
+    const x = (i+.5)*Ly.W/GX, y = (j+.5)*Ly.H/GY;
+    if (rects.some(r => x>=r.x && x<=r.x+r.w && y>=r.y && y<=r.y+r.h)){ cov++; sx += x; sy += y; }
+  }
+  const white = 1 - cov/(GX*GY), cx = cov ? sx/cov/Ly.W : .5, cy = cov ? sy/cov/Ly.H : .5;
+  // alignment: left/right edges of type and image on column lines
+  const lines = []; for (let i=0;i<Ly.cols;i++){ lines.push(Ly.colX(i)); lines.push(Ly.colX(i)+Ly.colW); }
+  const edges = []; Ly.boxes.forEach(e => { const r = e.getBoundingClientRect(); edges.push((r.left-pr.left)/sc); });
+  const aligned = edges.filter(x => lines.some(l => Math.abs(l-x) < 3)).length;
+  const align = edges.length ? aligned/edges.length : 1;
+  const contrast = (Math.max(lum(Ly.textC), lum(Ly.paperC)) + .05) / (Math.min(lum(Ly.textC), lum(Ly.paperC)) + .05);
+  const scale = Ly.titleSize / Ly.cap;
+  const M = (k, v, sub, ok) => `<div class="metric ${ok===false?'bad':'ok'}"><span>${k}</span><b>${v}</b><i>${sub}</i></div>`;
+  const zh = LANG==='zh';
+  $('metrics').innerHTML =
+    M(zh?'留白率':'Whitespace', Math.round(white*100)+'%', zh?'未被元素覆盖':'not covered') +
+    M(zh?'对齐度':'Alignment', Math.round(align*100)+'%', zh?'边缘落在栏线上':'edges on columns') +
+    M(zh?'视觉重心':'Balance', `${Math.round(cx*100)} / ${Math.round(cy*100)}`, zh?'中心为 50 / 50':'centre is 50 / 50') +
+    M(zh?'字号比':'Type ratio', Math.round(scale)+':1', zh?'标题 : 最小字':'title : smallest') +
+    M(zh?'文字对比度':'Text contrast', contrast.toFixed(1)+':1', contrast>=4.5 ? (zh?'达到 WCAG AA':'passes WCAG AA') : (zh?'低于 4.5:1':'below 4.5:1'), contrast>=4.5);
+  // centre-of-mass overlay
+  const old = $('massLayer'); if (old) old.remove();
+  if (P.mass){
+    const s = document.createElementNS(SVGNS,'svg'); s.id='massLayer'; s.setAttribute('class','layer'); s.setAttribute('width',Ly.W); s.setAttribute('height',Ly.H);
+    const X = cx*Ly.W, Y = cy*Ly.H, R = Ly.W*.03;
+    s.innerHTML = `<line x1="${Ly.W/2}" y1="${Ly.H/2}" x2="${X}" y2="${Y}" stroke="#161616" stroke-width="1.5" stroke-dasharray="5 4"/><circle cx="${Ly.W/2}" cy="${Ly.H/2}" r="${R*.35}" fill="none" stroke="#161616" stroke-width="1.5"/><circle cx="${X}" cy="${Y}" r="${R}" fill="none" stroke="#C2183C" stroke-width="3"/><path d="M${X-R*1.6} ${Y}H${X+R*1.6}M${X} ${Y-R*1.6}V${Y+R*1.6}" stroke="#C2183C" stroke-width="2"/>`;
+    $('poster').appendChild(s);
+  }
+}
+
+/* ---------- fitting the poster to the proof ---------- */
+function fit(){
+  const F = FORMATS[P.format], wrap = $('posterwrap'), s = wrap.clientWidth / F.W;
+  $('poster').style.transform = `scale(${s})`; wrap.style.height = (F.H*s)+'px';
+}
+if (window.ResizeObserver) new ResizeObserver(() => { fit(); computeMetrics(); }).observe($('posterwrap'));
+
+/* ---------- toolbar ---------- */
+$('shuffle').addEventListener('click', () => { P.seed = Math.floor(Math.random()*9999)+1; render(); });
+$('tGrid').addEventListener('click', () => { P.grid = !P.grid; render(); });
+$('tMass').addEventListener('click', () => { P.mass = !P.mass; computeMetrics(); syncPanel(); });
+
+/* ---------- language ---------- */
+function applyLang(l){
+  LANG = l;
+  const root = document.documentElement; root.dataset.lang = l; root.lang = l==='zh' ? 'zh-CN' : 'en';
+  document.title = l==='zh' ? '版式实验室' : 'Layout Lab';
+  $('title').setAttribute('aria-label', document.title);
+  $('poster').setAttribute('aria-label', l==='zh' ? '生成的海报' : 'Generated poster');
+  document.querySelectorAll('[data-aria-zh]').forEach(el => el.setAttribute('aria-label', l==='zh' ? el.dataset.ariaZh : el.dataset.ariaEn));
+  document.querySelectorAll('[data-setlang]').forEach(b => b.setAttribute('aria-pressed', b.dataset.setlang===l));
+  try { localStorage.setItem('printlab-lang', l); } catch(e){}
+  buildPanel(); render();
+}
+document.querySelectorAll('[data-setlang]').forEach(b => b.addEventListener('click', () => { if (b.dataset.setlang!==LANG) applyLang(b.dataset.setlang); }));
+
+// link back to the print lab: relative on GitHub Pages / local files, the published artifact elsewhere
+const host = location.hostname;
+if (!(host.endsWith('github.io') || location.protocol==='file:' || host==='localhost' || host==='127.0.0.1')) $('toPrint').href = 'https://claude.ai/artifact/BEBGEYAVkseDmEd78EbxS4';
+if (!(host.endsWith('github.io') || location.protocol==='file:' || host==='localhost' || host==='127.0.0.1')){ $('toPrint').target = '_blank'; $('toPrint').rel = 'noopener'; }
+
+applyLang(LANG);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => render());
+})();
+</script>
+</body>
+</html>

@@ -12,6 +12,10 @@
 - **溯源**：每种加网方式、油墨模式和网点形状都附有历史来源与链接（悬停按钮可看简介）
 - **中英双语**：右上角切换，选择会记在浏览器里
 
+## 版式实验室（`layout.html`）
+
+参数化海报生成器：网格（栏数、页边距、栏间距、基线）、字体排印（字体搭配、字号比例、标题大小与字距、对齐、竖排）、构图（破格强度、留白、不对称度、旋转扰动、叠压层数、视觉焦点、出血）、形状（词汇、数量、大小分布、角度、吸附网格）、油墨、网点图像、引导箭头与印刷标记，以及随机种子。实时计算留白率、对齐度、视觉重心、字号比和文字对比度。内置 Swiss、半调海报、Riso zine、杂志四种预设。
+
 ## 使用
 
 直接在浏览器打开 `index.html`，或用任意静态服务器托管（例如 GitHub Pages）。外部依赖只有 Google Fonts。
@@ -33,5 +37,7 @@
 - **Presets**: 17 proofs that load their settings in one click
 - **Provenance**: every screen, ink mode and dot shape carries a fact-checked origin note with links (hover a button for a summary)
 - **Bilingual**: switch between 中文 and English in the top-right corner
+
+**Layout Lab** (`layout.html`) is a parametric poster generator: grid (columns, margins, gutters, baseline), typography (pairing, type scale, title size and tracking, alignment, vertical setting), composition (rule-breaking, whitespace, asymmetry, rotation jitter, overlap layers, focal point, bleed), shapes (vocabulary, count, size spread, angles, grid snapping), inks, a screened image, guide arrows, print marks and a random seed. It reports whitespace, alignment, visual balance, type ratio and text contrast live, and ships Swiss, Halftone, Riso zine and Editorial presets.
 
 Open `index.html` in a browser or host it on any static server such as GitHub Pages. The only external dependency is Google Fonts. Ink colours are on-screen approximations; check a print shop's physical swatches for real results.

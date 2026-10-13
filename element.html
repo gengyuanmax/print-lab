@@ -143,14 +143,14 @@ canvas.mixcv{touch-action:none;cursor:grab}
 <div class="wrap">
   <header class="mast">
     <div class="mast-top">
-      <div class="eyebrow"><a data-page="home" href="index.html"><span class="zh">← 印刷实验室</span><span class="en">← Print Labs</span></a><span>04 · Element lab · <span class="zh">翻译 / 适配 / 统一</span><span class="en">Translate / Fit / Unify</span></span><a data-page="layout" href="layout.html"><span class="zh">版式实验室 →</span><span class="en">Layout Lab →</span></a></div>
+      <div class="eyebrow"><a data-page="home" href="index.html"><span class="zh">← 印刷实验室</span><span class="en">← Print Labs</span></a><span>04 · Element lab · <span class="zh">改造 / 对比 / 统一</span><span class="en">Translate / Fit / Unify</span></span><a data-page="layout" href="layout.html"><span class="zh">版式实验室 →</span><span class="en">Layout Lab →</span></a></div>
       <div class="langsw" role="group" aria-label="Language / 语言">
         <button type="button" data-setlang="zh" lang="zh-CN">中文</button>
         <button type="button" data-setlang="en" lang="en">EN</button>
       </div>
     </div>
     <h1 class="mis"><span aria-hidden="true"><span class="zh">元素实验室</span><span class="en">Element Lab</span></span><span><span class="zh">元素实验室</span><span class="en">Element Lab</span></span></h1>
-    <p class="lede"><span class="zh">一个元素放进 Swiss / Riso / 半调风格里总觉得“不搭”，通常是因为它没有走同一条印刷管线。“翻译”把一个元素拆成几步改造，每一步可以单独开关，并逐条检查哪里还不适配、规则出自哪里；“组合台”让你自己定义一个或两个元素，试单元素手段和两个元素的组合手段。</span><span class="en">When an element feels out of place in a Swiss / Riso / halftone design, it usually has not gone through the same print pipeline. Translate takes one element through the steps, each switchable, and checks what still does not fit and where each rule comes from; the Composer lets you define one or two elements and try single-element moves and ways to combine them.</span></p>
+    <p class="lede"><span class="zh">网页组件、图形和照片怎样融入瑞士风格、Riso 和半色调设计？“改造”模式逐项调整配色、线条和网点，对照改造前后的变化；“组合台”可自定义一个或两个元素，尝试单元素处理和双元素组合。各项说明附有参考来源。</span><span class="en">When an element feels out of place in a Swiss / Riso / halftone design, it usually has not gone through the same print pipeline. Translate takes one element through the steps, each switchable, and checks what still does not fit and where each rule comes from; the Composer lets you define one or two elements and try single-element moves and ways to combine them.</span></p>
   </header>
 
   <main class="lab">
@@ -163,19 +163,19 @@ canvas.mixcv{touch-action:none;cursor:grab}
         <div class="cap"><span id="afterLbl"></span><b id="afterName"></b></div>
         <div class="sheet" id="after"></div>
       </div>
-      <div class="cap"><span><span class="zh">适配检查（改造后）</span><span class="en">Fit check (after)</span></span><span class="score" id="score"></span></div>
+      <div class="cap"><span><span class="zh">规则启用情况</span><span class="en">Fit check (after)</span></span><span class="score" id="score"></span></div>
       <ul class="checks" id="checks" aria-live="polite"></ul>
     </section>
 
     <aside class="panel" id="panel" data-aria-zh="参数" data-aria-en="Settings">
       <div class="group">
         <h2><span class="zh">模式</span><span class="en">Mode</span> <small>MODE</small></h2>
-        <p class="hint"><span class="zh">“翻译”把一个现成的元素一步步改进印刷风格；“组合台”让你自己定义一个或两个元素，试单元素手段和两个元素的组合手段。</span><span class="en">Translate takes a ready-made element into the print style step by step; the Composer lets you define one or two elements yourself and try single-element moves and ways to combine two.</span></p>
+        <p class="hint"><span class="zh">“改造”模式把一个现成的元素逐步调整成印刷风格；“组合台”可自定义一个或两个元素，尝试单元素处理和双元素组合。</span><span class="en">Translate takes a ready-made element into the print style step by step; the Composer lets you define one or two elements yourself and try single-element moves and ways to combine two.</span></p>
         <div class="seg" id="modeSeg"></div>
       </div>
       <div class="group" id="mixGroup" hidden>
         <h2><span class="zh">组合台</span><span class="en">Composer</span> <small>COMPOSER</small></h2>
-        <p class="hint"><span class="zh">先定义元素（类型、内容、墨色、大小、角度和单元素手段），再选组合手段。左边画布上可以直接拖动元素，右边是所有手段的对照，点击就能切换。</span><span class="en">Define the elements (type, content, ink, size, angle and single-element moves), then pick a way to combine them. Drag the elements on the sheet; the panel beside it compares every option, click one to switch.</span></p>
+        <p class="hint"><span class="zh">先设置元素的类型、内容、油墨、大小、角度和单元素处理，再选择组合方式。画布上的元素可以直接拖动；下方对照列出所有选项，点击即可切换。</span><span class="en">Define the elements (type, content, ink, size, angle and single-element moves), then pick a way to combine them. Drag the elements on the sheet; the panel beside it compares every option, click one to switch.</span></p>
         <div class="row2"><span class="zh">元素数量</span><span class="en">Elements</span><div class="seg" id="mxN"></div></div>
         <div class="row2" id="mxSelRow"><span class="zh">正在编辑</span><span class="en">Editing</span><div class="seg" id="mxSel"></div></div>
         <div class="allrow"><button class="btn" type="button" id="mxSwap"><span class="zh">交换上下层</span><span class="en">Swap layers</span></button><button class="btn" type="button" id="mxCenter"><span class="zh">当前元素居中</span><span class="en">Centre this element</span></button></div>
@@ -190,9 +190,9 @@ canvas.mixcv{touch-action:none;cursor:grab}
         <div class="row2"><span class="zh">墨色</span><span class="en">Ink</span><div class="seg" id="mxInk"></div></div>
         <div class="field"><label for="mxSize"><span class="zh">大小</span><span class="en">Size</span></label><input type="range" id="mxSize" min="25" max="220" step="5"><output id="mxSizeOut"></output></div>
         <div class="field"><label for="mxRot"><span class="zh">角度</span><span class="en">Angle</span></label><input type="range" id="mxRot" min="-45" max="45" step="1"><output id="mxRotOut"></output></div>
-        <h3 class="subh"><span class="zh">单元素手段</span><span class="en">Single-element moves</span></h3>
+        <h3 class="subh"><span class="zh">单元素处理</span><span class="en">Single-element moves</span></h3>
         <div class="row2"><span class="zh">裁切</span><span class="en">Crop</span><div class="seg" id="mvCrop"></div></div>
-        <div class="row2"><span class="zh">抠图</span><span class="en">Cut-out</span><div class="seg" id="mvCut"></div></div>
+        <div class="row2"><span class="zh">去底</span><span class="en">Cut-out</span><div class="seg" id="mvCut"></div></div>
         <div class="row2"><span class="zh">镜像</span><span class="en">Mirror</span><div class="seg" id="mvMirror"></div></div>
         <div class="row2"><span class="zh">切条</span><span class="en">Slice</span><div class="seg" id="mvSlice"></div></div>
         <div class="row2"><span class="zh">形式</span><span class="en">Form</span><div class="seg" id="mvForm"></div></div>
@@ -204,27 +204,27 @@ canvas.mixcv{touch-action:none;cursor:grab}
         <p class="hint" id="mvNote"></p>
       </div>
       <div class="group" id="mixOpGroup" hidden>
-        <h2><span class="zh">组合手段</span><span class="en">Combine</span> <small>OPERATION</small></h2>
+        <h2><span class="zh">组合方式</span><span class="en">Combine</span> <small>OPERATION</small></h2>
         <p class="hint"><span class="zh">A 在下，B 在上。印刷里关键的问题是：两块版对不准时，结果还站得住吗？两个元素用同一种墨时，它们在同一块版上，不会互相错位。</span><span class="en">A is below, B on top. In print the key question is whether the result survives when the two plates miss. If both use the same ink they share one plate and cannot miss each other.</span></p>
-        <div class="row2"><span class="zh">手段</span><span class="en">Operation</span><div class="seg" id="mxOp"></div></div>
+        <div class="row2"><span class="zh">方式</span><span class="en">Operation</span><div class="seg" id="mxOp"></div></div>
         <div class="field"><label for="mxMis"><span class="zh">套色错位</span><span class="en">Misregister</span></label><input type="range" id="mxMis" min="0" max="3" step="0.5"><output id="mxMisOut"></output></div>
         <p class="hint" id="mxOpNote"></p>
       </div>
       <div class="group" id="elGroup">
         <h2><span class="zh">元素</span><span class="en">Element</span> <small>ELEMENT</small></h2>
-        <p class="hint"><span class="zh">网页组件来自软件界面，视觉元素来自数码绘图、3D 渲染和相机。两类“不搭”的原因不同，翻译步骤也不同。</span><span class="en">Web components come from software interfaces; visual elements come from digital drawing, 3D rendering and cameras. They look out of place for different reasons, so the steps differ.</span></p>
+        <p class="hint"><span class="zh">选择网页组件，或几何图形、实物、照片、手绘等视觉元素。页面会显示适用于当前类型的调整步骤。</span><span class="en">Web components come from software interfaces; visual elements come from digital drawing, 3D rendering and cameras. They look out of place for different reasons, so the steps differ.</span></p>
         <div class="row2"><span class="zh">网页组件</span><span class="en">Web components</span><div class="seg" id="elSeg"></div></div>
         <div class="row2"><span class="zh">视觉元素</span><span class="en">Visual elements</span><div class="seg" id="visSeg"></div></div>
-        <div class="row2" id="upRow" hidden><span class="zh">照片</span><span class="en">Photo</span><div class="seg"><button type="button" id="upScene"><span class="zh">示例风景</span><span class="en">Sample scene</span></button><label class="btn" style="min-height:38px"><span class="zh">上传照片</span><span class="en">Upload photo</span><input type="file" id="upFile" accept="image/*" hidden></label></div></div>
+        <div class="row2" id="upRow" hidden><span class="zh">照片</span><span class="en">Photo</span><div class="seg"><button type="button" id="upScene"><span class="zh">风景示例</span><span class="en">Sample scene</span></button><label class="btn" style="min-height:38px"><span class="zh">上传照片</span><span class="en">Upload photo</span><input type="file" id="upFile" accept="image/*" hidden></label></div></div>
         <p class="hint" id="upHint" hidden><span class="zh">照片只在你的浏览器里处理，不会上传到任何地方。</span><span class="en">Your photo is processed in your browser and never uploaded.</span></p>
       </div>
       <div class="group" id="imgGroup" hidden>
-        <h2><span class="zh">单张图片的处理</span><span class="en">Moves on one image</span> <small>IMAGE</small></h2>
-        <p class="hint"><span class="zh">在翻译之前先动图片本身：裁切、镜像、抠图、切条、重复、错位复制、斜放、剪影 / 线稿、放大网点、扫描拖影。它们决定图片在版面上“说什么”，翻译步骤决定它“怎么印”。改造前后都会套用。</span><span class="en">Work on the picture itself before translating it: crop, mirror, cut out, slice, repeat, echo, tilt, silhouette or line art, giant dots, scanner drag. These decide what the image says on the page; the steps decide how it prints. Both before and after use them.</span></p>
+        <h2><span class="zh">照片处理</span><span class="en">Moves on one image</span> <small>IMAGE</small></h2>
+        <p class="hint"><span class="zh">先通过裁切、镜像、去底、条带错位、重复、错位复制、倾斜、剪影或线稿、放大网点或扫描拖影调整照片，再设置印刷效果。这里的处理会同时应用到“改造前”和“改造后”。</span><span class="en">Work on the picture itself before translating it: crop, mirror, cut out, slice, repeat, echo, tilt, silhouette or line art, giant dots, scanner drag. These decide what the image says on the page; the steps decide how it prints. Both before and after use them.</span></p>
         <div class="row2"><span class="zh">裁切</span><span class="en">Crop</span><div class="seg" id="imCrop"></div></div>
         <div class="row2"><span class="zh">镜像</span><span class="en">Mirror</span><div class="seg" id="imMirror"></div></div>
-        <div class="row2"><span class="zh">抠图</span><span class="en">Cut-out</span><div class="seg" id="imCut"></div></div>
-        <div class="row2"><span class="zh">切条</span><span class="en">Slice</span><div class="seg" id="imSlice"></div></div>
+        <div class="row2"><span class="zh">去底</span><span class="en">Cut-out</span><div class="seg" id="imCut"></div></div>
+        <div class="row2"><span class="zh">条带错位</span><span class="en">Slice</span><div class="seg" id="imSlice"></div></div>
         <div class="row2"><span class="zh">重复</span><span class="en">Repeat</span><div class="seg" id="imRepeat"></div></div>
         <div class="row2"><span class="zh">错位复制</span><span class="en">Echo</span><div class="seg" id="imEcho"></div></div>
         <div class="row2"><span class="zh">斜放</span><span class="en">Tilt</span><div class="seg" id="imRotate"></div></div>
@@ -234,15 +234,15 @@ canvas.mixcv{touch-action:none;cursor:grab}
         <p class="hint" id="imNote"></p>
       </div>
       <div class="group" id="schemeGroup">
-        <h2><span class="zh">翻译方案</span><span class="en">Translation</span> <small>SCHEME</small></h2>
+        <h2><span class="zh">改造方案</span><span class="en">Translation</span> <small>SCHEME</small></h2>
         <div id="schemeBox"><p class="hint" id="schemeHint"></p>
         <div class="seg" id="schemeSeg"></div></div>
         <div class="row2"><span class="zh">配色</span><span class="en">Inks</span><div class="seg" id="inkSeg"></div></div>
       </div>
       <div class="group" id="stepsGroup">
-        <h2><span class="zh">翻译步骤</span><span class="en">Steps</span> <small>STEPS</small></h2>
-        <p class="hint"><span class="zh">每一步右边标着来源：<b>印刷</b> = 印厂的文件规范，<b>系统</b> = Isotype、IBM 等统一视觉语言的方法，<b>本页</b> = 这里的综合做法。</span><span class="en">Each step is tagged with its source: <b>Press</b> = print-shop file specs, <b>System</b> = methods from Isotype, IBM and other unified visual languages, <b>This page</b> = this lab's own synthesis.</span></p>
-        <div class="allrow"><button class="btn" type="button" id="allOn"><span class="zh">全部打开</span><span class="en">All on</span></button><button class="btn" type="button" id="allOff"><span class="zh">全部关闭</span><span class="en">All off</span></button></div>
+        <h2><span class="zh">调整步骤</span><span class="en">Steps</span> <small>STEPS</small></h2>
+        <p class="hint"><span class="zh">步骤右侧标注参考来源：<b>印前</b>是印厂或工作室的文件准备建议，<b>设计</b>是 Isotype、IBM 等视觉系统的设计方法，<b>本页</b>是为本实验设计的做法。</span><span class="en">Each step is tagged with its source: <b>Press</b> = print-shop file specs, <b>System</b> = methods from Isotype, IBM and other unified visual languages, <b>This page</b> = this lab's own synthesis.</span></p>
+        <div class="allrow"><button class="btn" type="button" id="allOn"><span class="zh">全部启用</span><span class="en">All on</span></button><button class="btn" type="button" id="allOff"><span class="zh">全部停用</span><span class="en">All off</span></button></div>
         <ul class="steps" id="steps"></ul>
       </div>
     </aside>
@@ -250,21 +250,21 @@ canvas.mixcv{touch-action:none;cursor:grab}
 
   <section class="refs" data-aria-zh="参考资料" data-aria-en="References">
     <h2><span class="zh">参考资料</span><span class="en">References</span></h2>
-    <h3><span class="zh">印刷约束：哪些东西印得好</span><span class="en">Press constraints: what prints well</span></h3>
+    <h3><span class="zh">印前要求与建议</span><span class="en">Press constraints: what prints well</span></h3>
     <ol>
-      <li><a href="https://goodpress.co.uk/pages/file-preparation" target="_blank" rel="noopener">Preparing your files for Risograph</a><span><span class="zh">Good Press · 多层细线和小字会糊；文字只用一种墨、不小于 8pt；大面积平涂效果不好；低反差照片印不好</span><span class="en">Good Press · thin lines and small text across layers blur; one ink and at least 8 pt for text; large flat areas print badly; low-contrast photos suffer</span></span></li>
-      <li><a href="https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/" target="_blank" rel="noopener">Risograph file prep</a><span><span class="zh">MICA · 每种墨一张灰度图；100% 大色块降到 85%；中间调印成该墨的浅色；不建议多色文字</span><span class="en">MICA · one greyscale image per ink; drop large 100% areas to 85%; midtones print as tints of the ink; multi-colour text is discouraged</span></span></li>
-      <li><a href="https://oxfordgreenprint.com/home/design-for-riso/" target="_blank" rel="noopener">Design for Riso</a><span><span class="zh">Oxford Greenprint · 颜色之间会无法避免地错开 1–2 mm</span><span class="en">Oxford Greenprint · colours miss by 1–2 mm, unavoidably</span></span></li>
-      <li><a href="https://www.counter-print.co.uk/products/riso-art" target="_blank" rel="noopener"><i>Riso Art: A Creative's Guide to Mastering Risography</i></a><span><span class="zh">Vivian Toh、Jay Lim，2023 · 专色、叠印与镂空、文件准备、纸张</span><span class="en">Vivian Toh and Jay Lim, 2023 · spot colour, overprints and knockouts, file prep, paper</span></span></li>
+      <li><a href="https://goodpress.co.uk/pages/file-preparation" target="_blank" rel="noopener">Preparing your files for Risograph</a><span><span class="zh">Good Press · 建议小字与细线使用单色，字号不小于 8 pt；避免大面积满墨色块和反差过低的照片</span><span class="en">Good Press · thin lines and small text across layers blur; one ink and at least 8 pt for text; large flat areas print badly; low-contrast photos suffer</span></span></li>
+      <li><a href="https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/" target="_blank" rel="noopener">Risograph file prep</a><span><span class="zh">MICA · 每种油墨单独提交灰度稿；建议将大面积满墨色块降至 85%；中间调呈现为该油墨的浅色；不建议文字多色套印</span><span class="en">MICA · one greyscale image per ink; drop large 100% areas to 85%; midtones print as tints of the ink; multi-colour text is discouraged</span></span></li>
+      <li><a href="https://oxfordgreenprint.com/home/design-for-riso/" target="_blank" rel="noopener">Design for Riso</a><span><span class="zh">Oxford Greenprint · 提醒设计时考虑约 1–2 mm 的套色偏差</span><span class="en">Oxford Greenprint · colours miss by 1–2 mm, unavoidably</span></span></li>
+      <li><a href="https://www.counter-print.co.uk/products/riso-art" target="_blank" rel="noopener"><i>Riso Art: A Creative's Guide to Mastering Risography</i></a><span><span class="zh">Vivian Toh、Jay Lim，2023 · 专色、叠印与挖空、印前文件准备、纸张</span><span class="en">Vivian Toh and Jay Lim, 2023 · spot colour, overprints and knockouts, file prep, paper</span></span></li>
     </ol>
-    <h3><span class="zh">系统方法：把万物翻成一种视觉语言</span><span class="en">Systems: one visual language for everything</span></h3>
+    <h3><span class="zh">统一视觉风格的方法</span><span class="en">Systems: one visual language for everything</span></h3>
     <ol>
-      <li><a href="https://en.wikipedia.org/wiki/Isotype_(picture_language)" target="_blank" rel="noopener">Isotype</a><span><span class="zh">Neurath、Arntz，1925–1934 · 标准化、抽象的图形，几乎不用透视</span><span class="en">Neurath and Arntz, 1925–1934 · standardised, abstracted pictograms, almost never in perspective</span></span></li>
+      <li><a href="https://en.wikipedia.org/wiki/Isotype_(picture_language)" target="_blank" rel="noopener">Isotype</a><span><span class="zh">Neurath、Arntz，1925–1934 · 用简化、规范的图形传达信息，通常不使用透视</span><span class="en">Neurath and Arntz, 1925–1934 · standardised, abstracted pictograms, almost never in perspective</span></span></li>
       <li><a href="https://en.wikipedia.org/wiki/Otl_Aicher" target="_blank" rel="noopener">Otl Aicher</a><span><span class="zh">1972 年慕尼黑奥运图标用一套网格系统画成，影响了 1974 年美国交通部标识</span><span class="en">The 1972 Munich pictograms, drawn on a series of grid systems, shaped the 1974 US DOT signs</span></span></li>
-      <li><a href="https://standardsmanual.com/products/nasa-graphics-standards-manual" target="_blank" rel="noopener">NASA Graphics Standards Manual (1975)</a><span><span class="zh">Danne & Blackburn · 一套规范管住所有应用场合</span><span class="en">Danne & Blackburn · one standard for every application</span></span></li>
-      <li><a href="https://www.ibm.com/design/language/illustration/overview" target="_blank" rel="noopener">IBM Design Language · Illustration</a><span><span class="zh">统一靠网格和一致的形状、角度、圆角；只保留必要、非装饰的元素</span><span class="en">Consistency comes from the grid and consistent shapes, angles and radii; only essential, non-decorative elements</span></span></li>
+      <li><a href="https://standardsmanual.com/products/nasa-graphics-standards-manual" target="_blank" rel="noopener">NASA Graphics Standards Manual (1975)</a><span><span class="zh">Danne & Blackburn · 通过统一的视觉规范保持不同应用场景中的一致性</span><span class="en">Danne & Blackburn · one standard for every application</span></span></li>
+      <li><a href="https://www.ibm.com/design/language/illustration/overview" target="_blank" rel="noopener">IBM Design Language · Illustration</a><span><span class="zh">通过网格、形状、角度和圆角规范统一插画风格，减少无助于表达的装饰</span><span class="en">Consistency comes from the grid and consistent shapes, angles and radii; only essential, non-decorative elements</span></span></li>
     </ol>
-    <p class="note" style="margin-top:14px"><span class="zh">把网页组件翻译成 Riso / 半调语言，目前没有现成的指南；标着“本页”的步骤是这里根据上面两类来源做的综合。</span><span class="en">There is no existing guide to translating web components into Riso / halftone language; steps tagged “This page” are this lab's synthesis of the two groups of sources above.</span></p>
+    <p class="note" style="margin-top:14px"><span class="zh">本页参考印前建议与视觉设计方法，并做了适合网页演示的简化。“规则启用情况”只显示开关状态；“套色偏差提示”依据预设的组合方式给出说明，不能替代实际印前检查。实际制作请以承印方要求为准。</span><span class="en">There is no existing guide to translating web components into Riso / halftone language; steps tagged “This page” are this lab's synthesis of the two groups of sources above.</span></p>
   </section>
 </div>
 
@@ -300,30 +300,30 @@ const T = o => (o && typeof o==='object' && 'zh' in o) ? o[LANG] : o;
 
 /* ---------- data ---------- */
 const ELEMENTS = [['nav',L('导航','Navigation')],['button',L('按钮','Buttons')],['card',L('卡片','Card')],['icon',L('图标','Icons')],['divider',L('分隔线','Dividers')],['link',L('链接与状态','Links & states')],['tags',L('标签','Tags')],['list',L('作品列表','Work list')]];
-const VISUALS = [['geo',L('几何','Geometry')],['obj',L('拟物','Objects')],['photo',L('摄影','Photo')],['hand',L('手绘','Drawing')]];
+const VISUALS = [['geo',L('几何图形','Geometry')],['obj',L('实物','Objects')],['photo',L('照片','Photo')],['hand',L('手绘','Drawing')]];
 const SCHEMES = {
-  swiss:{vh:L('一种墨（通常是黑）加一种浅色网点，形状落在网格上，像 Swiss 海报里的照片和图形。','One ink, usually black, plus one screened tint, shapes on the grid, like the images in a Swiss poster.'), n:L('Swiss · 线与字','Swiss · rules & type'), h:L('只用字、编号和油墨线：当前状态是一根粗墨线或一块实底，像杂志的目录和索引。','Type, numbers and ink rules only: the current state is a heavy rule or a solid bar, like a magazine contents page.')},
-  riso:{vh:L('两种墨叠印：A 走亮部和中间调，B 走暗部；大面积带一点套色错位。','Two inks overprinting: A carries the lights and midtones, B the darks; large areas show a little misregistration.'), n:L('Riso · 色块','Riso · ink blocks'), h:L('用平涂的油墨块和网点浅色：当前状态是一块油墨，字镂空成纸色；只有大色块才带套色错位。','Flat ink blocks and screened tints: the current state is a block of ink with the label knocked out; only large blocks show misregistration.')},
-  object:{vh:L('做成剪下来的纸片：一种墨，带纸边和裁切标记，差异变成有意的拼贴。','Cut paper scraps: one ink, with a paper edge and crop marks, so the difference reads as deliberate collage.'), n:L('印刷物件','Print objects'), h:L('借用印刷品本身的形式：书边的拇指索引、票根、剪下的纸片、裁切标记。','Borrow forms from printed objects: thumb-index tabs, ticket stubs, cut paper scraps, crop marks.')},
+  swiss:{vh:L('以黑色和网点浅色表现图像，用清晰的几何形与线条呼应瑞士风格海报。','One ink, usually black, plus one screened tint, shapes on the grid, like the images in a Swiss poster.'), n:L('瑞士风格 · 线条与文字','Swiss · rules & type'), h:L('以文字、编号和实线组织信息，用粗线或实色块突出选中项，参考杂志目录和索引的编排。','Type, numbers and ink rules only: the current state is a heavy rule or a solid bar, like a magazine contents page.')},
+  riso:{vh:L('用两种油墨叠印表现层次：照片和实物示例中，A 版表现亮部与中间调，B 版加强暗部，并模拟轻微的套色错位。','Two inks overprinting: A carries the lights and midtones, B the darks; large areas show a little misregistration.'), n:L('Riso · 色块','Riso · ink blocks'), h:L('用色块与网点表现油墨效果。选中项以色块突出，文字反白；开关可控制配色、线条和错位等细节。','Flat ink blocks and screened tints: the current state is a block of ink with the label knocked out; only large blocks show misregistration.')},
+  object:{vh:L('借鉴剪纸和拼贴的外观，简化图像的配色与明暗；几何图形示例中还加入裁切标记。','Cut paper scraps: one ink, with a paper edge and crop marks, so the difference reads as deliberate collage.'), n:L('纸品造型','Print objects'), h:L('借鉴书页边缘的分区索引、票根和裁切标记，让组件带有纸质印刷品的外观。','Borrow forms from printed objects: thumb-index tabs, ticket stubs, cut paper scraps, crop marks.')},
 };
 const INKSETS = {
   orange:{n:L('Riso 橙 + 联邦蓝','Riso orange + federal blue'), paper:'#F3EFE6', k:'#1A1A1A', a:'#FF6C2F', b:'#3D5588'},
-  riso:{n:L('Riso 粉蓝','Riso pink & blue'), paper:'#F4F1EA', k:'#1A1A1A', a:'#FF48B0', b:'#0078BF'},
+  riso:{n:L('Riso 粉 + 蓝','Riso pink & blue'), paper:'#F4F1EA', k:'#1A1A1A', a:'#FF48B0', b:'#0078BF'},
   mono:{n:L('单色黑','Black only'), paper:'#F1EEE6', k:'#1A1A1A', a:'#1A1A1A', b:'#1A1A1A'},
 };
 // translation steps: id, label, why, source kind (c = press constraint, m = systems method, o = this page), source link
 const STEPS = [
-  {id:'spot', t:L('收成专色','Spot inks only'), w:L('灰色、半透明的白、渐变底都换成版里的几种墨和一种纸色。','Greys, translucent whites and gradient fills become the few inks on the plates and one paper colour.'), s:'c', l:['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']},
-  {id:'flat', t:L('去掉拟物','Drop the skeuomorphism'), w:L('文件夹标签、折角、圆角、投影、高光都去掉：平面，不用透视和光影。','Folder tabs, dog-ears, rounded corners, shadows and highlights go: flat, without perspective or lighting.'), s:'m', l:['Isotype','https://en.wikipedia.org/wiki/Isotype_(picture_language)']},
-  {id:'ink', t:L('线是油墨线','Rules are ink'), w:L('灰色细线、虚线换成油墨色的实线，至少 2 px，在套色错位下也立得住。','Grey hairlines and dotted lines become solid ink rules, at least 2 px, so they survive misregistration.'), s:'c', l:['Good Press','https://goodpress.co.uk/pages/file-preparation']},
-  {id:'single', t:L('小元素只用一种墨','Small things in one ink'), w:L('图标、小字、细线不做双色错位：错位 1–2 mm 对它们来说太大了。错位只留给大标题和大色块。','Icons, small text and thin lines stay one ink: a 1–2 mm miss is too big for them. Misregistration is kept for big titles and large blocks.'), s:'c', l:['Oxford Greenprint','https://oxfordgreenprint.com/home/design-for-riso/']},
-  {id:'screen', t:L('浅色用网点','Tints are screened'), w:L('不用透明度和渐变，浅色用网点做；大色块降到 85% 左右。','No opacity or gradients: light tones are screened, and large solids drop to about 85%.'), s:'c', l:['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']},
-  {id:'grid', t:L('对齐页面网格','On the page grid'), w:L('组件和标题共用同一套栏和左边缘，不另起一套等分。','The component shares the title\'s columns and left edge instead of its own equal split.'), s:'m', l:['IBM Design Language','https://www.ibm.com/design/language/illustration/overview']},
-  {id:'type', t:L('字体同一家族','One type family'), w:L('标签用标题同一家族或等宽字，不用默认的界面字体。','Labels use the title\'s family or the monospace, not a default UI font.'), s:'m', l:['NASA Standards Manual','https://standardsmanual.com/products/nasa-graphics-standards-manual']},
-  {id:'active', t:L('状态用版里的墨','States use plate inks'), w:L('当前项、悬停这些状态用版里本来就有的墨来表示，不用“链接蓝”。','Current and hover states use an ink that is already on the plates, not a hyperlink blue.'), s:'o'},
+  {id:'spot', t:L('限定专色','Spot inks only'), w:L('将额外的灰色、半透明白和渐变背景，改为当前配色中的油墨色与纸色。','Greys, translucent whites and gradient fills become the few inks on the plates and one paper colour.'), s:'c', l:['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']},
+  {id:'flat', t:L('简化立体装饰','Drop the skeuomorphism'), w:L('将网页组件的圆角、投影和高光，改为所选方案中的线条、色块或纸品造型。','Folder tabs, dog-ears, rounded corners, shadows and highlights go: flat, without perspective or lighting.'), s:'m', l:['Isotype','https://en.wikipedia.org/wiki/Isotype_(picture_language)']},
+  {id:'ink', t:L('统一线条','Rules are ink'), w:L('将浅灰细线和虚线改为较粗的油墨色实线，增强轮廓。实际印刷所需的最小线宽请与印厂确认。','Grey hairlines and dotted lines become solid ink rules, at least 2 px, so they survive misregistration.'), s:'c', l:['Good Press','https://goodpress.co.uk/pages/file-preparation']},
+  {id:'single', t:L('小字与图标用单色','Small things in one ink'), w:L('去掉小字和图标上的双色错位，减少套印不准对辨识度的影响；大标题可保留错位效果。','Icons, small text and thin lines stay one ink: a 1–2 mm miss is too big for them. Misregistration is kept for big titles and large blocks.'), s:'c', l:['Oxford Greenprint','https://oxfordgreenprint.com/home/design-for-riso/']},
+  {id:'screen', t:L('网点与浅色块','Tints are screened'), w:L('用网点表现浅色，并减淡大色块。本页也用透明度模拟部分浅色效果，实际制版需按印厂要求处理。','No opacity or gradients: light tones are screened, and large solids drop to about 85%.'), s:'c', l:['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']},
+  {id:'grid', t:L('统一对齐基准','On the page grid'), w:L('让组件与标题的左边缘对齐，减少与整体版面脱节的缩进。','The component shares the title\'s columns and left edge instead of its own equal split.'), s:'m', l:['IBM Design Language','https://www.ibm.com/design/language/illustration/overview']},
+  {id:'type', t:L('统一字体搭配','One type family'), w:L('文字标签沿用标题的字体系列，编号等辅助信息使用等宽字体。','Labels use the title\'s family or the monospace, not a default UI font.'), s:'m', l:['NASA Standards Manual','https://standardsmanual.com/products/nasa-graphics-standards-manual']},
+  {id:'active', t:L('统一状态用色','States use plate inks'), w:L('用当前配色中的油墨色标示选中项，替换额外的链接蓝。','Current and hover states use an ink that is already on the plates, not a hyperlink blue.'), s:'o'},
 ];
 function VSTEPS_IDS(){ return ['v_spot','v_tone','v_contrast','v_screen','v_detail','v_angle','v_line','v_single','v_edge']; }
-const SRC_LBL = {c:L('印刷','Press'), m:L('系统','System'), o:L('本页','This page')};
+const SRC_LBL = {c:L('印前','Press'), m:L('设计','System'), o:L('本页','This page')};
 
 const S = {img:{crop:'none', mirror:'none', cut:'none', slice:'none', repeat:'1', echo:'none', rotate:'0', form:'photo', dots:'normal', drag:'none'}, lastCat:'web', cat:'web', el:'nav', scheme:'swiss', inks:'orange', on:Object.fromEntries(STEPS.map(s => [s.id, true]).concat(VSTEPS_IDS().map(id => [id, true])))};
 
@@ -513,15 +513,15 @@ function divider(f, sc, ink){
 
 /* ---------- visual elements: geometry, objects, photos, drawings ---------- */
 const VSTEPS = [
-  {id:'v_spot', t:L('收成专色','Spot inks only'), w:L('全彩和 RGB 渐变换成版里的两三种墨，叠在一起时用叠印出第三色。','Full colour and RGB gradients become two or three plate inks; where they overlap they overprint into a third colour.'), s:'c', l:['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']},
-  {id:'v_tone', t:L('光影压成几级','Light in a few steps'), w:L('连续的明暗压成两到四级：高光留纸，中间调一种浅色，暗部一种深色；去掉柔和投影。','Continuous shading becomes two to four steps: highlights stay paper, midtones one tint, shadows one dark; soft shadows go.'), s:'m', l:['Isotype','https://en.wikipedia.org/wiki/Isotype_(picture_language)']},
-  {id:'v_contrast', t:L('提高反差','Raise the contrast'), w:L('灰蒙蒙的照片先拉开黑白场：低反差的照片印出来会发灰、糊掉。','Stretch the black and white points of a flat photo first: low-contrast images print grey and muddy.'), s:'c', l:['Good Press','https://goodpress.co.uk/pages/file-preparation']},
-  {id:'v_screen', t:L('一种网点体系','One screening system'), w:L('浅色和中间调都用同一种网点、同样的网点大小，不用透明度和模糊。','Tints and midtones all use the same screen at the same dot size, never opacity or blur.'), s:'c', l:['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']},
-  {id:'v_detail', t:L('只留必要细节','Essential detail only'), w:L('去掉反光、贴花、细碎纹理和装饰，只留读得出“这是什么”的轮廓和结构。','Drop reflections, decals, fine texture and ornament; keep the outline and structure that say what the thing is.'), s:'m', l:['IBM Design Language','https://www.ibm.com/design/language/illustration/overview']},
-  {id:'v_angle', t:L('统一角度与圆角','Shared angles and radii'), w:L('角度只用 0° / 45° / 90°，圆角统一，形状落在同一套网格上。','Angles only at 0° / 45° / 90°, one corner radius, shapes on the same grid.'), s:'m', l:['IBM Design Language','https://www.ibm.com/design/language/illustration/overview']},
-  {id:'v_line', t:L('线是油墨线','Lines are ink'), w:L('1 px 的彩色细线换成至少 2.5 px 的油墨线：多色细线在错位下会糊。','Coloured 1 px hairlines become ink lines of at least 2.5 px: thin multi-colour lines blur when the plates miss.'), s:'c', l:['Good Press','https://goodpress.co.uk/pages/file-preparation']},
-  {id:'v_single', t:L('小部件一种墨','Small parts in one ink'), w:L('小圆点、细节、叶脉这类小东西只用一种墨，错位只留给大面积。','Small dots, details and veins stay one ink; misregistration is kept for large areas.'), s:'c', l:['Oxford Greenprint','https://oxfordgreenprint.com/home/design-for-riso/']},
-  {id:'v_edge', t:L('边缘与颗粒统一','Shared edges and grain'), w:L('所有元素一起带上墨色颗粒和纸纹，不让某一个元素特别光滑。','Every element gets the same ink grain and paper texture, so nothing looks suspiciously smooth.'), s:'o'},
+  {id:'v_spot', t:L('限定专色','Spot inks only'), w:L('将全彩图像和 RGB 渐变改为少量油墨色，重叠处以叠印模拟混色。','Full colour and RGB gradients become two or three plate inks; where they overlap they overprint into a third colour.'), s:'c', l:['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']},
+  {id:'v_tone', t:L('简化明暗层次','Light in a few steps'), w:L('将连续明暗简化为少数几个层次，用留白、浅色和深色突出结构，减弱细腻光影带来的立体感。','Continuous shading becomes two to four steps: highlights stay paper, midtones one tint, shadows one dark; soft shadows go.'), s:'m', l:['Isotype','https://en.wikipedia.org/wiki/Isotype_(picture_language)']},
+  {id:'v_contrast', t:L('提高反差','Raise the contrast'), w:L('拉开照片的明暗范围，让亮部与暗部更清楚，减少低反差图像在印刷后层次不清的问题。','Stretch the black and white points of a flat photo first: low-contrast images print grey and muddy.'), s:'c', l:['Good Press','https://goodpress.co.uk/pages/file-preparation']},
+  {id:'v_screen', t:L('统一加网方式','One screening system'), w:L('用规则网点表现浅色和中间调，使图像质感更统一。网点随明暗变化，两色照片采用不同的加网角度。','Tints and midtones all use the same screen at the same dot size, never opacity or blur.'), s:'c', l:['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']},
+  {id:'v_detail', t:L('简化细节','Essential detail only'), w:L('减少反光、贴花和细碎纹理等装饰，保留用于辨认物体的主要轮廓与结构；照片则先做轻微平滑处理。','Drop reflections, decals, fine texture and ornament; keep the outline and structure that say what the thing is.'), s:'m', l:['IBM Design Language','https://www.ibm.com/design/language/illustration/overview']},
+  {id:'v_angle', t:L('统一角度与圆角','Shared angles and radii'), w:L('本页将几何图形的旋转角度调整为 45° 的整数倍，并将圆角改为直角，统一造型。','Angles only at 0° / 45° / 90°, one corner radius, shapes on the same grid.'), s:'m', l:['IBM Design Language','https://www.ibm.com/design/language/illustration/overview']},
+  {id:'v_line', t:L('统一线条','Lines are ink'), w:L('将细小的彩色线条改为较粗的单色轮廓，减少错位造成的模糊。线宽为网页演示设置，实际印刷需另行确认。','Coloured 1 px hairlines become ink lines of at least 2.5 px: thin multi-colour lines blur when the plates miss.'), s:'c', l:['Good Press','https://goodpress.co.uk/pages/file-preparation']},
+  {id:'v_single', t:L('细小图形用单色','Small parts in one ink'), w:L('小圆点、叶脉等细节使用一种油墨，减少套色错位对细小图形的影响。','Small dots, details and veins stay one ink; misregistration is kept for large areas.'), s:'c', l:['Oxford Greenprint','https://oxfordgreenprint.com/home/design-for-riso/']},
+  {id:'v_edge', t:L('统一颗粒与纸纹','Shared edges and grain'), w:L('为图像加入一致的墨色颗粒与纸纹，让各元素的印刷质感更协调。','Every element gets the same ink grain and paper texture, so nothing looks suspiciously smooth.'), s:'o'},
 ];
 const VAPPLY = {
   geo:['v_spot','v_screen','v_angle','v_line','v_single','v_edge'],
@@ -529,7 +529,7 @@ const VAPPLY = {
   photo:['v_spot','v_contrast','v_tone','v_screen','v_detail','v_edge'],
   hand:['v_spot','v_line','v_single','v_screen','v_detail','v_edge'],
 };
-const VBEFORE = {geo:L('常见的数码矢量图','the usual digital vector'), obj:L('常见的 3D 渲染','the usual 3D render'), photo:L('原始彩色照片','the raw colour photo'), hand:L('常见的数码手绘','the usual digital drawing')};
+const VBEFORE = {geo:L('数码矢量图','the usual digital vector'), obj:L('3D 渲染效果','the usual 3D render'), photo:L('原始彩色照片','the raw colour photo'), hand:L('数码手绘','the usual digital drawing')};
 const VW = 640, VH = 300;
 let vUpload = null;
 
@@ -730,24 +730,24 @@ function drawPhoto(g, f, sc, ink){
 
 /* moves on one image, applied before translation; alpha 0 = cut away (paper) */
 const IMOPTS = {
-  imCrop:['crop', [['none',L('原图','Full')],['tight',L('紧裁','Tight')],['strip',L('长条','Strip')]]],
+  imCrop:['crop', [['none',L('原图','Full')],['tight',L('局部特写','Tight')],['strip',L('横向窄幅','Strip')]]],
   imMirror:['mirror', [['none',L('无','None')],['flip',L('水平翻转','Flip')],['sym',L('对称','Symmetric')]]],
-  imCut:['cut', [['none',L('无','None')],['bg',L('去掉背景','Remove background')]]],
+  imCut:['cut', [['none',L('无','None')],['bg',L('按颜色去底','Remove background')]]],
   imSlice:['slice', [['none',L('无','None')],['strips',L('横条错开','Shifted strips')]]],
   imRepeat:['repeat', [['1',L('×1','×1')],['2',L('×2','×2')],['3',L('×3','×3')]]],
-  imEcho:['echo', [['none',L('无','None')],['ink',L('另一色错开','Offset in ink B')]]],
+  imEcho:['echo', [['none',L('无','None')],['ink',L('异色错位','Offset in ink B')]]],
   imRotate:['rotate', [['0',L('不转','Straight')],['7',L('斜放 7°','Tilt 7°')],['-12',L('斜放 −12°','Tilt −12°')]]],
   imForm:['form', [['photo',L('照片','Photo')],['sil',L('剪影','Silhouette')],['line',L('线稿','Line art')]]],
   imDots:['dots', [['normal',L('常规','Normal')],['giant',L('放大网点','Giant dots')]]],
   imDrag:['drag', [['none',L('无','None')],['drag',L('扫描拖影','Scanner drag')]]],
 };
 const IMNOTE = {
-  crop:L('裁切决定主角和尺度：紧裁让局部变成图形，长条像电影画幅。','Cropping decides the subject and the scale: a tight crop turns a detail into a shape, a strip reads like a film frame.'),
-  mirror:L('镜像改变视线方向，对称会把照片变成图案，读起来更像装饰。','Mirroring changes where the eye goes; symmetry turns a photo into a pattern that reads as ornament.'),
-  cut:L('去背让照片变成一个形状，可以和几何、文字叠在一起；这里把接近天空颜色的部分当作背景。','A cut-out turns the photo into a shape that can sit with geometry and type; here anything close to the sky colour counts as background.'),
-  slice:L('切条错开是拼贴和 zine 常用的手法，把“照片”变成“被处理过的照片”。','Shifted strips are a collage and zine move that turns a photo into a handled photo.'),
-  repeat:L('重复且每次换墨，是丝网海报的经典做法（Warhol 的《Marilyn Diptych》把同一张照片印了 50 次）。','Repeating with a different ink each time is a screen-print classic (Warhol\'s Marilyn Diptych repeats one photo 50 times).'),
-  echo:L('用第二种墨把同一张图错开再印一遍，是刻意放大的套色错位。','Printing the same image again in a second ink, offset, is misregistration on purpose.'),
+  crop:L('裁切可突出主体、改变构图。“局部特写”放大细节，“横向窄幅”只保留画面中间的横向区域。','Cropping decides the subject and the scale: a tight crop turns a detail into a shape, a strip reads like a film frame.'),
+  mirror:L('水平翻转可改变画面方向；镜像对称则让照片形成重复的装饰图案。','Mirroring changes where the eye goes; symmetry turns a photo into a pattern that reads as ornament.'),
+  cut:L('去底后可将照片与图形、文字叠放。本页按图像顶部的平均颜色及高亮区域识别背景，适合风景示例，并非自动识别主体的精细抠图。','A cut-out turns the photo into a shape that can sit with geometry and type; here anything close to the sky colour counts as background.'),
+  slice:L('将照片切成水平条带，交替向左右错开，模拟拼贴和小志中常见的剪贴效果。','Shifted strips are a collage and zine move that turns a photo into a handled photo.'),
+  repeat:L('并排重复同一幅图像，形成连续的视觉节奏；开启专色效果后，相邻图像会交替使用所选油墨色。','Repeating with a different ink each time is a screen-print classic (Warhol\'s Marilyn Diptych repeats one photo 50 times).'),
+  echo:L('用另一种油墨色偏移复制同一幅图像，模拟双色错位叠印。','Printing the same image again in a second ink, offset, is misregistration on purpose.'),
   rotate:L('斜放让照片像一张被随手贴上去的纸片，和网格形成对比；角度别太多种，一张作品里一两个就够。','A tilt makes the photo read as a scrap stuck on by hand, against the grid; keep to one or two angles per piece.'),
   form:L('剪影只留轮廓，线稿只留边缘：照片被压成和几何、文字同一抽象程度的图形。','A silhouette keeps only the outline, line art only the edges: the photo is pressed down to the same level of abstraction as the geometry and type.'),
   dots:L('网点放大到成为图形本身，像波普漫画；放大后读起来更像图案而不是照片。打开“一种网点体系”才看得到。','Dots enlarged until they become the graphic, as in pop comics; it reads as pattern more than photo. Needs “One screening system” on.'),
@@ -878,14 +878,14 @@ function drawVisual(cv, kind, f, sc, ink){
 
 /* ---------- composer: one or two custom elements, single-element moves, and ways to combine them ---------- */
 const CW = 640, CH = 400;
-const MX_TYPES = [['shape',L('形状','Shape')],['text',L('文字','Type')],['photo',L('照片','Photo')],['hand',L('手绘','Drawing')],['obj',L('拟物','Object')]];
+const MX_TYPES = [['shape',L('形状','Shape')],['text',L('文字','Type')],['photo',L('照片','Photo')],['hand',L('手绘','Drawing')],['obj',L('实物','Object')]];
 const MX_SHAPES = [['circle',L('圆','Circle')],['square',L('方','Square')],['tri',L('三角','Triangle')],['star',L('星','Star')],['arch',L('拱','Arch')],['ring',L('环','Ring')]];
 const MX_FONTS = [['sans',L('粗无衬线','Heavy sans')],['mono',L('等宽','Mono')],['serif',L('衬线','Serif')]];
 const MX_INKS = [['a',L('墨 A','Ink A')],['b',L('墨 B','Ink B')],['k',L('黑','Black')]];
 // single-element moves; `only` limits a move to some types
 const MV = {
-  mvCrop:['crop', [['none',L('原图','Full')],['tight',L('紧裁','Tight')],['strip',L('长条','Strip')]], ['photo','obj']],
-  mvCut:['cut', [['none',L('无','None')],['bg',L('去掉背景','Remove background')]], ['photo']],
+  mvCrop:['crop', [['none',L('原图','Full')],['tight',L('局部特写','Tight')],['strip',L('横向窄幅','Strip')]], ['photo','obj']],
+  mvCut:['cut', [['none',L('无','None')],['bg',L('按颜色去底','Remove background')]], ['photo']],
   mvMirror:['mirror', [['none',L('无','None')],['flip',L('水平翻转','Flip')],['sym',L('对称','Symmetric')]]],
   mvSlice:['slice', [['none',L('无','None')],['strips',L('横条错开','Shifted strips')]]],
   mvForm:['form', [['full',L('原样','As is')],['sil',L('剪影','Silhouette')],['line',L('线稿','Line art')]]],
@@ -893,7 +893,7 @@ const MV = {
   mvDrag:['drag', [['none',L('无','None')],['drag',L('扫描拖影','Scanner drag')]]],
   mvTone:['tone', [['100',L('100%','100%')],['60',L('60%','60%')],['30',L('30%','30%')]]],
   mvDots:['dots', [['solid',L('实地 / 连续调','Solid / contone')],['dots',L('网点','Dots')],['giant',L('放大网点','Giant dots')]]],
-  mvEcho:['echo', [['none',L('无','None')],['ink',L('另一色错开','Offset in other ink')]]],
+  mvEcho:['echo', [['none',L('无','None')],['ink',L('异色错位','Offset in other ink')]]],
 };
 const MVNOTE = Object.assign({}, IMNOTE, {
   form:L('剪影只留轮廓，线稿只留边缘：照片、拟物会被压成和几何、文字同一抽象程度的图形；形状和文字变成线框。','A silhouette keeps only the outline, line art only the edges: photos and objects are pressed down to the abstraction of geometry and type; shapes and type become outlines.'),
@@ -904,19 +904,19 @@ const MVNOTE = Object.assign({}, IMNOTE, {
 });
 // ways to combine two elements; A is the lower element, B the upper one
 const MXOPS = [
-  {id:'over', t:L('叠印','Overprint'), d:L('两块版都完整地印，重叠处叠出第三种颜色。Riso 墨是透明的，这是它最自然的状态。','Both plates print in full; the overlap prints a third colour. Riso inks are transparent, so this is their natural state.'), safe:true, l:['Overprinting','https://en.wikipedia.org/wiki/Overprinting']},
+  {id:'over', t:L('叠印','Overprint'), d:L('两块色版分别完整印刷，在重叠区域形成混色。Riso 油墨是透明的，这是它最自然的状态。','Both plates print in full; the overlap prints a third colour. Riso inks are transparent, so this is their natural state.'), safe:true, l:['Overprinting','https://en.wikipedia.org/wiki/Overprinting']},
   {id:'opaque', t:L('不透明遮盖','Opaque cover'), d:L('B 直接盖住 A，不混色。需要不透明的墨或先垫一层白墨；大多数 Riso 墨做不到。','B simply covers A, no mixing. It needs an opaque ink or a white underlay; most Riso inks cannot do it.'), safe:true, l:['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']},
-  {id:'knock', t:L('镂空','Knockout'), d:L('在 A 的版上把 B 的形状挖掉，B 印进这个洞里；数码印前默认就是这样，一错位就露白缝。','B\'s shape is cut out of A\'s plate and B prints into the hole; the digital prepress default, and a miss shows a white gap.'), safe:false, l:['Overprinting','https://en.wikipedia.org/wiki/Overprinting']},
-  {id:'trap', t:L('镂空 + 补漏白','Knockout + trap'), d:L('镂空的洞缩小一点，让 A 压到 B 下面：错位时露出的是一条深色细边，不是白缝。','The hole is choked a little so A runs under B: a miss shows a thin dark line, not a white gap.'), safe:true, l:['Trap (printing)','https://en.wikipedia.org/wiki/Trap_(printing)']},
+  {id:'knock', t:L('挖空','Knockout'), d:L('从 A 版中移除 B 图形所占的区域，再印上 B 版。这是数码印前的默认做法，两版错位时，交界处会出现白缝。','B\'s shape is cut out of A\'s plate and B prints into the hole; the digital prepress default, and a miss shows a white gap.'), safe:false, l:['Overprinting','https://en.wikipedia.org/wiki/Overprinting']},
+  {id:'trap', t:L('挖空 + 陷印','Knockout + trap'), d:L('让相邻色块的边缘略微重叠，减少套印不准造成的白缝。本页通过缩小 A 版的挖空区域来模拟；偏差过大时仍可能露白。','The hole is choked a little so A runs under B: a miss shows a thin dark line, not a white gap.'), safe:true, l:['Trap (printing)','https://en.wikipedia.org/wiki/Trap_(printing)']},
   {id:'keyline', t:L('留白描边','Paper keyline'), d:L('B 周围留一圈纸色，把两者隔开：错位被这圈空隙吃掉，图上压字时最常用。','A ring of paper around B separates the two: the gap absorbs the miss. The usual way to set type over an image.'), safe:true},
   {id:'shadow', t:L('硬阴影','Hard shadow'), d:L('B 的形状用另一种墨偏移一点垫在下面，当作阴影。错位只会让阴影偏多偏少。','B\'s shape, offset in the other ink, sits underneath as a shadow. A miss only makes the shadow a little bigger or smaller.'), safe:true},
-  {id:'reverse', t:L('反白','Reverse'), d:L('只在 A 里挖掉 B，不印 B：B 留成纸色。只有一块版，不怕错位。','B is cut out of A and not printed: it stays paper. One plate, so a miss cannot hurt it.'), safe:true},
-  {id:'weave', t:L('交织','Interweave'), d:L('一部分 B 在 A 上面，一部分在 A 下面，像穿过去一样；每一处都是镂空，需要对位。','B passes over A in some places and under it in others; every crossing is a knockout, so it needs register.'), safe:false},
-  {id:'union', t:L('合并','Union'), d:L('A 和 B 合成一个形状，都印在 A 的版上。','A and B merge into one shape on A\'s plate.'), safe:true},
-  {id:'inter', t:L('相交','Intersect'), d:L('只印两者重叠的部分，印在 A 的版上。','Only the overlap prints, on A\'s plate.'), safe:true},
-  {id:'xor', t:L('异或','Exclude'), d:L('印两者不重叠的部分，重叠处留白；一块版。','The parts that do not overlap print, the overlap stays paper; one plate.'), safe:true},
-  {id:'fill', t:L('装进形状 · 同版','Fill inside · one plate'), d:L('B 只出现在 A 的形状里面，并且用 A 的墨印在同一块版上：比如照片在大字里。一块版，不怕错位。','B appears only inside A\'s shape, printed in A\'s ink on the same plate, like a photo inside large letters. One plate, so a miss cannot hurt it.'), safe:true},
-  {id:'clip', t:L('蒙版 + 描边','Clip + outline'), d:L('B 只出现在 A 的形状里，A 的轮廓用另一块版描出来；两块版之间仍然要对位。','B appears only inside A\'s shape and A\'s outline prints on another plate; the two plates still have to line up.'), safe:false},
+  {id:'reverse', t:L('反白','Reverse'), d:L('从 A 版中挖空 B 图形所在区域，不再印 B 版，让图形呈现纸色。只用一块色版，无需两版套准。','B is cut out of A and not printed: it stays paper. One plate, so a miss cannot hurt it.'), safe:true},
+  {id:'weave', t:L('交织','Interweave'), d:L('一部分 B 在 A 上面，一部分在 A 下面，像穿过去一样；每一处交叉都是挖空，需要套准。','B passes over A in some places and under it in others; every crossing is a knockout, so it needs register.'), safe:false},
+  {id:'union', t:L('并集','Union'), d:L('将 A 与 B 的覆盖区域合为一个图形，用 A 的色版印刷。','A and B merge into one shape on A\'s plate.'), safe:true},
+  {id:'inter', t:L('交集','Intersect'), d:L('只印两者重叠的部分，印在 A 的版上。','Only the overlap prints, on A\'s plate.'), safe:true},
+  {id:'xor', t:L('排除重叠','Exclude'), d:L('印两者不重叠的部分，重叠处留白；一块版。','The parts that do not overlap print, the overlap stays paper; one plate.'), safe:true},
+  {id:'fill', t:L('同版填充','Fill inside · one plate'), d:L('B 只出现在 A 的形状里面，并且用 A 的墨印在同一块版上：比如照片在大字里。一块版，不怕错位。','B appears only inside A\'s shape, printed in A\'s ink on the same plate, like a photo inside large letters. One plate, so a miss cannot hurt it.'), safe:true},
+  {id:'clip', t:L('剪切蒙版 + 描边','Clip + outline'), d:L('只保留 B 落在 A 图形内部的部分，A 的轮廓用另一块色版描出，因此两版仍需套准。','B appears only inside A\'s shape and A\'s outline prints on another plate; the two plates still have to line up.'), safe:false},
 ];
 const MVDEF = {crop:'none', cut:'none', mirror:'none', slice:'none', form:'full', repeat:'1', drag:'none', tone:'100', dots:'solid', echo:'none'};
 const mkEl = o => Object.assign({type:'shape', shape:'circle', text:'INK', font:'sans', photo:'scene', ink:'a', x:CW/2, y:CH/2, size:100, rot:0, mv:Object.assign({}, MVDEF)}, o);
@@ -1092,7 +1092,7 @@ function mxPaint(cv, r, op, mvOver){
 const MXSINGLE = [['mirror','flip'],['mirror','sym'],['slice','strips'],['form','sil'],['form','line'],['drag','drag'],['repeat','3'],['dots','dots'],['dots','giant'],['tone','30'],['echo','ink'],['cut','bg'],['crop','tight']];
 function mxTiles(){
   const M = S.mix, ink = INKSETS[S.inks], sameInk = M.n===2 && ink[M.els.a.ink]===ink[M.els.b.ink];
-  if (M.n===2) return MXOPS.map(o => ({id:o.id, t:o.t, on:M.op===o.id, tag:sameInk || o.safe ? (LANG==='zh' ? '不怕错位' : 'miss-proof') : (LANG==='zh' ? '怕错位' : 'needs register'), warn:!sameInk && !o.safe, paint:cv => mxPaint(cv, .5, o.id)}));
+  if (M.n===2) return MXOPS.map(o => ({id:o.id, t:o.t, on:M.op===o.id, tag:sameInk || o.safe ? (LANG==='zh' ? '较耐错位' : 'miss-proof') : (LANG==='zh' ? '需套准' : 'needs register'), warn:!sameInk && !o.safe, paint:cv => mxPaint(cv, .5, o.id)}));
   const e = M.els.a, type = e.type;
   return MXSINGLE.filter(([k]) => !MV[Object.keys(MV).find(id => MV[id][0]===k)][2] || MV[Object.keys(MV).find(id => MV[id][0]===k)][2].includes(type)).map(([k, v]) => {
     const opt = MV[Object.keys(MV).find(id => MV[id][0]===k)][1].find(x => x[0]===v), on = e.mv[k]===v;
@@ -1100,7 +1100,7 @@ function mxTiles(){
     return {id:k + ':' + v, t:opt[1], on, tag:on ? (LANG==='zh' ? '已用 · 点击取消' : 'on · click to undo') : T(MVNAME[k]), paint:cv => mxPaint(cv, .5, null, {slot:'a', e:ne})};
   });
 }
-const MVNAME = {crop:L('裁切','Crop'), cut:L('抠图','Cut-out'), mirror:L('镜像','Mirror'), slice:L('切条','Slice'), form:L('形式','Form'), repeat:L('重复','Repeat'), drag:L('拖影','Drag'), tone:L('浓度','Tone'), dots:L('网点','Screen'), echo:L('错位复制','Echo')};
+const MVNAME = {crop:L('裁切','Crop'), cut:L('去底','Cut-out'), mirror:L('镜像','Mirror'), slice:L('切条','Slice'), form:L('形式','Form'), repeat:L('重复','Repeat'), drag:L('拖影','Drag'), tone:L('浓度','Tone'), dots:L('网点','Screen'), echo:L('错位复制','Echo')};
 
 let mxTileTimer = null;
 function renderMix(full = true){
@@ -1116,7 +1116,7 @@ function renderMix(full = true){
   if (!full) return;
   clearTimeout(mxTileTimer);
   const tiles = mxTiles();
-  $('afterLbl').textContent = M.n===2 ? (LANG==='zh' ? '所有组合手段' : 'All ways to combine') : (LANG==='zh' ? '单元素手段' : 'Single-element moves');
+  $('afterLbl').textContent = M.n===2 ? (LANG==='zh' ? '所有组合方式' : 'All ways to combine') : (LANG==='zh' ? '单元素处理' : 'Single-element moves');
   $('afterName').textContent = (M.n===2 ? (LANG==='zh' ? '点击切换 · ' : 'Click to switch · ') : (LANG==='zh' ? '点击叠加到当前元素 · ' : 'Click to add to the element · ')) + (M.mis ? (LANG==='zh' ? `错位 ${M.mis} mm` : `${M.mis} mm miss`) : (LANG==='zh' ? '完美对位' : 'perfect register'));
   $('after').innerHTML = `<div class="pg" style="--paper:${ink.paper};padding:12px"><div class="optiles">${tiles.map(t => `<button type="button" class="optile${t.on ? ' on' : ''}" data-tile="${t.id}"><canvas width="${CW/2}" height="${CH/2}"></canvas><span class="cap2">${T(t.t)}<i class="${t.warn ? 'warn' : ''}">${t.tag}</i></span></button>`).join('')}</div></div>`;
   const cvs = [...$('after').querySelectorAll('canvas')];
@@ -1140,7 +1140,7 @@ function mxChecks(){
   els.forEach(s => { const e = M.els[s], tag = s.toUpperCase() + ' · ';
     if ((e.type==='photo' || e.type==='obj') && e.mv.form==='full' && e.mv.dots==='solid') li.push({ok:false, b:LANG==='zh' ? '不适配' : 'Off', t:L(tag + '连续调要加网', tag + 'Contone needs a screen'), w:L('平滑的灰阶在 Riso 和胶印上都印不出来，要先变成网点。把“网点”设成网点或放大网点。','Smooth tone cannot print on a Riso or offset press; it has to become dots first. Set Screen to dots or giant dots.'), l:['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']});
     if (e.type==='text' && e.size < 60 && (e.mv.echo==='ink' || (M.n===2 && !sameInk && ['over','knock'].includes(M.op)))) li.push({ok:false, b:LANG==='zh' ? '不适配' : 'Off', t:L(tag + '小字跨两块版', tag + 'Small type across two plates'), w:L('小字用两种墨会糊：只用一种墨，错位留给大字。','Small type in two inks blurs: keep it to one ink and leave the miss to big type.'), l:['Good Press','https://goodpress.co.uk/pages/file-preparation']});
-    Object.keys(MVDEF).filter(k => e.mv[k]!==MVDEF[k] && MVNOTE[k]).forEach(k => li.push({ok:true, b:LANG==='zh' ? '手段' : 'Move', t:L(tag + T(MVNAME[k]), tag + T(MVNAME[k])), w:MVNOTE[k]}));
+    Object.keys(MVDEF).filter(k => e.mv[k]!==MVDEF[k] && MVNOTE[k]).forEach(k => li.push({ok:true, b:LANG==='zh' ? '处理' : 'Move', t:L(tag + T(MVNAME[k]), tag + T(MVNAME[k])), w:MVNOTE[k]}));
   });
   const ok = li.filter(c => c.ok).length;
   $('score').textContent = `${ok} / ${li.length}`;
@@ -1204,7 +1204,7 @@ const curSteps = () => S.cat==='mix' ? [] : S.cat==='vis' ? VSTEPS.filter(v => V
 function checks(f, sc){
   const out = curSteps().map(s => ({ok:!!f[s.id], t:s.t, w:s.w, l:s.l}));
   // one derived check: large solid blocks in the Riso scheme should sit near 85%
-  if (S.cat==='web' && sc==='riso' && f.flat) out.push({ok:!!f.screen, t:L('大面积实地约 85%','Large solids near 85%'), w:L('Riso 的大块 100% 实地容易卡纸、蹭脏，降到 85% 看起来依然很深。','Large 100% solids on a Riso can jam and smudge; at 85% they still look dark.'), l:['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']});
+  if (S.cat==='web' && sc==='riso' && f.flat) out.push({ok:!!f.screen, t:L('大色块适当减淡','Large solids near 85%'), w:L('MICA 建议将大面积满墨色块降至 85%，以减少卡纸和蹭脏。本页以约 85% 不透明度模拟部分色块，并非通用制版标准。','Large 100% solids on a Riso can jam and smudge; at 85% they still look dark.'), l:['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']});
   return out;
 }
 
@@ -1219,7 +1219,7 @@ function segs(){
   buildImgSegs();
   buildSteps();
   const ms = $('modeSeg'); ms.innerHTML = '';
-  [['tr',L('翻译一个元素','Translate an element')],['mix',L('组合台','Composer')]].forEach(([v, l]) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = T(l); b.dataset.v = v;
+  [['tr',L('改造单个元素','Translate an element')],['mix',L('组合台','Composer')]].forEach(([v, l]) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = T(l); b.dataset.v = v;
     b.addEventListener('click', () => { if (v==='mix'){ if (S.cat!=='mix') S.lastCat = S.cat; S.cat = 'mix'; } else if (S.cat==='mix') S.cat = S.lastCat; buildSteps(); render(); }); ms.appendChild(b); });
   buildMixPanel();
 }
@@ -1233,7 +1233,7 @@ function render(){
   ['mixGroup','mixElGroup','mixOpGroup'].forEach(id => $(id).hidden = !mixMode);
   ['elGroup','stepsGroup','schemeBox'].forEach(id => $(id).hidden = mixMode);
   $('imgGroup').hidden = mixMode || !(S.cat==='vis' && S.el==='photo');
-  document.querySelector('.stage .cap:last-of-type span').innerHTML = mixMode ? (LANG==='zh' ? '组合检查' : 'Check') : (LANG==='zh' ? '适配检查（改造后）' : 'Fit check (after)');
+  document.querySelector('.stage .cap:last-of-type span').innerHTML = mixMode ? (LANG==='zh' ? '套色偏差提示' : 'Check') : (LANG==='zh' ? '规则启用情况' : 'Fit check (after)');
   document.querySelectorAll('#inkSeg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===S.inks));
   if (mixMode){ renderMix(); return; }
   $('beforeLbl').textContent = LANG==='zh' ? '改造前' : 'Before';
@@ -1250,13 +1250,13 @@ function render(){
     drawVisual($('after').querySelector('canvas.vis'), S.el, on, S.scheme, ink);
   }
   const elName = T((vis ? VISUALS : ELEMENTS).find(e => e[0]===S.el)[1]);
-  $('beforeName').textContent = elName + ' · ' + (vis ? T(VBEFORE[S.el]) : (LANG==='zh' ? '常见的网页写法' : 'the usual web version'));
+  $('beforeName').textContent = elName + ' · ' + (vis ? T(VBEFORE[S.el]) : (LANG==='zh' ? '常见网页样式' : 'the usual web version'));
   $('afterName').textContent = elName + ' · ' + T(SCHEMES[S.scheme].n);
   $('schemeHint').textContent = T(vis ? SCHEMES[S.scheme].vh : SCHEMES[S.scheme].h);
   $('upRow').hidden = $('upHint').hidden = !(vis && S.el==='photo');
   const C = checks(on, S.scheme), ok = C.filter(c => c.ok).length;
   $('score').textContent = `${ok} / ${C.length}`;
-  $('checks').innerHTML = C.map(c => `<li class="${c.ok ? 'ok' : 'warn'}"><b>${c.ok ? (LANG==='zh'?'通过':'OK') : (LANG==='zh'?'不适配':'Off')}</b><span>${T(c.t)} <em>· ${T(c.w)}${c.l ? ` <a href="${c.l[1]}" target="_blank" rel="noopener">${c.l[0]}</a>` : ` ${LANG==='zh'?'本页做法':'this page'}`}</em></span></li>`).join('');
+  $('checks').innerHTML = C.map(c => `<li class="${c.ok ? 'ok' : 'warn'}"><b>${c.ok ? (LANG==='zh'?'已启用':'OK') : (LANG==='zh'?'未启用':'Off')}</b><span>${T(c.t)} <em>· ${T(c.w)}${c.l ? ` <a href="${c.l[1]}" target="_blank" rel="noopener">${c.l[0]}</a>` : ` ${LANG==='zh'?'本页示例':'this page'}`}</em></span></li>`).join('');
   document.querySelectorAll('#elSeg button').forEach(b => b.setAttribute('aria-pressed', !vis && b.dataset.v===S.el));
   document.querySelectorAll('#visSeg button').forEach(b => b.setAttribute('aria-pressed', vis && b.dataset.v===S.el));
   document.querySelectorAll('#schemeSeg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===S.scheme));

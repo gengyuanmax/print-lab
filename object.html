@@ -118,7 +118,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
       </div>
     </div>
     <h1 class="mis"><span aria-hidden="true"><span class="zh">实物实验室</span><span class="en">Object Lab</span></span><span><span class="zh">实物实验室</span><span class="en">Object Lab</span></span></h1>
-    <p class="lede"><span class="zh">印好的纸怎么变成一件东西：选成品和尺寸，看它在印刷机的纸上怎么拼版、哪里折、哪里裁、出血和安全区在哪，再过一遍印前检查。</span><span class="en">How a printed sheet becomes an object: pick a product and a size, then see how its pages are imposed on the press sheet, where it folds and cuts, where the bleed and safe area are, and run a preflight check.</span></p>
+    <p class="lede"><span class="zh">选择成品类型和尺寸，查看页面如何拼版、折叠和裁切，确认出血与安全区，了解平面稿如何变成印刷成品。下方提供常见印前检查提示。</span><span class="en">How a printed sheet becomes an object: pick a product and a size, then see how its pages are imposed on the press sheet, where it folds and cuts, where the bleed and safe area are, and run a preflight check.</span></p>
   </header>
 
   <main class="lab">
@@ -126,7 +126,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
       <div class="toolbar">
         <div class="row" role="group">
           <button class="btn" type="button" data-view="sheet"><span class="zh">印张（拼版）</span><span class="en">Press sheet</span></button>
-          <button class="btn" type="button" data-view="read"><span class="zh">读者看到的顺序</span><span class="en">Reading order</span></button>
+          <button class="btn" type="button" data-view="read"><span class="zh">阅读顺序</span><span class="en">Reading order</span></button>
         </div>
         <span class="cap" id="dimTag"></span>
       </div>
@@ -137,11 +137,11 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
         <span><i style="border-color:#0078BF;border-top-style:dashed"></i><span class="zh">安全区</span><span class="en">Safe area</span></span>
         <span><i style="border-color:#1C1B22;border-top-style:dashed"></i><span class="zh">折线</span><span class="en">Fold</span></span>
         <span><i style="border-color:#C2183C"></i><span class="zh">裁开</span><span class="en">Cut</span></span>
-        <span id="lgRiso"><i style="border-color:#8a8794;border-top-style:dotted"></i><span class="zh">Riso 印不到的边</span><span class="en">Riso no-print edge</span></span>
+        <span id="lgRiso"><i style="border-color:#8a8794;border-top-style:dotted"></i><span class="zh">Riso 不可印区域</span><span class="en">Riso no-print edge</span></span>
       </div>
       <div class="metrics" id="metrics"></div>
       <ul class="checks" id="checks" aria-live="polite"></ul>
-      <p class="note"><span class="zh">检查项按常见的印厂要求给出，最终以你的印厂为准。爬移（creep）按“（纸张数 − 1）× 纸厚”估算，纸厚由克重粗略换算，最好实际量一下。</span><span class="en">Checks follow common print-shop requirements; your shop's own spec wins. Creep is estimated as (sheets − 1) × caliper, with caliper roughly derived from paper weight; measure your stock if you can.</span></p>
+      <p class="note"><span class="zh">检查项参考常见印厂要求，具体规格以承印方为准。爬移（creep）指折叠套入的内层纸张因厚度而向外突出；这里按“（纸张数 − 1）× 纸厚”估算，纸厚由克重粗略换算，制作前宜用实测值确认。</span><span class="en">Checks follow common print-shop requirements; your shop's own spec wins. Creep is estimated as (sheets − 1) × caliper, with caliper roughly derived from paper weight; measure your stock if you can.</span></p>
     </section>
 
     <aside class="panel" id="panel" data-aria-zh="参数" data-aria-en="Settings"></aside>
@@ -154,10 +154,10 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
       <li><a href="https://en.wikipedia.org/wiki/Bleed_(printing)" target="_blank" rel="noopener">Bleed (printing)</a><span><span class="zh">Wikipedia · 出血：印到裁切线外，裁掉后不留白边</span><span class="en">Wikipedia · printing past the trim so no white edge is left after cutting</span></span></li>
       <li><a href="https://en.wikipedia.org/wiki/Imposition" target="_blank" rel="noopener">Imposition</a><span><span class="zh">Wikipedia · 拼版：把页面排到印张上，方便印刷和装订</span><span class="en">Wikipedia · arranging pages on the press sheet for printing and binding</span></span></li>
       <li><a href="https://v2.4over4.com/guide/booklet-page-counts-multiples-of-four-and-creep-explained" target="_blank" rel="noopener">Booklet page counts and creep</a><span><span class="zh">4over4 · 页数为什么是 4 的倍数；爬移约等于（纸张数 − 1）× 纸厚；出血 0.125 英寸，安全距离 0.25 英寸</span><span class="en">4over4 · why page counts come in fours; creep ≈ (sheets − 1) × caliper; 0.125 in bleed, 0.25 in safe margin</span></span></li>
-      <li><a href="https://oxfordgreenprint.com/home/design-for-riso/" target="_blank" rel="noopener">Design for Riso</a><span><span class="zh">Oxford Greenprint · Riso 印不到纸边，A3 四边约 5mm 印得不好，建议留至少 7mm</span><span class="en">Oxford Greenprint · Riso cannot print to the edge; the 5 mm near each A3 edge prints poorly; leave at least 7 mm</span></span></li>
-      <li><a href="https://thesandwichclub.cargo.site/file-setup" target="_blank" rel="noopener">File setup · The Sandwich Club</a><span><span class="zh">Riso 工作室 · A3 四周固定留 10mm 白边，满版需要 3mm 出血并裁切</span><span class="en">Riso studio · a fixed 10 mm border around A3; full bleed needs 3 mm bleed and trimming</span></span></li>
+      <li><a href="https://oxfordgreenprint.com/home/design-for-riso/" target="_blank" rel="noopener">Design for Riso</a><span><span class="zh">Oxford Greenprint · 该工作室提示：A3 纸边约 5 mm 范围内印刷效果不稳定，建议至少预留 7 mm</span><span class="en">Oxford Greenprint · Riso cannot print to the edge; the 5 mm near each A3 edge prints poorly; leave at least 7 mm</span></span></li>
+      <li><a href="https://thesandwichclub.cargo.site/file-setup" target="_blank" rel="noopener">File setup · The Sandwich Club</a><span><span class="zh">Riso 工作室 · 该工作室要求 A3 四周预留 10 mm 白边，满版图像需留 3 mm 出血并裁切</span><span class="en">Riso studio · a fixed 10 mm border around A3; full bleed needs 3 mm bleed and trimming</span></span></li>
     </ol>
-    <p class="note" style="margin-top:14px"><span class="zh">8 页小折 zine 的拼版是常见的一张纸折法；三折页内折页略窄，是常见做法，具体数值以印厂为准。</span><span class="en">The 8-page mini zine follows the common one-sheet fold; the narrower inside flap of a tri-fold is common practice, with exact values set by the print shop.</span></p>
+    <p class="note" style="margin-top:14px"><span class="zh">8 页小册子采用常见的单张纸折叠拼版。三折页的内折页通常略窄，具体缩减尺寸以印厂要求为准。</span><span class="en">The 8-page mini zine follows the common one-sheet fold; the narrower inside flap of a tri-fold is common practice, with exact values set by the print shop.</span></p>
   </section>
 </div>
 
@@ -195,20 +195,20 @@ const SIZES = {A6:[105,148], A5:[148,210], A4:[210,297], A3:[297,420]};
 const P = {product:'zine', size:'A4', orient:'portrait', pages:16, gsm:100, bleed:3, safe:6, press:'riso', view:'sheet'};
 
 const PRODUCTS = [
-  ['poster', L('单张海报','Poster')], ['zine', L('8 页小折','8-page zine')], ['bifold', L('对折','Bi-fold')], ['trifold', L('三折页','Tri-fold')], ['booklet', L('骑马钉小册','Saddle-stitch')]];
+  ['poster', L('单张海报','Poster')], ['zine', L('8 页折页小册','8-page zine')], ['bifold', L('对折页','Bi-fold')], ['trifold', L('三折页','Tri-fold')], ['booklet', L('骑马钉小册子','Saddle-stitch')]];
 const GROUPS = [
-  {t:L('成品','Product'), s:'PRODUCT', hint:L('先决定做成什么：一张、一折、还是一本。','First decide what it becomes: a sheet, a fold or a booklet.'), items:[
+  {t:L('成品','Product'), s:'PRODUCT', hint:L('先选择成品类型：单张海报、折页或装订成册。','First decide what it becomes: a sheet, a fold or a booklet.'), items:[
     {type:'seg', key:'product', label:L('类型','Type'), opts:PRODUCTS},
     {type:'seg', key:'size', label:()=>P.product==='zine' || P.product==='trifold' ? L('印张尺寸','Sheet size') : L('成品尺寸','Finished size'), opts:Object.keys(SIZES).map(k => [k, L(k,k)])},
-    {type:'seg', key:'orient', label:L('方向','Orientation'), opts:[['portrait',L('竖','Portrait')],['landscape',L('横','Landscape')]], when:()=>P.product==='poster' || P.product==='bifold'},
+    {type:'seg', key:'orient', label:L('方向','Orientation'), opts:[['portrait',L('纵向','Portrait')],['landscape',L('横向','Landscape')]], when:()=>P.product==='poster' || P.product==='bifold'},
     {type:'range', key:'pages', label:L('页数','Pages'), min:8, max:48, step:4, fmt:v=>v+(LANG==='zh'?' 页':' pp'), when:()=>P.product==='booklet'},
   ]},
-  {t:L('纸与边','Paper & edges'), s:'EDGES', hint:L('出血让色块印到裁切线外；安全区让文字离裁切线足够远。','Bleed carries colour past the trim; the safe area keeps text far enough from it.'), items:[
+  {t:L('纸张与页边设置','Paper & edges'), s:'EDGES', hint:L('出血将图像延伸到裁切线外，减少裁切后露出白边的风险；安全距离让文字等重要内容远离裁切线。','Bleed carries colour past the trim; the safe area keeps text far enough from it.'), items:[
     {type:'range', key:'bleed', label:L('出血','Bleed'), min:0, max:5, step:.5, fmt:v=>v+' mm'},
     {type:'range', key:'safe', label:L('安全距离','Safe margin'), min:2, max:15, step:1, fmt:v=>v+' mm'},
-    {type:'seg', key:'gsm', label:L('纸张克重','Paper weight'), opts:[[80,L('80 g','80 g')],[100,L('100 g','100 g')],[120,L('120 g','120 g')],[160,L('160 g','160 g')],[250,L('250 g','250 g')]]},
+    {type:'seg', key:'gsm', label:L('纸张克重','Paper weight'), opts:[[80,L('80 g/m²','80 g')],[100,L('100 g/m²','100 g')],[120,L('120 g/m²','120 g')],[160,L('160 g/m²','160 g')],[250,L('250 g/m²','250 g')]]},
   ]},
-  {t:L('印刷','Press'), s:'PRESS', hint:L('Riso 只能印到 A3，而且纸边一圈印不到；满版要印在更大的纸上再裁。','Riso prints up to A3 and cannot reach the sheet edge; full bleed means printing on a bigger sheet and trimming.'), items:[
+  {t:L('印刷','Press'), s:'PRESS', hint:L('本页按 A3 纸张和四周 5 mm 不可印区域模拟 Riso。制作满版成品时，需要在四周预留出血和裁切余量。','Riso prints up to A3 and cannot reach the sheet edge; full bleed means printing on a bigger sheet and trimming.'), items:[
     {type:'seg', key:'press', label:L('印刷方式','Press'), opts:[['riso',L('Riso','Riso')],['digital',L('数码 / 胶印','Digital / offset')]]},
   ]},
 ];
@@ -224,11 +224,11 @@ function impose(){
     return {page:[W/4, H/2], sides:[{name:L('单面印刷','One side'), cols:4, rows:2, panels:[{n:5,rot:180},{n:4,rot:180},{n:3,rot:180},{n:2,rot:180},{n:6},{n:7},{n:8},{n:1}]}],
       folds:'zine', cuts:'zine', sheets:1, pages:8, sheet:[W,H]};
   }
-  if (P.product==='bifold') return {page:[pw,ph], sides:[{name:L('外面','Outside'), cols:2, rows:1, panels:[{n:4},{n:1}]},{name:L('里面','Inside'), cols:2, rows:1, panels:[{n:2},{n:3}]}], folds:'cols', cuts:[], sheets:1, pages:4};
+  if (P.product==='bifold') return {page:[pw,ph], sides:[{name:L('外侧','Outside'), cols:2, rows:1, panels:[{n:4},{n:1}]},{name:L('内侧','Inside'), cols:2, rows:1, panels:[{n:2},{n:3}]}], folds:'cols', cuts:[], sheets:1, pages:4};
   if (P.product==='trifold'){
     // the size is the flat sheet, lying landscape and folded in thirds; the panel that folds in is 2 mm narrower so it tucks in
     const W = Math.max(sw,sh), H = Math.min(sw,sh), a = (W + 2)/3, inner = a - 2;
-    return {page:[a,H], sides:[{name:L('外面','Outside'), cols:3, rows:1, panels:[{n:5,w:inner},{n:6},{n:1}]},{name:L('里面','Inside'), cols:3, rows:1, panels:[{n:2},{n:3},{n:4,w:inner}]}], folds:'cols', cuts:[], sheets:1, pages:6, narrow:true};
+    return {page:[a,H], sides:[{name:L('外侧','Outside'), cols:3, rows:1, panels:[{n:5,w:inner},{n:6},{n:1}]},{name:L('内侧','Inside'), cols:3, rows:1, panels:[{n:2},{n:3},{n:4,w:inner}]}], folds:'cols', cuts:[], sheets:1, pages:6, narrow:true};
   }
   // saddle stitch: N pages on N/4 sheets, each sheet printed both sides as printer's spreads
   const N = P.pages, S = N/4, sides = [];
@@ -324,9 +324,9 @@ function render(){
   const {trimW, trimH} = sides[0];
   if (P.view==='sheet'){
     proof.innerHTML = sides.map(o => `<div class="side"><span class="cap">${T(o.sd.name)}</span>${o.svg}</div>`).join('')
-      + (P.press==='riso' ? `<div class="side"><span class="cap">${LANG==='zh'?'放在 Riso 的 A3 纸上（虚线以外印不到）':'On a Riso A3 sheet (nothing prints outside the dotted line)'}</span>${drawRiso(trimW, trimH)}</div>` : '');
+      + (P.press==='riso' ? `<div class="side"><span class="cap">${LANG==='zh'?'Riso A3 印张示意（虚线外为不可印区域）':'On a Riso A3 sheet (nothing prints outside the dotted line)'}</span>${drawRiso(trimW, trimH)}</div>` : '');
   } else {
-    proof.innerHTML = `<span class="cap">${LANG==='zh'?'翻开时读者看到的页面':'What the reader sees when turning the pages'}</span>` + drawReading(im);
+    proof.innerHTML = `<span class="cap">${LANG==='zh'?'按阅读顺序展开的页面':'What the reader sees when turning the pages'}</span>` + drawReading(im);
   }
   $('lgRiso').hidden = P.press!=='riso' || P.view!=='sheet';
   $('dimTag').textContent = `${LANG==='zh'?'成品页':'Page'} ${Math.round(im.page[0])} × ${Math.round(im.page[1])} mm · ${LANG==='zh'?'印张':'Sheet'} ${Math.round(trimW)} × ${Math.round(trimH)} mm`;
@@ -336,30 +336,30 @@ function render(){
   const M = (k, v, sub) => `<div class="metric"><span>${k}</span><b>${v}</b><i>${sub}</i></div>`;
   const zh = LANG==='zh';
   $('metrics').innerHTML = M(zh?'页数':'Pages', im.pages, zh?'含封面':'including covers') + M(zh?'印张':'Sheets', im.sheets, zh?'每本':'per copy')
-    + M(zh?'纸厚':'Caliper', cal.toFixed(2)+' mm', zh?'由克重估算':'estimated from weight') + M(zh?'爬移':'Creep', creep.toFixed(2)+' mm', zh?'中间页向外推出':'middle pages push out');
+    + M(zh?'纸厚':'Caliper', cal.toFixed(2)+' mm', zh?'由克重估算':'estimated from weight') + M(zh?'爬移':'Creep', creep.toFixed(2)+' mm', zh?'内层纸张向外突出':'middle pages push out');
 
   // preflight
   const C = [], add = (lvl, zhT, enT) => C.push([lvl, zh ? zhT : enT]);
   if (P.bleed >= 3) add('ok', `出血 ${P.bleed} mm，满足常见的 3 mm 要求。`, `${P.bleed} mm bleed meets the common 3 mm requirement.`);
   else if (P.bleed > 0) add('warn', `出血只有 ${P.bleed} mm，常见要求是 3 mm；裁切稍有偏差就会露白边。`, `Only ${P.bleed} mm bleed; 3 mm is the common requirement, and a slightly off cut will show a white edge.`);
-  else add('warn', '没有出血：任何碰到纸边的色块，裁切后都可能留下白边。', 'No bleed: anything that touches the edge may end up with a white sliver after trimming.');
+  else add('warn', '未设置出血：延伸到成品边缘的图像或色块，裁切后可能露出白边。', 'No bleed: anything that touches the edge may end up with a white sliver after trimming.');
   if (P.safe >= 6) add('ok', `安全距离 ${P.safe} mm，文字不容易被裁到。`, `${P.safe} mm safe margin keeps text clear of the cut.`);
   else add('warn', `安全距离 ${P.safe} mm 偏小，常见建议至少 6 mm（约 1/4 英寸）。`, `${P.safe} mm is tight; around 6 mm (¼ in) is the usual minimum.`);
   if (P.product==='booklet'){
     add(P.pages % 4 === 0 ? 'ok' : 'warn', `${P.pages} 页是 4 的倍数：每张纸对折后正反面共 4 页，封面也算在内。`, `${P.pages} pages is a multiple of 4: each folded sheet carries four pages, covers included.`);
-    if (creep > .5) add('warn', `爬移约 ${creep.toFixed(2)} mm：中间页的外侧内容会更靠近裁切线，外侧安全距离要再留宽一些，交给印厂在拼版时补偿，不要自己挪。`, `About ${creep.toFixed(2)} mm of creep: the middle pages' outer content sits closer to the trim. Widen the fore-edge margin and let the shop compensate in imposition rather than shifting the artwork yourself.`);
-    else add('ok', `爬移约 ${creep.toFixed(2)} mm，可以忽略。`, `About ${creep.toFixed(2)} mm of creep, small enough to ignore.`);
+    if (creep > .5) add('warn', `爬移约 ${creep.toFixed(2)} mm：内层页面的外缘内容会更靠近裁切线。建议适当增加外侧安全距离，并由印厂在拼版时补偿。`, `About ${creep.toFixed(2)} mm of creep: the middle pages' outer content sits closer to the trim. Widen the fore-edge margin and let the shop compensate in imposition rather than shifting the artwork yourself.`);
+    else add('ok', `爬移约 ${creep.toFixed(2)} mm，估算值较小；是否补偿请与印厂确认。`, `About ${creep.toFixed(2)} mm of creep, small enough to ignore.`);
   }
-  if (P.product==='zine') add('info', '中间那条红线要裁开，再沿折线折成 8 页小册；上排页面倒着印，折好后正好朝上。', 'Cut along the red line in the middle, then fold into an 8-page booklet; the top row is printed upside down so it ends up the right way round.');
-  if (P.product==='trifold') add('info', '往里折的那一页比另外两页窄约 2 mm，这样折进去时不会顶住折线。', 'The panel that folds in is about 2 mm narrower so it tucks in without buckling at the fold.');
+  if (P.product==='zine') add('info', '沿中间红线裁开，再按折线折成 8 页小册子。上排页面需倒置印刷，折叠后才能正常阅读。', 'Cut along the red line in the middle, then fold into an 8-page booklet; the top row is printed upside down so it ends up the right way round.');
+  if (P.product==='trifold') add('info', '内折页比另外两页窄约 2 mm，为折入时预留空间，避免纸张拱起。', 'The panel that folds in is about 2 mm narrower so it tucks in without buckling at the fold.');
   if (P.press==='riso'){
     const A3 = [297, 420], fits = (w, h) => (w <= A3[0] && h <= A3[1]) || (w <= A3[1] && h <= A3[0]);
     const big = [trimW + 2*P.bleed, trimH + 2*P.bleed], printable = [A3[0]-10, A3[1]-10];
-    if (!fits(trimW, trimH)) add('warn', 'Riso 最大只能印 A3，这张印张放不下。', 'Riso prints up to A3; this sheet does not fit.');
-    else if (P.bleed > 0 && !fits(...big.map((v,i)=>v)) ) add('warn', '加上出血后超过 A3：Riso 做不了满版，去掉出血或缩小成品。', 'With bleed it exceeds A3: Riso cannot print it full bleed. Drop the bleed or make the piece smaller.');
-    else if (P.bleed > 0 && !((big[0] <= printable[0] && big[1] <= printable[1]) || (big[0] <= printable[1] && big[1] <= printable[0]))) add('warn', '出血范围落进了 A3 纸边印不到的一圈：满版需要印在更大的纸上再裁，或者成品做小一号。', 'The bleed falls into the unprintable border of the A3 sheet: full bleed needs a bigger sheet and a trim, or a smaller piece.');
-    else add('ok', '印张加出血能放进 A3 的可印区域，印完裁掉多余的纸就是满版。', 'Sheet plus bleed fits inside the printable area of A3; trim off the excess for a full-bleed result.');
-    add('info', 'Riso 的套色会差 1–2 mm，不同颜色的元素之间留点距离，或者干脆让它们叠在一起。', 'Riso colours miss by 1–2 mm; keep different-coloured elements apart or let them overlap on purpose.');
+    if (!fits(trimW, trimH)) add('warn', '拼版后的尺寸超出本页模拟的 A3 纸张范围。', 'Riso prints up to A3; this sheet does not fit.');
+    else if (P.bleed > 0 && !fits(...big.map((v,i)=>v)) ) add('warn', '加上出血后超出 A3：按本页设定无法满版印刷。请缩小成品，或改为带白边的设计。', 'With bleed it exceeds A3: Riso cannot print it full bleed. Drop the bleed or make the piece smaller.');
+    else if (P.bleed > 0 && !((big[0] <= printable[0] && big[1] <= printable[1]) || (big[0] <= printable[1] && big[1] <= printable[0]))) add('warn', '出血已进入 A3 纸边的不可印区域。请缩小成品，或与印厂确认是否有更大幅面的设备。', 'The bleed falls into the unprintable border of the A3 sheet: full bleed needs a bigger sheet and a trim, or a smaller piece.');
+    else add('ok', '拼版及已设置的出血均在 A3 可印区域内；制作满版成品仍需留足出血并在印后裁切。', 'Sheet plus bleed fits inside the printable area of A3; trim off the excess for a full-bleed result.');
+    add('info', 'Riso 可能出现 1–2 mm 的套色错位。不同颜色的元素可适当拉开距离，或有意重叠，避免细小边缘需要精确对齐。', 'Riso colours miss by 1–2 mm; keep different-coloured elements apart or let them overlap on purpose.');
   }
   $('checks').innerHTML = C.map(([lvl, t]) => `<li class="${lvl}"><b>${lvl==='ok' ? (zh?'通过':'OK') : lvl==='warn' ? (zh?'注意':'Check') : (zh?'提示':'Note')}</b><span>${t}</span></li>`).join('');
   document.querySelectorAll('[data-view]').forEach(b => b.setAttribute('aria-pressed', b.dataset.view===P.view));

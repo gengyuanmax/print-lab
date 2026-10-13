@@ -191,7 +191,7 @@ textarea.txt{min-height:76px;resize:vertical;line-height:1.45}
       </div>
     </div>
     <h1 class="mis" id="title"><span aria-hidden="true"><span class="zh">版式实验室</span><span class="en">Layout Lab</span></span><span aria-hidden="true"><span class="zh">版式实验室</span><span class="en">Layout Lab</span></span></h1>
-    <p class="lede"><span class="zh">把 Swiss、半调海报、Riso zine 和杂志的版式拆成参数：网格、字体、构图、动线、形状、油墨、印刷质感、拼贴与印章、约束规则、多页节奏和动效。换一个随机种子，同一套规则会生成另一张海报。</span><span class="en">The layouts of Swiss posters, halftone posters, Riso zines and magazines, broken into parameters: grid, type, composition, reading flow, shapes, inks, print texture, collage and seals, constraint rules, multi-page rhythm and motion. Change the seed and the same rules produce another poster.</span></p>
+    <p class="lede"><span class="zh">从瑞士风格、网点海报、Riso 小志到杂志版式，试着调整网格、字体、构图和配色，看看它们如何影响画面。还可以加入印刷纹理、拼贴和动效，或比较多页之间的节奏。点击“换一张”，按当前规则生成新的海报。</span><span class="en">The layouts of Swiss posters, halftone posters, Riso zines and magazines, broken into parameters: grid, type, composition, reading flow, shapes, inks, print texture, collage and seals, constraint rules, multi-page rhythm and motion. Change the seed and the same rules produce another poster.</span></p>
   </header>
 
   <main class="lab">
@@ -199,7 +199,7 @@ textarea.txt{min-height:76px;resize:vertical;line-height:1.45}
       <div class="toolbar">
         <div class="row">
           <button class="btn" type="button" id="shuffle"><span class="zh">换一张</span><span class="en">Shuffle</span></button>
-          <button class="btn" type="button" id="play"><span class="zh">播放入场</span><span class="en">Play intro</span></button>
+          <button class="btn" type="button" id="play"><span class="zh">播放入场动画</span><span class="en">Play intro</span></button>
           <span class="seedtag" id="seedtag"></span>
         </div>
         <div class="row">
@@ -217,9 +217,9 @@ textarea.txt{min-height:76px;resize:vertical;line-height:1.45}
         </div>
       </div>
       <p class="status" id="status" aria-live="polite"></p>
-      <div class="notecard" id="notecard" aria-live="polite"><span class="nk"><span class="zh">说明</span><span class="en">Notes</span></span><span class="tt"><span class="zh">把鼠标停在参数旁的 i 上可以看简介；点一下，说明和来源链接会固定在这里。</span><span class="en">Hover the i next to a setting for a short note; click it to pin the note and its source links here.</span></span></div>
+      <div class="notecard" id="notecard" aria-live="polite"><span class="nk"><span class="zh">说明</span><span class="en">Notes</span></span><span class="tt"><span class="zh">将鼠标移到参数旁的 i 上查看简介；点击后，可在这里阅读完整说明和参考资料。</span><span class="en">Hover the i next to a setting for a short note; click it to pin the note and its source links here.</span></span></div>
       <div class="metrics" id="metrics"></div>
-      <p class="note"><span class="zh">指标针对第 1 页、按元素外框近似计算：留白率 = 未被元素覆盖的面积；对齐度 = 左边缘落在栏线上的比例；重心以页面中心为 50 / 50；对比度按正文的实际颜色计算。</span><span class="en">Metrics describe page 1 and are approximated from element bounding boxes: whitespace is the area no element covers; alignment is the share of left edges on column lines; balance puts the page centre at 50 / 50; contrast uses the body text's actual colour.</span></p>
+      <p class="note"><span class="zh">以下指标仅统计第 1 页。留白率按未被元素外框覆盖的面积估算；对齐度表示左边缘与栏线对齐的元素占比；重心坐标以页面中心为 50 / 50；正文对比度根据文字实际用色计算。</span><span class="en">Metrics describe page 1 and are approximated from element bounding boxes: whitespace is the area no element covers; alignment is the share of left edges on column lines; balance puts the page centre at 50 / 50; contrast uses the body text's actual colour.</span></p>
     </section>
 
     <aside class="panel" id="panel" data-aria-zh="参数" data-aria-en="Settings"></aside>
@@ -228,24 +228,24 @@ textarea.txt{min-height:76px;resize:vertical;line-height:1.45}
   <section class="refs" data-aria-zh="参考资料" data-aria-en="References">
     <h2><span class="zh">参考资料</span><span class="en">References</span></h2>
     <ol>
-      <li><a href="https://www.lars-mueller-publishers.com/designing-programmes" target="_blank" rel="noopener"><i>Designing Programmes</i> · Karl Gerstner, 1964</a><span><span class="zh">出版社介绍为“计算机时代开端的系统化设计模型”；把它读作设计规则集的解读见下一条</span><span class="en">Described by its publisher as a model for systematic design at the dawn of the computer era; the rule-set reading is in the next entry</span></span></li>
-      <li><a href="https://runemadsen.com/blog/karl-gerstner-designing-programmes/" target="_blank" rel="noopener">Karl Gerstner – Designing Programmes</a><span><span class="zh">Rune Madsen · 把设计程序解释为由设计者定义、生成审美决定的规则集</span><span class="en">Rune Madsen · reads a design programme as a designer-defined rule set that shapes aesthetic decisions</span></span></li>
+      <li><a href="https://www.lars-mueller-publishers.com/designing-programmes" target="_blank" rel="noopener"><i>Designing Programmes</i> · Karl Gerstner, 1964</a><span><span class="zh">出版社将其定位为计算机时代早期的系统设计著作；关于设计规则的解读见下一条</span><span class="en">Described by its publisher as a model for systematic design at the dawn of the computer era; the rule-set reading is in the next entry</span></span></li>
+      <li><a href="https://runemadsen.com/blog/karl-gerstner-designing-programmes/" target="_blank" rel="noopener">Karl Gerstner – Designing Programmes</a><span><span class="zh">Rune Madsen · 将“设计程序”理解为设计者制定的一组规则，用来指导具体的设计选择</span><span class="en">Rune Madsen · reads a design programme as a designer-defined rule set that shapes aesthetic decisions</span></span></li>
       <li><span><i>Grid Systems in Graphic Design</i> · Josef Müller-Brockmann, 1981</span><span><span class="zh">栏、模块、基线网格与页边距的经典方法</span><span class="en">The classic method for columns, modules, baseline grids and margins</span></span></li>
       <li><span><i>Making and Breaking the Grid</i> · Timothy Samara, 2002</span><span><span class="zh">网格的建立与有意识的破格</span><span class="en">Building a grid, and breaking it on purpose</span></span></li>
       <li><a href="https://en.wikipedia.org/wiki/International_Typographic_Style" target="_blank" rel="noopener">International Typographic Style</a><span><span class="zh">Wikipedia · 瑞士风格：网格、无衬线字体、左对齐、不对称构图</span><span class="en">Wikipedia · Swiss style: grids, sans-serif type, flush-left text, asymmetric layouts</span></span></li>
       <li><a href="https://en.wikipedia.org/wiki/Constructivism_(art)" target="_blank" rel="noopener">Constructivism</a><span><span class="zh">Wikipedia · 构成主义：斜向构图与几何形</span><span class="en">Wikipedia · diagonal composition and geometric form</span></span></li>
       <li><a href="https://www.nngroup.com/articles/f-shaped-pattern-reading-web-content/" target="_blank" rel="noopener">F-Shaped Pattern of Reading on the Web</a><span><span class="zh">Nielsen Norman Group · 网页文本的 F 型阅读路径</span><span class="en">Nielsen Norman Group · the F-shaped scanning pattern</span></span></li>
       <li><a href="https://en.wikipedia.org/wiki/Paper_size#A_series" target="_blank" rel="noopener">Paper size · A series</a><span><span class="zh">Wikipedia · √2 纸张比例</span><span class="en">Wikipedia · the √2 page ratio</span></span></li>
-      <li><a href="https://www.w3.org/TR/clreq/" target="_blank" rel="noopener">Requirements for Chinese Text Layout 中文排版需求</a><span><span class="zh">W3C 国际化工作组 · Group Note Draft：避头尾、标点宽度、中西文混排、孤行与孤字</span><span class="en">W3C Internationalization Working Group · Group Note Draft: line-start and line-end rules, punctuation width, mixed Chinese–Western text, widows and orphans</span></span></li>
+      <li><a href="https://www.w3.org/TR/clreq/" target="_blank" rel="noopener">Requirements for Chinese Text Layout 中文排版需求</a><span><span class="zh">W3C 国际化工作组 · 《中文排版需求》：行首行尾禁则、标点宽度、中西文混排、孤行与孤字</span><span class="en">W3C Internationalization Working Group · Group Note Draft: line-start and line-end rules, punctuation width, mixed Chinese–Western text, widows and orphans</span></span></li>
       <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/text-wrap-style" target="_blank" rel="noopener">text-wrap-style</a><span><span class="zh">MDN · balance 用于标题，pretty 用于正文、减少孤字</span><span class="en">MDN · balance for headings, pretty for body text with fewer orphans</span></span></li>
       <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/text-autospace" target="_blank" rel="noopener">text-autospace</a><span><span class="zh">MDN · 汉字与拉丁字母、数字之间的自动间距</span><span class="en">MDN · automatic spacing between Han characters and Latin letters or numerals</span></span></li>
-      <li><a href="https://en.wikipedia.org/wiki/Trap_(printing)" target="_blank" rel="noopener">Trap (printing)</a><span><span class="zh">Wikipedia · 套色错位造成白缝，补漏白用外扩和内缩来补</span><span class="en">Wikipedia · misregistration leaves gaps; trapping spreads or chokes to cover them</span></span></li>
+      <li><a href="https://en.wikipedia.org/wiki/Trap_(printing)" target="_blank" rel="noopener">Trap (printing)</a><span><span class="zh">Wikipedia · 通过外扩或内缩形成陷印，减少套印不准造成的白缝</span><span class="en">Wikipedia · misregistration leaves gaps; trapping spreads or chokes to cover them</span></span></li>
       <li><a href="https://en.wikipedia.org/wiki/Collage" target="_blank" rel="noopener">Collage</a><span><span class="zh">Wikipedia · Braque 与 Picasso 的 papier collé，1912 年</span><span class="en">Wikipedia · Braque and Picasso's papier collé, 1912</span></span></li>
       <li><a href="https://en.wikipedia.org/wiki/Marilyn_Diptych" target="_blank" rel="noopener">Marilyn Diptych</a><span><span class="zh">Wikipedia · Warhol 1962 年，同一张照片丝网重复 50 次</span><span class="en">Wikipedia · Warhol, 1962: one photograph screen-printed 50 times</span></span></li>
       <li><a href="https://en.wikipedia.org/wiki/Seal_(East_Asia)" target="_blank" rel="noopener">Seal (East Asia)</a><span><span class="zh">Wikipedia · 朱文与白文，朱砂印泥</span><span class="en">Wikipedia · zhuwen and baiwen seals, cinnabar paste</span></span></li>
       <li><a href="https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html" target="_blank" rel="noopener">WCAG 2.1 · Contrast (Minimum)</a><span><span class="zh">W3C · 正文对比度 4.5:1 的依据</span><span class="en">W3C · the basis for the 4.5:1 text contrast check</span></span></li>
     </ol>
-    <p class="note" style="margin-top:14px"><span class="zh">说明：参数清单是根据设计实践综合整理的，并非出自某一本书。留白率、对齐度、重心等指标是本页定义的近似算法。</span><span class="en">Note: the parameter list is a synthesis of common design practice, not taken from any single book. Whitespace, alignment and balance are approximations defined for this page.</span></p>
+    <p class="note" style="margin-top:14px"><span class="zh">参数根据常见设计方法整理，综合了多种来源。留白率、对齐度和重心由本页的简化算法估算，供比较不同方案时参考。</span><span class="en">Note: the parameter list is a synthesis of common design practice, not taken from any single book. Whitespace, alignment and balance are approximations defined for this page.</span></p>
   </section>
 </div>
 
@@ -287,7 +287,7 @@ const INKS = [
 ];
 const PAPERS = [
   {id:'white', zh:'白卡', en:'White card', c:'#FAFAF6'},
-  {id:'recycled', zh:'再生米色', en:'Recycled cream', c:'#EEE7D6'},
+  {id:'recycled', zh:'米色再生纸', en:'Recycled cream', c:'#EEE7D6'},
   {id:'news', zh:'新闻纸', en:'Newsprint', c:'#E4DFD1'},
   {id:'mint', zh:'薄荷', en:'Mint', c:'#DCE7D0'},
   {id:'blush', zh:'浅粉', en:'Blush', c:'#F6E0E4'},
@@ -300,10 +300,10 @@ const PAIRS = {
 const MONO = '"JetBrains Mono",ui-monospace,monospace';
 const DEFAULT_TEXT = {
   title:{zh:'网点', en:'Halftone'},
-  subtitle:{zh:'关于网点、油墨与网格的一次印刷研究', en:'Dots, inks and grids: a study in print'},
-  body:{zh:'在数字化之前，报纸上的每一张照片都要经过玻璃网屏（halftone screen），被拆成大小不一的网点。点的大小承载明暗，网角让颜色彼此错开，网格让整页保持秩序。', en:'Before screens went digital, every photograph in a newspaper passed through a glass screen and was broken into dots. Their size carried the tone, the screen angle kept the colours apart, and the grid held the page together.'},
-  body2:{zh:'网格是一组提前做好的决定，让之后的每一个决定都能很快做出。', en:'A grid is a set of decisions made once, so that every later decision can be made quickly.'},
-  body3:{zh:'破格之所以有力量，是因为它周围的一切都还守着规则。', en:'Breaking the grid only works because everything around the break still keeps to it.'},
+  subtitle:{zh:'探索网点、油墨与版式网格', en:'Dots, inks and grids: a study in print'},
+  body:{zh:'传统照相制版用网屏将照片转成网点，以网点大小表现明暗。多色印刷时，不同色版采用不同网角，以减少摩尔纹。版式网格则负责组织图文，让整页清晰有序。', en:'Before screens went digital, every photograph in a newspaper passed through a glass screen and was broken into dots. Their size carried the tone, the screen angle kept the colours apart, and the grid held the page together.'},
+  body2:{zh:'先确定栏数、间距和对齐位置，后续的图文编排就有据可循。', en:'A grid is a set of decisions made once, so that every later decision can be made quickly.'},
+  body3:{zh:'页面大部分元素遵循网格，少数偏离网格的元素才会格外醒目。', en:'Breaking the grid only works because everything around the break still keeps to it.'},
   caption:{zh:'图 1 — 测试画面', en:'Fig. 1 — Test scene'},
   issue:{zh:'第 02 期 · 版式实验室', en:'No. 02 · Layout Lab'},
 };
@@ -324,19 +324,19 @@ const BASE = {format:'poster', vw:1280, cols:6, margin:.07, gutter:.02, baseline
   furn:{reg:true, crop:false, bar:true, folio:true},
   seed:7, grid:false, mass:false, showPath:false, compare:null};
 const PRESETS = {
-  swiss:{name:{zh:'Swiss',en:'Swiss'}, tag:{zh:'严格网格',en:'strict grid'}, p:{cols:12, margin:.065, gutter:.016, pair:'swiss', ratio:1.5, levels:4, titleScale:.15, tWeight:700, tWidth:100, tLead:.92, track:-.035, measure:50, upper:false, align:'left', titleStyle:'solid',
+  swiss:{name:{zh:'瑞士风格',en:'Swiss'}, tag:{zh:'严格网格',en:'strict grid'}, p:{cols:12, margin:.065, gutter:.016, pair:'swiss', ratio:1.5, levels:4, titleScale:.15, tWeight:700, tWidth:100, tLead:.92, track:-.035, measure:50, upper:false, align:'left', titleStyle:'solid',
     breakS:0, white:.62, asym:.95, jitter:0, layers:0, axis:0, focal:'thirds', bleed:false, titleCrop:0, path:'f', guide:false, sizeSeq:false, frame:'none', ladder:true, numbers:true,
     vocab:{circle:false, rect:true, line:true, tri:false}, nShapes:2, sizeExp:2, fill:1, radius:0, strokeW:.005, angles:'ortho', snap:true,
     inks:1, inkA:'red', paper:'white', textInk:'black', colorRatio:'9010', accent:1, overprint:false, tMisX:0, tMisY:0, tGrain:0, tStarve:0, tPaper:.1,
     img:true, treat:'am', cell:5, imgSpan:.5, mask:'rect', crop:'loose', rules:{grid:true, avoid:true, max3:true, scale:true, tiers:true}, strict:1,
     furn:{reg:false, crop:false, bar:false, folio:true}, seed:12}},
-  halftone:{name:{zh:'半调海报',en:'Halftone'}, tag:{zh:'大图出血',en:'big bleed'}, p:{cols:6, margin:.05, gutter:.02, pair:'swiss', ratio:1.8, levels:3, titleScale:.3, tWeight:900, tWidth:125, tLead:.82, track:-.04, measure:45, upper:true, align:'left', titleStyle:'solid',
+  halftone:{name:{zh:'半色调海报',en:'Halftone'}, tag:{zh:'大图出血',en:'big bleed'}, p:{cols:6, margin:.05, gutter:.02, pair:'swiss', ratio:1.8, levels:3, titleScale:.3, tWeight:900, tWidth:125, tLead:.82, track:-.04, measure:45, upper:true, align:'left', titleStyle:'solid',
     breakS:.45, white:.38, asym:.85, jitter:0, layers:1, axis:0, focal:'edge', bleed:true, titleCrop:.12, path:'z', guide:true, sizeSeq:false, frame:'none', ladder:false, numbers:false,
     vocab:{circle:true, rect:false, line:false, tri:false}, nShapes:2, sizeExp:3, fill:1, radius:0, strokeW:.006, angles:'ortho', snap:true,
     inks:2, inkA:'orange', inkB:'fedblue', paper:'recycled', textInk:'black', colorRatio:'603010', accent:2, overprint:true, tMisX:3, tMisY:2, tGrain:.25, tStarve:.15, tPaper:.35,
     img:true, treat:'am', cell:12, imgSpan:.95, mask:'circle', crop:'tight', rules:{grid:false, avoid:true, max3:true, scale:true, tiers:true, unify:true}, strict:.8,
     furn:{reg:true, crop:false, bar:true, folio:true}, seed:3}},
-  zine:{name:{zh:'Riso zine',en:'Riso zine'}, tag:{zh:'拼贴叠印',en:'collage'}, p:{cols:8, margin:.05, gutter:.02, pair:'zine', ratio:1.6, levels:5, titleScale:.24, tWeight:800, tWidth:100, tLead:.86, track:-.02, measure:40, upper:true, align:'left', titleStyle:'outline',
+  zine:{name:{zh:'Riso 小志',en:'Riso zine'}, tag:{zh:'拼贴叠印',en:'collage'}, p:{cols:8, margin:.05, gutter:.02, pair:'zine', ratio:1.6, levels:5, titleScale:.24, tWeight:800, tWidth:100, tLead:.86, track:-.02, measure:40, upper:true, align:'left', titleStyle:'outline',
     breakS:.85, white:.22, asym:.6, jitter:4, layers:3, axis:-8, focal:'center', bleed:true, titleCrop:.05, path:'radial', guide:true, sizeSeq:true, frame:'block', ladder:false, numbers:true,
     vocab:{circle:true, rect:true, line:true, tri:true}, nShapes:7, sizeExp:2.4, fill:.55, radius:0, strokeW:.008, angles:'free', snap:false,
     inks:3, inkA:'fpink', inkB:'blue', inkC:'yellow', paper:'white', textInk:'ink', colorRatio:'even', accent:6, overprint:true, tMisX:6, tMisY:4, tGrain:.55, tStarve:.4, tPaper:.45,
@@ -384,16 +384,16 @@ const GROUPS = [
     {type:'text', key:'subtitle', label:L('副标题','Subtitle')},
     {type:'textarea', key:'body', label:L('正文','Body')},
   ]},
-  {t:L('网格','Grid'), s:'GRID', hint:L('网格是底座：栏数、页边距、栏间距和基线决定所有元素能落在哪里。网页首屏会按屏幕宽度折叠栏数。','The grid is the base: columns, margins, gutters and the baseline decide where anything can land. The web hero folds its columns with the screen width.'), items:[
+  {t:L('网格','Grid'), s:'GRID', hint:L('网格为图文提供对齐依据。栏数、页边距、栏间距和基线间距共同决定布局；选择“网页首屏”时，栏数会随屏幕宽度调整。','The grid is the base: columns, margins, gutters and the baseline decide where anything can land. The web hero folds its columns with the screen width.'), items:[
     {type:'seg', key:'format', label:L('画幅','Format'), opts:[['poster',L('海报 √2','Poster √2')],['square',L('方形','Square')],['web',L('网页首屏','Web hero')]]},
     {type:'range', key:'vw', label:L('屏幕宽度','Screen width'), min:360, max:1440, step:10, fmt:v=>v+' px', when:()=>P.format==='web'},
     {type:'range', key:'cols', label:L('栏数','Columns'), min:4, max:12, step:1, fmt:v=>v},
     {type:'range', key:'margin', label:L('页边距','Margin'), min:.03, max:.14, step:.005, fmt:pct},
     {type:'range', key:'gutter', label:L('栏间距','Gutter'), min:0, max:.05, step:.002, fmt:pct},
-    {type:'range', key:'baseline', label:L('基线','Baseline'), min:6, max:24, step:1, fmt:v=>v+' px'},
+    {type:'range', key:'baseline', label:L('基线间距','Baseline'), min:6, max:24, step:1, fmt:v=>v+' px'},
   ]},
-  {t:L('字体排印','Typography'), s:'TYPE', hint:L('最大与最小字号之比是画报感最主要的来源；行宽控制正文的可读性。','The ratio between the largest and smallest type is the main source of a poster look; the measure controls how readable the body is.'), items:[
-    {type:'seg', key:'pair', label:L('字体搭配','Pairing'), opts:[['swiss',L('Swiss 怪诞体','Swiss grotesk')],['editorial',L('杂志衬线','Editorial serif')],['zine',L('Zine 等宽','Zine mono')]]},
+  {t:L('字体排印','Typography'), s:'TYPE', hint:L('标题与正文的字号差越大，视觉层级越鲜明；正文行宽则影响阅读的舒适度。','The ratio between the largest and smallest type is the main source of a poster look; the measure controls how readable the body is.'), items:[
+    {type:'seg', key:'pair', label:L('字体搭配','Pairing'), opts:[['swiss',L('瑞士无衬线','Swiss grotesk')],['editorial',L('杂志衬线体','Editorial serif')],['zine',L('小志等宽体','Zine mono')]]},
     {type:'range', key:'ratio', label:L('字号比例','Type scale'), min:1.125, max:2, step:.001, fmt:v=>(+v).toFixed(3)},
     {type:'range', key:'levels', label:L('层级数','Hierarchy levels'), min:2, max:5, step:1, fmt:v=>v},
     {type:'range', key:'titleScale', label:L('标题大小','Title size'), min:.08, max:.4, step:.005, fmt:pct},
@@ -402,34 +402,34 @@ const GROUPS = [
     {type:'range', key:'tLead', label:L('标题行距','Title leading'), min:.75, max:1.3, step:.01, fmt:v=>(+v).toFixed(2)},
     {type:'range', key:'track', label:L('标题字距','Title tracking'), min:-.08, max:.1, step:.005, fmt:v=>(v>0?'+':'')+(+v).toFixed(3)+'em'},
     {type:'range', key:'measure', label:L('正文行宽','Body measure'), min:25, max:80, step:1, fmt:v=>v+(LANG==='zh'?' 字':' ch')},
-    {type:'seg', key:'titleStyle', label:L('标题处理','Title treatment'), opts:[['solid',L('实心','Solid')],['ink',L('油墨色','In ink')],['outline',L('描边','Outline')],['knock',L('镂空','Knockout')],['double',L('双版叠印','Two plates')]]},
+    {type:'seg', key:'titleStyle', label:L('标题处理','Title treatment'), opts:[['solid',L('实心','Solid')],['ink',L('油墨色','In ink')],['outline',L('描边','Outline')],['knock',L('反白','Knockout')],['double',L('双版叠印','Two plates')]]},
     {type:'seg', key:'align', label:L('对齐','Alignment'), opts:[['left',L('左对齐','Flush left')],['center',L('居中','Centred')]]},
     {type:'toggle', key:'upper', label:L('标题全大写','Uppercase title')},
     {type:'toggle', key:'vertical', label:L('标题竖排','Vertical title')},
     {type:'toggle', key:'cjk', label:L('中文排印','CJK typesetting')},
     {type:'toggle', key:'pretty', label:L('避免孤字','Avoid orphans')},
   ]},
-  {t:L('构图','Composition'), s:'LAYOUT', hint:L('破格强度从 0（纯 Swiss）到 1（Zine 拼贴）。主轴把标题、副标题和图像整体转成斜向构图。','Rule-breaking runs from 0 (pure Swiss) to 1 (zine collage). The axis tilts title, subtitle and image together into a diagonal composition.'), items:[
+  {t:L('构图','Composition'), s:'LAYOUT', hint:L('“破格强度”越低，元素越遵循网格；越高，越接近自由拼贴。调整主轴角度，可以让标题、副标题和图像一起倾斜。','Rule-breaking runs from 0 (pure Swiss) to 1 (zine collage). The axis tilts title, subtitle and image together into a diagonal composition.'), items:[
     {type:'range', key:'breakS', label:L('破格强度','Rule-breaking'), min:0, max:1, step:.01, fmt:pct},
     {type:'range', key:'white', label:L('留白倾向','Whitespace'), min:0, max:1, step:.01, fmt:pct},
     {type:'range', key:'asym', label:L('不对称度','Asymmetry'), min:0, max:1, step:.01, fmt:pct},
-    {type:'range', key:'jitter', label:L('旋转扰动','Rotation jitter'), min:0, max:10, step:.5, fmt:v=>'±'+v+'°'},
+    {type:'range', key:'jitter', label:L('随机旋转','Rotation jitter'), min:0, max:10, step:.5, fmt:v=>'±'+v+'°'},
     {type:'range', key:'layers', label:L('叠压层数','Overlap layers'), min:0, max:3, step:1, fmt:v=>v},
     {type:'range', key:'axis', label:L('主轴角度','Axis angle'), min:-45, max:45, step:1, fmt:v=>v+'°'},
     {type:'range', key:'titleCrop', label:L('标题裁切','Title crop'), min:0, max:.5, step:.01, fmt:pct},
     {type:'seg', key:'focal', label:L('视觉焦点','Focal point'), opts:[['thirds',L('三分点','Thirds')],['golden',L('黄金分割','Golden')],['center',L('中心','Centre')],['edge',L('边缘','Edge')]]},
     {type:'toggle', key:'bleed', label:L('允许出血','Allow bleed')},
   ]},
-  {t:L('动线与引导','Flow & guides'), s:'FLOW', hint:L('动线决定元素的排布顺序；引导手段把视线从入口带到下一个重点。工具栏的“阅读顺序”会标出编号。','The reading path decides how elements are arranged; guides carry the eye from the entry point to the next focus. “Reading order” in the toolbar numbers them.'), items:[
+  {t:L('动线与引导','Flow & guides'), s:'FLOW', hint:L('选择阅读路径，安排视觉重点的先后顺序；用箭头、形状和对比引导视线。点击工具栏中的“阅读顺序”，可查看编号提示。','The reading path decides how elements are arranged; guides carry the eye from the entry point to the next focus. “Reading order” in the toolbar numbers them.'), items:[
     {type:'seg', key:'path', label:L('阅读路径','Reading path'), opts:[['auto',L('自由','Free')],['z',L('Z 型','Z')],['f',L('F 型','F')],['radial',L('中心放射','Radial')]]},
     {type:'toggle', key:'guide', label:L('引导箭头','Guide arrow')},
-    {type:'toggle', key:'sizeSeq', label:L('尺寸渐变','Size progression')},
-    {type:'seg', key:'frame', label:L('框定重点','Framing'), opts:[['none',L('无','None')],['circle',L('圆','Circle')],['block',L('色块','Block')]]},
-    {type:'toggle', key:'ladder', label:L('对比度阶梯','Contrast ladder')},
+    {type:'toggle', key:'sizeSeq', label:L('形状渐大','Size progression')},
+    {type:'seg', key:'frame', label:L('突出重点','Framing'), opts:[['none',L('无','None')],['circle',L('圆','Circle')],['block',L('色块','Block')]]},
+    {type:'toggle', key:'ladder', label:L('对比度分级','Contrast ladder')},
     {type:'toggle', key:'numbers', label:L('编号 01 / 02','Numbering 01 / 02')},
   ]},
-  {t:L('形状','Shapes'), s:'SHAPES', hint:L('选 2–3 种基本形并全局统一，形状才像一个系统。','Pick two or three basic shapes and use them everywhere so they read as a system.'), items:[
-    {type:'checks', key:'vocab', label:L('形状词汇','Vocabulary'), opts:[['circle',L('圆','Circle')],['rect',L('矩形','Rectangle')],['line',L('粗线','Rule')],['tri',L('三角','Triangle')]]},
+  {t:L('形状','Shapes'), s:'SHAPES', hint:L('选择 2–3 种基本形状，在页面中重复使用，更容易形成统一的视觉效果。','Pick two or three basic shapes and use them everywhere so they read as a system.'), items:[
+    {type:'checks', key:'vocab', label:L('形状类型','Vocabulary'), opts:[['circle',L('圆','Circle')],['rect',L('矩形','Rectangle')],['line',L('粗线','Rule')],['tri',L('三角','Triangle')]]},
     {type:'range', key:'nShapes', label:L('数量','Count'), min:0, max:10, step:1, fmt:v=>v},
     {type:'range', key:'sizeExp', label:L('大小分布','Size spread'), min:1, max:4, step:.1, fmt:v=>'u^'+(+v).toFixed(1)},
     {type:'range', key:'fill', label:L('实心比例','Filled'), min:0, max:1, step:.05, fmt:pct},
@@ -438,85 +438,85 @@ const GROUPS = [
     {type:'seg', key:'angles', label:L('角度','Angles'), opts:[['ortho',L('0° / 90°','0° / 90°')],['d45',L('含 45°','With 45°')],['free',L('自由','Free')]]},
     {type:'toggle', key:'snap', label:L('吸附网格','Snap to grid')},
   ]},
-  {t:L('油墨','Ink'), s:'INK', hint:L('油墨数量本身就是风格。面积比例决定主色和辅色各占多少。','The number of inks is a style in itself. The area ratio decides how much of the page each ink gets.'), items:[
+  {t:L('油墨','Ink'), s:'INK', hint:L('油墨种类决定配色范围；面积比例控制主色、辅色和点缀色的分配。','The number of inks is a style in itself. The area ratio decides how much of the page each ink gets.'), items:[
     {type:'seg', key:'inks', label:L('油墨数','Inks'), opts:[[1,L('1 色','1')],[2,L('2 色','2')],[3,L('3 色','3')]]},
     {type:'swatch', key:'inkA', label:L('油墨 A','Ink A'), list:'inks'},
     {type:'swatch', key:'inkB', label:L('油墨 B','Ink B'), list:'inks', need:2},
     {type:'swatch', key:'inkC', label:L('油墨 C','Ink C'), list:'inks', need:3},
     {type:'swatch', key:'paper', label:L('纸张','Paper'), list:'papers'},
-    {type:'seg', key:'textInk', label:L('文字油墨','Text ink'), opts:[['black',L('黑','Black')],['ink',L('用油墨','An ink')]]},
+    {type:'seg', key:'textInk', label:L('文字用色','Text ink'), opts:[['black',L('黑','Black')],['ink',L('使用所选油墨','An ink')]]},
     {type:'seg', key:'colorRatio', label:L('面积比例','Area ratio'), opts:[['even',L('均分','Even')],['603010',L('60 / 30 / 10','60 / 30 / 10')],['9010',L('主色 90 / 10','90 / 10')]]},
-    {type:'range', key:'accent', label:L('强调色元素','Accent elements'), min:0, max:8, step:1, fmt:v=>v},
+    {type:'range', key:'accent', label:L('点缀色元素','Accent elements'), min:0, max:8, step:1, fmt:v=>v},
     {type:'seg', key:'flood', label:L('满版底色','Flood'), opts:[['none',L('无','None')],['A',L('油墨 A','Ink A')],['B',L('油墨 B','Ink B')]]},
     {type:'range', key:'floodTint', label:L('底色浓度','Flood tint'), min:.1, max:1, step:.05, fmt:pct, when:()=>P.flood!=='none'},
     {type:'toggle', key:'overprint', label:L('叠印混色','Overprint')},
   ]},
-  {t:L('印刷质感','Print texture'), s:'PRESS', hint:L('和印痕实验室同一组瑕疵，这里作用在整张海报上：每种油墨按自己的版位错开，墨层带颗粒和缺墨。','The same flaws as the print lab, applied to the whole poster: each ink shifts on its own plate, and the ink layer gets grain and starvation.'), items:[
+  {t:L('印刷质感','Print texture'), s:'PRESS', hint:L('将印痕实验室的纹理效果应用到整张海报：各色印版可分别错位，墨层可加入颗粒、缺墨和纸纹。','The same flaws as the print lab, applied to the whole poster: each ink shifts on its own plate, and the ink layer gets grain and starvation.'), items:[
     {type:'range', key:'tMisX', label:L('套色错位 X','Misregister X'), min:-12, max:12, step:1, fmt:v=>v+' px'},
     {type:'range', key:'tMisY', label:L('套色错位 Y','Misregister Y'), min:-12, max:12, step:1, fmt:v=>v+' px'},
     {type:'range', key:'tGrain', label:L('墨色颗粒','Ink grain'), min:0, max:1, step:.01, fmt:pct},
     {type:'range', key:'tStarve', label:L('缺墨漏白','Ink starvation'), min:0, max:1, step:.01, fmt:pct},
     {type:'range', key:'tPaper', label:L('纸张纹理','Paper texture'), min:0, max:1, step:.01, fmt:pct},
   ]},
-  {t:L('图像','Image'), s:'IMAGE', hint:L('图像用印痕实验室的同一套网点算法处理。去背会把接近白色的背景去掉。','The image is screened with the print lab\'s algorithms. Cutout removes a near-white background.'), items:[
+  {t:L('图像','Image'), s:'IMAGE', hint:L('使用印痕实验室的加网算法处理图像。选择“去底”时，会移除接近白色的背景。','The image is screened with the print lab\'s algorithms. Cutout removes a near-white background.'), items:[
     {type:'toggle', key:'img', label:L('显示图像','Show image')},
-    {type:'seg', key:'treat', label:L('处理','Treatment'), opts:[['am',L('AM 圆点','AM dots')],['line',L('线条网','Lines')],['fs',L('误差扩散','Dither')],['thresh',L('阈值','Threshold')],['duo',L('双色调','Duotone')]]},
+    {type:'seg', key:'treat', label:L('处理','Treatment'), opts:[['am',L('AM 调幅网','AM dots')],['line',L('线条网','Lines')],['fs',L('误差扩散','Dither')],['thresh',L('阈值','Threshold')],['duo',L('双色调','Duotone')]]},
     {type:'range', key:'cell', label:L('网点尺寸','Dot size'), min:3, max:18, step:1, fmt:v=>v+' px'},
     {type:'range', key:'imgSpan', label:L('图像宽度','Image width'), min:.25, max:1, step:.01, fmt:pct},
-    {type:'seg', key:'mask', label:L('外形','Shape'), opts:[['rect',L('矩形','Rectangle')],['circle',L('圆形','Circle')],['arch',L('拱形','Arch')],['cutout',L('去背','Cutout')]]},
-    {type:'seg', key:'crop', label:L('裁切','Crop'), opts:[['tight',L('紧裁','Tight')],['loose',L('宽裁','Loose')]]},
+    {type:'seg', key:'mask', label:L('外形','Shape'), opts:[['rect',L('矩形','Rectangle')],['circle',L('圆形','Circle')],['arch',L('拱形','Arch')],['cutout',L('去底','Cutout')]]},
+    {type:'seg', key:'crop', label:L('裁切','Crop'), opts:[['tight',L('局部裁切','Tight')],['loose',L('保留环境','Loose')]]},
     {type:'range', key:'imgRepeat', label:L('重复次数','Repeats'), min:1, max:4, step:1, fmt:v=>'×'+v},
-    {type:'seg', key:'imgKnock', label:L('空印','Knockout'), opts:[['off',L('关','Off')],['paper',L('留纸色','Paper')],['ink',L('填另一色','Fill ink')]]},
+    {type:'seg', key:'imgKnock', label:L('挖空','Knockout'), opts:[['off',L('关','Off')],['paper',L('留纸色','Paper')],['ink',L('填另一色','Fill ink')]]},
     {type:'upload', label:L('原图','Source')},
   ]},
-  {t:L('拼贴与印章','Collage & seal'), s:'PASTE-UP', hint:L('拼贴材料是印好之后再贴上去的东西：剪下或撕下的纸片、胶带、纸片投下的影子。印章是单独盖上去的一色。','Collage materials are things added after printing: cut or torn scraps, tape, the shadow a scrap casts. A seal is a separate colour stamped on by hand.'), items:[
+  {t:L('拼贴与印章','Collage & seal'), s:'PASTE-UP', hint:L('为图像添加剪纸边缘、撕边、胶带和投影，模拟手工拼贴。印章使用单独的颜色，呈现手工盖印的效果。','Collage materials are things added after printing: cut or torn scraps, tape, the shadow a scrap casts. A seal is a separate colour stamped on by hand.'), items:[
     {type:'checks', key:'collage', label:L('图像拼贴','Image paste-up'), opts:[['cut',L('剪边','Cut edge')],['torn',L('撕边','Torn edge')],['tape',L('胶带','Tape')],['shadow',L('纸片阴影','Shadow')]]},
     {type:'seg', key:'seal', label:L('印章','Seal'), opts:[['none',L('无','None')],['zhu',L('朱文','Zhuwen')],['bai',L('白文','Baiwen')]]},
   ]},
-  {t:L('约束规则','Rules'), s:'RULES', hint:L('和谐不只是约束：共同的比例和线宽让元素彼此呼应，明确的主角提供对比，破格强度留出少量有意的例外。严格度是每个元素遵守规则的概率。','Harmony is more than constraint: a shared scale and line weights make elements relate, one clear hero supplies contrast, and rule-breaking leaves room for a few deliberate exceptions. Strictness is the chance that each element obeys.'), items:[
-    {type:'checks', key:'rules', label:L('规则','Rules'), opts:[['grid',L('一切贴网格','Everything on the grid')],['avoid',L('形状不压文字','Shapes avoid text')],['max3',L('最多 3 种字号','At most 3 sizes')],['scale',L('比例和谐','Harmonic scale')],['tiers',L('一个主角','One hero')],['unify',L('质感统一','Unified texture')]]},
+  {t:L('约束规则','Rules'), s:'RULES', hint:L('统一比例和线宽，让元素彼此呼应；突出主体，让画面主次分明。“严格度”越高，遵守这些规则的元素越多，也可以适当提高“破格强度”，保留一些变化。','Harmony is more than constraint: a shared scale and line weights make elements relate, one clear hero supplies contrast, and rule-breaking leaves room for a few deliberate exceptions. Strictness is the chance that each element obeys.'), items:[
+    {type:'checks', key:'rules', label:L('规则','Rules'), opts:[['grid',L('全部对齐网格','Everything on the grid')],['avoid',L('形状不压文字','Shapes avoid text')],['max3',L('最多 3 种字号','At most 3 sizes')],['scale',L('统一比例','Harmonic scale')],['tiers',L('突出主体','One hero')],['unify',L('质感统一','Unified texture')]]},
     {type:'range', key:'strict', label:L('严格度','Strictness'), min:0, max:1, step:.05, fmt:pct},
   ]},
-  {t:L('页面与节奏','Pages & rhythm'), s:'PAGES', hint:L('多页时，“交替”会轮流生成封面、满版图、密集文字和留白页，“重复”只换随机种子。','With several pages, Alternate cycles cover, full image, dense text and an airy page; Repeat only changes the seed.'), items:[
+  {t:L('页面与节奏','Pages & rhythm'), s:'PAGES', hint:L('生成多页时，选择“交替”可依次安排封面、大图页、文字页和留白页；选择“重复”则沿用相同布局规则，只改变随机结果。','With several pages, Alternate cycles cover, full image, dense text and an airy page; Repeat only changes the seed.'), items:[
     {type:'range', key:'pages', label:L('页数','Pages'), min:1, max:4, step:1, fmt:v=>v},
     {type:'seg', key:'rhythm', label:L('节奏','Rhythm'), opts:[['alternate',L('交替','Alternate')],['repeat',L('重复','Repeat')]]},
   ]},
-  {t:L('动效','Motion'), s:'MOTION', hint:L('悬停时油墨版位继续错开，鼠标移动时各层以不同速度位移。系统设置了“减少动态效果”时会自动关闭。','On hover the ink plates drift further apart; as the pointer moves, layers shift at different speeds. Turned off automatically when the system asks for reduced motion.'), items:[
+  {t:L('动效','Motion'), s:'MOTION', hint:L('开启后，鼠标悬停可让各色印版进一步错位，移动鼠标可产生分层视差。若系统已开启“减少动态效果”，这些动效会自动关闭。','On hover the ink plates drift further apart; as the pointer moves, layers shift at different speeds. Turned off automatically when the system asks for reduced motion.'), items:[
     {type:'toggle', key:'hoverShift', label:L('悬停错位','Hover misregister')},
     {type:'toggle', key:'parallax', label:L('视差','Parallax')},
     {type:'range', key:'dur', label:L('入场时长','Intro duration'), min:200, max:1600, step:50, fmt:v=>v+' ms'},
     {type:'seg', key:'ease', label:L('缓动','Easing'), opts:[['out',L('减速','Ease out')],['linear',L('匀速','Linear')],['steps',L('逐帧','Steps')]]},
   ]},
-  {t:L('印刷标记','Print marks'), s:'MARKS', hint:L('印刷生产流程里的功能性元素，现在常被当作装饰。','Production details from the print process, often reused as ornament.'), items:[
-    {type:'checks', key:'furn', label:L('印刷家具','Print furniture'), opts:[['reg',L('套准标记','Registration')],['crop',L('裁切线','Crop marks')],['bar',L('色彩控制条','Colour bar')],['folio',L('期号页码','Folio')]]},
+  {t:L('印刷标记','Print marks'), s:'MARKS', hint:L('这些标记原本用于套准、裁切和印刷检查，也可作为版面装饰。','Production details from the print process, often reused as ornament.'), items:[
+    {type:'checks', key:'furn', label:L('标记类型','Print furniture'), opts:[['reg',L('套准标记','Registration')],['crop',L('裁切线','Crop marks')],['bar',L('色彩控制条','Colour bar')],['folio',L('期号与页码','Folio')]]},
   ]},
 ];
 
 /* ---------- knowledge notes: what each parameter means, where it comes from (fact-checked against the linked sources) ---------- */
 const WK = t => 'https://en.wikipedia.org/wiki/' + t;
-const OWN = L('本页做法：这是版式实验室自己的实现方式，没有外部出处。', 'This page\'s own approach: how Layout Lab implements it, with no outside source.');
+const OWN = L('本页的模拟方法，供交互实验使用。', 'This page\'s own approach: how Layout Lab implements it, with no outside source.');
 const TIPS = {
   format:{t:L('A 系列纸张（ISO 216）的长宽比是 √2 ≈ 1.414：对半裁切或折叠后比例不变，所以海报画幅用 1 : 1.414。','A-series paper (ISO 216) has an aspect ratio of √2 ≈ 1.414, so halving or folding a sheet keeps its proportions. The poster format uses 1 : 1.414.'), l:[['ISO 216',WK('ISO_216')]]},
-  vw:{t:L('Ethan Marcotte 在 2010 年 5 月的 A List Apart 文章里提出“响应式网页设计”：流动网格、弹性图片加媒体查询。本页在手机（< 600px）和平板（< 1000px）断点把栏数折叠成 4 和 8。','Ethan Marcotte coined “responsive web design” in a May 2010 A List Apart article: fluid grids, flexible images and media queries. Here the columns fold to 4 and 8 at the mobile (< 600px) and tablet (< 1000px) breakpoints.'), l:[['Responsive web design',WK('Responsive_web_design')]]},
-  cols:{t:L('网格是组织版面元素的骨架。二战后，Max Bill、Emil Ruder、Müller-Brockmann 等设计师发展出灵活的网格系统，它与国际主义（瑞士）风格紧密相连；Müller-Brockmann 的《Grid Systems in Graphic Design》让网格在欧洲和北美普及。','A grid is the framework a designer uses to organise elements. After the Second World War, designers including Max Bill, Emil Ruder and Müller-Brockmann developed flexible grid systems tied to the International Typographic Style; Müller-Brockmann\'s Grid Systems in Graphic Design spread the grid through Europe and North America.'), l:[['Grid (graphic design)',WK('Grid_(graphic_design)')],['International Typographic Style',WK('International_Typographic_Style')]]},
+  vw:{t:L('Ethan Marcotte 在 2010 年 5 月的 A List Apart 文章里提出“响应式网页设计”：流动网格、弹性图片加媒体查询。本页在手机宽度（小于 600 px）下使用 4 栏，在平板宽度（600–999 px）下使用 8 栏。','Ethan Marcotte coined “responsive web design” in a May 2010 A List Apart article: fluid grids, flexible images and media queries. Here the columns fold to 4 and 8 at the mobile (< 600px) and tablet (< 1000px) breakpoints.'), l:[['Responsive web design',WK('Responsive_web_design')]]},
+  cols:{t:L('网格是组织版面元素的骨架。二战后，Max Bill、Emil Ruder、Müller-Brockmann 等设计师发展出灵活的网格系统，它与国际主义平面设计风格（瑞士风格）紧密相连；Müller-Brockmann 的《Grid Systems in Graphic Design》让网格在欧洲和北美普及。','A grid is the framework a designer uses to organise elements. After the Second World War, designers including Max Bill, Emil Ruder and Müller-Brockmann developed flexible grid systems tied to the International Typographic Style; Müller-Brockmann\'s Grid Systems in Graphic Design spread the grid through Europe and North America.'), l:[['Grid (graphic design)',WK('Grid_(graphic_design)')],['International Typographic Style',WK('International_Typographic_Style')]]},
   margin:{t:L('页边距、栏间距和元素之间的空隙都属于留白。留白太少，页面会显得拥挤、难读；刻意留出大片空白，可以让设计显得经典、优雅。','Margins, gutters and the gaps between elements are all white space. Too little makes a page look cluttered and hard to read; generous white space can make a design look classic and elegant.'), l:[['White space',WK('White_space_(visual_arts)')]]},
   gutter:{t:L('栏间距是栏与栏之间的空隙，也属于留白的一部分，让相邻的文字和图片彼此分开。','The gutter is the gap between columns. It is part of the page\'s white space and keeps neighbouring text and images apart.'), l:[['White space',WK('White_space_(visual_arts)')]]},
-  baseline:{t:L('基线网格让所有文字行落在同一组水平线上，跨栏的文字因此能对齐。本页的正文行高取基线的整数倍。','A baseline grid puts every line of text on the same set of horizontal lines, so text in different columns lines up. Here the body line height is a whole multiple of the baseline.'), l:[['Müller-Brockmann, Grid Systems in Graphic Design (1981)','']]},
-  pair:{t:L('Helvetica（原名 Neue Haas Grotesk）由 Max Miedinger 与 Eduard Hoffmann 于 1957 年设计，成为国际主义风格的标志。本页用开源的 Archivo 代表这类怪诞体；另外两种是杂志常用的衬线组合和 Zine 常用的等宽组合。','Helvetica (originally Neue Haas Grotesk), designed in 1957 by Max Miedinger with Eduard Hoffmann, became a hallmark of the International Typographic Style. Here the open-source Archivo stands in for that grotesk; the other two pairings are an editorial serif and a zine monospace.'), l:[['Helvetica',WK('Helvetica')]]},
-  ratio:{t:L('模块化比例：从一个基准字号出发，按固定比例相乘或相除得到其他字号。Tim Brown 2011 年在 A List Apart 介绍了这种方法，并引用 Bringhurst 把它比作音阶。1.25、1.333、1.5 对应 5:4、4:3、3:2 三种音程比，1.618 是黄金比。','A modular scale starts from one size and multiplies or divides by a fixed ratio. Tim Brown introduced it on A List Apart in 2011, quoting Bringhurst\'s comparison to a musical scale. 1.25, 1.333 and 1.5 are the interval ratios 5:4, 4:3 and 3:2; 1.618 is the golden ratio.'), l:[['More Meaningful Typography (2011)','https://alistapart.com/article/more-meaningful-typography/']]},
+  baseline:{t:L('基线网格让所有文字行落在同一组水平线上，跨栏的文字因此能对齐。本页的正文行高设为基线间距的整数倍。','A baseline grid puts every line of text on the same set of horizontal lines, so text in different columns lines up. Here the body line height is a whole multiple of the baseline.'), l:[['Müller-Brockmann, Grid Systems in Graphic Design (1981)','']]},
+  pair:{t:L('Helvetica（原名 Neue Haas Grotesk）由 Max Miedinger 与 Eduard Hoffmann 于 1957 年设计，成为瑞士风格的标志。本页以开源字体 Archivo 呈现这类无衬线字体的特点，另提供杂志风格的衬线字体组合和小志风格的等宽字体组合。','Helvetica (originally Neue Haas Grotesk), designed in 1957 by Max Miedinger with Eduard Hoffmann, became a hallmark of the International Typographic Style. Here the open-source Archivo stands in for that grotesk; the other two pairings are an editorial serif and a zine monospace.'), l:[['Helvetica',WK('Helvetica')]]},
+  ratio:{t:L('等比字号序列（modular scale）：从基准字号出发，逐级乘以或除以固定比例，得到一组字号。Tim Brown 2011 年在 A List Apart 介绍了这种方法，并引用 Bringhurst 把它比作音阶。1.25、1.333、1.5 对应 5:4、4:3、3:2 三种音程比，1.618 是黄金比。','A modular scale starts from one size and multiplies or divides by a fixed ratio. Tim Brown introduced it on A List Apart in 2011, quoting Bringhurst\'s comparison to a musical scale. 1.25, 1.333 and 1.5 are the interval ratios 5:4, 4:3 and 3:2; 1.618 is the golden ratio.'), l:[['More Meaningful Typography (2011)','https://alistapart.com/article/more-meaningful-typography/']]},
   levels:{t:L('视觉层级决定读者先看什么、后看什么。本页每多一级就多一种字号：2 级只有标题和正文，3 级加副标题，4 级加页眉和图注，5 级加引文。','Visual hierarchy decides what the reader sees first and next. Each level here adds one type size: 2 is title and body, 3 adds a subtitle, 4 adds running heads and a caption, 5 adds a pull quote.'), l:[['Visual hierarchy',WK('Visual_hierarchy')]]},
-  titleScale:{t:L('标题与最小字号的比值越大，画面越像海报。这个比值显示在下方的“字号比”指标里。','The larger the ratio between the title and the smallest type, the more the page reads as a poster. The ratio appears in the Type ratio metric below.'), own:true},
+  titleScale:{t:L('标题与最小字号的差距越大，画面的大小对比越强。这个比值显示在下方的“字号比”指标里。','The larger the ratio between the title and the smallest type, the more the page reads as a poster. The ratio appears in the Type ratio metric below.'), own:true},
   tWeight:{t:L('OpenType 1.8 的可变字体由 Adobe、Apple、Microsoft 在 2016 年 9 月宣布，一个字体文件里可以连续调节字重等设计轴。Archivo 支持字重和字宽两个轴。','OpenType 1.8 variable fonts, announced by Adobe, Apple and Microsoft in September 2016, let one font file vary continuously along design axes such as weight. Archivo has both weight and width axes.'), l:[['Variable font',WK('Variable_font')]]},
-  tLead:{t:L('行距（leading）得名于手工排版时插在字行之间的铅条，所以英文读作 “ledding”。大标题常用小于 1 的行距，让行与行贴紧。','Leading is named after the strips of lead placed between lines of hand-set type, which is why it is pronounced “ledding”. Large titles often use leading below 1 so the lines sit tight.'), l:[['Leading',WK('Leading')]]},
+  tLead:{t:L('行距（leading）得名于手工排版时插在字行之间的铅条，所以英文读作 “ledding”。多行大标题可采用小于字号的行高，让字行更紧凑；本页数值表示行高与字号的比值。','Leading is named after the strips of lead placed between lines of hand-set type, which is why it is pronounced “ledding”. Large titles often use leading below 1 so the lines sit tight.'), l:[['Leading',WK('Leading')]]},
   track:{t:L('字距（tracking）是统一调整一段文字的字母间距。大标题常收紧，全大写的小标签常放宽。','Tracking adjusts the letter spacing of a whole run of text. Large titles are often tightened; small all-caps labels are often opened up.'), l:[['Letter spacing',WK('Letter_spacing')]]},
-  measure:{t:L('Robert Bringhurst 在《The Elements of Typographic Style》中建议印刷正文每行 45–75 个字符，66 个最理想。本页中文按汉字个数近似换算。','Robert Bringhurst\'s The Elements of Typographic Style recommends 45–75 characters per line for printed text, with 66 as the ideal. Chinese is approximated by counting characters.'), l:[['Line length',WK('Line_length')]]},
-  titleStyle:{t:L('叠印是把一种颜色直接印在另一种颜色上；镂空（knockout）是在下层颜色里挖空，让纸色露出来。数码印前流程（PostScript）默认生成镂空。描边字只保留字形轮廓。双版叠印把标题同时印在两块版上、略微错开，重叠处叠出第三种颜色。','Overprinting puts one colour directly on top of another; a knockout removes the colour underneath so the paper shows through. PostScript creates knockouts by default. Outline type keeps only the letter contours. Two plates prints the title on both ink plates, slightly offset, so the overlap becomes a third colour.'), l:[['Overprinting',WK('Overprinting')]]},
-  align:{t:L('左对齐、右侧不齐的文字，是国际主义风格的标志之一；它的其他标志还有不对称版面、网格和无衬线字体。','Flush-left, ragged-right text is one of the hallmarks of the International Typographic Style, alongside asymmetric layouts, grids and sans-serif type.'), l:[['International Typographic Style',WK('International_Typographic_Style')]]},
+  measure:{t:L('Robert Bringhurst 在《The Elements of Typographic Style》中建议西文印刷正文每行约 45–75 个字符，以 66 个为参考。本页中文行宽按汉字数估算，不能直接套用西文的字符数建议。','Robert Bringhurst\'s The Elements of Typographic Style recommends 45–75 characters per line for printed text, with 66 as the ideal. Chinese is approximated by counting characters.'), l:[['Line length',WK('Line_length')]]},
+  titleStyle:{t:L('“反白”会从底色中挖空字形，露出纸色；“描边”只保留字形轮廓；“双版叠印”将同一标题分别印在两块色版上，略微错位，重叠处产生混色。挖空（knockout）是移除下层油墨的处理方式，叠印（overprint）则保留下层油墨。','Overprinting puts one colour directly on top of another; a knockout removes the colour underneath so the paper shows through. PostScript creates knockouts by default. Outline type keeps only the letter contours. Two plates prints the title on both ink plates, slightly offset, so the overlap becomes a third colour.'), l:[['Overprinting',WK('Overprinting')]]},
+  align:{t:L('左对齐、右侧不齐的文字，是瑞士风格的标志之一；它的其他标志还有不对称版面、网格和无衬线字体。','Flush-left, ragged-right text is one of the hallmarks of the International Typographic Style, alongside asymmetric layouts, grids and sans-serif type.'), l:[['International Typographic Style',WK('International_Typographic_Style')]]},
   upper:{t:L('Miles Tinker 的研究发现，全大写会明显降低阅读速度，他建议连续阅读的文字不要用全大写。所以全大写只适合标题和短标签。','Miles Tinker\'s research found that all-capital text slows reading noticeably, and he advised against it for continuous reading. Keep all caps for titles and short labels.'), l:[['All caps',WK('All_caps')]]},
   vertical:{t:L('中文、日文可以竖排，传统上从右往左排列；CSS 的 writing-mode: vertical-rl 对应这种排法，拉丁字母在其中会旋转 90°。','Chinese and Japanese can be set vertically, traditionally right to left; CSS writing-mode: vertical-rl does the same, and Latin letters inside it turn 90°.'), l:[['Horizontal and vertical writing',WK('Horizontal_and_vertical_writing_in_East_Asian_scripts')]]},
   breakS:{t:L('Timothy Samara 的《Making and Breaking the Grid》讨论先建立网格、再有意识地打破它。本页把越界、出血、旋转和叠压合并成一个“破格强度”。','Timothy Samara\'s Making and Breaking the Grid covers building a grid and then breaking it on purpose. This page folds overshoot, bleed, rotation and overlap into a single rule-breaking strength.'), l:[['Samara, Making and Breaking the Grid (2002)','']]},
   white:{t:L('留白是页面上没有内容的部分，包括页边距、栏间距和元素之间的空隙。本页的留白倾向会改变元素之间的间距、形状数量和正文段数。','White space is the unmarked part of a page: margins, gutters and the gaps between elements. Here the whitespace setting changes spacing, the number of shapes and the number of body blocks.'), l:[['White space',WK('White_space_(visual_arts)')]]},
-  asym:{t:L('Jan Tschichold 在 1928 年的《Die neue Typographie》中主张不居中的版面，并只接受无衬线字体；不对称版面后来成为国际主义风格的标志之一。','In Die neue Typographie (1928), Jan Tschichold favoured non-centred layouts and accepted only sans-serif type; asymmetric layouts later became a hallmark of the International Typographic Style.'), l:[['Jan Tschichold',WK('Jan_Tschichold')],['International Typographic Style',WK('International_Typographic_Style')]]},
+  asym:{t:L('Jan Tschichold 在 1928 年的《Die neue Typographie》中主张不居中的版面，并只接受无衬线字体；不对称版面后来成为瑞士风格的标志之一。','In Die neue Typographie (1928), Jan Tschichold favoured non-centred layouts and accepted only sans-serif type; asymmetric layouts later became a hallmark of the International Typographic Style.'), l:[['Jan Tschichold',WK('Jan_Tschichold')],['International Typographic Style',WK('International_Typographic_Style')]]},
   jitter:{t:L('手工拼贴时，剪下来的元素很难贴得完全水平。本页用随机旋转模拟这种痕迹。','Hand-made collage rarely lands perfectly level. Random rotation here imitates that trace of the hand.'), own:true},
   layers:{t:L('拼贴是把不同材料叠在一起组成新画面的手法。本页的叠压层数决定图像、文字和形状彼此压住的程度。','Collage builds an image by layering different materials. Here the overlap setting decides how far image, type and shapes cover one another.'), l:[['Collage',WK('Collage')]]},
   axis:{t:L('El Lissitzky 1919 年的海报《用红楔子打白军》用一个红色三角刺入白色圆形，是构成主义几何构成的代表作。本页的主轴参数把标题、副标题和图像整体转成斜向。','El Lissitzky\'s 1919 poster Beat the Whites with the Red Wedge drives a red triangle into a white circle, a landmark of Constructivist geometric composition. The axis setting here tilts title, subtitle and image together.'), l:[['Beat the Whites with the Red Wedge',WK('Beat_the_Whites_with_the_Red_Wedge')]]},
@@ -526,37 +526,37 @@ const TIPS = {
   path:{t:L('Nielsen Norman Group 的眼动研究发现，读者扫描网页文本时常呈 F 型。Z 型和中心放射是排版里常用的经验布局，本页把它们实现为三种排布规则。','Nielsen Norman Group\'s eye-tracking research found that people often scan web text in an F shape. Z and radial are common layout conventions; this page implements all three as arrangement rules.'), l:[['F-Shaped Pattern (NN/g)','https://www.nngroup.com/articles/f-shaped-pattern-reading-web-content/']]},
   guide:{t:L('箭头总是从阅读顺序里的第一个元素指向第二个，打开工具栏的“阅读顺序”可以看到完整顺序。','The arrow always runs from the first element in the reading order to the second; turn on Reading order in the toolbar to see the whole sequence.'), own:true},
   sizeSeq:{t:L('一串由小到大的形状会形成方向感。本页让这串形状从页面一角指向标题。','A run of shapes growing in size creates a sense of direction. Here the run points from a corner toward the title.'), own:true},
-  frame:{t:L('图底关系：人会把一块区域看成“图形”，把周围看成“背景”。在重点后面垫一个圆或色块，可以让它从背景中跳出来。','Figure–ground: we read one region as the figure and the rest as background. A circle or block behind the key element lifts it out of the background.'), l:[['Figure–ground',WK('Figure%E2%80%93ground_(perception)')]]},
-  ladder:{t:L('对比度阶梯：最重要的元素对比最高，次要和辅助信息逐级变淡，以此强化视觉层级。正文仍需达到 WCAG 4.5:1 的对比度。','A contrast ladder gives the most important element the highest contrast and fades secondary and supporting text step by step, reinforcing the hierarchy. Body text still needs WCAG\'s 4.5:1.'), l:[['Visual hierarchy',WK('Visual_hierarchy')],['WCAG 2.1 contrast','https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html']]},
-  numbers:{t:L('编号让读者看到内容的先后和数量。只在内容真的有顺序时使用。','Numbering shows the order and count of the content. Use it only when the content really has an order.'), own:true},
-  vocab:{t:L('只选几种基本形，并在全页重复使用，形状才会像一个统一的系统。','Choose a few basic shapes and repeat them across the page so they read as one system.'), own:true},
+  frame:{t:L('图底关系指主体与背景之间的视觉关系。在重点内容后面放置圆形或色块，可以将它与周围内容区分开。','Figure–ground: we read one region as the figure and the rest as background. A circle or block behind the key element lifts it out of the background.'), l:[['Figure–ground',WK('Figure%E2%80%93ground_(perception)')]]},
+  ladder:{t:L('让重点内容与背景形成较强对比，次要信息适当减淡，使主次更清楚。正文仍需达到 WCAG 4.5:1 的对比度。','A contrast ladder gives the most important element the highest contrast and fades secondary and supporting text step by step, reinforcing the hierarchy. Body text still needs WCAG\'s 4.5:1.'), l:[['Visual hierarchy',WK('Visual_hierarchy')],['WCAG 2.1 contrast','https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html']]},
+  numbers:{t:L('编号让读者看到内容的先后和数量。适合用于有明确先后关系的内容。','Numbering shows the order and count of the content. Use it only when the content really has an order.'), own:true},
+  vocab:{t:L('选用少量基本形状，在整页重复使用，有助于统一画面。','Choose a few basic shapes and repeat them across the page so they read as one system.'), own:true},
   nShapes:{t:L('形状数量还会受“留白倾向”影响：留白越多，形状越少。','The shape count also follows the whitespace setting: more white space, fewer shapes.'), own:true},
-  sizeExp:{t:L('形状尺寸服从幂律分布 u^k：k 越大，越是少数很大、多数很小，比平均分布更有张力。','Shape sizes follow a power law u^k: the larger k is, the more a few shapes are big and most are small, which reads as more tension than an even spread.'), own:true},
-  fill:{t:L('实心形状像色块，描边形状更轻，更像图示。','Filled shapes act as colour fields; outlined shapes are lighter and more diagrammatic.'), own:true},
-  radius:{t:L('国际主义风格和 Riso 海报里的形状通常是直角；圆角会让画面变柔和、更像界面。','Swiss and Riso posters usually keep square corners; rounded corners soften the page and make it feel more like an interface.'), own:true},
+  sizeExp:{t:L('形状大小由随机数 u 的 k 次方决定。k 越大，小形状越多，大形状越少，大小对比也越明显。','Shape sizes follow a power law u^k: the larger k is, the more a few shapes are big and most are small, which reads as more tension than an even spread.'), own:true},
+  fill:{t:L('实心形状形成色块，视觉分量较重；描边形状只保留轮廓，显得更轻。','Filled shapes act as colour fields; outlined shapes are lighter and more diagrammatic.'), own:true},
+  radius:{t:L('瑞士风格和 Riso 海报里的形状通常是直角；圆角会让画面变柔和、更像界面。','Swiss and Riso posters usually keep square corners; rounded corners soften the page and make it feel more like an interface.'), own:true},
   strokeW:{t:L('描边粗细以 840px 宽的画面为准。','Stroke width is measured on the 840px-wide page.'), own:true},
   angles:{t:L('只允许 0° 和 90° 时画面最有秩序；加入 45° 带来构成主义式的斜线；自由角度更像拼贴。','Allowing only 0° and 90° gives the most order; adding 45° brings Constructivist diagonals; free angles feel like collage.'), own:true},
-  snap:{t:L('打开后，形状的位置和尺寸都落在栏和模块行上。','When on, shape positions and sizes land on columns and module rows.'), own:true},
-  inks:{t:L('专色每种颜色用一块版、单独印一次。Risograph 一次印一种专色，多色要逐层叠印，所以油墨数量本身就是风格。','A spot colour gets its own plate and its own pass. The Risograph prints one spot colour at a time and builds colour in layers, so the number of inks is a style in itself.'), l:[['Spot color',WK('Spot_color')],['Risograph',WK('Risograph')]]},
-  paper:{t:L('叠印时纸色会参与混色：本页按“相乘”计算，所以同一种油墨印在米色纸上会更暗、更暖。','Paper takes part in overprinting: this page multiplies colours, so the same ink looks darker and warmer on cream paper.'), own:true},
-  textInk:{t:L('选“用油墨”时，文字用油墨 B（只有一种油墨时用油墨 A）来印，并且会跟着这块版一起错位。','With An ink, text prints in ink B (or ink A when there is only one ink) and shifts with that plate.'), own:true},
-  colorRatio:{t:L('60 / 30 / 10 是室内设计和界面设计里常说的配色经验法则：主色 60%、辅色 30%、点缀 10%。它是经验做法，不是严格理论；本页用它给强调色元素分配油墨。','60 / 30 / 10 is a rule of thumb from interior and interface design: a dominant colour at 60%, a secondary at 30%, an accent at 10%. It is a convention, not a theory; here it weights which ink the accent elements get.'), own:true},
+  snap:{t:L('开启后，形状的位置和尺寸会对齐网格的栏线和模块行。','When on, shape positions and sizes land on columns and module rows.'), own:true},
+  inks:{t:L('专色印刷为每种油墨单独制版。Riso 通过各色印版叠印形成多色图像，因此选几种墨、怎样叠色，都会影响最终效果。','A spot colour gets its own plate and its own pass. The Risograph prints one spot colour at a time and builds colour in layers, so the number of inks is a style in itself.'), l:[['Spot color',WK('Spot_color')],['Risograph',WK('Risograph')]]},
+  paper:{t:L('纸色会影响油墨的呈色。本页用正片叠底近似模拟，因此同一种油墨在米色纸上看起来会更暗、更暖。','Paper takes part in overprinting: this page multiplies colours, so the same ink looks darker and warmer on cream paper.'), own:true},
+  textInk:{t:L('选“使用所选油墨”时，文字使用所选油墨 B（只有一种油墨时使用所选油墨 A）来印，并且会跟着这块版一起错位。','With An ink, text prints in ink B (or ink A when there is only one ink) and shifts with that plate.'), own:true},
+  colorRatio:{t:L('60 / 30 / 10 是室内设计和界面设计里常说的配色经验法则：主色 60%、辅色 30%、点缀 10%。它是经验做法，不是严格理论；本页用它给点缀色元素分配油墨。','60 / 30 / 10 is a rule of thumb from interior and interface design: a dominant colour at 60%, a secondary at 30%, an accent at 10%. It is a convention, not a theory; here it weights which ink the accent elements get.'), own:true},
   accent:{t:L('冯·雷斯托夫效应：一组相似的东西里，与众不同的那一个更容易被记住（Hedwig von Restorff，1933）。所以强调色只给少数几个元素。','The von Restorff effect: among similar items, the one that differs is more likely to be remembered (Hedwig von Restorff, 1933). That is why only a few elements get the accent.'), l:[['Von Restorff effect',WK('Von_Restorff_effect')]]},
   overprint:{t:L('叠印是把一种颜色直接印在另一种颜色上，重叠处会混出新的颜色。','Overprinting puts one colour directly on another, and the overlap mixes into a new colour.'), l:[['Overprinting',WK('Overprinting')]]},
-  tMis:{t:L('Riso 每种颜色单独过一次机器，各色之间会有 1–2 mm 的错位。印刷厂用套准标记检查各色版是否对齐。','A Riso prints each colour in a separate pass, so colours land 1–2 mm apart. Printers use registration marks to check that the plates line up.'), l:[['Design for Riso (Oxford Greenprint)','https://oxfordgreenprint.com/?p=223'],['Registration mark',WK('Registration_mark')]]},
+  tMis:{t:L('Riso 分色印刷时可能出现套印不准；本页参考的工作室提示，错位可达 1–2 mm。套准标记用于检查各色印版的对齐情况。','A Riso prints each colour in a separate pass, so colours land 1–2 mm apart. Printers use registration marks to check that the plates line up.'), l:[['Design for Riso (Oxford Greenprint)','https://oxfordgreenprint.com/?p=223'],['Registration mark',WK('Registration_mark')]]},
   tTex:{t:L('与印痕实验室相同的瑕疵，这里用 SVG 噪声滤镜作用在整个油墨层上；每种瑕疵的说明和来源见印痕实验室。','The same flaws as the print lab, applied here with SVG noise filters to the whole ink layer; see the print lab for each flaw\'s notes and sources.'), own:true},
-  img:{t:L('图像使用印痕实验室的加网算法；每种加网方式的历史和来源，见印痕实验室里的溯源。','The image uses the print lab\'s screening algorithms; see the print lab\'s provenance notes for each screen\'s history and sources.'), own:true},
-  mask:{t:L('印前流程里的去背通常用剪切路径实现：只保留路径以内的图像。本页用亮度阈值近似去掉接近白色的背景，所以只适合白底图片。','In prepress, cutouts are usually made with a clipping path that keeps only the image inside it. This page approximates it by removing near-white pixels, so it works best on images with a white background.'), l:[['Clipping path',WK('Clipping_path')]]},
-  crop:{t:L('紧裁只留局部，更有冲击力；宽裁保留环境，更像记录。','A tight crop keeps a detail and hits harder; a loose crop keeps the context and reads more like a record.'), own:true},
-  rules:{t:L('Gerstner 1964 年的《Designing Programmes》被出版社介绍为“计算机时代开端的系统化设计模型”；Rune Madsen 把其中的“设计程序”解读为由设计者定义、用来生成审美决定的规则集。严格度是每个元素遵守规则的概率。“比例和谐”和“一个主角”是本页的规则：前者让形状、间距、线宽和角度都取自字号比例与主轴，后者让形状和图像始终明显小于最大的两个元素。“质感统一”让页面上的浅色面积也用图像的同一套网点来印，而不是数码透明度，一张作品里只出现一种网点体系。','Gerstner\'s Designing Programmes (1964) is described by its publisher as a model for systematic design at the dawn of the computer era; Rune Madsen reads a design programme as a designer-defined rule set that shapes aesthetic decisions. Strictness is the chance that each element obeys. Harmonic scale and One hero are this page\'s own rules: the first takes shape sizes, spacing, line weights and angles from the type scale and the main axis; the second keeps shapes and the image clearly smaller than the two largest elements. Unified texture prints light tints with the image\'s own screen instead of digital transparency, so a piece uses a single screening system.'), l:[['Designing Programmes (Lars Müller)','https://www.lars-mueller-publishers.com/designing-programmes'],['Rune Madsen on Gerstner','https://runemadsen.com/blog/karl-gerstner-designing-programmes/']]},
-  cjk:{t:L('W3C《中文排版需求》（clreq，Group Note Draft）专门讨论了行首行尾禁则（避头尾）、标点宽度和中西文混排。开启时本页用 CSS line-break: strict 做避头尾，用 text-spacing-trim 压缩行首开括号，用 text-autospace 在汉字和拉丁字母、数字之间加空隙（浏览器不支持时用四分之一 em 空格代替）。关闭时用 line-break: anywhere，标点可能出现在行首。','The W3C Requirements for Chinese Text Layout (clreq, a Group Note Draft) covers line-start and line-end prohibitions, punctuation width and mixed Chinese–Western text. When on, this page uses CSS line-break: strict for the prohibitions, text-spacing-trim to halve opening brackets at line start, and text-autospace to add space between Han characters and Latin letters or numerals (a quarter-em space where the browser lacks it). When off it uses line-break: anywhere, so punctuation can start a line.'), l:[['clreq 中文排版需求','https://www.w3.org/TR/clreq/'],['line-break (MDN)','https://developer.mozilla.org/en-US/docs/Web/CSS/line-break'],['text-autospace (MDN)','https://developer.mozilla.org/en-US/docs/Web/CSS/text-autospace'],['text-spacing-trim (MDN)','https://developer.mozilla.org/en-US/docs/Web/CSS/text-spacing-trim']]},
-  pretty:{t:L('孤字是段落最后一行只剩一两个字。CSS text-wrap: pretty 用更慢、更讲究的算法断行，MDN 说它适合正文，可以尽量减少孤字。下方“孤字”指标统计第 1 页正文里最后一行只剩一个汉字或一个单词的段落。','An orphan here is a last line holding only one or two characters. CSS text-wrap: pretty breaks lines with a slower, more careful algorithm; MDN describes it as meant for body copy where the number of orphans should be kept down. The Orphans metric below counts page-1 paragraphs whose last line holds a single Han character or a single word.'), l:[['text-wrap-style (MDN)','https://developer.mozilla.org/en-US/docs/Web/CSS/text-wrap-style'],['clreq §7.1.2 孤行与孤字','https://www.w3.org/TR/clreq/']]},
+  img:{t:L('图像使用印痕实验室的加网算法。各类加网方式的历史和资料链接，可在印痕实验室的“原理与来源”中查看。','The image uses the print lab\'s screening algorithms; see the print lab\'s provenance notes for each screen\'s history and sources.'), own:true},
+  mask:{t:L('印前流程里的去底通常用剪切路径实现：只保留路径以内的图像。本页用亮度阈值近似去掉接近白色的背景，所以只适合白底图片。','In prepress, cutouts are usually made with a clipping path that keeps only the image inside it. This page approximates it by removing near-white pixels, so it works best on images with a white background.'), l:[['Clipping path',WK('Clipping_path')]]},
+  crop:{t:L('“局部裁切”放大画面细节；“保留环境”呈现更多背景和环境。','A tight crop keeps a detail and hits harder; a loose crop keeps the context and reads more like a record.'), own:true},
+  rules:{t:L('Gerstner 的《Designing Programmes》（1964）提出以系统方法开展设计。Rune Madsen 将其中的“设计程序”理解为设计者制定的规则，用来指导具体选择。本页据此设置了几类约束：“统一比例”让形状、间距、线宽和角度彼此呼应；“突出主体”限制次要元素的大小；“质感统一”让浅色色块与图像采用相同的网点。“严格度”表示每个元素遵守规则的概率。','Gerstner\'s Designing Programmes (1964) is described by its publisher as a model for systematic design at the dawn of the computer era; Rune Madsen reads a design programme as a designer-defined rule set that shapes aesthetic decisions. Strictness is the chance that each element obeys. Harmonic scale and One hero are this page\'s own rules: the first takes shape sizes, spacing, line weights and angles from the type scale and the main axis; the second keeps shapes and the image clearly smaller than the two largest elements. Unified texture prints light tints with the image\'s own screen instead of digital transparency, so a piece uses a single screening system.'), l:[['Designing Programmes (Lars Müller)','https://www.lars-mueller-publishers.com/designing-programmes'],['Rune Madsen on Gerstner','https://runemadsen.com/blog/karl-gerstner-designing-programmes/']]},
+  cjk:{t:L('开启后，页面会尽量避免句号、逗号等出现在行首，或左括号等出现在行尾；同时调整标点所占宽度，以及汉字与西文字母、数字之间的间距。具体效果取决于浏览器支持情况。关闭后允许在任意位置换行，可能出现不合中文习惯的断行。规则参考 W3C《中文排版需求》。','The W3C Requirements for Chinese Text Layout (clreq, a Group Note Draft) covers line-start and line-end prohibitions, punctuation width and mixed Chinese–Western text. When on, this page uses CSS line-break: strict for the prohibitions, text-spacing-trim to halve opening brackets at line start, and text-autospace to add space between Han characters and Latin letters or numerals (a quarter-em space where the browser lacks it). When off it uses line-break: anywhere, so punctuation can start a line.'), l:[['clreq 中文排版需求','https://www.w3.org/TR/clreq/'],['line-break (MDN)','https://developer.mozilla.org/en-US/docs/Web/CSS/line-break'],['text-autospace (MDN)','https://developer.mozilla.org/en-US/docs/Web/CSS/text-autospace'],['text-spacing-trim (MDN)','https://developer.mozilla.org/en-US/docs/Web/CSS/text-spacing-trim']]},
+  pretty:{t:L('孤字指段落末行只剩一两个字的情况。开启后，浏览器会尝试优化正文换行，减少过短的末行。下方指标统计第 1 页中末行仅有一个汉字或一个西文单词的段落数，效果取决于浏览器支持情况。','An orphan here is a last line holding only one or two characters. CSS text-wrap: pretty breaks lines with a slower, more careful algorithm; MDN describes it as meant for body copy where the number of orphans should be kept down. The Orphans metric below counts page-1 paragraphs whose last line holds a single Han character or a single word.'), l:[['text-wrap-style (MDN)','https://developer.mozilla.org/en-US/docs/Web/CSS/text-wrap-style'],['clreq §7.1.2 孤行与孤字','https://www.w3.org/TR/clreq/']]},
   flood:{t:L('满版底色本身就是一块油墨版：整页印满一种颜色，出血到纸边外。大面积实地最容易暴露缺墨、颗粒和辊痕。浓度低于 100% 时，实际印刷会用网点做出浅色（平网），本页用透明度近似。','A flood is an ink plate of its own: the whole sheet printed in one colour, bleeding off the edges. Large solids are where starvation, grain and roller marks show most. Below 100%, real printing makes the lighter tint with a halftone; this page approximates it with transparency.'), l:[['Bleed (printing)',WK('Bleed_(printing)')]]},
   imgRepeat:{t:L('同一张图重复摆放、每次换一种颜色，是丝网印刷海报的经典手法。Warhol 1962 年的《Marilyn Diptych》用丝网把同一张照片重复了 50 次，丝网让每次印出来都略有不同。','Repeating one image, changing its colours each time, is a classic of screen-printed posters. Warhol\'s Marilyn Diptych (1962) repeats the same photograph 50 times; silkscreen made each impression slightly different.'), l:[['Marilyn Diptych',WK('Marilyn_Diptych')]]},
-  imgKnock:{t:L('空印：在一块满版油墨里把图像的轮廓挖空，露出纸色；也可以在空出的位置填进另一色。两块版对不准时，交界处会露出白缝或叠出深色细边，印前用“补漏白”（trapping：外扩或内缩）来缓解。把套色错位调大可以看到这些细缝。','A knockout cuts the image\'s silhouette out of a solid ink block so the paper shows, or fills the hole with another ink. When the two plates do not line up, the edge shows a white gap or a dark overlap; prepress trapping (spreads and chokes) reduces this. Raise misregistration to see the slivers.'), l:[['Trap (printing)',WK('Trap_(printing)')],['Overprinting',WK('Overprinting')]]},
-  collage:{t:L('collage 来自法语 coller（粘贴）。Braque 和 Picasso 在 20 世纪初用剪下的墙纸、报纸做“papier collé”，很多机构把拼贴作为艺术手法的开端定在 1912 年。Zine 延续了这种剪、撕、贴的做法。','Collage comes from the French coller, to glue. Braque and Picasso made papier collé from cut wallpaper and newspaper in the early 20th century, and many institutions date collage as an art practice to 1912. Zines carried on the cut, tear and paste approach.'), l:[['Collage',WK('Collage')],['Zine',WK('Zine')]]},
+  imgKnock:{t:L('挖空（knockout）：从底色色块中移除图像轮廓所占的区域，可露出纸色，也可填入另一种油墨。两块色版套印不准时，边缘可能出现白缝或深色重叠。印前可通过陷印（trapping），让相邻颜色的边缘稍有重叠，以减少露白。调大套色错位，可以观察这些接缝。','A knockout cuts the image\'s silhouette out of a solid ink block so the paper shows, or fills the hole with another ink. When the two plates do not line up, the edge shows a white gap or a dark overlap; prepress trapping (spreads and chokes) reduces this. Raise misregistration to see the slivers.'), l:[['Trap (printing)',WK('Trap_(printing)')],['Overprinting',WK('Overprinting')]]},
+  collage:{t:L('collage 来自法语 coller（粘贴）。Braque 和 Picasso 在 20 世纪初用剪下的墙纸、报纸做“papier collé”，很多机构把拼贴作为艺术手法的开端定在 1912 年。小志（zine）创作也常沿用这种剪、撕、贴的方式。','Collage comes from the French coller, to glue. Braque and Picasso made papier collé from cut wallpaper and newspaper in the early 20th century, and many institutions date collage as an art practice to 1912. Zines carried on the cut, tear and paste approach.'), l:[['Collage',WK('Collage')],['Zine',WK('Zine')]]},
   seal:{t:L('东亚印章分两种：朱文印把字印成红色；白文印把底印成红色、字留白。印泥通常用朱砂加油调成。收藏者也会在书画上盖鉴藏印。','East Asian seals come in two kinds: zhuwen seals print the characters in red; baiwen seals print the ground red and leave the characters white. The paste is usually cinnabar mixed with oil. Collectors also stamped their seals on paintings and calligraphy.'), l:[['Seal (East Asia)',WK('Seal_(East_Asia)')]]},
-  pages:{t:L('多页时，页与页之间的变化形成翻阅节奏：满版图、密集文字和留白页交替出现。','Across several pages, changes from page to page create a reading rhythm: full-bleed images, dense text and airy pages alternate.'), own:true},
+  pages:{t:L('多页时，页与页之间的变化形成翻阅节奏：满版图、文字页和留白页交替出现。','Across several pages, changes from page to page create a reading rhythm: full-bleed images, dense text and airy pages alternate.'), own:true},
   hoverShift:{t:L('悬停时油墨版位继续错开，模拟 Riso 的套色错位。','On hover the ink plates drift further apart, imitating Riso misregistration.'), own:true},
   parallax:{t:L('视差源自传统动画的多平面摄影机技术（1930 年代起），后来用于游戏和网页：各层以不同速度移动，产生纵深感。','Parallax grew out of the multiplane camera of traditional animation (from the 1930s) and later spread to games and the web: layers move at different speeds to create depth.'), l:[['Parallax scrolling',WK('Parallax_scrolling')]]},
   dur:{t:L('prefers-reduced-motion 让网页检测用户是否在系统里要求减少非必要的动效；检测到时，本页会关闭所有动画。','prefers-reduced-motion lets a page detect that the user has asked their system to minimise non-essential motion; when it is set, this page turns all animation off.'), l:[['prefers-reduced-motion (MDN)','https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion']]},
@@ -593,44 +593,44 @@ const infoBtn = (key, label) => tipFor(key) ? `<button type="button" class="info
 /* ---------- style cards: what each preset is, where it comes from, how it differs (fact-checked against the links) ---------- */
 const KIND = {movement:L('设计运动','Design movement'), technique:L('图像技法','Image technique'), production:L('生产方式与亚文化','Production & subculture'), genre:L('出版类型','Publication genre')};
 const STYLE = {
-  swiss:{kind:'movement', era:L('1930–50 年代成形 · 瑞士巴塞尔、苏黎世','Took shape 1930s–50s · Basel and Zurich, Switzerland'),
-    essence:L('客观、中立地传达信息：设计者是信息的通道，而不是在表达自己。','Present information objectively and neutrally: the designer is a conduit for the message, not a voice of their own.'),
-    traits:[L('以数学网格为起点','Every design starts from a mathematical grid'), L('不对称版面','Asymmetric layouts'), L('无衬线字体，如 Akzidenz-Grotesk、Helvetica','Sans-serif type such as Akzidenz-Grotesk and Helvetica'), L('左对齐、右侧不齐','Flush-left, ragged-right text'), L('偏爱摄影而不是插画','Photography preferred over illustration')],
+  swiss:{kind:'movement', era:L('20 世纪 30–50 年代逐渐成形 · 瑞士巴塞尔、苏黎世','Took shape 1930s–50s · Basel and Zurich, Switzerland'),
+    essence:L('强调清晰、客观的信息传达，以网格和字体组织内容，减少个人风格对阅读的干扰。','Present information objectively and neutrally: the designer is a conduit for the message, not a voice of their own.'),
+    traits:[L('以规整网格组织版面','Every design starts from a mathematical grid'), L('不对称版面','Asymmetric layouts'), L('无衬线字体，如 Akzidenz-Grotesk、Helvetica','Sans-serif type such as Akzidenz-Grotesk and Helvetica'), L('左对齐、右侧不齐','Flush-left, ragged-right text'), L('常用摄影图像','Photography preferred over illustration')],
     people:L('Ernst Keller、Théo Ballmer、Max Bill、Josef Müller-Brockmann','Ernst Keller, Théo Ballmer, Max Bill, Josef Müller-Brockmann'),
-    vs:[[ 'constructivist', L('同样用几何形和无衬线字，但 Swiss 沿正交网格、追求中立；构成主义为宣传服务，更有鼓动性。','Both use geometry and sans-serif type, but Swiss stays on an orthogonal grid and aims for neutrality; Constructivism served propaganda and is more agitational.')],
-        [ 'editorial', L('两者都依赖网格，但 Swiss 用无衬线字、单页即可成立；杂志用衬线标题，更看重多页之间的节奏。','Both rely on the grid, but Swiss uses sans-serif type and works on a single page; editorial design uses serif headlines and cares about rhythm across pages.')]],
+    vs:[[ 'constructivist', L('两者都使用几何形和无衬线字体。瑞士风格注重规整网格与客观表达；构成主义常以斜向构图传达更强的宣传力度。','Both use geometry and sans-serif type, but Swiss stays on an orthogonal grid and aims for neutrality; Constructivism served propaganda and is more agitational.')],
+        [ 'editorial', L('两种预设都使用网格：瑞士风格侧重无衬线字体与单页秩序；杂志预设采用衬线标题，更重视多页之间的阅读节奏。','Both rely on the grid, but Swiss uses sans-serif type and works on a single page; editorial design uses serif headlines and cares about rhythm across pages.')]],
     keys:['breakS','cols','pair','path','inks','rules'],
     l:[['International Typographic Style',WK('International_Typographic_Style')],['Helvetica',WK('Helvetica')]]},
-  halftone:{kind:'technique', era:L('1880 年报纸首次印出全色调照片；1950 年代中后期波普艺术把网点放大成风格','1880: the first full-tone newspaper photograph; mid-to-late 1950s: pop art enlarges the dot into a style'),
-    essence:L('让网点本身成为主角：一张放大加网的照片，配上同样巨大的字。“半调海报”是本页对这一类做法的概括，不是一个有明确起点的运动。','Make the dot itself the subject: one enlarged, screened photograph with type just as big. “Halftone poster” is this page\'s name for a family of approaches, not a movement with a clear starting point.'),
-    traits:[L('一张大图，常常出血','One big image, often bleeding off the page'), L('网点粗到肉眼可见','Dots coarse enough to see'), L('超大标题，尺度对比极强','An oversized title and extreme scale contrast'), L('颜色少而饱和','Few, saturated colours')],
+  halftone:{kind:'technique', era:L('1880 年，报纸开始刊印具有完整明暗层次的照片；20 世纪中期，波普艺术将放大的网点转化为视觉元素','1880: the first full-tone newspaper photograph; mid-to-late 1950s: pop art enlarges the dot into a style'),
+    essence:L('将加网照片和标题放大，让网点成为醒目的视觉元素。“半色调海报”是本页对这类设计手法的概括，并非特指某一场设计运动。','Make the dot itself the subject: one enlarged, screened photograph with type just as big. “Halftone poster” is this page\'s name for a family of approaches, not a movement with a clear starting point.'),
+    traits:[L('一张大图，常常出血','One big image, often bleeding off the page'), L('网点粗到肉眼可见','Dots coarse enough to see'), L('超大标题，尺度对比极强','An oversized title and extreme scale contrast'), L('配色精简、饱和度高','Few, saturated colours')],
     people:L('Roy Lichtenstein：用 Ben-Day 网点模仿照相制版的效果','Roy Lichtenstein, who used Ben-Day dots to imitate photographic reproduction'),
-    vs:[[ 'zine', L('两者都有网点和少量油墨；半调海报靠一张大图和尺度冲击，Riso zine 靠多层叠印、错位和拼贴。','Both use dots and few inks; the halftone poster relies on one big image and scale, the Riso zine on layered overprints, misregistration and collage.')],
-        [ 'swiss', L('Swiss 也偏爱照片，但照片服从网格；半调海报让照片压过网格。','Swiss also prefers photography, but the photo serves the grid; the halftone poster lets the photo overpower it.')]],
+    vs:[[ 'zine', L('两者都使用网点和少量油墨：半色调海报以大图和强烈的大小对比吸引视线；Riso 小志更突出叠印、错位和拼贴的手工感。','Both use dots and few inks; the halftone poster relies on one big image and scale, the Riso zine on layered overprints, misregistration and collage.')],
+        [ 'swiss', L('瑞士风格通常将照片纳入网格；半色调海报则常用大图打破规整的布局。','Swiss also prefers photography, but the photo serves the grid; the halftone poster lets the photo overpower it.')]],
     keys:['titleScale','imgSpan','cell','bleed','titleCrop','path'],
     l:[['Halftone',WK('Halftone')],['Pop art',WK('Pop_art')],['Ben-Day dots',WK('Ben-Day_dots')]]},
-  zine:{kind:'production', era:L('1976 年起朋克 zine 用复印机自出版；Risograph 1980 年推出，2010 年代在艺术家、zine 和漫画圈流行','From 1976 punk zines self-published on photocopiers; the Risograph launched in 1980 and became popular with artists, zine makers and comics creators in the 2010s'),
-    essence:L('用便宜、快速的印刷方式自己出版：限制本身成了美学。','Publish it yourself with cheap, fast printing: the constraints become the aesthetic.'),
-    traits:[L('2–3 种专色，叠印出第三种颜色','Two or three spot colours that overprint into a third'), L('各色之间 1–2 mm 的套色错位','1–2 mm misregistration between colours'), L('手工拼贴，元素歪斜叠压','Hand collage: tilted, overlapping elements'), L('保留颗粒、缺墨等“瑕疵”','Grain and ink starvation kept, not fixed')],
-    people:L('《Sniffin\' Glue》（Mark Perry，1976），英国最早也最有名的朋克 zine 之一','Sniffin\' Glue (Mark Perry, 1976), one of the first and best-known UK punk zines'),
-    vs:[[ 'swiss', L('在“秩序 ↔ 混乱”这条轴上，它和 Swiss 位于两端。','On the order ↔ chaos axis, it sits at the opposite end from Swiss.')],
-        [ 'halftone', L('半调海报追求一张图的冲击力，Riso zine 追求多层叠印的手工感。','The halftone poster aims for the impact of one image; the Riso zine for the handmade feel of layered prints.')]],
+  zine:{kind:'production', era:L('1976 年起，朋克小志开始借助复印机自主出版；Risograph 于 1980 年推出，2010 年代在艺术创作、独立出版和漫画领域流行','From 1976 punk zines self-published on photocopiers; the Risograph launched in 1980 and became popular with artists, zine makers and comics creators in the 2010s'),
+    essence:L('以低成本、快速的印刷方式自主出版，将油墨种类有限、套印不准等条件转化为鲜明的视觉特点。','Publish it yourself with cheap, fast printing: the constraints become the aesthetic.'),
+    traits:[L('使用 2–3 种专色，在重叠处形成混色','Two or three spot colours that overprint into a third'), L('各色之间 1–2 mm 的套色错位','1–2 mm misregistration between colours'), L('手工拼贴，元素歪斜叠压','Hand collage: tilted, overlapping elements'), L('保留颗粒、缺墨等“瑕疵”','Grain and ink starvation kept, not fixed')],
+    people:L('《Sniffin\' Glue》（Mark Perry，1976），英国最早也最有名的朋克小志之一','Sniffin\' Glue (Mark Perry, 1976), one of the first and best-known UK punk zines'),
+    vs:[[ 'swiss', L('相比瑞士风格的规整网格，这个预设更强调自由拼贴和手工痕迹。','On the order ↔ chaos axis, it sits at the opposite end from Swiss.')],
+        [ 'halftone', L('半色调海报突出单幅图像的视觉冲击；Riso 小志更重视叠印、错位和拼贴留下的手工感。','The halftone poster aims for the impact of one image; the Riso zine for the handmade feel of layered prints.')]],
     keys:['breakS','inks','tMisX','tGrain','jitter','layers'],
     l:[['Zine',WK('Zine')],['Risograph',WK('Risograph')],['Design for Riso','https://oxfordgreenprint.com/?p=223']]},
   editorial:{kind:'genre', era:L('报纸、杂志和书籍出版的长期传统，后来延续到网页','A long tradition in newspapers, magazines and books, later carried onto the web'),
     essence:L('为连续阅读和翻阅而设计：页与页之间的节奏，比单张的冲击更重要。','Designed for continuous reading and page-turning: the rhythm across pages matters more than the impact of one page.'),
-    traits:[L('衬线展示标题','Display serif headlines'), L('多栏网格','Multi-column grids'), L('精心构图的摄影','Art-directed photography'), L('引文与图注','Pull quotes and captions'), L('快慢交替的节奏：满版图与多栏阅读页交替','Varied pacing: full-bleed spreads alternate with multi-column reading pages')],
-    people:L('它是一个专业领域，而不是单一的视觉运动','A professional field rather than a single visual movement'),
-    vs:[[ 'swiss', L('Swiss 重中立和单页的秩序，杂志重叙事和多页的节奏。','Swiss values neutrality and single-page order; editorial design values narrative and rhythm across pages.')],
+    traits:[L('醒目的衬线体标题','Display serif headlines'), L('多栏网格','Multi-column grids'), L('精心构图的摄影','Art-directed photography'), L('引文与图注','Pull quotes and captions'), L('交替安排满版图片与多栏文字，调节阅读节奏','Varied pacing: full-bleed spreads alternate with multi-column reading pages')],
+    people:L('杂志版式属于编辑设计领域，涵盖多种视觉风格','A professional field rather than a single visual movement'),
+    vs:[[ 'swiss', L('瑞士风格强调客观表达和单页秩序；杂志版式更注重叙事与连续翻阅的节奏。','Swiss values neutrality and single-page order; editorial design values narrative and rhythm across pages.')],
         [ 'halftone', L('杂志里的图像服务于叙事和节奏，不追求单张的冲击力。','Images in a magazine serve the story and the pacing rather than single-page impact.')]],
     keys:['pair','levels','white','measure','pages','treat'],
     l:[['Editorial design (daisyUI Trends)','https://trends.daisyui.com/trend/editorial-design/'],['Magazine design for the web','https://webdesignerdepot.com/magazine-design-principles-applied-to-web-design']]},
   constructivist:{kind:'movement', era:L('1915 年 · 俄国，由 Vladimir Tatlin 与 Alexander Rodchenko 创立','1915 · Russia, founded by Vladimir Tatlin and Alexander Rodchenko'),
-    essence:L('艺术为宣传和社会目的服务，而不是自我表达。本页用斜向主轴表现它的动势，这是本页的诠释。','Art in the service of propaganda and social purpose rather than self-expression. This page expresses its momentum with a diagonal axis; that is this page\'s interpretation.'),
-    traits:[L('几何形状、鲜明色彩、粗壮字体（宣传海报）','Geometric shapes, bright colours and bold lettering in its posters'), L('鼓动性的照相蒙太奇','Agitational photomontage'), L('代表作：红色三角刺入白色圆形（El Lissitzky，1919）','Landmark: a red triangle driven into a white circle (El Lissitzky, 1919)')],
+    essence:L('强调艺术的社会作用，常以几何形、斜线和强烈对比传达宣传信息。本页用斜向主轴模拟这类作品的动感。','Art in the service of propaganda and social purpose rather than self-expression. This page expresses its momentum with a diagonal axis; that is this page\'s interpretation.'),
+    traits:[L('几何形状、鲜明色彩、粗壮字体（宣传海报）','Geometric shapes, bright colours and bold lettering in its posters'), L('富有宣传力度的照片蒙太奇','Agitational photomontage'), L('代表作：红色三角刺入白色圆形（El Lissitzky，1919）','Landmark: a red triangle driven into a white circle (El Lissitzky, 1919)')],
     people:L('Alexander Rodchenko、El Lissitzky、Varvara Stepanova、Gustav Klutsis','Alexander Rodchenko, El Lissitzky, Varvara Stepanova, Gustav Klutsis'),
-    vs:[[ 'swiss', L('Swiss 中立客观，目的是传达信息；构成主义带有鼓动性，目的是宣传。','Swiss is neutral and objective, aiming to inform; Constructivism is agitational, aiming to persuade.')],
-        [ 'zine', L('两者都会叠压和打破水平线，但构成主义的几何形是有方向的构图，zine 的拼贴更随意。','Both overlap elements and break the horizontal, but Constructivist geometry is directed composition, while zine collage is looser.')]],
+    vs:[[ 'swiss', L('瑞士风格强调客观、清晰地传达信息；构成主义作品往往带有更鲜明的宣传诉求。','Swiss is neutral and objective, aiming to inform; Constructivism is agitational, aiming to persuade.')],
+        [ 'zine', L('两者都会重叠元素、使用斜线；构成主义的几何形通常围绕明确的方向组织，小志拼贴则更自由。','Both overlap elements and break the horizontal, but Constructivist geometry is directed composition, while zine collage is looser.')]],
     keys:['axis','titleStyle','frame','angles','inks','layers'],
     l:[['Constructivism',WK('Constructivism_(art)')],['Beat the Whites with the Red Wedge',WK('Beat_the_Whites_with_the_Red_Wedge')]]},
 };
@@ -658,8 +658,8 @@ function styleCard(){
     <div class="sub">${zh?'特征':'Traits'}</div><ul>${st.traits.map(t => `<li>${T(t)}</li>`).join('')}</ul>
     <div class="sub">${zh?'代表':'Key figures'}</div><p>${T(st.people)}</p>
     <div class="sub">${zh?'和其他风格的区别':'How it differs'}</div><ul>${st.vs.map(([o,t]) => `<li><b>${zh?'对比':'vs'} ${T(PRESETS[o].name)}：</b>${T(t)}</li>`).join('')}</ul>
-    <div class="sub">${zh?'定义它的参数（点击跳到控件）':'Defining settings (click to jump)'}</div><div class="pchips">${chips}</div>
-    ${activePreset!==id ? `<p class="mod">${zh?'你已在这个预设的基础上修改了参数，上面显示的是预设原值。':'You have changed settings since loading this preset; the values above are the preset\'s originals.'}</p>` : ''}
+    <div class="sub">${zh?'关键参数（点击调整）':'Defining settings (click to jump)'}</div><div class="pchips">${chips}</div>
+    ${activePreset!==id ? `<p class="mod">${zh?'你已调整部分参数；上方仍显示预设的初始值。':'You have changed settings since loading this preset; the values above are the preset\'s originals.'}</p>` : ''}
     <div class="sub">${zh?'并排对比':'Compare side by side'}</div><div class="seg cmpbar">${others}${P.compare ? `<button type="button" data-cmp="">${zh?'关闭对比':'Close'}</button>` : ''}</div>
     <p class="src">${st.l.map(([t,u]) => `<a href="${u}" target="_blank" rel="noopener">${t}</a>`).join('<i>·</i>')}</p>
   </div>`;
@@ -857,7 +857,7 @@ function pageParams(i){
   }
   return Q;
 }
-const ROLE_NAME = {cover:L('封面','Cover'), image:L('满版图','Full image'), text:L('密集文字','Dense text'), air:L('留白页','Airy page')};
+const ROLE_NAME = {cover:L('封面','Cover'), image:L('满版图','Full image'), text:L('文字页','Dense text'), air:L('留白页','Airy page')};
 
 /* ---------- one page ---------- */
 const HAN = /[\u3400-\u9fff\uf900-\ufaff]/;
@@ -1478,9 +1478,9 @@ function computeMetrics(){
     M(zh?'留白率':'Whitespace', Math.round(white*100)+'%', zh?'未被元素覆盖':'not covered') +
     M(zh?'对齐度':'Alignment', Math.round(align*100)+'%', zh?'左边缘落在栏线上':'left edges on columns') +
     M(zh?'视觉重心':'Balance', `${Math.round(cx*100)} / ${Math.round(cy*100)}`, zh?'中心为 50 / 50':'centre is 50 / 50') +
-    M(zh?'字号比':'Type ratio', Math.round(scale)+':1', zh?'标题 : 最小字':'title : smallest') +
+    M(zh?'字号比':'Type ratio', Math.round(scale)+':1', zh?'标题字号 : 最小字号':'title : smallest') +
     M(zh?'正文对比度':'Body contrast', contrast.toFixed(1)+':1', contrast>=4.5 ? (zh?'达到 WCAG AA':'passes WCAG AA') : (zh?'低于 4.5:1':'below 4.5:1'), contrast>=4.5) +
-    M(zh?'孤字':'Orphans', `${Ly.orphans} / ${Ly.nBody}`, zh?'末行只剩一个字的段落':'paragraphs ending on one word', Ly.orphans===0);
+    M(zh?'孤字':'Orphans', `${Ly.orphans} / ${Ly.nBody}`, zh?'末行仅一字或一词的段落':'paragraphs ending on one word', Ly.orphans===0);
   layouts.forEach(L2 => L2.poster.querySelectorAll('.ovl').forEach(e => e.remove()));
   if (P.mass){
     const s = svgEl('svg', {class:'ovl', width:Ly.W, height:Ly.H}); s.style.cssText = 'position:absolute;left:0;top:0;pointer-events:none';

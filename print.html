@@ -251,6 +251,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
           <button class="btn" type="button" data-src="seal"><span class="zh">印文</span><span class="en">Seal text</span></button>
           <button class="btn" type="button" data-src="fern"><span class="zh">蕨叶（实物）</span><span class="en">Fern (object)</span></button>
           <button class="btn" type="button" data-src="wood"><span class="zh">木纹（表面）</span><span class="en">Wood (surface)</span></button>
+          <button class="btn" type="button" data-src="poster"><span class="zh">演出海报（木活字）</span><span class="en">Show bill (wood type)</span></button>
           <label class="btn" id="uploadLabel"><span class="zh">上传照片</span><span class="en">Upload photo</span><input type="file" id="upload" accept="image/*" hidden></label>
         </div>
         <p class="hint" id="srcHint"></p>
@@ -661,6 +662,8 @@ const PRESETS = [
     f:[F('e','p','简化成干净的平涂色块','Simplified into clean flat shapes',{process:'none'}), F('e','p','厚而不透明的油墨','Thick, opaque ink',{blend:'multiply'}), F('r','p','套色错位','Misregistration',{mx:0,my:0})]},
   {name:{zh:'凸版印刷', en:'Letterpress'}, tag:{zh:'凸版 · 亮红 · 再生纸', en:'Letterpress · bright red · recycled'}, p:{screen:'am',process:'letter',cell:10,angle:0,contrast:1.35,mode:'mono',inkA:'red',inkB:'black',paper:'recycled',mx:0,my:0,grain:.25,starve:.25,band:0,tex:.65},
     f:[F('e','p','色块内部斑驳、边缘积墨，纸面带压痕','Mottled solids, squeezed edges, a pressed impression',{process:'none'}), F('r','m','明显的纸张纹理','Heavy paper texture',{tex:0}), F('r','p','墨色不匀','Uneven ink',{grain:0,starve:0})]},
+  {name:{zh:'木活字演出海报', en:'Wood-type show bill'}, tag:{zh:'凸版 · 亮红 + 联邦蓝 · 再生纸', en:'Letterpress · bright red + federal blue · recycled'}, src:'poster', p:{screen:'am',process:'letter',cell:8,angle:0,contrast:1.3,mode:'sep',inkA:'red',inkB:'fedblue',paper:'recycled',mx:3,my:2,grain:.3,starve:.35,band:0,tex:.6,gain:.2},
+    f:[F('e','p','凸版：实地斑驳、边缘积墨、纸面压痕','Letterpress: mottled solids, squeezed edges, a pressed impression',{process:'none',screen:'thresh'}), F('e','d','两三种鲜艳专色，重叠处叠出第三色','Two or three bright spot colours, overlapping into a third',{mode:'mono'}), F('r','m','粗纹再生纸','Rough recycled paper',{tex:0,paper:'white'}), F('r','p','手工对版，套色略有错位','Hand-registered plates, slightly off',{mx:0,my:0}), F('o','p','墨色不匀','Uneven ink',{grain:0,starve:0})]},
   {name:{zh:'木刻版画', en:'Woodcut print'}, tag:{zh:'木刻 · 黑 · 再生纸', en:'Woodcut · black · recycled'}, p:{screen:'am',process:'wood',cell:8,angle:10,contrast:1.3,mode:'mono',inkA:'black',inkB:'black',paper:'recycled',mx:0,my:0,grain:.2,starve:.15,band:0,tex:.5},
     f:[F('e','p','刀痕线条与色块边缘的缺口','Gouged lines and chipped solids',{process:'none'}), F('r','m','再生纸','Recycled paper',{paper:'white'}), F('o','p','墨色带木纹','Wood grain in the ink',{grain:0,starve:0})]},
   {name:{zh:'连续调双色', en:'Continuous duotone'}, tag:{zh:'连续调 · 橙 + 黑 双色调', en:'Continuous · orange + black duotone'}, p:{screen:'cont',cell:8,angle:0,contrast:1.15,mode:'duo',inkA:'orange',inkB:'black',paper:'recycled',mx:2,my:1,grain:.2,starve:.1,band:0,tex:.4},
@@ -767,6 +770,34 @@ function drawSource(c = srcC, kind = srcKind){
       d[(y*n+x)*4] = d[(y*n+x)*4+1] = d[(y*n+x)*4+2] = L; d[(y*n+x)*4+3] = 255;
     }
     g.putImageData(im, 0, 0);
+    return;
+  }
+  if (kind === 'poster'){
+    // a show bill set in wood type: red parts go to plate A, cyan parts to plate B (see the two-ink split)
+    const RED = '#FF0000', CY = '#00FFFF', M = n*.05, MW = n - 2*M;
+    // a sunburst behind the top
+    g.fillStyle = RED; const cx = n/2, cy = n*.3, R = n;
+    for (let k=0;k<24;k++){ const a0 = k*Math.PI/12, a1 = a0 + Math.PI/24; g.beginPath(); g.moveTo(cx, cy); g.lineTo(cx + R*Math.cos(a0), cy + R*Math.sin(a0)); g.lineTo(cx + R*Math.cos(a1), cy + R*Math.sin(a1)); g.closePath(); g.fill(); }
+    g.fillStyle = '#fff'; g.fillRect(0, n*.44, n, n*.56);
+    // each line is set to the full measure: measure it, then stretch or squeeze it to fit, like choosing a wider or narrower wood face
+    const line = (txt, font, col, y, h) => {
+      g.font = font; g.textBaseline = 'alphabetic'; const w = g.measureText(txt).width || 1, asc = parseFloat(font.match(/(\d+)px/)[1]);
+      g.save(); g.translate(M, y); g.scale(MW/w, h/(asc*.74)); g.fillStyle = col; g.fillText(txt, 0, 0); g.restore();
+    };
+    const SANS = n => `800 ${n}px "Bricolage Grotesque", "Archivo", sans-serif`, SLAB = n => `700 ${n}px "Rockwell", "Roboto Slab", Georgia, serif`;
+    // a cyan bar with stars knocked out
+    g.fillStyle = CY; g.fillRect(M, n*.04, MW, n*.07);
+    g.fillStyle = '#fff'; for (let k=0;k<7;k++){ const x = M + MW*(k + .5)/7, y = n*.075, r1 = n*.022, r2 = r1*.42; g.beginPath(); for (let j=0;j<10;j++){ const rr = j%2 ? r2 : r1, a = -Math.PI/2 + j*Math.PI/5; g.lineTo(x + rr*Math.cos(a), y + rr*Math.sin(a)); } g.closePath(); g.fill(); }
+    line('TONIGHT ONLY', SLAB(80), '#fff', n*.24, n*.09);
+    g.fillStyle = '#fff'; g.fillRect(M, n*.27, MW, n*.012);
+    line('THE INKWELLS', SANS(120), CY, n*.43, n*.15);
+    g.fillStyle = RED; g.fillRect(M, n*.47, MW, n*.018); g.fillRect(M, n*.495, MW, n*.006);
+    line('& THE HALFTONES', SLAB(80), RED, n*.6, n*.085);
+    g.fillStyle = CY; g.fillRect(M, n*.63, MW, n*.012);
+    line('DOORS 8 PM', SANS(100), CY, n*.79, n*.13);
+    line('ADMISSION FIVE DOLLARS', SLAB(60), RED, n*.88, n*.05);
+    g.fillStyle = '#000'; g.fillRect(M, n*.91, MW, n*.012);
+    line('PRINT LABS HALL · NO. 1', SANS(60), '#000', n*.96, n*.035);
     return;
   }
   if (kind === 'upload' && uploaded){
@@ -1456,7 +1487,7 @@ function choosePreset(i){
   const pr = PRESETS[i];
   featOff = new Set(); applyPreset(i); activePreset = i;
   if (pr.src && srcKind!=='upload'){ srcKind = pr.src; drawSource(); }
-  else if (!pr.src && ['seal','fern','wood'].includes(srcKind)){ srcKind = 'scene'; drawSource(); }
+  else if (!pr.src && ['seal','fern','wood','poster'].includes(srcKind)){ srcKind = 'scene'; drawSource(); }
   syncControls(); schedule();
 }
 PRESETS.forEach((pr, i) => {
@@ -1470,7 +1501,7 @@ PRESETS.forEach((pr, i) => {
 });
 function renderThumbs(){
   let i = 0;
-  const step = () => { if (i>=thumbs.length) return; const [cv,p,src] = thumbs[i++]; render(cv, p, src && srcKind!=='upload' ? srcFor(src) : (['seal','fern','wood'].includes(srcKind) && !src ? srcFor('scene') : srcC)); setTimeout(step, 0); };
+  const step = () => { if (i>=thumbs.length) return; const [cv,p,src] = thumbs[i++]; render(cv, p, src && srcKind!=='upload' ? srcFor(src) : (['seal','fern','wood','poster'].includes(srcKind) && !src ? srcFor('scene') : srcC)); setTimeout(step, 0); };
   step();
 }
 function refreshSource(){ Object.keys(srcCache).forEach(k => delete srcCache[k]); drawSource(); syncControls(); schedule(); renderThumbs(); }

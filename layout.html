@@ -97,7 +97,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
 .metric.ok b{color:var(--ink)} .metric.bad b{color:#C2183C}
 
 /* panel */
-.presetbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.presetbar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
 @media (max-width:420px){.presetbar{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .presetbar button{font:700 14px/1.2 var(--display);padding:10px 6px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer;min-height:48px;display:flex;flex-direction:column;gap:2px;align-items:flex-start;text-align:left}
 .presetbar button small{font:400 10.5px var(--mono);color:var(--muted);letter-spacing:.03em}
@@ -354,6 +354,12 @@ const PRESETS = {
     inks:2, inkA:'red', inkB:'black', paper:'recycled', textInk:'black', colorRatio:'603010', accent:3, overprint:true, tMisX:2, tMisY:1, tGrain:.2, tStarve:.2, tPaper:.4,
     img:true, treat:'thresh', cell:7, imgSpan:.5, mask:'cutout', crop:'tight', rules:{grid:false, avoid:true, max3:true, scale:true, tiers:true}, strict:.7,
     furn:{reg:false, crop:false, bar:false, folio:true}, seed:44}},
+  woodtype:{name:{zh:'木活字海报',en:'Wood-type poster'}, tag:{zh:'撑满整行',en:'set to measure'}, p:{cols:6, margin:.05, gutter:.015, pair:'swiss', ratio:1.6, levels:4, titleScale:.3, tWeight:900, tWidth:125, tLead:.9, track:0, measure:50, upper:true, align:'fill', titleStyle:'solid',
+    breakS:0, white:.18, asym:.5, jitter:0, layers:1, axis:0, focal:'edge', bleed:false, titleCrop:0, path:'auto', guide:false, sizeSeq:false, frame:'none', ladder:false, numbers:false,
+    vocab:{circle:false, rect:false, line:true, tri:false, star:true, burst:true}, nShapes:4, sizeExp:2.4, fill:1, radius:0, strokeW:.012, angles:'ortho', snap:false,
+    inks:2, inkA:'red', inkB:'fedblue', paper:'recycled', textInk:'ink', colorRatio:'603010', accent:3, overprint:true, tMisX:2, tMisY:1, tGrain:.35, tStarve:.35, tPaper:.55,
+    img:false, treat:'thresh', cell:7, imgSpan:.45, mask:'rect', crop:'tight', rules:{grid:true, avoid:true, max3:false, scale:false, tiers:false, unify:true}, strict:1,
+    furn:{reg:false, crop:false, bar:false, folio:false}, seed:8}},
 };
 
 /* ---------- language & state ---------- */
@@ -403,7 +409,7 @@ const GROUPS = [
     {type:'range', key:'track', label:L('标题字距','Title tracking'), min:-.08, max:.1, step:.005, fmt:v=>(v>0?'+':'')+(+v).toFixed(3)+'em'},
     {type:'range', key:'measure', label:L('正文行宽','Body measure'), min:25, max:80, step:1, fmt:v=>v+(LANG==='zh'?' 字':' ch')},
     {type:'seg', key:'titleStyle', label:L('标题处理','Title treatment'), opts:[['solid',L('实心','Solid')],['ink',L('油墨色','In ink')],['outline',L('描边','Outline')],['knock',L('反白','Knockout')],['double',L('双版叠印','Two plates')]]},
-    {type:'seg', key:'align', label:L('对齐','Alignment'), opts:[['left',L('左对齐','Flush left')],['center',L('居中','Centred')]]},
+    {type:'seg', key:'align', label:L('对齐','Alignment'), opts:[['left',L('左对齐','Flush left')],['center',L('居中','Centred')],['fill',L('撑满整行','Set to measure')]]},
     {type:'toggle', key:'upper', label:L('标题全大写','Uppercase title')},
     {type:'toggle', key:'vertical', label:L('标题竖排','Vertical title')},
     {type:'toggle', key:'cjk', label:L('中文排印','CJK typesetting')},
@@ -429,7 +435,7 @@ const GROUPS = [
     {type:'toggle', key:'numbers', label:L('编号 01 / 02','Numbering 01 / 02')},
   ]},
   {t:L('形状','Shapes'), s:'SHAPES', hint:L('选择 2–3 种基本形状，在页面中重复使用，更容易形成统一的视觉效果。','Pick two or three basic shapes and use them everywhere so they read as a system.'), items:[
-    {type:'checks', key:'vocab', label:L('形状类型','Vocabulary'), opts:[['circle',L('圆','Circle')],['rect',L('矩形','Rectangle')],['line',L('粗线','Rule')],['tri',L('三角','Triangle')]]},
+    {type:'checks', key:'vocab', label:L('形状类型','Vocabulary'), opts:[['circle',L('圆','Circle')],['rect',L('矩形','Rectangle')],['line',L('粗线','Rule')],['tri',L('三角','Triangle')],['star',L('星','Star')],['burst',L('放射光芒','Sunburst')]]},
     {type:'range', key:'nShapes', label:L('数量','Count'), min:0, max:10, step:1, fmt:v=>v},
     {type:'range', key:'sizeExp', label:L('大小分布','Size spread'), min:1, max:4, step:.1, fmt:v=>'u^'+(+v).toFixed(1)},
     {type:'range', key:'fill', label:L('实心比例','Filled'), min:0, max:1, step:.05, fmt:pct},
@@ -511,7 +517,7 @@ const TIPS = {
   track:{t:L('字距（tracking）是统一调整一段文字的字母间距。大标题常收紧，全大写的小标签常放宽。','Tracking adjusts the letter spacing of a whole run of text. Large titles are often tightened; small all-caps labels are often opened up.'), l:[['Letter spacing',WK('Letter_spacing')]]},
   measure:{t:L('Robert Bringhurst 在《The Elements of Typographic Style》中建议西文印刷正文每行约 45–75 个字符，以 66 个为参考。本页中文行宽按汉字数估算，不能直接套用西文的字符数建议。','Robert Bringhurst\'s The Elements of Typographic Style recommends 45–75 characters per line for printed text, with 66 as the ideal. Chinese is approximated by counting characters.'), l:[['Line length',WK('Line_length')]]},
   titleStyle:{t:L('“反白”会从底色中挖空字形，露出纸色；“描边”只保留字形轮廓；“双版叠印”将同一标题分别印在两块色版上，略微错位，重叠处产生混色。挖空（knockout）是移除下层油墨的处理方式，叠印（overprint）则保留下层油墨。','Overprinting puts one colour directly on top of another; a knockout removes the colour underneath so the paper shows through. PostScript creates knockouts by default. Outline type keeps only the letter contours. Two plates prints the title on both ink plates, slightly offset, so the overlap becomes a third colour.'), l:[['Overprinting',WK('Overprinting')]]},
-  align:{t:L('左对齐、右侧不齐的文字，是瑞士风格的标志之一；它的其他标志还有不对称版面、网格和无衬线字体。','Flush-left, ragged-right text is one of the hallmarks of the International Typographic Style, alongside asymmetric layouts, grids and sans-serif type.'), l:[['International Typographic Style',WK('International_Typographic_Style')]]},
+  align:{t:L('左对齐、右侧不齐的文字，是瑞士风格的标志之一；它的其他标志还有不对称版面、网格和无衬线字体。“撑满整行”是木活字海报的做法：每行单独选字号和字宽，排满整个版心；剧院海报甚至按名气决定字的大小。','Flush-left, ragged-right text is one of the hallmarks of the International Typographic Style, alongside asymmetric layouts, grids and sans-serif type. “Set to measure” is the wood-type poster way: each line gets its own size and width so it fills the measure; theatre bills even sized names by fame.'), l:[['International Typographic Style',WK('International_Typographic_Style')],['Wood type',WK('Wood_type')]]},
   upper:{t:L('Miles Tinker 的研究发现，全大写会明显降低阅读速度，他建议连续阅读的文字不要用全大写。所以全大写只适合标题和短标签。','Miles Tinker\'s research found that all-capital text slows reading noticeably, and he advised against it for continuous reading. Keep all caps for titles and short labels.'), l:[['All caps',WK('All_caps')]]},
   vertical:{t:L('中文、日文可以竖排，传统上从右往左排列；CSS 的 writing-mode: vertical-rl 对应这种排法，拉丁字母在其中会旋转 90°。','Chinese and Japanese can be set vertically, traditionally right to left; CSS writing-mode: vertical-rl does the same, and Latin letters inside it turn 90°.'), l:[['Horizontal and vertical writing',WK('Horizontal_and_vertical_writing_in_East_Asian_scripts')]]},
   breakS:{t:L('Timothy Samara 的《Making and Breaking the Grid》讨论先建立网格、再有意识地打破它。本页把越界、出血、旋转和叠压合并成一个“破格强度”。','Timothy Samara\'s Making and Breaking the Grid covers building a grid and then breaking it on purpose. This page folds overshoot, bleed, rotation and overlap into a single rule-breaking strength.'), l:[['Samara, Making and Breaking the Grid (2002)','']]},
@@ -529,7 +535,7 @@ const TIPS = {
   frame:{t:L('图底关系指主体与背景之间的视觉关系。在重点内容后面放置圆形或色块，可以将它与周围内容区分开。','Figure–ground: we read one region as the figure and the rest as background. A circle or block behind the key element lifts it out of the background.'), l:[['Figure–ground',WK('Figure%E2%80%93ground_(perception)')]]},
   ladder:{t:L('让重点内容与背景形成较强对比，次要信息适当减淡，使主次更清楚。正文仍需达到 WCAG 4.5:1 的对比度。','A contrast ladder gives the most important element the highest contrast and fades secondary and supporting text step by step, reinforcing the hierarchy. Body text still needs WCAG\'s 4.5:1.'), l:[['Visual hierarchy',WK('Visual_hierarchy')],['WCAG 2.1 contrast','https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html']]},
   numbers:{t:L('编号让读者看到内容的先后和数量。适合用于有明确先后关系的内容。','Numbering shows the order and count of the content. Use it only when the content really has an order.'), own:true},
-  vocab:{t:L('选用少量基本形状，在整页重复使用，有助于统一画面。','Choose a few basic shapes and repeat them across the page so they read as one system.'), own:true},
+  vocab:{t:L('选用少量基本形状，在整页重复使用，有助于统一画面。星、横条和放射光芒是美国凸版演出海报的常见装饰。','Choose a few basic shapes and repeat them across the page so they read as one system. Stars, bars and sunbursts are stock ornaments of American letterpress show posters.'), l:[['Nashville Scene · Fine Print','https://www.nashvillescene.com/arts_culture/coverstory/fine-print-the-letterpress-artists-visually-defining-nashville/article_4842e4ae-1ce5-11ed-b75e-83816f4dfa1a.html']]},
   nShapes:{t:L('形状数量还会受“留白倾向”影响：留白越多，形状越少。','The shape count also follows the whitespace setting: more white space, fewer shapes.'), own:true},
   sizeExp:{t:L('形状大小由随机数 u 的 k 次方决定。k 越大，小形状越多，大形状越少，大小对比也越明显。','Shape sizes follow a power law u^k: the larger k is, the more a few shapes are big and most are small, which reads as more tension than an even spread.'), own:true},
   fill:{t:L('实心形状形成色块，视觉分量较重；描边形状只保留轮廓，显得更轻。','Filled shapes act as colour fields; outlined shapes are lighter and more diagrammatic.'), own:true},
@@ -633,6 +639,14 @@ const STYLE = {
         [ 'zine', L('两者都会重叠元素、使用斜线；构成主义的几何形通常围绕明确的方向组织，小志拼贴则更自由。','Both overlap elements and break the horizontal, but Constructivist geometry is directed composition, while zine collage is looser.')]],
     keys:['axis','titleStyle','frame','angles','inks','layers'],
     l:[['Constructivism',WK('Constructivism_(art)')],['Beat the Whites with the Red Wedge',WK('Beat_the_Whites_with_the_Red_Wedge')]]},
+  woodtype:{kind:'production', era:L('1828 年 Darius Wells 在纽约出版第一本机制木活字目录；19 世纪木活字因为比大号金属字轻便便宜，成为海报大字的主流；二战后被胶印和照相排版取代，如今由凸版工作室延续','1828: Darius Wells publishes the first known catalogue of machine-cut wood type in New York; in the 19th century wood, lighter and cheaper than large metal type, carries the big letters of posters; after the war offset and phototypesetting displace it, and letterpress studios keep it alive'),
+    essence:L('用现成的木活字和手刻木版，把演出信息排得又大又清楚：每行字撑满版心，字号由行宽和重要程度决定。','Big, clear show information set from stock wood type and carved blocks: every line fills the measure, its size set by the line\'s length and importance.'),
+    traits:[L('每行撑满整个版心，粗细宽窄不同的字混排','Every line fills the measure, mixing weights and widths'), L('星、横条、放射光芒等现成装饰','Stock ornaments: stars, bars, sunbursts'), L('只用几种鲜艳的颜色；有图也只是一张简单清楚的木刻图','A few bright colours; at most one simple, clear carved image'), L('凸版的压痕、墨色不匀和木纹','Letterpress impression, uneven ink and wood grain')],
+    people:L('Hatch Show Print（纳什维尔，1879 年起）：至今仍用老木活字和手刻木版印演出海报','Hatch Show Print (Nashville, since 1879), still printing show posters from vintage wood type and hand-carved blocks'),
+    vs:[[ 'swiss', L('两者都追求一眼读清；瑞士风格靠网格和留白，木活字海报靠把每一行都撑满。','Both want to be read at a glance; Swiss uses the grid and white space, the wood-type poster fills every line.')],
+        [ 'halftone', L('半色调海报靠一张大图；木活字海报的主角是字本身。','The halftone poster leans on one big image; in the wood-type poster the letters are the image.')]],
+    keys:['align','vocab','white','inks','tPaper','img'],
+    l:[['Wood type',WK('Wood_type')],['Letterpress printing',WK('Letterpress_printing')],['Hatch Show Print',WK('Hatch_Show_Print')],['Nashville Scene · Fine Print','https://www.nashvillescene.com/arts_culture/coverstory/fine-print-the-letterpress-artists-visually-defining-nashville/article_4842e4ae-1ce5-11ed-b75e-83816f4dfa1a.html']]},
 };
 let lastPreset = 'zine';
 const ITEM = {}; GROUPS.forEach(g => g.items.forEach(it => { if (it.key) ITEM[it.key] = it; }));
@@ -996,6 +1010,21 @@ function renderPage(poster, Q, pageIdx){
 
   const boxes = [], order = [], textRects = [], shapeBoxes = [];
   const colourOf = idx => idx<0 ? '#161616' : inkList[idx];
+  // wood-type setting: break the text into short lines and size each one so it fills the measure;
+  // alternate lines change weight and width, the way a compositor mixes the fonts in the case
+  const fitLines = (el, target, vary, maxSize) => {
+    const words = el.textContent.split(/\s+|(?<=[、，。：·])/).filter(Boolean), lines = [];
+    let cur = '';
+    words.forEach(w => { const sep = /[\u3400-\u9fff]$/.test(cur) || /[、，。：·]$/.test(cur) ? '' : ' '; if (cur && (cur + sep + w).length > 11){ lines.push(cur); cur = w; } else cur = cur ? cur + sep + w : w; });
+    if (cur) lines.push(cur);
+    el.textContent = '';
+    lines.forEach((ln, i) => {
+      const sp = document.createElement('span'); sp.textContent = ln;
+      sp.style.cssText = `display:block;width:max-content;white-space:nowrap;font-size:100px;line-height:.95` + (vary ? `;font-stretch:${i%2 ? 75 : 125}%;font-weight:${i%2 ? 700 : 900}` : '');
+      el.appendChild(sp);
+      const w = sp.offsetWidth || 1; sp.style.fontSize = Math.min(100*target/w, maxSize).toFixed(1) + 'px';
+    });
+  };
   const addText = (parent, str, css, opts={}) => {
     // Chinese typesetting: kinsoku (line-break: strict), opening-bracket trim and Han–Latin spacing, or none of it
     let tcss = '';
@@ -1012,7 +1041,7 @@ function renderPage(poster, Q, pageIdx){
 
   // composition anchors from focal point, asymmetry and reading path
   const path = Q.path;
-  const align = path==='radial' ? 'center' : Q.align;
+  const align = path==='radial' ? 'center' : Q.align, tAlign = align==='fill' ? 'justify' : align;
   const FOC = {thirds:[1/3,1/3], golden:[.382,.382], center:[.5,.42], edge:[.08,.2]}[Q.focal];
   const flip = align!=='center' && Q.asym > .55 && rng() < .3 && path==='auto';
   let k = Math.max(2, Math.min(cols, Math.round(cols*(.5 + Q.titleScale*1.6))));
@@ -1020,6 +1049,7 @@ function renderPage(poster, Q, pageIdx){
   let startCol = align==='center' ? Math.round((cols-k)/2) : Math.round((cols-k)*(1-Q.asym)*.5);
   if (flip) startCol = cols - k - startCol;
   if (Q.focal==='center' && align!=='center' && path==='auto') startCol = Math.max(0, Math.min(cols-k, Math.round(cols*FOC[0] - k/2)));
+  if (align==='fill'){ k = cols; startCol = 0; }
   const titleRow = (Q.focal==='edge' || path==='z' || path==='f') ? 0 : Math.max(0, Math.min(nRows-2, Math.round(FOC[1]*nRows) - 1));
   const tx0 = colX(startCol), ty = snapB(rowY(titleRow));
   const bleedX = bleedOK ? -Q.breakS*(.05 + .08*rng())*W : 0;
@@ -1027,7 +1057,7 @@ function renderPage(poster, Q, pageIdx){
 
   // title
   const tStyle = Q.titleStyle;
-  const titleCss = `font-family:${pair.d};font-weight:${Q.pair==='editorial'?400:Q.tWeight};font-stretch:${Q.pair==='swiss'?Q.tWidth:100}%;font-size:${titleSize}px;line-height:${Q.tLead};letter-spacing:${Q.track}em;${Q.upper?'text-transform:uppercase;':''}text-align:${align};text-wrap:balance`
+  const titleCss = `font-family:${pair.d};font-weight:${Q.pair==='editorial'?400:Q.tWeight};font-stretch:${Q.pair==='swiss'?Q.tWidth:100}%;font-size:${titleSize}px;line-height:${Q.tLead};letter-spacing:${Q.track}em;${Q.upper?'text-transform:uppercase;':''}text-align:${tAlign};text-wrap:balance`
     + (tStyle==='outline' ? `;-webkit-text-stroke:${Math.max(1.5, titleSize*.016).toFixed(1)}px ${textC};color:transparent` : '');
   const titleColour = tStyle==='ink' || tStyle==='double' ? inkList[0] : tStyle==='knock' ? paperC : tStyle==='outline' ? 'transparent' : textC;
   const titleOpts = {color:titleColour, cls: tStyle==='ink' || tStyle==='knock' || tStyle==='double' ? '' : textCls, blend: tStyle==='knock' ? 'normal' : blend};
@@ -1039,6 +1069,7 @@ function renderPage(poster, Q, pageIdx){
     const shift = (flip ? -1 : 1) * Math.max(bleedX + cropX, -.32*spanW(k));   // never push more than about a third of the title off the page
     title = addText(hero, txt('title'), `${titleCss};left:${tx0 + shift}px;top:${ty}px;width:${spanW(k) + Math.abs(shift)}px;${rot(jit())}`, titleOpts);
   }
+  if (align==='fill' && !Q.vertical) fitLines(title, spanW(k), Q.pair==='swiss', titleSize*1.6);
   if (tStyle==='outline') title.style.webkitTextStroke = `${Math.max(1.5, titleSize*.016).toFixed(1)}px ${textC}`;
   // two plates: the same title on ink A and ink B, slightly offset, so the overlap prints a third colour
   if (tStyle==='double'){
@@ -1063,11 +1094,13 @@ function renderPage(poster, Q, pageIdx){
   let cursorY = Q.vertical ? m + rowH*.2 : ty + tR.h + gap*.8;
   let subtitle = null, subK = Math.max(2, Math.min(cols, Math.round(cols*.55)));
   if (Q.levels >= 3){
+    if (align==='fill') subK = cols;
     let subCol = Q.vertical ? (flip ? 0 : Math.min(cols-subK, Math.ceil(titleSize/(colW+g)))) : Math.min(startCol, cols-subK);
     if (align==='center') subCol = Math.round((cols-subK)/2);
     let sy = snapB(cursorY);
     if (path==='z') sy = snapB(H*.58);
-    subtitle = addText(hero, txt('subtitle'), `font-family:${pair.d};font-weight:${Q.pair==='editorial'?400:700};font-style:${pair.italicSub?'italic':'normal'};font-size:${sub}px;line-height:1.1;left:${colX(subCol)}px;top:${sy}px;width:${spanW(subK)}px;text-align:${align};text-wrap:balance;${rot(jit()*.6)}`);
+    subtitle = addText(hero, txt('subtitle'), `font-family:${pair.d};font-weight:${Q.pair==='editorial'?400:700};font-style:${pair.italicSub?'italic':'normal'};font-size:${sub}px;line-height:1.1;left:${colX(subCol)}px;top:${sy}px;width:${spanW(subK)}px;text-align:${tAlign};text-wrap:balance;${rot(jit()*.6)}`);
+    if (align==='fill'){ subtitle.style.left = colX(0) + 'px'; subtitle.style.width = spanW(cols) + 'px'; if (Q.upper) subtitle.style.textTransform = 'uppercase'; fitLines(subtitle, spanW(cols), Q.pair==='swiss', titleSize*.9); }
     if (path!=='z') cursorY = sy + subtitle.offsetHeight;
     textRects.push({x:subtitle.offsetLeft, y:subtitle.offsetTop, w:subtitle.offsetWidth, h:subtitle.offsetHeight});
   }
@@ -1311,7 +1344,7 @@ function renderPage(poster, Q, pageIdx){
     if (type==='line') ang = (Q.angles==='free' && !snapThis) ? ang : (rng()<.75 ? 0 : (Q.angles==='d45' ? 45 : 90));
     // harmonic angles: free and 45° shapes take their angles from the main axis instead of anywhere on the dial
     if (harmThis && !snapThis && Q.angles!=='ortho') ang = Q.axis + [0, 90, 45, -45][Math.floor(rng()*(Q.angles==='d45' ? 4 : 2))];
-    if (type==='circle') ang = 0;
+    if (type==='circle' || type==='burst') ang = 0;
     if (!snapThis) ang += jit();
     if (snapThis && type==='line' && ang===90){ box = {x:x + s/2 - h/2, y:y - s/2 + h/2, w:h, h:s}; }
     const filled = rng() < Q.fill;
@@ -1319,6 +1352,8 @@ function renderPage(poster, Q, pageIdx){
     let el;
     if (type==='circle') el = svgEl('circle', {cx:x+s/2, cy:y+s/2, r: filled ? s/2 : s/2 - sw/2});
     else if (type==='tri') el = svgEl('polygon', {points:`${x},${y+s} ${x+s/2},${y} ${x+s},${y+s}`, 'stroke-linejoin': Q.radius>.05 ? 'round' : 'miter'});
+    else if (type==='star'){ const cx = x+s/2, cy = y+s/2; el = svgEl('polygon', {points:Array.from({length:10}, (_, j) => { const rr = j%2 ? s*.2 : s/2, a = -Math.PI/2 + j*Math.PI/5; return `${(cx + rr*Math.cos(a)).toFixed(1)},${(cy + rr*Math.sin(a)).toFixed(1)}`; }).join(' ')}); }
+    else if (type==='burst'){ const cx = x+s/2, cy = y+s/2, R = s*.75, n = 18; let d = ''; for (let j=0;j<n;j++){ const a0 = j*2*Math.PI/n, a1 = a0 + Math.PI/n; d += `M${cx.toFixed(1)} ${cy.toFixed(1)}L${(cx + R*Math.cos(a0)).toFixed(1)} ${(cy + R*Math.sin(a0)).toFixed(1)}L${(cx + R*Math.cos(a1)).toFixed(1)} ${(cy + R*Math.sin(a1)).toFixed(1)}Z`; } el = svgEl('path', {d}); }
     else el = svgEl('rect', {x, y, width:s, height:h, rx:r, ry:r});
     if (ang) el.setAttribute('transform', `rotate(${ang.toFixed(2)} ${x+s/2} ${y+h/2})`);
     el.setAttribute('fill', filled || type==='line' ? colour : 'none');

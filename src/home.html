@@ -95,6 +95,22 @@ a.labcard:focus-visible{outline:2.5px solid var(--blue);outline-offset:4px}
 .stage-c .labs-of a:hover{background:var(--ink);color:var(--sheet)}
 .foot{margin-top:40px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
 .foot a{color:var(--ink);text-decoration-color:var(--pink);text-decoration-thickness:2px;text-underline-offset:3px}
+.simlab .tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:2px 6px;border:1.5px solid var(--ink);vertical-align:middle;font-weight:500}
+.simgrid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:28px;margin-top:16px;align-items:start}
+.simstage{display:flex;flex-direction:column;gap:10px;position:sticky;top:12px}
+.simwrap{position:relative}
+#simCanvas{display:block;width:100%;border:1px solid var(--rule)}
+#simLoupe{position:absolute;right:8px;top:8px;width:200px;height:200px;border:1.5px solid var(--ink);background:var(--sheet);opacity:0;transition:opacity .15s;pointer-events:none}
+.simpanel{display:flex;flex-direction:column;gap:18px}
+.simgroup{display:flex;flex-direction:column;gap:8px;border-top:1.5px solid var(--ink);padding-top:10px}
+.simgroup h3{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;margin:0}
+.simcolors{display:flex;flex-wrap:wrap;gap:14px;font-size:13px}
+.simcolors label{display:flex;align-items:center;gap:6px}
+.simcolors input{width:36px;height:28px;border:1.5px solid var(--ink);padding:0;background:none}
+.simspec{margin-top:20px}
+.simspec summary{cursor:pointer;font-weight:500}
+.simspec textarea{display:block;width:100%;box-sizing:border-box;margin:10px 0;font:12px/1.5 var(--mono);border:1px solid var(--rule);background:transparent;color:var(--ink);padding:10px;resize:vertical}
+@media (max-width:900px){.simgrid{grid-template-columns:1fr}.simstage{position:static}#simLoupe{width:140px;height:140px}}
 </style>
 
 <div class="wrap">
@@ -199,6 +215,25 @@ a.labcard:focus-visible{outline:2.5px solid var(--blue);outline-offset:4px}
       <div class="stage-c"><canvas id="pp5" width="240" height="300" aria-hidden="true"></canvas><h3><i>05</i><span class="zh">印刷</span><span class="en">Print</span></h3><p><span class="zh">用正片叠底模拟油墨叠印，将 B 版稍作偏移，再加入颗粒和缺墨效果。</span><span class="en">Translucent inks multiply on paper, plate B slips a little, then grain and starved ink.</span></p><div class="real"><b><span class="zh">实际制作</span><span class="en">On press</span></b><span><span class="zh">版纸包覆在油墨滚筒上，油墨穿过微孔印到纸面，各色分别制版后套印。Riso 通常使用吸墨性较好的非涂布纸；Oxford Greenprint 提醒设计时考虑约 1–2 mm 的套色偏差。</span><span class="en">The master wraps a drum and ink is forced through its holes onto the paper; one drum per colour, one pass per colour. Colours miss by 1–2 mm, unavoidably. Soy-based ink needs uncoated paper to dry.</span></span><em><span class="zh">本页简化：套色偏差只用整体平移表现，混色采用正片叠底。实际还可能出现倾斜或伸缩，油墨特性、墨量和印刷顺序也会影响颜色。</span><span class="en">Where the simulation differs: misregistration is a plain shift here and colours multiply; on press it also skews and stretches, and ink density and print order change the mix.</span></em><small><a href="https://en.wikipedia.org/wiki/Risograph" target="_blank" rel="noopener">Risograph</a> · <a href="https://oxfordgreenprint.com/home/design-for-riso/" target="_blank" rel="noopener">Oxford Greenprint</a></small></div><div class="labs-of"><a data-page="print" href="print.html">01</a><a data-page="layout" href="layout.html">02</a></div></div>
       <div class="stage-c"><canvas id="pp6" width="240" height="300" aria-hidden="true"></canvas><h3><i>06</i><span class="zh">成品</span><span class="en">Object</span></h3><p><span class="zh">在较大的纸张上印刷并预留出血，按裁切线裁到成品尺寸，再沿折线折叠。</span><span class="en">Printed with bleed on a larger sheet, cut at the trim, folded at the crease.</span></p><div class="real"><b><span class="zh">实际制作</span><span class="en">On press</span></b><span><span class="zh">待油墨干燥后，按裁切标记裁去多余部分，再进行折页或装订。小册子需在印刷前按装订方式拼版，骑马钉是其中一种常见方式。</span><span class="en">Once the ink is dry, a guillotine trims the bleed at the crop marks, then the sheet is folded; multi-page work is imposed first, then saddle-stitched.</span></span><em><span class="zh">本页简化：仅展示裁切与折页示意，未模拟加工误差。</span><span class="en">Where the simulation differs: only a diagram here; cutting and folding tolerances are not simulated.</span></em><small><a href="https://goodpress.co.uk/pages/file-preparation" target="_blank" rel="noopener">Good Press</a> · <a href="https://en.wikipedia.org/wiki/Imposition" target="_blank" rel="noopener">Imposition</a></small></div><div class="labs-of"><a data-page="object" href="object.html">03</a></div></div>
     </div>
+  </section>
+
+  <section class="split simlab" id="simlab" data-aria-zh="模拟实验室" data-aria-en="Simulation Lab">
+    <h2><span class="zh">模拟实验室</span><span class="en">Simulation Lab</span> <small class="tag">REFERENCE</small></h2>
+    <p><span class="zh">把上面这条管线的每个参数摊开，作为参考实现：影调 → 分版 → 加网 → 印刷 → 不完美 → 纸。别处想复现这个风格时，在这里调好，复制“参数规格”带走。渲染按屏幕的设备像素比计算，噪声按页面坐标取样，缺墨有下限，颗粒是成团的小点。</span><span class="en">Every parameter of the pipeline above, laid out as a reference implementation: tone → plates → screen → print → imperfection → paper. To reproduce the style elsewhere, tune it here and copy the spec. Rendering follows the screen's device pixel ratio, noise is sampled in page coordinates, ink starvation has a floor, and grain comes in small clusters.</span></p>
+    <div class="simgrid">
+      <div class="simstage">
+        <div class="seg" id="simView" role="group"></div>
+        <div class="simwrap"><canvas id="simCanvas" aria-label="Simulation preview"></canvas><canvas id="simLoupe" width="200" height="200" aria-hidden="true"></canvas></div>
+        <p class="hint"><span class="zh">把鼠标（或手指）移到画面上，角落会放大 4 倍：质感应该是“凑近才发现”。</span><span class="en">Hover or touch the proof: a corner shows it at 4×. Texture should only show up close.</span></p>
+        <div class="seg" id="simPreset" role="group"></div>
+      </div>
+      <div class="simpanel" id="simPanel"></div>
+    </div>
+    <details class="simspec">
+      <summary><span class="zh">参数规格：复制到别的项目</span><span class="en">Spec: copy it to another project</span></summary>
+      <textarea id="simSpec" readonly spellcheck="false" rows="16"></textarea>
+      <button class="btn" type="button" id="simCopy"><span class="zh">复制</span><span class="en">Copy</span></button> <span class="hint" id="simMsg"></span>
+    </details>
   </section>
 
   <footer class="foot">
@@ -468,5 +503,163 @@ function drawPipeline(){
 
 drawPrint(); drawLayout(); drawObject(); drawElement(); drawPipeline();
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { drawLayout(); drawObject(); drawElement(); drawPipeline(); });
+
+/* ---------- Simulation Lab: the reference implementation of the pipeline, with every parameter exposed ---------- */
+(() => {
+  const cv = document.getElementById('simCanvas'); if (!cv) return;
+  const DEF = {black:.08, white:.92, contrast:1.25, levels:0, bCurve:1.9,
+    inkA:'#FF6C2F', inkB:'#3D5588', paper:'#F2EDE2',
+    pitch:6, angleA:15, angleB:75, gain:.15, jitter:.08, rough:.3,
+    misX:2, misY:1, blend:'multiply',
+    grain:.03, grainSize:1.6, starve:.35, floor:.75, starveScale:120, smallText:48,
+    tex:.08, seed:7};
+  const PRESETS = {
+    riso:{name:['Riso 双色（推荐）','Riso two-colour (recommended)'], p:{}},
+    clean:{name:['图形化网点（无噪声）','Graphic dots (no noise)'], p:{pitch:11, gain:0, jitter:0, rough:0, misX:0, misY:0, grain:0, starve:0, floor:1, tex:0}},
+    worn:{name:['粗糙旧印','Rough, worn print'], p:{pitch:7, gain:.3, jitter:.15, rough:.65, misX:3, misY:2, grain:.07, grainSize:2.2, starve:.6, floor:.6, starveScale:90, tex:.14}},
+  };
+  const S = Object.assign({}, DEF);
+  const L = (zh, en) => `<span class="zh">${zh}</span><span class="en">${en}</span>`;
+  // [key, zh, en, min, max, step, unit]
+  const GROUPS = [
+    [['01 影调','01 Tone'], ['只作用于照片类元素（球体）：先压缩层次，再分版。','Applies to photographic elements (the sphere): compress the tones before splitting into plates.'], [
+      ['black','黑场','Black point',0,.3,.01,''],['white','白场','White point',.7,1,.01,''],['contrast','对比度','Contrast',.6,2,.05,''],['levels','色调分离','Posterize',0,8,1,'lv']]],
+    [['02 分版','02 Plates'], ['每种墨一张灰度图：A 走亮部和中间调，B 走暗部；数值越大，B 只留在越暗的地方。','One greyscale image per ink: A takes lights and midtones, B the darks; a higher value keeps B to the deepest shadows.'], [
+      ['bCurve','B 版曲线','Plate B curve',1,3,.05,'']]],
+    [['03 加网','03 Screen'], ['AM 圆点：网距决定粗细，不决定深浅；网点扩大、大小随机和边缘粗糙让点不再像矢量。','AM round dots: the pitch sets coarseness, not tone; dot gain, size jitter and rough edges stop the dots looking like vectors.'], [
+      ['pitch','网距','Pitch',3,16,.5,'px'],['angleA','A 版网角','Angle A',0,90,1,'°'],['angleB','B 版网角','Angle B',0,90,1,'°'],['gain','网点扩大','Dot gain',0,.6,.01,''],['jitter','网点大小随机','Dot size jitter',0,.3,.01,''],['rough','边缘粗糙','Edge roughness',0,1,.05,'']]],
+    [['04 印刷','04 Print'], ['透明油墨相乘；B 版整体错开，全站同一个方向和距离。','Translucent inks multiply; plate B slips as a whole, the same way everywhere.'], [
+      ['misX','错位 X','Misregister X',-6,6,.5,'px'],['misY','错位 Y','Misregister Y',-6,6,.5,'px']]],
+    [['05 不完美','05 Imperfection'], ['颗粒是成团的小点，缺墨是低频的变浅，有下限，永远不会挖成白洞；小于“小字阈值”的文字不加质感。','Grain is small clusters, starvation is a low-frequency lightening with a floor that never punches white holes; text below the small-text threshold gets no texture.'], [
+      ['grain','颗粒比例','Grain coverage',0,.15,.005,''],['grainSize','颗粒大小','Grain size',.8,4,.1,'px'],['starve','缺墨强度','Starvation',0,1,.05,''],['floor','缺墨下限','Starvation floor',.4,1,.05,''],['starveScale','缺墨斑块大小','Starvation scale',30,300,5,'px'],['smallText','小字阈值','Small-text threshold',12,96,2,'px']]],
+    [['06 纸','06 Paper'], ['纸纹乘在纸色上，墨再叠上去，所以纸纹会从墨里透出来。','Paper texture multiplies the paper; ink goes on top, so the texture shows through it.'], [
+      ['tex','纸纹','Paper texture',0,.25,.005,''],['seed','随机种子','Seed',1,99,1,'']]],
+  ];
+  const fmt = (k, v) => { const it = GROUPS.flatMap(g => g[2]).find(x => x[0]===k); const u = it ? it[6] : ''; return (k==='levels' && !v) ? '—' : (Number.isInteger(+it[5]) ? String(Math.round(v)) : (+v).toFixed(it[5] < .01 ? 3 : 2)) + (u ? ' ' + u : ''); };
+  // panel
+  const panel = document.getElementById('simPanel');
+  panel.innerHTML = GROUPS.map(([t, h, items]) => `<div class="simgroup"><h3>${L(t[0], t[1])}</h3><p class="hint">${L(h[0], h[1])}</p>${items.map(([k, zh, en, mn, mx, st]) =>
+    `<div class="field"><label for="sim_${k}">${L(zh, en)}</label><input type="range" id="sim_${k}" min="${mn}" max="${mx}" step="${st}" data-k="${k}"><output id="sim_${k}_o"></output></div>`).join('')}
+    ${t[0].startsWith('02') ? `<div class="simcolors">${[['inkA','墨 A','Ink A'],['inkB','墨 B','Ink B'],['paper','纸','Paper']].map(([k, zh, en]) => `<label>${L(zh, en)} <input type="color" id="sim_${k}" data-k="${k}"></label>`).join('')}</div>` : ''}
+    ${t[0].startsWith('04') ? `<div class="seg" id="simBlend">${[['multiply','透明叠印','Overprint'],['opaque','不透明遮盖','Opaque']].map(([v, zh, en]) => `<button type="button" data-v="${v}">${L(zh, en)}</button>`).join('')}</div>` : ''}</div>`).join('');
+  const views = [['final','成品','Print'],['tone','影调','Tone'],['A','A 版','Plate A'],['B','B 版','Plate B']];
+  let view = 'final';
+  document.getElementById('simView').innerHTML = views.map(([v, zh, en]) => `<button type="button" data-v="${v}">${L(zh, en)}</button>`).join('');
+  document.getElementById('simPreset').innerHTML = Object.entries(PRESETS).map(([k, p]) => `<button type="button" data-v="${k}">${L(p.name[0], p.name[1])}</button>`).join('');
+  let preset = 'riso';
+  function sync(){
+    panel.querySelectorAll('input[type=range]').forEach(i => { i.value = S[i.dataset.k]; document.getElementById(i.id + '_o').textContent = fmt(i.dataset.k, S[i.dataset.k]); });
+    panel.querySelectorAll('input[type=color]').forEach(i => i.value = S[i.dataset.k]);
+    document.querySelectorAll('#simBlend button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===S.blend));
+    document.querySelectorAll('#simView button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===view));
+    document.querySelectorAll('#simPreset button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===preset));
+    document.getElementById('simSpec').value = spec();
+  }
+
+  // noise: value noise on an integer lattice, smoothstep-interpolated, sampled in CSS-pixel page coordinates
+  const fr = v => v - Math.floor(v);
+  const hash = (i, j, s) => fr(Math.sin(i*127.1 + j*311.7 + s*74.7)*43758.5453);
+  const vnoise = (x, y, s) => { const ix = Math.floor(x), iy = Math.floor(y), tx = x - ix, ty = y - iy, sx = tx*tx*(3-2*tx), sy = ty*ty*(3-2*ty);
+    const a = hash(ix, iy, s), b = hash(ix+1, iy, s), c = hash(ix, iy+1, s), d = hash(ix+1, iy+1, s); return a + (b-a)*sx + (c-a)*sy + (a-b-c+d)*sx*sy; };
+  const hex = c => [1,3,5].map(i => parseInt(c.slice(i, i+2), 16)/255);
+  const sstep = (a, b, x) => { const t = Math.min(1, Math.max(0, (x-a)/(b-a))); return t*t*(3-2*t); };
+
+  let W = 0, H = 0, dpr = 1, masks = null;
+  // the proof: a lit sphere (photo-like, both plates), a toned flood block (plate B), a solid headline (plate A) and a line of small text (plate B)
+  function buildMasks(cw, ch, r){
+    const w = Math.round(cw*r), h = Math.round(ch*r), c = document.createElement('canvas'); c.width = w; c.height = h; const g = c.getContext('2d');
+    const get = draw => { g.clearRect(0, 0, w, h); g.save(); g.scale(r, r); draw(g); g.restore(); const d = g.getImageData(0, 0, w, h).data, m = new Float32Array(w*h); for (let i=0;i<w*h;i++) m[i] = d[i*4+3]/255; return m; };
+    const head = get(g => { g.font = `800 ${Math.round(ch*.3)}px "Bricolage Grotesque", "Archivo", sans-serif`; g.textBaseline = 'alphabetic'; g.fillText('INK', cw*.05, ch*.93); });
+    const small = get(g => { g.font = `400 ${cw < 500 ? 11 : 13}px "IBM Plex Sans", sans-serif`; g.textAlign = 'right'; g.fillText(cw < 500 ? 'Small text stays clean.' : 'Small text stays clean: no grain, no starvation.', cw*.97, ch*.95); });
+    return {w, h, head, small};
+  }
+  function render(fast){
+    const cssW = Math.min(720, cv.parentElement.clientWidth || 640), cssH = Math.round(cssW*.68);
+    dpr = fast ? 1 : Math.min(2, window.devicePixelRatio || 1);
+    W = Math.round(cssW*dpr); H = Math.round(cssH*dpr);
+    cv.width = W; cv.height = H; cv.style.width = cssW + 'px'; cv.style.height = cssH + 'px';
+    const key = [cssW, cssH, dpr].join('|'); if (!masks || masks.key!==key){ masks = buildMasks(cssW, cssH, dpr); masks.key = key; }
+    const g = cv.getContext('2d'), im = g.createImageData(W, H), o = im.data;
+    const P = hex(S.paper), A = hex(S.inkA), B = hex(S.inkB), seed = S.seed;
+    const aA = S.angleA*Math.PI/180, aB = S.angleB*Math.PI/180, cA = Math.cos(aA), sA = Math.sin(aA), cB = Math.cos(aB), sB = Math.sin(aB), TAU = Math.PI*2;
+    const scx = cssW*.34, scy = cssH*.42, sr = cssH*.32, bx0 = cssW*.5, bx1 = cssW*.96, by0 = cssH*.06, by1 = cssH*.66;
+    const tone = d => { let v = (d - S.black)/Math.max(.02, S.white - S.black); v = v<0?0:v>1?1:v; v = (v - .5)*S.contrast + .5; v = v<0?0:v>1?1:v; if (S.levels > 1) v = Math.round(v*(S.levels-1))/(S.levels-1); return v; };
+    // the continuous-tone plates, in CSS coordinates
+    const src = (X, Y) => {
+      let tA = 0, tB = 0, raw = 0;
+      if (X > bx0 && X < bx1 && Y > by0 && Y < by1){ const u = (X-bx0)/(bx1-bx0), v = (Y-by0)/(by1-by0); tB = Math.min(1, .93 - .22*(u*.6 + v*.4) + .14*(vnoise(X/150, Y/150, seed+3) - .5)); raw = tB; }
+      const dx = (X-scx)/sr, dy = (Y-scy)/sr, d2 = dx*dx + dy*dy;
+      if (d2 < 1){ const nz = Math.sqrt(1-d2), lit = Math.max(0, -dx*.5 - dy*.6 + nz*.72) + .25*Math.pow(Math.max(0, -dx*.3 - dy*.35 + nz*.88), 30);
+        const d = Math.min(1, Math.max(0, .96 - lit*.92)); raw = d; const t = tone(d); tA = Math.min(1, Math.pow(t, .75)*1.05); tB = Math.max(tB, Math.pow(t, S.bCurve)); }
+      else { const ex = (X - scx - sr*.25)/(sr*1.05), ey = (Y - (scy + sr*1.02))/(sr*.16), e = ex*ex + ey*ey; if (e < 1){ const t = .55*(1 - e); tB = Math.max(tB, t); raw = Math.max(raw, t); } }
+      return [tA, tB, raw];
+    };
+    const dot = (X, Y, v, c, s, pl) => {
+      if (v <= 0) return 0; if (v >= .999) return 1;
+      v = Math.min(1, v + S.gain*v*(1-v)*1.3);
+      const u = (X*c + Y*s)/S.pitch, w = (-X*s + Y*c)/S.pitch, j = 1 + S.jitter*(hash(Math.floor(u), Math.floor(w), seed + pl*31) - .5)*2;
+      const th = (Math.cos(TAU*u) + Math.cos(TAU*w) + 2)/4 + S.rough*.16*(vnoise(X/(S.pitch*.35), Y/(S.pitch*.35), seed + 50 + pl) - .5);
+      return th > 1 - Math.min(1, v*j) ? 1 : 0;
+    };
+    const imperfect = (X, Y, pl) => {
+      let s = .97;
+      if (S.starve > 0){ const n = vnoise(X/S.starveScale, Y/S.starveScale, seed + 100 + pl)*.7 + vnoise(X/(S.starveScale*.4), Y/(S.starveScale*.4), seed + 120 + pl)*.3; s *= Math.max(S.floor, 1 - S.starve*sstep(.35, .85, n)); }
+      if (S.grain > 0){ const gn = vnoise(X/S.grainSize, Y/S.grainSize, seed + 200 + pl), t = 1 - S.grain*2.2; s *= 1 - .85*sstep(t, t + .06, gn); }
+      return s;
+    };
+    const mx = S.misX, my = S.misY, opaque = S.blend==='opaque', big = (cssH*.3) >= S.smallText;
+    for (let y=0;y<H;y++) for (let x=0;x<W;x++){
+      const i = y*W + x, X = x/dpr, Y = y/dpr;
+      const [tA, , raw] = src(X, Y), [, tB2] = src(X - mx, Y - my);
+      const hA = masks.head[i], sm = masks.small[i], xb = Math.round(x - mx*dpr), yb = Math.round(y - my*dpr);
+      const smB = xb>=0 && yb>=0 && xb<W && yb<H ? masks.small[yb*W + xb] : 0;
+      let covA = Math.max(dot(X, Y, tA, cA, sA, 0), hA), covB = dot(X - mx, Y - my, tB2, cB, sB, 1);
+      let o0, o1, o2;
+      if (view==='tone'){ const v = 1 - raw; o0 = o1 = o2 = v; }
+      else if (view==='A'){ const v = 1 - covA; o0 = o1 = o2 = v; }
+      else if (view==='B'){ const v = 1 - Math.max(covB, sm); o0 = o1 = o2 = v; }
+      else {
+        const pt = 1 - S.tex*(.6*vnoise(X/1.3, Y/1.3, seed + 300) + .4*vnoise(X/9, Y/9, seed + 310));
+        o0 = P[0]*pt; o1 = P[1]*pt; o2 = P[2]*pt;
+        const kA = covA*(hA && !big ? 1 : imperfect(X, Y, 0)), kB = Math.max(covB*imperfect(X - mx, Y - my, 1), smB*.97);
+        if (kA){ if (opaque){ o0 += (A[0]-o0)*kA; o1 += (A[1]-o1)*kA; o2 += (A[2]-o2)*kA; } else { o0 *= 1 - kA*(1-A[0]); o1 *= 1 - kA*(1-A[1]); o2 *= 1 - kA*(1-A[2]); } }
+        if (kB){ if (opaque){ o0 += (B[0]-o0)*kB; o1 += (B[1]-o1)*kB; o2 += (B[2]-o2)*kB; } else { o0 *= 1 - kB*(1-B[0]); o1 *= 1 - kB*(1-B[1]); o2 *= 1 - kB*(1-B[2]); } }
+      }
+      o[i*4] = o0*255; o[i*4+1] = o1*255; o[i*4+2] = o2*255; o[i*4+3] = 255;
+    }
+    g.putImageData(im, 0, 0);
+  }
+  // spec: every value with its unit, plus the rules the implementation follows
+  function spec(){
+    const r = k => +(+S[k]).toFixed(3);
+    return JSON.stringify({name:'Print Labs · simulation spec', version:1, preset, units:'px are CSS pixels; render at devicePixelRatio; noise sampled in page coordinates',
+      tone:{black:r('black'), white:r('white'), contrast:r('contrast'), posterize:S.levels || null, appliesTo:'photographic elements only'},
+      plates:{inkA:S.inkA, inkB:S.inkB, paper:S.paper, plateA:'lights and midtones: t^0.75', plateB:`darks: t^${r('bCurve')}`, solidType:'not screened'},
+      screen:{type:'AM round', pitchPx:r('pitch'), angleA:S.angleA, angleB:S.angleB, dotGain:r('gain'), dotSizeJitter:r('jitter'), edgeRoughness:r('rough')},
+      print:{blend:S.blend, misregisterPx:[r('misX'), r('misY')], misregisterAppliesTo:'plate B as a whole, same vector everywhere'},
+      imperfection:{grainCoverage:r('grain'), grainSizePx:r('grainSize'), starvation:r('starve'), starvationFloor:r('floor'), starvationScalePx:r('starveScale'), noTextureBelowPx:r('smallText')},
+      paper:{texture:r('tex'), seed:S.seed, textureShowsThroughInk:true},
+      rules:['Flat shapes get a tone field before screening, never a flat fill', 'One screen per ink across the page: same pitch and angle everywhere', 'Starvation lightens ink, never below the floor; no white holes', 'Grain is clustered and smaller than 0.3 x pitch']}, null, 2);
+  }
+  let raf = 0, slow = 0;
+  const schedule = () => { cancelAnimationFrame(raf); clearTimeout(slow); raf = requestAnimationFrame(() => render(true)); slow = setTimeout(() => { render(false); sync(); }, 220); };
+  panel.addEventListener('input', e => { const k = e.target.dataset.k; if (!k) return; S[k] = e.target.type==='color' ? e.target.value : +e.target.value; preset = null;
+    if (e.target.type==='range') document.getElementById(e.target.id + '_o').textContent = fmt(k, S[k]); schedule(); });
+  document.getElementById('simBlend').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; S.blend = b.dataset.v; preset = null; sync(); schedule(); });
+  document.getElementById('simView').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; view = b.dataset.v; sync(); schedule(); });
+  document.getElementById('simPreset').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; preset = b.dataset.v; Object.assign(S, DEF, PRESETS[preset].p); sync(); schedule(); });
+  document.getElementById('simCopy').addEventListener('click', async () => { const t = document.getElementById('simSpec'); let ok = false;
+    try { await navigator.clipboard.writeText(t.value); ok = true; } catch(e){ t.select(); try { ok = document.execCommand('copy'); } catch(_){} }
+    document.getElementById('simMsg').innerHTML = ok ? L('已复制。','Copied.') : L('浏览器不允许自动复制，文字已选中，请按 Ctrl/⌘ + C。','Copying was blocked; the text is selected, press Ctrl/⌘ + C.'); });
+  // loupe: 4x of the area under the pointer, pixels kept sharp
+  const lp = document.getElementById('simLoupe'), lg = lp.getContext('2d');
+  cv.addEventListener('pointermove', e => { const b = cv.getBoundingClientRect(), X = (e.clientX - b.left)*W/b.width, Y = (e.clientY - b.top)*H/b.height, s = 50*dpr;
+    lg.imageSmoothingEnabled = false; lg.clearRect(0, 0, 200, 200); lg.drawImage(cv, X - s/2, Y - s/2, s, s, 0, 0, 200, 200); const right = X > W/2; lp.style.left = right ? '8px' : 'auto'; lp.style.right = right ? 'auto' : '8px'; lp.style.opacity = 1; });
+  cv.addEventListener('pointerleave', () => { lp.style.opacity = 0; });
+  let rw = 0; window.addEventListener('resize', () => { clearTimeout(rw); rw = setTimeout(() => render(false), 200); });
+  sync(); render(false);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { masks = null; render(false); });
+})();
+
 })();
 </script>

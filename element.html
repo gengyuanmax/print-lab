@@ -196,6 +196,7 @@ canvas.mixcv{touch-action:none;cursor:grab}
         <div class="row2"><span class="zh">镜像</span><span class="en">Mirror</span><div class="seg" id="mvMirror"></div></div>
         <div class="row2"><span class="zh">条带错位</span><span class="en">Slice</span><div class="seg" id="mvSlice"></div></div>
         <div class="row2"><span class="zh">形式</span><span class="en">Form</span><div class="seg" id="mvForm"></div></div>
+        <div class="row2"><span class="zh">反相</span><span class="en">Negative</span><div class="seg" id="mvNeg"></div></div>
         <div class="row2"><span class="zh">重复</span><span class="en">Repeat</span><div class="seg" id="mvRepeat"></div></div>
         <div class="row2"><span class="zh">拖影</span><span class="en">Drag</span><div class="seg" id="mvDrag"></div></div>
         <div class="row2"><span class="zh">色调深浅</span><span class="en">Tone</span><div class="seg" id="mvTone"></div></div>
@@ -902,6 +903,7 @@ const MV = {
   mvMirror:['mirror', [['none',L('无','None')],['flip',L('水平翻转','Flip')],['sym',L('对称','Symmetric')]]],
   mvSlice:['slice', [['none',L('无','None')],['strips',L('横条错开','Shifted strips')]]],
   mvForm:['form', [['full',L('原样','As is')],['sil',L('剪影','Silhouette')],['line',L('线稿','Line art')]]],
+  mvNeg:['neg', [['none',L('无','None')],['neg',L('反相','Negative')]]],
   mvRepeat:['repeat', [['1',L('×1','×1')],['2',L('×2','×2')],['3',L('×3','×3')]]],
   mvDrag:['drag', [['none',L('无','None')],['drag',L('扫描拖影','Scanner drag')]]],
   mvTone:['tone', [['100',L('100%','100%')],['60',L('60%','60%')],['30',L('30%','30%')]]],
@@ -912,6 +914,7 @@ const MVNOTE = Object.assign({}, IMNOTE, {
   form:L('剪影把照片或实物图像简化为黑白块面，线稿提取主要边缘；形状和文字则可转为轮廓线。','A silhouette keeps only the outline, line art only the edges: photos and objects are pressed down to the abstraction of geometry and type; shapes and type become outlines.'),
   tone:L('调整同一种油墨的深浅。本页用覆盖程度或网点模拟浅色，30% 和 100% 表示同一墨色的不同色调，不是两种油墨。','On a Riso, light tones come from screening or ink coverage; 30% and 100% of one ink side by side give two colours from one drum.'),
   dots:L('连续调以平滑的明暗变化表现层次；加网将这些层次转换为网点。选择“放大网点”可突出点状图案，营造类似利希滕斯坦作品中的波普效果。','Contone is an idealised smooth tone; print simulates it with dots (halftone). Giant dots make the dots the graphic: Lichtenstein enlarged the Ben-Day dots of comics into the subject of his paintings.'),
+  neg:L('明暗对调：元素外框内铺满这种墨，原来着墨的地方留出纸色。照片变成负片，文字和图形变成色块上的反白。只用一块版，不需要套准。','Light and dark swap: the element\'s box is flooded with its ink and what used to print is left as paper. A photo becomes a negative; text and shapes become reversed out of a block. One plate, so nothing to register.'),
   echo:L('用另一种油墨色偏移复制当前元素，模拟双色错位叠印。','The same element printed again in the other ink, offset: misregistration on purpose.'),
   repeat:L('并排重复同一个元素，形成节奏。Warhol 1962 年的《Marilyn Diptych》用丝网把同一张照片重复了 50 次，左半彩色、右半渐淡的黑白。','Repeating one element side by side sets up a rhythm. Warhol\'s Marilyn Diptych (1962) silkscreens one photo 50 times, colour on the left, fading black and white on the right.'),
   drag:L('复印或扫描时移动原稿，画面会被拉出拖痕；Copy art 把这种做法叫 Copy Motion。','Moving the original while it is copied or scanned drags the image into streaks; copy art calls this Copy Motion.'),
@@ -939,9 +942,10 @@ const MVSRC = {
   drag:[['Copy art','https://en.wikipedia.org/wiki/Copy_art']],
   tone:[['MICA','https://www.mica.edu/campus-life-and-resources/places-and-spaces/maker-spaces-fabrication-studios/printmaking-studio/risograph-file-prep/']],
   dots:[['Halftone','https://en.wikipedia.org/wiki/Halftone'], ['Ben-Day dots','https://en.wikipedia.org/wiki/Ben-Day_dots']],
+  neg:[['Negative (photography)','https://en.wikipedia.org/wiki/Negative_(photography)'], ['Reversed type','https://en.wikipedia.org/wiki/Reversed_type']],
   echo:[['Oxford Greenprint','https://oxfordgreenprint.com/home/design-for-riso/']],
 };
-const MVDEF = {crop:'none', cut:'none', mirror:'none', slice:'none', form:'full', repeat:'1', drag:'none', tone:'100', dots:'solid', echo:'none'};
+const MVDEF = {crop:'none', cut:'none', mirror:'none', slice:'none', form:'full', neg:'none', repeat:'1', drag:'none', tone:'100', dots:'solid', echo:'none'};
 const mkEl = o => Object.assign({type:'shape', shape:'circle', text:'INK', font:'sans', photo:'scene', ink:'a', x:CW/2, y:CH/2, size:100, rot:0, mv:Object.assign({}, MVDEF)}, o);
 S.mix = {n:2, sel:'b', op:'over', mis:1.5, last:null, els:{
   a:mkEl({type:'photo', ink:'a', x:270, y:205, size:110, mv:Object.assign({}, MVDEF, {dots:'dots'})}),
@@ -1043,6 +1047,13 @@ function mxLayer(e, slot, r){
     if (contone){ L0 = (L0 - lo)/Math.max(.05, hi - lo); L0 = L0 < 0 ? 0 : L0 > 1 ? 1 : Math.pow(L0, 1.1); }
     D[i] = a*(1 - L0)*tone;
   }
+  if (e.mv.neg==='neg'){
+    // negative: the element's whole box takes ink, and the element itself is taken out of it
+    const c2 = cnv(W, H), g2 = c2.getContext('2d', {willReadFrequently:true});
+    g2.setTransform(r, 0, 0, r, 0, 0); g2.translate(e.x, e.y); g2.rotate(e.rot*Math.PI/180); g2.scale(s, s); g2.fillStyle = '#000'; g2.fillRect(-loc.width/2, -loc.height/2, loc.width, loc.height);
+    const b = g2.getImageData(0, 0, W, H).data;
+    for (let i=0;i<N;i++){ const box = b[i*4+3]/255; M[i] = box; const v = box*tone - D[i]; D[i] = v > 0 ? v : 0; }
+  }
   return (mxLayerCache[key] = {M, D, W, H, r});
 }
 // screening: how the darkness becomes ink on the plate
@@ -1112,7 +1123,7 @@ function mxPaint(cv, r, op, mvOver){
   g.putImageData(im, 0, 0);
 }
 // tiles: every way to combine (two elements), or every single move applied on top of the current element (one element)
-const MXSINGLE = [['mirror','flip'],['mirror','sym'],['slice','strips'],['form','sil'],['form','line'],['drag','drag'],['repeat','3'],['dots','dots'],['dots','giant'],['tone','30'],['echo','ink'],['cut','bg'],['crop','tight']];
+const MXSINGLE = [['mirror','flip'],['mirror','sym'],['slice','strips'],['form','sil'],['form','line'],['neg','neg'],['drag','drag'],['repeat','3'],['dots','dots'],['dots','giant'],['tone','30'],['echo','ink'],['cut','bg'],['crop','tight']];
 function mxTiles(){
   const M = S.mix, ink = INKSETS[S.inks], sameInk = M.n===2 && ink[M.els.a.ink]===ink[M.els.b.ink];
   if (M.n===2) return MXOPS.map(o => ({id:o.id, t:o.t, on:M.op===o.id, tag:sameInk || o.safe ? (LANG==='zh' ? '较耐错位' : 'miss-proof') : (LANG==='zh' ? '需套准' : 'needs register'), warn:!sameInk && !o.safe, paint:cv => mxPaint(cv, .5, o.id)}));
@@ -1123,7 +1134,7 @@ function mxTiles(){
     return {id:k + ':' + v, t:opt[1], on, tag:on ? (LANG==='zh' ? '已启用 · 点击取消' : 'on · click to undo') : T(MVNAME[k]), paint:cv => mxPaint(cv, .5, null, {slot:'a', e:ne})};
   });
 }
-const MVNAME = {crop:L('裁切','Crop'), cut:L('去底','Cut-out'), mirror:L('镜像','Mirror'), slice:L('条带错位','Slice'), form:L('形式','Form'), repeat:L('重复','Repeat'), drag:L('拖影','Drag'), tone:L('色调深浅','Tone'), dots:L('网点','Screen'), echo:L('错位复制','Echo')};
+const MVNAME = {crop:L('裁切','Crop'), neg:L('反相','Negative'), cut:L('去底','Cut-out'), mirror:L('镜像','Mirror'), slice:L('条带错位','Slice'), form:L('形式','Form'), repeat:L('重复','Repeat'), drag:L('拖影','Drag'), tone:L('色调深浅','Tone'), dots:L('网点','Screen'), echo:L('错位复制','Echo')};
 
 let mxTileTimer = null;
 function renderMix(full = true){

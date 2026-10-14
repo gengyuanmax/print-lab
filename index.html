@@ -295,53 +295,53 @@ a.labcard:focus-visible{outline:2.5px solid var(--blue);outline-offset:4px}
 
   <section class="split simlab" id="simlab" data-aria-zh="模拟实验室" data-aria-en="Simulation Lab">
     <h2><span class="zh">模拟实验室</span><span class="en">Simulation Lab</span> <small class="tag">REFERENCE</small></h2>
-    <p><span class="zh">把上面这条管线的每个参数摊开，作为参考实现：影调 → 分版 → 加网 → 印刷 → 不完美 → 纸。别处想复现这个风格时，在这里调好，复制“参数规格”带走。渲染按屏幕的设备像素比计算，噪声按页面坐标取样，缺墨有下限，颗粒是成团的小点。</span><span class="en">Every parameter of the pipeline above, laid out as a reference implementation: tone → plates → screen → print → imperfection → paper. To reproduce the style elsewhere, tune it here and copy the spec. Rendering follows the screen's device pixel ratio, noise is sampled in page coordinates, ink starvation has a floor, and grain comes in small clusters.</span></p>
+    <p><span class="zh">这里将印刷模拟拆成六个环节：影调、分版、加网、印刷、瑕疵和纸张。逐项调整参数，观察网点、叠印和纸张质感如何变化。调好后可复制参数配置，供其他项目复用；下方也提供算法说明。</span><span class="en">Every parameter of the pipeline above, laid out as a reference implementation: tone → plates → screen → print → imperfection → paper. To reproduce the style elsewhere, tune it here and copy the spec. Rendering follows the screen's device pixel ratio, noise is sampled in page coordinates, ink starvation has a floor, and grain comes in small clusters.</span></p>
     <div class="simgrid">
       <div class="simstage">
         <div class="seg" id="simView" role="group"></div>
-        <div class="simwrap"><canvas id="simCanvas" aria-label="Simulation preview"></canvas><canvas id="simLoupe" width="200" height="200" aria-hidden="true"></canvas></div>
-        <p class="hint"><span class="zh">把鼠标（或手指）移到画面上，角落会放大 4 倍：质感应该是“凑近才发现”。</span><span class="en">Hover or touch the proof: a corner shows it at 4×. Texture should only show up close.</span></p>
+        <div class="simwrap"><canvas id="simCanvas" aria-label="印刷模拟预览" data-aria-zh="印刷模拟预览" data-aria-en="Simulation preview"></canvas><canvas id="simLoupe" width="200" height="200" aria-hidden="true"></canvas></div>
+        <p class="hint"><span class="zh">将鼠标移到画面上，或用手指在画面上滑动，即可在角落查看局部放大，检查细微的网点、颗粒和缺墨效果。</span><span class="en">Hover or touch the proof: a corner shows it at 4×. Texture should only show up close.</span></p>
         <div class="seg" id="simPreset" role="group"></div>
       </div>
       <div class="simpanel" id="simPanel"></div>
     </div>
     <details class="simspec">
-      <summary><span class="zh">参数规格：复制到别的项目</span><span class="en">Spec: copy it to another project</span></summary>
+      <summary><span class="zh">参数配置：复制到其他项目</span><span class="en">Spec: copy it to another project</span></summary>
       <textarea id="simSpec" readonly spellcheck="false" rows="16"></textarea>
       <button class="btn" type="button" id="simCopy"><span class="zh">复制</span><span class="en">Copy</span></button> <span class="hint" id="simMsg"></span>
     </details>
     <details class="simspec simalgo">
-      <summary><span class="zh">算法：噪声场、拟合函数、加网</span><span class="en">Algorithms: noise fields, fitted curves, screening</span></summary>
-      <p class="hint"><span class="zh">p 是页面上的 CSS 像素坐标，不是设备像素；同一个 p 在任何屏幕上取到同一个噪声值。下面的系数是目测拟合的，没有用真实印刷品测量。</span><span class="en">p is the position in CSS pixels of the page, not device pixels, so a given p gives the same noise on every screen. The coefficients below were fitted by eye, not measured from prints.</span></p>
+      <summary><span class="zh">算法说明：噪声、影调与加网</span><span class="en">Algorithms: noise fields, fitted curves, screening</span></summary>
+      <p class="hint"><span class="zh">p 表示以 CSS 像素计的页面坐标。噪声按这个坐标取样，使纹理尺寸不随屏幕像素密度改变。下列系数按视觉效果调整，未经实物印样测量或校准。</span><span class="en">p is the position in CSS pixels of the page, not device pixels, so a given p gives the same noise on every screen. The coefficients below were fitted by eye, not measured from prints.</span></p>
       <h3><span class="zh">噪声场</span><span class="en">Noise fields</span></h3>
 <pre>hash(i,j)   = fract(sin(127.1i + 311.7j + 74.7·seed) · 43758.5453)
-vnoise(p)   = <span class="zh">整数格点上的 hash，用 3t²−2t³ 双线性插值</span><span class="en">hash on the integer lattice, bilinear with 3t²−2t³</span>
+vnoise(p)   = <span class="zh">取整数格点的 hash 值，以 3t²−2t³ 平滑插值权重，再进行双线性插值</span><span class="en">hash on the integer lattice, bilinear with 3t²−2t³</span>
 fbm(p, n)   = Σₖ 0.5ᵏ · vnoise(2.3ᵏ · p) / Σₖ 0.5ᵏ ,  k = 0…n−1
 
 <span class="zh">缺墨</span><span class="en">starvation</span>  n = fbm(p / starveScale, octaves)
 <span class="zh">颗粒</span><span class="en">grain</span>       g = smoothstep(τ, τ+0.06, vnoise(p / grainSize)),  τ = 1 − 2.2·grain
-<span class="zh">边缘</span><span class="en">edges</span>       0.16·rough · (vnoise(p / 0.35·pitch) − 0.5)  <span class="zh">加到网点函数上</span><span class="en">added to the spot value</span>
+<span class="zh">边缘</span><span class="en">edges</span>       0.16·rough · (vnoise(p / 0.35·pitch) − 0.5)  <span class="zh">叠加到网点函数的值上</span><span class="en">added to the spot value</span>
 <span class="zh">纸纹</span><span class="en">paper</span>       0.6·vnoise(p / 1.3) + 0.4·vnoise(p / 9)
-<span class="zh">平涂色块</span><span class="en">flat shapes</span> 0.14·(vnoise(p / 150) − 0.5)  <span class="zh">加到影调上，加网前先有深浅</span><span class="en">added to the tone, so they have a gradient before screening</span></pre>
-      <h3><span class="zh">拟合函数</span><span class="en">Fitted curves</span></h3>
+<span class="zh">平涂色块</span><span class="en">flat shapes</span> 0.14·(vnoise(p / 150) − 0.5)  <span class="zh">在加网前为色块加入轻微的明暗变化</span><span class="en">added to the tone, so they have a gradient before screening</span></pre>
+      <h3><span class="zh">影调与分版函数</span><span class="en">Fitted curves</span></h3>
 <pre><span class="zh">影调</span><span class="en">tone</span>   t = clamp((d − black)/(white − black));  t = clamp((t − 0.5)·contrast + 0.5)
 <span class="zh">色调分离</span><span class="en">posterize</span> t = round(t·(n−1))/(n−1)
 <span class="zh">分版</span><span class="en">plates</span> A = t^a,  B = t^b
-<span class="zh">网点扩大</span><span class="en">dot gain</span> v' = v + gain · v(1−v) · 1.3   <span class="zh">50% 处最大，实底和空白不变</span><span class="en">largest at 50%, solids and paper unchanged</span></pre>
+<span class="zh">网点扩大</span><span class="en">dot gain</span> v' = v + gain · v(1−v) · 1.3   <span class="zh">网点覆盖率为 50% 时扩大最明显，实地与空白区域不变</span><span class="en">largest at 50%, solids and paper unchanged</span></pre>
       <h3><span class="zh">加网</span><span class="en">Screening</span></h3>
 <pre>AM   (u,w) = rotate(p, angle) / pitch
      <span class="zh">着墨条件</span><span class="en">ink if</span> spot(u,w) + <span class="zh">边缘噪声</span><span class="en">edge noise</span> &gt; 1 − v'·(1 + jitter·(hash(⌊u⌋,⌊w⌋) − 0.5)·2)
      <span class="zh">圆点</span><span class="en">round</span>   (cos 2πu + cos 2πw + 2)/4
      <span class="zh">链状点</span><span class="en">chain</span>   (0.6 cos 2πu + 1.4 cos 2πw + 2)/4
-     <span class="zh">线网</span><span class="en">line</span>    (cos 2πw + 1)/2
-FM   <span class="zh">在 0.3·pitch 的格子上做 Floyd–Steinberg 误差扩散（蛇形扫描，7/16 3/16 5/16 1/16），每个“开”格印一个半径 (0.62 + 0.25·gain)·格宽 的圆点</span><span class="en">Floyd–Steinberg error diffusion on a 0.3·pitch grid (serpentine, 7/16 3/16 5/16 1/16); each on-cell prints a round dot of radius (0.62 + 0.25·gain)·cell</span>
-<span class="zh">有序</span><span class="en">dither</span> <span class="zh">8×8 Bayer 矩阵 b：v' &gt; (b + 0.5)/64 时开</span><span class="en">8×8 Bayer matrix b: on if v' &gt; (b + 0.5)/64</span></pre>
+     <span class="zh">线条网</span><span class="en">line</span>    (cos 2πw + 1)/2
+FM   <span class="zh">按 max(1.2, 0.3·pitch) 的网格间距进行 Floyd–Steinberg 误差扩散，逐行交替扫描方向，扩散权重为 7/16、3/16、5/16、1/16。在判定为着墨的格子中，绘制半径为 (0.62 + 0.25·gain) × 格宽的圆点</span><span class="en">Floyd–Steinberg error diffusion on a 0.3·pitch grid (serpentine, 7/16 3/16 5/16 1/16); each on-cell prints a round dot of radius (0.62 + 0.25·gain)·cell</span>
+<span class="zh">有序抖动</span><span class="en">dither</span> <span class="zh">使用 8×8 Bayer 矩阵 b；当 v' &gt; (b + 0.5)/64 时着墨</span><span class="en">8×8 Bayer matrix b: on if v' &gt; (b + 0.5)/64</span></pre>
       <h3><span class="zh">合成</span><span class="en">Compositing</span></h3>
-<pre><span class="zh">纸</span><span class="en">paper</span>  c = paper · (1 − tex · paperNoise)
+<pre><span class="zh">纸张</span><span class="en">paper</span>  c = paper · (1 − tex · paperNoise)
 <span class="zh">墨量</span><span class="en">ink</span>    k = coverage · 0.97 · max(floor, 1 − starve · smoothstep(0.35, 0.85, n)) · (1 − 0.85·g)
 <span class="zh">叠印</span><span class="en">multiply</span> c ·= 1 − k(1 − ink)      <span class="zh">遮盖</span><span class="en">opaque</span> c += (ink − c)·k
-<span class="zh">B 版在 p − misregister 处取样；小于阈值的字 k = coverage</span><span class="en">plate B is sampled at p − misregister; text below the threshold uses k = coverage</span></pre>
-      <p class="hint"><span class="zh">参考：</span><span class="en">References: </span><a href="https://en.wikipedia.org/wiki/Value_noise">Value noise</a> · <a href="https://thebookofshaders.com/13/">The Book of Shaders: Fractal Brownian Motion</a> · <a href="https://en.wikipedia.org/wiki/Halftone">Halftone</a> · <a href="https://en.wikipedia.org/wiki/Floyd%E2%80%93Steinberg_dithering">Floyd–Steinberg dithering</a> · <a href="https://en.wikipedia.org/wiki/Ordered_dithering">Ordered dithering</a> · <a href="https://en.wikipedia.org/wiki/Dot_gain">Dot gain</a>. <span class="zh">具体系数、颗粒和缺墨的形式为本页做法。</span><span class="en">The coefficients and the grain and starvation forms are this page's own.</span></p>
+<span class="zh">B 版按套色偏移后的坐标 p − misregister 取样；小字不施加颗粒与缺墨效果</span><span class="en">plate B is sampled at p − misregister; text below the threshold uses k = coverage</span></pre>
+      <p class="hint"><span class="zh">参考：</span><span class="en">References: </span><a href="https://en.wikipedia.org/wiki/Value_noise">Value noise</a> · <a href="https://thebookofshaders.com/13/">The Book of Shaders: Fractal Brownian Motion</a> · <a href="https://en.wikipedia.org/wiki/Halftone">Halftone</a> · <a href="https://en.wikipedia.org/wiki/Floyd%E2%80%93Steinberg_dithering">Floyd–Steinberg dithering</a> · <a href="https://en.wikipedia.org/wiki/Ordered_dithering">Ordered dithering</a> · <a href="https://en.wikipedia.org/wiki/Dot_gain">Dot gain</a>. <span class="zh">具体系数以及颗粒、缺墨效果均为本页的模拟方法。</span><span class="en">The coefficients and the grain and starvation forms are this page's own.</span></p>
     </details>
   </section>
 
@@ -644,33 +644,33 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { dr
     tex:.08, seed:7};
   const PRESETS = {
     riso:{name:['Riso 双色（推荐）','Riso two-colour (recommended)'], p:{}},
-    clean:{name:['图形化网点（无噪声）','Graphic dots (no noise)'], p:{pitch:11, gain:0, jitter:0, rough:0, misX:0, misY:0, grain:0, starve:0, floor:1, tex:0}},
-    worn:{name:['粗糙旧印','Rough, worn print'], p:{pitch:7, gain:.3, jitter:.15, rough:.65, misX:3, misY:2, grain:.07, grainSize:2.2, starve:.6, floor:.6, starveScale:90, tex:.14}},
+    clean:{name:['纯净网点（无噪声）','Graphic dots (no noise)'], p:{pitch:11, gain:0, jitter:0, rough:0, misX:0, misY:0, grain:0, starve:0, floor:1, tex:0}},
+    worn:{name:['粗糙旧印效果','Rough, worn print'], p:{pitch:7, gain:.3, jitter:.15, rough:.65, misX:3, misY:2, grain:.07, grainSize:2.2, starve:.6, floor:.6, starveScale:90, tex:.14}},
   };
   const S = Object.assign({}, DEF);
   const L = (zh, en) => `<span class="zh">${zh}</span><span class="en">${en}</span>`;
   // [key, zh, en, min, max, step, unit]
   const GROUPS = [
-    [['01 影调','01 Tone'], ['只作用于照片类元素（球体）：先压缩层次，再分版。','Applies to photographic elements (the sphere): compress the tones before splitting into plates.'], [
+    [['01 影调','01 Tone'], ['调整球体图像的明暗范围与对比度，再进行分版；这些设置不影响文字和色块。','Applies to photographic elements (the sphere): compress the tones before splitting into plates.'], [
       ['black','黑场','Black point',0,.3,.01,''],['white','白场','White point',.7,1,.01,''],['contrast','对比度','Contrast',.6,2,.05,''],['levels','色调分离','Posterize',0,8,1,'lv']]],
-    [['02 分版','02 Plates'], ['每种墨一张灰度图，由影调 t 经幂函数得到：A = t^a 走亮部和中间调，B = t^b 走暗部；指数越大，这一版只留在越暗的地方。','One greyscale image per ink, a power curve of the tone t: A = t^a takes lights and midtones, B = t^b the darks; a higher exponent keeps that plate to the deeper shadows.'], [
+    [['02 分版','02 Plates'], ['每种油墨对应一张灰度分色稿。本例按影调 t 生成 A = t^a、B = t^b 两版。默认由 A 版表现亮部与中间调，B 版加强暗部；指数越大，着墨越集中在暗部。','One greyscale image per ink, a power curve of the tone t: A = t^a takes lights and midtones, B = t^b the darks; a higher exponent keeps that plate to the deeper shadows.'], [
       ['aCurve','A 版曲线','Plate A curve',.3,1.5,.05,''],['bCurve','B 版曲线','Plate B curve',1,3,.05,'']]],
-    [['03 加网','03 Screen'], ['AM 调幅（圆点、线、链状点）靠点的大小表现深浅；FM 调频（误差扩散）和有序抖动靠点的疏密。网距决定粗细，不决定深浅。','AM screens (round, line, chain dots) show tone by dot size; FM (error diffusion) and ordered dither by dot density. The pitch sets coarseness, not tone.'], [
-      ['pitch','网距','Pitch',3,16,.5,'px'],['angleA','A 版网角','Angle A',0,90,1,'°'],['angleB','B 版网角','Angle B',0,90,1,'°'],['gain','网点扩大','Dot gain',0,.6,.01,''],['jitter','网点大小随机','Dot size jitter',0,.3,.01,''],['rough','边缘粗糙','Edge roughness',0,1,.05,'']]],
-    [['04 印刷','04 Print'], ['透明油墨相乘；B 版整体错开，全站同一个方向和距离。','Translucent inks multiply; plate B slips as a whole, the same way everywhere.'], [
-      ['misX','错位 X','Misregister X',-6,6,.5,'px'],['misY','错位 Y','Misregister Y',-6,6,.5,'px']]],
-    [['05 不完美','05 Imperfection'], ['颗粒是成团的小点，缺墨是低频的变浅，有下限，永远不会挖成白洞；小于“小字阈值”的文字不加质感。','Grain is small clusters, starvation is a low-frequency lightening with a floor that never punches white holes; text below the small-text threshold gets no texture.'], [
-      ['grain','颗粒比例','Grain coverage',0,.15,.005,''],['grainSize','颗粒大小','Grain size',.8,4,.1,'px'],['starve','缺墨强度','Starvation',0,1,.05,''],['floor','缺墨下限','Starvation floor',.4,1,.05,''],['starveScale','缺墨斑块大小','Starvation scale',30,300,5,'px'],['oct','缺墨噪声层数','Starvation octaves',1,4,1,''],['smallText','小字阈值','Small-text threshold',12,96,2,'px']]],
-    [['06 纸','06 Paper'], ['纸纹乘在纸色上，墨再叠上去，所以纸纹会从墨里透出来。','Paper texture multiplies the paper; ink goes on top, so the texture shows through it.'], [
-      ['tex','纸纹','Paper texture',0,.25,.005,''],['seed','随机种子','Seed',1,99,1,'']]],
+    [['03 加网','03 Screen'], ['AM 调幅网通过改变网点大小或线条粗细表现明暗；本例的 FM 调频网用误差扩散安排网点，有序抖动则按固定矩阵安排网点。网点间距控制纹理的粗细，明暗主要取决于着墨覆盖率。','AM screens (round, line, chain dots) show tone by dot size; FM (error diffusion) and ordered dither by dot density. The pitch sets coarseness, not tone.'], [
+      ['pitch','网点间距','Pitch',3,16,.5,'px'],['angleA','A 版网角','Angle A',0,90,1,'°'],['angleB','B 版网角','Angle B',0,90,1,'°'],['gain','网点扩大','Dot gain',0,.6,.01,''],['jitter','网点大小变化','Dot size jitter',0,.3,.01,''],['rough','网点边缘粗糙度','Edge roughness',0,1,.05,'']]],
+    [['04 印刷','04 Print'], ['透明叠印用正片叠底模拟油墨混色；不透明遮盖则由后印的颜色覆盖下层。调整套色错位时，B 版在整张画面上按同一方向和距离偏移。','Translucent inks multiply; plate B slips as a whole, the same way everywhere.'], [
+      ['misX','套色错位 X','Misregister X',-6,6,.5,'px'],['misY','套色错位 Y','Misregister Y',-6,6,.5,'px']]],
+    [['05 印刷瑕疵','05 Imperfection'], ['颗粒表现为细小斑点，缺墨表现为大片、缓慢变化的墨色不匀。“最低墨量比例”限制缺墨处的变浅程度，避免整块完全露白。字号小于“小字保护阈值”时，不施加颗粒与缺墨效果。','Grain is small clusters, starvation is a low-frequency lightening with a floor that never punches white holes; text below the small-text threshold gets no texture.'], [
+      ['grain','颗粒强度','Grain coverage',0,.15,.005,''],['grainSize','颗粒大小','Grain size',.8,4,.1,'px'],['starve','缺墨强度','Starvation',0,1,.05,''],['floor','最低墨量比例','Starvation floor',.4,1,.05,''],['starveScale','缺墨斑块大小','Starvation scale',30,300,5,'px'],['oct','缺墨噪声层数','Starvation octaves',1,4,1,''],['smallText','小字保护阈值','Small-text threshold',12,96,2,'px']]],
+    [['06 纸张','06 Paper'], ['先为纸色加入纹理，再叠加油墨。使用透明叠印时，纸纹会透过墨色显现。','Paper texture multiplies the paper; ink goes on top, so the texture shows through it.'], [
+      ['tex','纸纹强度','Paper texture',0,.25,.005,''],['seed','随机种子','Seed',1,99,1,'']]],
   ];
-  const fmt = (k, v) => { const it = GROUPS.flatMap(g => g[2]).find(x => x[0]===k); const u = it ? it[6] : ''; return (k==='levels' && !v) ? '—' : (Number.isInteger(+it[5]) ? String(Math.round(v)) : (+v).toFixed(it[5] < .01 ? 3 : 2)) + (u ? ' ' + u : ''); };
+  const fmt = (k, v) => { const it = GROUPS.flatMap(g => g[2]).find(x => x[0]===k); const u = it ? (it[6]==='lv' && LANG==='zh' ? '级' : it[6]) : ''; return (k==='levels' && !v) ? '—' : (Number.isInteger(+it[5]) ? String(Math.round(v)) : (+v).toFixed(it[5] < .01 ? 3 : 2)) + (u ? ' ' + u : ''); };
   // panel
   const panel = document.getElementById('simPanel');
   panel.innerHTML = GROUPS.map(([t, h, items]) => `<div class="simgroup"><h3>${L(t[0], t[1])}</h3><p class="hint">${L(h[0], h[1])}</p>${items.map(([k, zh, en, mn, mx, st]) =>
     `<div class="field"><label for="sim_${k}">${L(zh, en)}</label><input type="range" id="sim_${k}" min="${mn}" max="${mx}" step="${st}" data-k="${k}"><output id="sim_${k}_o"></output></div>`).join('')}
-    ${t[0].startsWith('02') ? `<div class="simcolors">${[['inkA','墨 A','Ink A'],['inkB','墨 B','Ink B'],['paper','纸','Paper']].map(([k, zh, en]) => `<label>${L(zh, en)} <input type="color" id="sim_${k}" data-k="${k}"></label>`).join('')}</div><canvas id="simCurve" aria-label="Tone and plate curves"></canvas><p class="hint">${L('横轴：原图深浅。虚线：影调映射；实线：A、B 两版；点线：A 版加上网点扩大后。','x axis: source darkness. Dashed: tone mapping; solid: plates A and B; dotted: plate A after dot gain.')}</p>` : ''}
-    ${t[0].startsWith('03') ? `<div class="seg" id="simScreen">${[['round','AM 圆点','AM round'],['ellipse','AM 链状点','AM chain'],['line','AM 线网','AM line'],['fm','FM 误差扩散','FM diffusion'],['bayer','有序抖动','Ordered dither']].map(([v, zh, en]) => `<button type="button" data-v="${v}">${L(zh, en)}</button>`).join('')}</div>` : ''}
+    ${t[0].startsWith('02') ? `<div class="simcolors">${[['inkA','油墨 A','Ink A'],['inkB','油墨 B','Ink B'],['paper','纸色','Paper']].map(([k, zh, en]) => `<label>${L(zh, en)} <input type="color" id="sim_${k}" data-k="${k}"></label>`).join('')}</div><canvas id="simCurve" aria-label="Tone and plate curves"></canvas><p class="hint">${L('横轴表示原图由亮到暗的变化，纵轴表示影调或着墨覆盖率。虚线为调整后的影调，两条实线为 A、B 版的分色曲线，点状虚线为 A 版经网点扩大后的曲线。','x axis: source darkness. Dashed: tone mapping; solid: plates A and B; dotted: plate A after dot gain.')}</p>` : ''}
+    ${t[0].startsWith('03') ? `<div class="seg" id="simScreen">${[['round','AM 圆点','AM round'],['ellipse','AM 链状点','AM chain'],['line','AM 线条网','AM line'],['fm','FM 误差扩散','FM diffusion'],['bayer','有序抖动','Ordered dither']].map(([v, zh, en]) => `<button type="button" data-v="${v}">${L(zh, en)}</button>`).join('')}</div>` : ''}
     ${t[0].startsWith('04') ? `<div class="seg" id="simBlend">${[['multiply','透明叠印','Overprint'],['opaque','不透明遮盖','Opaque']].map(([v, zh, en]) => `<button type="button" data-v="${v}">${L(zh, en)}</button>`).join('')}</div>` : ''}</div>`).join('');
   const views = [['final','成品','Print'],['tone','影调','Tone'],['A','A 版','Plate A'],['B','B 版','Plate B']];
   let view = 'final';
@@ -678,6 +678,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { dr
   document.getElementById('simPreset').innerHTML = Object.entries(PRESETS).map(([k, p]) => `<button type="button" data-v="${k}">${L(p.name[0], p.name[1])}</button>`).join('');
   let preset = 'riso';
   function sync(){
+    document.getElementById('simCurve').setAttribute('aria-label', LANG==='zh' ? '影调与分色曲线' : 'Tone and plate curves');
     panel.querySelectorAll('input[type=range]').forEach(i => { i.value = S[i.dataset.k]; document.getElementById(i.id + '_o').textContent = fmt(i.dataset.k, S[i.dataset.k]); });
     panel.querySelectorAll('input[type=color]').forEach(i => i.value = S[i.dataset.k]);
     document.querySelectorAll('#simBlend button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v===S.blend));
@@ -719,7 +720,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { dr
     const w = Math.round(cw*r), h = Math.round(ch*r), c = document.createElement('canvas'); c.width = w; c.height = h; const g = c.getContext('2d');
     const get = draw => { g.clearRect(0, 0, w, h); g.save(); g.scale(r, r); draw(g); g.restore(); const d = g.getImageData(0, 0, w, h).data, m = new Float32Array(w*h); for (let i=0;i<w*h;i++) m[i] = d[i*4+3]/255; return m; };
     const head = get(g => { g.font = `800 ${Math.round(ch*.3)}px "Bricolage Grotesque", "Archivo", sans-serif`; g.textBaseline = 'alphabetic'; g.fillText('INK', cw*.05, ch*.93); });
-    const small = get(g => { g.font = `400 ${cw < 500 ? 11 : 13}px "IBM Plex Sans", sans-serif`; g.textAlign = 'right'; g.fillText(cw < 500 ? 'Small text stays clean.' : 'Small text stays clean: no grain, no starvation.', cw*.97, ch*.95); });
+    const small = get(g => { g.font = `400 ${cw < 500 ? 11 : 13}px "IBM Plex Sans", sans-serif`; g.textAlign = 'right'; g.fillText(LANG==='zh' ? (cw < 500 ? '小字保持清晰。' : '小字保持清晰：不施加颗粒与缺墨。') : (cw < 500 ? 'Small text stays clean.' : 'Small text stays clean: no grain, no starvation.'), cw*.97, ch*.95); });
     return {w, h, head, small};
   }
   function render(fast){
@@ -727,7 +728,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { dr
     dpr = fast ? 1 : Math.min(2, window.devicePixelRatio || 1);
     W = Math.round(cssW*dpr); H = Math.round(cssH*dpr);
     cv.width = W; cv.height = H; cv.style.width = cssW + 'px'; cv.style.height = cssH + 'px';
-    const key = [cssW, cssH, dpr].join('|'); if (!masks || masks.key!==key){ masks = buildMasks(cssW, cssH, dpr); masks.key = key; }
+    const key = [cssW, cssH, dpr, LANG].join('|'); if (!masks || masks.key!==key){ masks = buildMasks(cssW, cssH, dpr); masks.key = key; }
     const g = cv.getContext('2d'), im = g.createImageData(W, H), o = im.data;
     const P = hex(S.paper), A = hex(S.inkA), B = hex(S.inkB), seed = S.seed;
     const aA = S.angleA*Math.PI/180, aB = S.angleB*Math.PI/180, cA = Math.cos(aA), sA = Math.sin(aA), cB = Math.cos(aB), sB = Math.sin(aB), TAU = Math.PI*2;
@@ -815,6 +816,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { dr
   }
   let raf = 0, slow = 0;
   const schedule = () => { cancelAnimationFrame(raf); clearTimeout(slow); raf = requestAnimationFrame(() => render(true)); slow = setTimeout(() => { render(false); sync(); }, 220); };
+  document.querySelectorAll('[data-setlang]').forEach(b => b.addEventListener('click', () => { sync(); schedule(); }));
   panel.addEventListener('input', e => { const k = e.target.dataset.k; if (!k) return; S[k] = e.target.type==='color' ? e.target.value : +e.target.value; preset = null;
     if (e.target.type==='range') document.getElementById(e.target.id + '_o').textContent = fmt(k, S[k]); schedule(); });
   document.getElementById('simScreen').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; S.screen = b.dataset.v; preset = null; sync(); schedule(); });
@@ -823,7 +825,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { dr
   document.getElementById('simPreset').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; preset = b.dataset.v; Object.assign(S, DEF, PRESETS[preset].p); sync(); schedule(); });
   document.getElementById('simCopy').addEventListener('click', async () => { const t = document.getElementById('simSpec'); let ok = false;
     try { await navigator.clipboard.writeText(t.value); ok = true; } catch(e){ t.select(); try { ok = document.execCommand('copy'); } catch(_){} }
-    document.getElementById('simMsg').innerHTML = ok ? L('已复制。','Copied.') : L('浏览器不允许自动复制，文字已选中，请按 Ctrl/⌘ + C。','Copying was blocked; the text is selected, press Ctrl/⌘ + C.'); });
+    document.getElementById('simMsg').innerHTML = ok ? L('已复制。','Copied.') : L('自动复制未成功，内容已选中。请按 Ctrl+C（Mac 上为 ⌘C）复制。','Copying was blocked; the text is selected, press Ctrl/⌘ + C.'); });
   // loupe: 4x of the area under the pointer, pixels kept sharp
   const lp = document.getElementById('simLoupe'), lg = lp.getContext('2d');
   cv.addEventListener('pointermove', e => { const b = cv.getBoundingClientRect(), X = (e.clientX - b.left)*W/b.width, Y = (e.clientY - b.top)*H/b.height, s = 50*dpr;

@@ -295,7 +295,7 @@ a.labcard:focus-visible{outline:2.5px solid var(--blue);outline-offset:4px}
 
   <section class="split simlab" id="simlab" data-aria-zh="模拟实验室" data-aria-en="Simulation Lab">
     <h2><span class="zh">模拟实验室</span><span class="en">Simulation Lab</span> <small class="tag">REFERENCE</small></h2>
-    <p><span class="zh">印痕实验室强调工艺的差别，噪声只作为默认效果；这里关注仿真本身：把印刷拆成影调、分版、加网、印刷、瑕疵和纸张六个环节，逐项调整参数，观察网点、叠印和纸张质感如何变化。调好后可复制参数配置，供其他项目复用；下方也提供算法说明。</span><span class="en">The Print Texture Lab is about how processes differ, with noise as a default; this lab is about the simulation itself. Every parameter of the pipeline above, laid out as a reference implementation: tone → plates → screen → print → imperfection → paper. To reproduce the style elsewhere, tune it here and copy the spec. Rendering follows the screen's device pixel ratio, noise is sampled in page coordinates, ink starvation has a floor, and grain comes in small clusters.</span></p>
+    <p><span class="zh">这里将印刷模拟拆成六个环节：影调、分版、加网、印刷、瑕疵和纸张。逐项调整参数，观察网点、叠印和纸张质感如何变化。调好后可复制参数配置，供其他项目复用；下方也提供算法说明。</span><span class="en">Every parameter of the pipeline above, laid out as a reference implementation: tone → plates → screen → print → imperfection → paper. To reproduce the style elsewhere, tune it here and copy the spec. Rendering follows the screen's device pixel ratio, noise is sampled in page coordinates, ink starvation has a floor, and grain comes in small clusters.</span></p>
     <div class="simgrid">
       <div class="simstage">
         <div class="seg" id="simView" role="group"></div>

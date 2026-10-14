@@ -140,6 +140,10 @@
 .trow .tl small{font-family:var(--mono);font-size:10.5px;color:var(--muted)}
 .trow canvas{display:block;width:100%;height:auto;border:1px solid var(--rule)}
 @media (max-width:520px){.trow{grid-template-columns:minmax(0,1fr);gap:4px}}
+.noise{margin:6px 0 4px;border-top:1px solid var(--rule);padding-top:8px}
+.noise summary{cursor:pointer;font:500 13px var(--body);padding:4px 0}
+.noise[open] summary{margin-bottom:8px}
+.noise .field{margin-bottom:6px}
 </style>
 
 <div class="wrap">
@@ -256,15 +260,26 @@
 
       <div class="group">
         <h2><span class="zh">瑕疵</span><span class="en">Misprint</span> <small class="zh">MISPRINT</small><small class="en">瑕疵</small></h2>
+        <p class="hint"><span class="zh">这里只放决定工艺面貌的几项：套色错位、网点扩大、活字磨损。细节噪声由预设自动设好、默认开启，一般不用调。</span><span class="en">Only the settings that define a process are here: misregistration, dot gain and type wear. Fine noise is set by each preset and on by default; you rarely need to touch it.</span></p>
         <div class="field"><label for="mx"><span class="zh">套色错位 X</span><span class="en">Misregister X</span></label><input type="range" id="mx" min="-14" max="14" step="1"><output id="mxOut"></output></div>
         <div class="field"><label for="my"><span class="zh">套色错位 Y</span><span class="en">Misregister Y</span></label><input type="range" id="my" min="-14" max="14" step="1"><output id="myOut"></output></div>
-        <div class="field"><label for="grain"><span class="zh">墨色颗粒</span><span class="en">Ink grain</span></label><input type="range" id="grain" min="0" max="1" step="0.01"><output id="grainOut"></output></div>
-        <div class="field"><label for="starve"><span class="zh">缺墨漏白</span><span class="en">Ink starvation</span></label><input type="range" id="starve" min="0" max="1" step="0.01"><output id="starveOut"></output></div>
-        <div class="field"><label for="band"><span class="zh">墨辊条纹</span><span class="en">Roller banding</span></label><input type="range" id="band" min="0" max="1" step="0.01"><output id="bandOut"></output></div>
-        <div class="field"><label for="tex"><span class="zh">纸张纹理</span><span class="en">Paper texture</span></label><input type="range" id="tex" min="0" max="1" step="0.01"><output id="texOut"></output></div>
         <div class="field"><label for="gain"><span class="zh">网点扩大</span><span class="en">Dot gain</span></label><input type="range" id="gain" min="0" max="1" step="0.01"><output id="gainOut"></output></div>
         <div class="field"><label for="wear"><span class="zh">活字磨损</span><span class="en">Type wear</span></label><input type="range" id="wear" min="0" max="1" step="0.01"><output id="wearOut"></output></div>
         <div class="field"><label for="ca"><span class="zh">RGB 通道偏移</span><span class="en">RGB split</span></label><input type="range" id="ca" min="0" max="12" step="1"><output id="caOut"></output></div>
+        
+        <details class="noise">
+          <summary><span class="zh">细节噪声（默认开启）</span><span class="en">Fine noise (on by default)</span></summary>
+          <div class="field"><label for="dotvar"><span class="zh">网点不匀</span><span class="en">Dot irregularity</span></label><input type="range" id="dotvar" min="0" max="1" step="0.01"><output id="dotvarOut"></output></div>
+          <div class="field"><label for="grain"><span class="zh">墨色颗粒</span><span class="en">Ink grain</span></label><input type="range" id="grain" min="0" max="1" step="0.01"><output id="grainOut"></output></div>
+          <div class="field"><label for="starve"><span class="zh">缺墨漏白</span><span class="en">Ink starvation</span></label><input type="range" id="starve" min="0" max="1" step="0.01"><output id="starveOut"></output></div>
+          <div class="field"><label for="band"><span class="zh">墨辊条纹</span><span class="en">Roller banding</span></label><input type="range" id="band" min="0" max="1" step="0.01"><output id="bandOut"></output></div>
+          <div class="field"><label for="tex"><span class="zh">纸张纹理</span><span class="en">Paper texture</span></label><input type="range" id="tex" min="0" max="1" step="0.01"><output id="texOut"></output></div>
+          <div class="field"><label for="trap"><span class="zh">叠印吸墨率</span><span class="en">Ink trapping</span></label><input type="range" id="trap" min="0.6" max="1" step="0.01"><output id="trapOut"></output></div>
+          <div class="field"><label for="rot"><span class="zh">套准旋转</span><span class="en">Plate rotation</span></label><input type="range" id="rot" min="-1" max="1" step="0.05"><output id="rotOut"></output></div>
+          <div class="field"><label for="stretch"><span class="zh">纸张伸缩</span><span class="en">Paper stretch</span></label><input type="range" id="stretch" min="-1" max="1" step="0.05"><output id="stretchOut"></output></div>
+          <p class="hint"><span class="zh">网点不匀：每个点略偏离网格，大小和边缘各不相同，最小的点印不出来，最暗处糊成实地。套准旋转和纸张伸缩：后印的版绕纸张中心转动零点几度，并沿走纸方向略微伸长，所以四个角的错位各不相同。叠印吸墨率：墨压在未干的墨上时吸得比纸少，叠色因此比纯正片叠底浅一些。纸张纹理也会让纤维处少吃一点墨，各色版在同一处一起变浅。</span><span class="en">Dot irregularity: each dot sits slightly off the grid with its own size and edge; the smallest dots fail to print and the darkest areas fill in. Plate rotation and paper stretch: later plates turn a fraction of a degree about the sheet centre and stretch slightly along the feed, so each corner is out of register by a different amount. Ink trapping: ink laid on wet ink takes less well than on paper, so overprints come out a little lighter than a pure multiply. Paper texture also lets the fibres hold back a little ink, at the same spot on every plate.</span></p>
+          <p class="hint"><span class="zh">要逐项对齐仿真参数、查看公式，请用首页底部的<a data-page="home" data-hash="#simlab" href="index.html#simlab">模拟实验室</a>。</span><span class="en">To match simulation parameters one by one and see the formulas, use the <a data-page="home" data-hash="#simlab" href="index.html#simlab">Simulation Lab</a> at the bottom of the home page.</span></p>
+        </details>
         <p class="hint"><span class="zh">网点扩大使墨点增大、边缘变粗，中间调的变化尤其明显。RGB 通道偏移则将红、蓝通道向两侧错开，模拟数字故障效果。“活字磨损”仅在凸版模式下生效：模拟字形边缘缺口、色块中的木纹和局部墨色不匀，并加强压痕效果。</span><span class="en">Dot gain fattens the dots and roughens their edges, most visibly in the midtones. RGB split is misregistration on a screen: the red and blue channels slide apart for a glitch look. Type wear only affects letterpress: chipped edges, wood grain in the solids, each block inked a little differently and a deeper impression.</span></p>
       </div>
 
@@ -559,21 +574,21 @@ const PROV = {
   opaque:{o:{zh:'不透明遮盖：油墨厚而不透明，后印的颜色直接盖住先印的，丝网印刷里很常见。', en:'Opaque: thick ink that covers whatever was printed before it, common in screen printing.'}},
 };
 const linkList = l => l ? l.map(([t,u]) => `<a href="${u}" target="_blank" rel="noopener">${t}</a>`).join('<i>·</i>') : '';
-const DEFAULTS = {trans:'am', pattern:'none', shape:'round', gain:0, ca:0, inkC:'yellow', blend:'multiply', process:'none', stampType:'zhu', copyGen:0, black:0, white:1, gamma:1, posterize:0, stock:'uncoated', invA:false, invB:false, wear:0, age:0, fox:0, fold:'none', geo:'grid', outline:'none', outlineText:'INK'};
+const DEFAULTS = {trans:'am', pattern:'none', shape:'round', gain:0, ca:0, inkC:'yellow', blend:'multiply', process:'none', stampType:'zhu', copyGen:0, black:0, white:1, gamma:1, posterize:0, stock:'uncoated', invA:false, invB:false, wear:0, dotvar:.5, rot:.15, stretch:.15, trap:.88, age:0, fox:0, fold:'none', geo:'grid', outline:'none', outlineText:'INK'};
 /* presets describe a final effect. Each lists the visible features that make it recognisable:
    e = essential, r = representative, o = optional; where each comes from: d = design decision, p = process, m = material;
    and what switching the feature off changes (used by the feature switches). */
 const F = (lvl, src, zh, en, off) => ({lvl, src, t:{zh, en}, off});
 const PRESETS = [
   {name:{zh:'Riso 双色', en:'Riso two-colour'}, tag:{zh:'粉 + 蓝 · 叠印 · 错位', en:'pink + blue · overprint · misregistered'}, p:{screen:'am',cell:9,angle:15,contrast:1.15,mode:'sep',inkA:'fpink',inkB:'blue',paper:'white',mx:5,my:3,grain:.45,starve:.3,band:.25,tex:.35},
-    f:[F('e','p','两种专色叠出第三种颜色','Two spot inks overprinting into a third colour',{mode:'mono'}), F('r','p','颜色之间的套色错位','Misregistration between colours',{mx:0,my:0}), F('r','p','颗粒、缺墨和辊痕','Grain, ink starvation and roller bands',{grain:0,starve:0,band:0}), F('o','d','肉眼可见的粗网点','Coarse, visible dots',{cell:4}), F('o','d','荧光粉','Fluorescent pink',{inkA:'red'})]},
+    f:[F('e','p','两种专色叠出第三种颜色','Two spot inks overprinting into a third colour',{mode:'mono'}), F('r','p','颜色之间的套色错位','Misregistration between colours',{mx:0,my:0,rot:0,stretch:0}), F('r','p','颗粒、缺墨和辊痕','Grain, ink starvation and roller bands',{grain:0,starve:0,band:0}), F('o','d','肉眼可见的粗网点','Coarse, visible dots',{cell:4}), F('o','d','荧光粉','Fluorescent pink',{inkA:'red'})]},
   {name:{zh:'报纸半色调', en:'Newspaper halftone'}, tag:{zh:'AM · 黑 · 新闻纸', en:'AM · black · newsprint'}, p:{screen:'am',cell:7,angle:45,contrast:1.1,mode:'mono',inkA:'black',inkB:'blue',paper:'news',mx:0,my:0,grain:.15,starve:.05,band:0,tex:.5},
     f:[F('e','d','规则的 AM 调幅网','Regular AM dots',{screen:'cont'}), F('e','m','灰黄的新闻纸','Grey-yellow newsprint',{paper:'white',tex:0}), F('r','p','45° 网角','A 45° screen angle',{angle:0}), F('o','p','轻微的墨色不匀','Slightly uneven ink',{grain:0,starve:0})]},
   {name:{zh:'波普漫画', en:'Pop comic'}, tag:{zh:'Ben-Day · 红 + 联邦蓝', en:'Ben-Day · red + federal blue'}, p:{screen:'benday',cell:14,angle:30,contrast:1.2,mode:'sep',inkA:'red',inkB:'fedblue',paper:'white',mx:2,my:1,grain:.1,starve:0,band:0,tex:.2},
-    f:[F('e','d','大小固定的 Ben-Day 网点','Fixed-size Ben-Day dots',{screen:'am'}), F('r','d','放大到夸张的网点','Dots enlarged to the point of exaggeration',{cell:6}), F('r','d','接近原色的红和蓝','Near-primary red and blue',{inkA:'purple',inkB:'teal'}), F('o','p','轻微错位','Slight misregistration',{mx:0,my:0})]},
-  {name:{zh:'误差扩散颗粒', en:'Computer dither'}, tag:{zh:'误差扩散 · 粉 + 青绿', en:'Error diffusion · pink + teal'}, p:{screen:'fs',cell:8,angle:0,contrast:1.1,mode:'sep',inkA:'fpink',inkB:'teal',paper:'white',mx:3,my:-2,grain:.2,starve:.1,band:.1,tex:.2},
-    f:[F('e','d','误差扩散的细碎颗粒','Fine error-diffusion grain',{screen:'am'}), F('r','p','双色叠印','Two-colour overprint',{mode:'mono'}), F('o','p','套色错位','Misregistration',{mx:0,my:0})]},
-  {name:{zh:'掌机像素', en:'Handheld pixels'}, tag:{zh:'有序抖动 · 猎人绿', en:'Ordered dither · hunter green'}, p:{screen:'bayer',cell:14,angle:0,contrast:1.2,mode:'mono',inkA:'hunter',inkB:'black',paper:'mint',mx:0,my:0,grain:0,starve:0,band:0,tex:.15,posterize:4},
+    f:[F('e','d','大小固定的 Ben-Day 网点','Fixed-size Ben-Day dots',{screen:'am'}), F('r','d','放大到夸张的网点','Dots enlarged to the point of exaggeration',{cell:6}), F('r','d','接近原色的红和蓝','Near-primary red and blue',{inkA:'purple',inkB:'teal'}), F('o','p','轻微错位','Slight misregistration',{mx:0,my:0,rot:0,stretch:0})]},
+  {name:{zh:'误差扩散颗粒', en:'Computer dither'}, tag:{zh:'误差扩散 · 粉 + 青绿', en:'Error diffusion · pink + teal'}, p:{dotvar:0,rot:0,stretch:0,screen:'fs',cell:8,angle:0,contrast:1.1,mode:'sep',inkA:'fpink',inkB:'teal',paper:'white',mx:3,my:-2,grain:.2,starve:.1,band:.1,tex:.2},
+    f:[F('e','d','误差扩散的细碎颗粒','Fine error-diffusion grain',{screen:'am'}), F('r','p','双色叠印','Two-colour overprint',{mode:'mono'}), F('o','p','套色错位','Misregistration',{mx:0,my:0,rot:0,stretch:0})]},
+  {name:{zh:'掌机像素', en:'Handheld pixels'}, tag:{zh:'有序抖动 · 猎人绿', en:'Ordered dither · hunter green'}, p:{dotvar:0,rot:0,stretch:0,screen:'bayer',cell:14,angle:0,contrast:1.2,mode:'mono',inkA:'hunter',inkB:'black',paper:'mint',mx:0,my:0,grain:0,starve:0,band:0,tex:.15,posterize:4},
     f:[F('e','d','有序抖动的格纹','The cross-hatch of ordered dithering',{screen:'fs'}), F('e','d','只有一种绿色','A single green',{inkA:'black'}), F('r','m','浅绿底色','A pale green ground',{paper:'white'}), F('r','d','大像素','Big pixels',{cell:5}), F('o','d','少数几级色调','Only a few tone levels',{posterize:0})]},
   {name:{zh:'复印朋克', en:'Photocopy punk'}, tag:{zh:'复印 · 翻印 3 次 · 再生纸', en:'Photocopy · 3rd generation · recycled'}, p:{screen:'thresh',process:'xerox',copyGen:3,cell:6,angle:0,contrast:1.5,mode:'mono',inkA:'black',inkB:'black',paper:'recycled',mx:0,my:0,grain:.5,starve:.35,band:.45,tex:.5},
     f:[F('e','p','高反差的黑白影像','High-contrast black and white with no midtones',{process:'none',screen:'am'}), F('r','p','反复翻印：细节减少、暗部加重','A copy of a copy: lost detail, heavier blacks',{copyGen:0}), F('r','p','缺墨与辊痕','Ink starvation and roller bands',{starve:0,band:0,grain:0}), F('o','m','再生纸','Recycled paper',{paper:'white',tex:0})]},
@@ -582,28 +597,28 @@ const PRESETS = [
   {name:{zh:'版画排线', en:'Engraved hatching'}, tag:{zh:'交叉排线 · 联邦蓝', en:'Cross-hatch · federal blue'}, p:{screen:'hatch',cell:9,angle:45,contrast:1.2,mode:'mono',inkA:'fedblue',inkB:'black',paper:'recycled',mx:0,my:0,grain:.2,starve:.1,band:0,tex:.45},
     f:[F('e','d','交叉排线','Cross-hatching',{screen:'am'}), F('r','d','单一深蓝','A single deep blue',{inkA:'black'}), F('o','m','纸纹','Paper texture',{tex:0})]},
   {name:{zh:'三色 Riso', en:'Three-colour Riso'}, tag:{zh:'AM · 粉 + 蓝 + 黄', en:'AM · pink + blue + yellow'}, p:{screen:'am',shape:'round',cell:10,angle:15,contrast:1.1,mode:'tri',inkA:'fpink',inkB:'blue',inkC:'yellow',paper:'white',mx:4,my:2,grain:.4,starve:.25,band:.2,tex:.3,gain:.25},
-    f:[F('e','p','三种专色叠出丰富混色','Three spot inks overprinting into rich mixes',{mode:'sep'}), F('r','p','套色错位','Misregistration',{mx:0,my:0}), F('r','p','颗粒与缺墨','Grain and ink starvation',{grain:0,starve:0,band:0}), F('o','p','网点扩大','Dot gain',{gain:0})]},
+    f:[F('e','p','三种专色叠出丰富混色','Three spot inks overprinting into rich mixes',{mode:'sep'}), F('r','p','套色错位','Misregistration',{mx:0,my:0,rot:0,stretch:0}), F('r','p','颗粒与缺墨','Grain and ink starvation',{grain:0,starve:0,band:0}), F('o','p','网点扩大','Dot gain',{gain:0})]},
   {name:{zh:'菱形网点', en:'Diamond dots'}, tag:{zh:'AM 菱形 · 联邦蓝', en:'AM diamond · federal blue'}, p:{screen:'am',shape:'diamond',cell:13,angle:45,contrast:1.15,mode:'mono',inkA:'fedblue',inkB:'black',paper:'white',mx:0,my:0,grain:.1,starve:0,band:0,tex:.25,gain:.15,stock:'coated'},
     f:[F('e','d','菱形网点','Diamond dots',{shape:'round'}), F('r','d','大网点','Large dots',{cell:6}), F('o','p','网点扩大','Dot gain',{gain:0})]},
   {name:{zh:'浓墨海报', en:'Ink-spread poster'}, tag:{zh:'AM 椭圆 · 红 + 联邦蓝 · 网点扩大', en:'AM ellipse · red + federal blue · dot gain'}, p:{screen:'am',shape:'ellipse',cell:11,angle:20,contrast:1.2,mode:'sep',inkA:'red',inkB:'fedblue',paper:'recycled',mx:3,my:2,grain:.3,starve:.15,band:.1,tex:.35,gain:.75},
-    f:[F('e','p','网点扩大、边缘发毛','Swollen dots with ragged edges',{gain:0,stock:'coated'}), F('r','d','椭圆网点','Elliptical dots',{shape:'round'}), F('r','p','套色错位','Misregistration',{mx:0,my:0}), F('o','m','再生纸','Recycled paper',{paper:'white'})]},
-  {name:{zh:'故障屏幕', en:'Glitch screen'}, tag:{zh:'误差扩散 · 黑 · RGB 通道偏移', en:'Error diffusion · black · RGB split'}, p:{screen:'fs',cell:6,angle:0,contrast:1.25,mode:'mono',inkA:'black',inkB:'blue',paper:'white',mx:0,my:0,grain:0,starve:0,band:0,tex:0,ca:6,stock:'coated'},
+    f:[F('e','p','网点扩大、边缘发毛','Swollen dots with ragged edges',{gain:0,stock:'coated'}), F('r','d','椭圆网点','Elliptical dots',{shape:'round'}), F('r','p','套色错位','Misregistration',{mx:0,my:0,rot:0,stretch:0}), F('o','m','再生纸','Recycled paper',{paper:'white'})]},
+  {name:{zh:'故障屏幕', en:'Glitch screen'}, tag:{zh:'误差扩散 · 黑 · RGB 通道偏移', en:'Error diffusion · black · RGB split'}, p:{dotvar:0,rot:0,stretch:0,screen:'fs',cell:6,angle:0,contrast:1.25,mode:'mono',inkA:'black',inkB:'blue',paper:'white',mx:0,my:0,grain:0,starve:0,band:0,tex:0,ca:6,stock:'coated'},
     f:[F('e','d','RGB 通道错开','Split RGB channels',{ca:0}), F('r','d','误差扩散颗粒','Error-diffusion grain',{screen:'am'})]},
   {name:{zh:'丝网海报', en:'Screen-print poster'}, tag:{zh:'丝网 · 橙 + 紫 · 不透明', en:'Screen print · orange + purple · opaque'}, p:{screen:'am',process:'silk',cell:12,angle:0,contrast:1.3,mode:'sep',blend:'opaque',inkA:'orange',inkB:'purple',paper:'white',mx:6,my:4,grain:.12,starve:.08,band:0,tex:.25},
-    f:[F('e','p','简化成干净的平涂色块','Simplified into clean flat shapes',{process:'none'}), F('e','p','厚而不透明的油墨','Thick, opaque ink',{blend:'multiply'}), F('r','p','套色错位','Misregistration',{mx:0,my:0})]},
+    f:[F('e','p','简化成干净的平涂色块','Simplified into clean flat shapes',{process:'none'}), F('e','p','厚而不透明的油墨','Thick, opaque ink',{blend:'multiply'}), F('r','p','套色错位','Misregistration',{mx:0,my:0,rot:0,stretch:0})]},
   {name:{zh:'凸版印刷', en:'Letterpress'}, tag:{zh:'凸版 · 亮红 · 再生纸', en:'Letterpress · bright red · recycled'}, p:{screen:'am',process:'letter',cell:10,angle:0,contrast:1.35,mode:'mono',inkA:'red',inkB:'black',paper:'recycled',mx:0,my:0,grain:.25,starve:.25,band:0,tex:.65},
     f:[F('e','p','色块内部斑驳、边缘积墨，纸面带压痕','Mottled solids, squeezed edges, a pressed impression',{process:'none'}), F('r','m','明显的纸张纹理','Heavy paper texture',{tex:0}), F('r','p','墨色不匀','Uneven ink',{grain:0,starve:0})]},
   {name:{zh:'木活字演出海报', en:'Wood-type show bill'}, tag:{zh:'凸版 · 亮红 + 联邦蓝 · 再生纸', en:'Letterpress · bright red + federal blue · recycled'}, src:'poster', p:{screen:'am',process:'letter',cell:8,angle:0,contrast:1.3,mode:'sep',inkA:'red',inkB:'fedblue',paper:'recycled',mx:3,my:2,grain:.3,starve:.35,band:0,tex:.6,gain:.2,wear:.7,age:.35,fox:.3,fold:'half'},
-    f:[F('e','p','凸版质感：色块斑驳、边缘积墨、纸面压痕','Letterpress: mottled solids, squeezed edges, a pressed impression',{process:'none',screen:'thresh'}), F('e','d','少量鲜明专色，重叠处形成混色','Two or three bright spot colours, overlapping into a third',{mode:'mono'}), F('e','m','旧木活字的磨损效果：字形缺口、色块木纹与局部墨色不匀','Worn wood type: chipped edges, wood grain in the solids, each block inked a little differently',{wear:0}), F('r','m','粗纹再生纸','Rough recycled paper',{tex:0,paper:'white'}), F('r','p','模拟手工套准的轻微偏差','Hand-registered plates, slightly off',{mx:0,my:0}), F('o','p','墨色不匀','Uneven ink',{grain:0,starve:0}), F('o','m','纸张做旧：泛黄、褐斑与折痕处的墨层开裂','Time: yellowing, foxing, ink cracked along the fold',{age:0,fox:0,fold:'none'})]},
+    f:[F('e','p','凸版质感：色块斑驳、边缘积墨、纸面压痕','Letterpress: mottled solids, squeezed edges, a pressed impression',{process:'none',screen:'thresh'}), F('e','d','少量鲜明专色，重叠处形成混色','Two or three bright spot colours, overlapping into a third',{mode:'mono'}), F('e','m','旧木活字的磨损效果：字形缺口、色块木纹与局部墨色不匀','Worn wood type: chipped edges, wood grain in the solids, each block inked a little differently',{wear:0}), F('r','m','粗纹再生纸','Rough recycled paper',{tex:0,paper:'white'}), F('r','p','模拟手工套准的轻微偏差','Hand-registered plates, slightly off',{mx:0,my:0,rot:0,stretch:0}), F('o','p','墨色不匀','Uneven ink',{grain:0,starve:0}), F('o','m','纸张做旧：泛黄、褐斑与折痕处的墨层开裂','Time: yellowing, foxing, ink cracked along the fold',{age:0,fox:0,fold:'none'})]},
   {name:{zh:'同心圆网徽章', en:'Bullseye badge'}, tag:{zh:'线条网 · 同心圆 · 圆形裁切', en:'Line screen · concentric · circle outline'}, p:{screen:'line',geo:'rings',outline:'circle',cell:9,angle:0,contrast:1.25,mode:'mono',inkA:'fedblue',inkB:'black',paper:'recycled',mx:0,my:0,grain:.2,starve:.15,band:0,tex:.35},
     f:[F('e','d','线条呈同心圆排列，以粗细变化表现明暗','Lines run in concentric rings, their weight carrying the tone',{geo:'grid'}), F('e','d','圆形范围内着墨，外部保留纸色','Printed only inside a circle, paper outside',{outline:'none'}), F('o','m','米色再生纸','Recycled cream paper',{paper:'white',tex:0})]},
   {name:{zh:'字形放射网', en:'Radial letters'}, tag:{zh:'AM · 放射线 · 字形裁切 · 双色', en:'AM · radial · letter outline · two-colour'}, p:{screen:'am',geo:'rays',outline:'text',outlineText:'INK',cell:10,angle:0,contrast:1.2,mode:'sep',inkA:'fpink',inkB:'blue',paper:'white',mx:4,my:3,grain:.35,starve:.25,band:.15,tex:.3},
-    f:[F('e','d','网点从中心向外呈放射状排列','Dots fanned out along rays',{geo:'grid'}), F('e','d','用图像填充文字轮廓','The image appears only inside the big letters',{outline:'none'}), F('r','p','双色叠印与错位','Two-colour overprint and misregistration',{mode:'mono',mx:0,my:0})]},
+    f:[F('e','d','网点从中心向外呈放射状排列','Dots fanned out along rays',{geo:'grid'}), F('e','d','用图像填充文字轮廓','The image appears only inside the big letters',{outline:'none'}), F('r','p','双色叠印与错位','Two-colour overprint and misregistration',{mode:'mono',mx:0,my:0,rot:0,stretch:0})]},
   {name:{zh:'木刻版画', en:'Woodcut print'}, tag:{zh:'木刻 · 黑 · 再生纸', en:'Woodcut · black · recycled'}, p:{screen:'am',process:'wood',cell:8,angle:10,contrast:1.3,mode:'mono',inkA:'black',inkB:'black',paper:'recycled',mx:0,my:0,grain:.2,starve:.15,band:0,tex:.5},
     f:[F('e','p','刀痕线条与色块边缘的缺口','Gouged lines and chipped solids',{process:'none'}), F('r','m','再生纸','Recycled paper',{paper:'white'}), F('o','p','墨色带木纹','Wood grain in the ink',{grain:0,starve:0})]},
   {name:{zh:'连续调双色', en:'Continuous duotone'}, tag:{zh:'连续调 · 橙 + 黑 双色调', en:'Continuous · orange + black duotone'}, p:{screen:'cont',cell:8,angle:0,contrast:1.15,mode:'duo',inkA:'orange',inkB:'black',paper:'recycled',mx:2,my:1,grain:.2,starve:.1,band:0,tex:.4},
     f:[F('e','d','两种油墨分担明暗层次','A two-ink duotone',{mode:'mono'}), F('e','d','没有网点的平滑过渡','Smooth tone with no visible dots',{screen:'am'}), F('o','m','纸纹','Paper texture',{tex:0})]},
-  {name:{zh:'数字双色调', en:'Digital duotone'}, tag:{zh:'渐变映射 · 粉 → 联邦蓝', en:'Gradient map · pink → federal blue'}, p:{screen:'cont',cell:8,angle:0,contrast:1.2,mode:'grad',inkA:'fpink',inkB:'fedblue',paper:'white',mx:0,my:0,grain:0,starve:0,band:0,tex:0},
+  {name:{zh:'数字双色调', en:'Digital duotone'}, tag:{zh:'渐变映射 · 粉 → 联邦蓝', en:'Gradient map · pink → federal blue'}, p:{dotvar:0,rot:0,stretch:0,screen:'cont',cell:8,angle:0,contrast:1.2,mode:'grad',inkA:'fpink',inkB:'fedblue',paper:'white',mx:0,my:0,grain:0,starve:0,band:0,tex:0},
     f:[F('e','d','亮部和暗部各映射成一种颜色','Highlights and shadows mapped to two colours',{mode:'duo',screen:'am'}), F('r','d','高饱和度撞色','Saturated, clashing colours',{inkA:'yellow',inkB:'black'})]},
   {name:{zh:'朱文印章', en:'Zhuwen seal'}, tag:{zh:'印章 · 红字 · 印文', en:'Seal · red characters · seal text'}, src:'seal', p:{screen:'am',process:'stamp',stampType:'zhu',cell:6,angle:0,contrast:1.4,mode:'mono',inkA:'red',inkB:'black',paper:'white',mx:0,my:0,grain:.35,starve:.35,band:0,tex:.3},
     f:[F('e','p','字和边框印成红色（朱文）','Characters and frame printed red (zhuwen)',{stampType:'bai'}), F('r','p','按压不均：一侧发淡、局部印不全','Uneven pressure: one side fades, parts miss',{grain:0,starve:0}), F('o','d','朱红印泥','Vermilion ink paste',{inkA:'black'})]},
@@ -794,9 +809,11 @@ function noises(n){
   for (let i=0;i<N;i++){ const v = ga[i]*.65 + gb[i]*.35; gr[i] = v; H[Math.min(1023, v*1024|0)]++; }
   for (let k=1;k<1024;k++) H[k] += H[k-1];
   for (let i=0;i<N;i++) gr[i] = H[Math.min(1023, gr[i]*1024|0)]/N;
+  // paper fibres: a fine field (about 1.2 px in page units), shared by every plate, since all inks land on the same sheet
+  const fib = lowNoise(n, Math.round(S/1.2), rng(777));
   const rows = new Float32Array(n), rv = []; for (let i=0;i<=20;i++) rv.push(r());
   for (let y=0;y<n;y++){ const f=y/n*20, i=Math.floor(f), t=f-i, s=t*t*(3-2*t); const v=rv[i]+(rv[i+1]-rv[i])*s; rows[y]=Math.min(1,Math.max(0,(v-.5)*2.4+.5)); }
-  return noiseCache[n] = {g1,g2,fm,low,low2,rows,gr};
+  return noiseCache[n] = {g1,g2,fm,low,low2,rows,gr,fib};
 }
 
 // grain: a soft clustered mottle plus small specks where little ink lands; speck coverage = 16% of the grain setting
@@ -824,6 +841,10 @@ function plates(data, n, mode, k, gain, tone){
   return [A,B,C];
 }
 /* spot functions: threshold t(u,w) on fractional cell coords; pixel inks when value > t */
+// noise in screen-cell units, so dot irregularity does not depend on canvas resolution
+const cHash = (i, j, s) => { let h = Math.imul(i|0, 374761393) + Math.imul(j|0, 668265263) + Math.imul(s|0, 1442695041); h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0)/4294967296; };
+const cNoise = (x, y, s) => { const ix = Math.floor(x), iy = Math.floor(y), tx = x - ix, ty = y - iy, sx = tx*tx*(3-2*tx), sy = ty*ty*(3-2*ty);
+  const a = cHash(ix, iy, s), b = cHash(ix+1, iy, s), c = cHash(ix, iy+1, s), d = cHash(ix+1, iy+1, s); return a + (b-a)*sx + (c-a)*sy + (a-b-c+d)*sx*sy; };
 function spotT(shape, u, w){
   const fu = u-Math.floor(u)-.5, fw = w-Math.floor(w)-.5, TAU = Math.PI*2;
   if (shape==='ellipse') return 1-(Math.cos(TAU*u)+.55*Math.cos(TAU*w)+1.55)/3.1;
@@ -880,7 +901,7 @@ function xeroxDegrade(pl, n, gens, nz){
 
 /* ---------- screening ---------- */
 const BAYER = (() => { const m=[[0,2],[3,1]]; let M=m; while (M.length<8){ const s=M.length, R=[]; for (let y=0;y<s*2;y++){ R.push([]); for (let x=0;x<s*2;x++){ const q=[[0,2],[3,1]][y>=s?1:0][x>=s?1:0]; R[y].push(4*M[y%s][x%s]+q); } } M=R; } return M; })();
-function screen(pl, n, type, cell, angDeg, idx, nz, shape, wear = 0, geo = 'grid'){
+function screen(pl, n, type, cell, angDeg, idx, nz, shape, wear = 0, geo = 'grid', dv = 0){
   const out = new Uint8Array(n*n), TAU = Math.PI*2;
   const a = angDeg*Math.PI/180, c = Math.cos(a), s = Math.sin(a);
   // screen geometry: returns [u, w] cell coordinates; w is the coordinate a line screen draws its lines along
@@ -896,10 +917,20 @@ function screen(pl, n, type, cell, angDeg, idx, nz, shape, wear = 0, geo = 'grid
   if (type==='am' || type==='line' || type==='hatch'){
     for (let y=0;y<n;y++) for (let x=0;x<n;x++){
       const i=y*n+x, v=pl[i]; if (v<=0) continue;
-      const [u, w] = uw(x, y);
+      let [u, w] = uw(x, y), vv = v, er = 0;
+      if (dv && type!=='hatch'){
+        // dot irregularity: each dot sits a little off the grid, prints a little larger or smaller and has a rough edge;
+        // the smallest dots do not image at all (highlight dropout) and the darkest areas fill in solid
+        u += dv*.22*(cNoise(u*.9 + 3.1, w*.9, 11 + idx) - .5)*2; w += dv*.22*(cNoise(u*.9, w*.9 + 7.3, 23 + idx) - .5)*2;
+        const h = cHash(Math.floor(u), Math.floor(w), 5 + idx*31);
+        vv = v*(1 + dv*.3*(h - .5)*2);
+        if (vv < dv*.06*(.5 + h)) vv = 0; else if (vv > 1 - dv*.08) vv = 1;
+        er = dv;   // the edge noise is only sampled near a dot edge (below)
+      }
       let on;
-      if (type==='am'){ on = v > spotT(shape, u, w); }
-      else if (type==='line'){ on = v > (1-Math.cos(TAU*w))/2; }
+      if (vv<=0) on = false; else if (vv>=1) on = true;
+      else if (type!=='hatch'){ const t = type==='am' ? spotT(shape, u, w) : (1-Math.cos(TAU*w))/2, d = vv - t;
+        on = (er && d > -.09 && d < .09) ? d > er*.16*(cNoise(u*3.2, w*3.2, 41 + idx) - .5) : d > 0; }
       else { const t1=(1-Math.cos(TAU*w))/2, t2=(1-Math.cos(TAU*u))/2; on = Math.min(1,v*1.7)>t1*.95+.03 || (v>.42 && (v-.42)/.58*1.1>t2); }
       out[i]=on?1:0;
     }
@@ -1052,7 +1083,7 @@ function render(canvas, p, srcCanvas){
   ctx.drawImage(srcCanvas, 0, 0, n, n);
   const sd = ctx.getImageData(0,0,n,n), data = sd.data;
   const N = n*n;
-  const {g1,g2,low,low2,rows,gr} = nz;
+  const {g1,g2,low,low2,rows,gr,fib} = nz;
   // paper stock: absorbency adds dot gain and dulls colour; tracing paper veils everything
   const st = STOCKS.find(x => x.id===p.stock) || STOCKS[0];
   const kA = ink(p.inkA), kB = ink(p.inkB), kC = ink(p.inkC);
@@ -1127,9 +1158,9 @@ function render(canvas, p, srcCanvas){
     let mA, mB, mC;
     if (cont){ mA = pa; mB = pb; mC = pc; }
     else {
-      mA = screen(pa, n, eff, cell, p.angle, 0, nz, p.shape, p.wear, p.geo);
-      mB = pb ? screen(pb, n, eff, cell, p.angle + (lineish?45:30), 1, nz, p.shape, p.wear, p.geo) : null;
-      mC = pc ? screen(pc, n, eff, cell, p.angle + (lineish?90:60), 2, nz, p.shape, p.wear, p.geo) : null;
+      mA = screen(pa, n, eff, cell, p.angle, 0, nz, p.shape, p.wear, p.geo, p.dotvar||0);
+      mB = pb ? screen(pb, n, eff, cell, p.angle + (lineish?45:30), 1, nz, p.shape, p.wear, p.geo, p.dotvar||0) : null;
+      mC = pc ? screen(pc, n, eff, cell, p.angle + (lineish?90:60), 2, nz, p.shape, p.wear, p.geo, p.dotvar||0) : null;
       if (gainEff > .02){
         const r = Math.max(1, Math.round(gainEff*2.5*sc)), amt = .3 + .6*gainEff;
         spread(mA, n, r, g2, amt, 0);
@@ -1143,6 +1174,12 @@ function render(canvas, p, srcCanvas){
     if (letter || stamp){ const r = Math.max(1, Math.round(2.5*sc)); eA = erode(mA,n,r); eB = mB && erode(mB,n,r); eC = mC && erode(mC,n,r); }
     const dx = Math.round(p.mx*sc), dy = Math.round(p.my*sc);
     const cdx = Math.round(-p.my*.7*sc), cdy = Math.round(p.mx*.7*sc);
+    // registration: each later plate is shifted, turned a fraction of a degree about the sheet centre and,
+    // because the paper stretches between passes, scaled a little (mostly along the feed direction);
+    // so the error differs from corner to corner instead of being one offset everywhere
+    const regMap = (k, ddx, ddy) => { const th = (p.rot||0)*Math.PI/180*(k===1 ? 1 : -.7), st = (p.stretch||0)/100*(k===1 ? 1 : .6), co = Math.cos(th), si = Math.sin(th), c0 = n/2, fy = 1 + st, fx = 1 + st*.3;
+      return (x, y) => { const X = x - ddx - c0, Y = y - ddy - c0; return [Math.round(c0 + (X*co + Y*si)/fx), Math.round(c0 + (-X*si + Y*co)/fy)]; }; };
+    const mapB = regMap(1, dx, dy), mapC = regMap(2, cdx, cdy);
     const strength = (j, y, er, x) => {
       let s = .96;
       s *= grainF(p.grain, gr[j]);
@@ -1155,26 +1192,29 @@ function render(canvas, p, srcCanvas){
       if (stamp){ const t = (x + y)/(2*n); s *= 1 - .5*Math.max(0, t - .45)/.55; }   // uneven pressure fades one corner
       return s<0?0:s;
     };
-    const col = [0,0,0];
+    const col = [0,0,0]; let laid = 0;
+    // ink on ink: a wet layer takes less of the next ink than bare paper does (trapping), so overprints come out lighter than a pure multiply
     const lay = (ic, s, white) => {
+      if (laid > 0) s *= 1 - (1 - (p.trap ?? 1))*laid; laid = Math.max(laid, s);
       if (white){ const w = Math.min(1, s*1.2)*.94; col[0]+=(ic[0]-col[0])*w; col[1]+=(ic[1]-col[1])*w; col[2]+=(ic[2]-col[2])*w; return; }   // white ink is semi-opaque
       if (opaque){ col[0]+=(ic[0]-col[0])*s; col[1]+=(ic[1]-col[1])*s; col[2]+=(ic[2]-col[2])*s; }
       else { col[0]*=1-s*(1-ic[0]); col[1]*=1-s*(1-ic[1]); col[2]*=1-s*(1-ic[2]); }
     };
     for (let y=0;y<n;y++) for (let x=0;x<n;x++){
       const i = y*n+x;
-      let pt = 1 - tex*(.08*g2[i] + .06*low2[i]);
+      let pt = 1 - tex*(.08*fib[i] + .06*low2[i]);
+      const fa = 1 - tex*.18*fib[i]*fib[i]; laid = 0;     // fibres hold back a little ink, the same spot on every plate
       if (letter && !mA[i]){ // impression into the paper: shadow on one side of each inked edge, highlight on the other
         const o = Math.max(1, Math.round((1 + p.wear*1.5)*sc));
         if (x>=o && y>=o && mA[i-o*n-o]) pt *= .9 - .04*p.wear; else if (x<n-o && y<n-o && mA[i+o*n+o]) pt *= 1.03;
       }
       col[0]=Math.min(1,pp[0]*pt); col[1]=Math.min(1,pp[1]*pt); col[2]=Math.min(1,pp[2]*pt);
       for (let q=0;q<patL.length;q++){ const mm = patL[q][0][i]; if (mm){ const pc = patL[q][1]; col[0]*=1-mm*(1-pc[0]); col[1]*=1-mm*(1-pc[1]); col[2]*=1-mm*(1-pc[2]); } }
-      const a = mA[i]; if (a) lay(iA, strength(i, y, (letter||stamp) && eA[i], x) * a, kA.white);
-      if (mB){ const xs=x-dx, ys=y-dy;
-        if (xs>=0&&xs<n&&ys>=0&&ys<n){ const j=ys*n+xs, b=mB[j]; if (b) lay(iB, strength(N-1-i, ys, (letter||stamp) && eB[j], xs) * b, kB.white); } }
-      if (mC){ const xs=x-cdx, ys=y-cdy;
-        if (xs>=0&&xs<n&&ys>=0&&ys<n){ const j=ys*n+xs, c=mC[j]; if (c) lay(iC, strength((i+(N>>1))%N, ys, (letter||stamp) && eC[j], xs) * c, kC.white); } }
+      const a = mA[i]; if (a) lay(iA, strength(i, y, (letter||stamp) && eA[i], x) * a * fa, kA.white);
+      if (mB){ const [xs, ys] = mapB(x, y);
+        if (xs>=0&&xs<n&&ys>=0&&ys<n){ const j=ys*n+xs, b=mB[j]; if (b) lay(iB, strength(N-1-i, ys, (letter||stamp) && eB[j], xs) * b * fa, kB.white); } }
+      if (mC){ const [xs, ys] = mapC(x, y);
+        if (xs>=0&&xs<n&&ys>=0&&ys<n){ const j=ys*n+xs, c=mC[j]; if (c) lay(iC, strength((i+(N>>1))%N, ys, (letter||stamp) && eC[j], xs) * c * fa, kC.white); } }
       data[i*4]=col[0]*255; data[i*4+1]=col[1]*255; data[i*4+2]=col[2]*255; data[i*4+3]=255;
     }
   }
@@ -1305,7 +1345,7 @@ buildControls();
 
 const pct = v => Math.round(v*100)+'%';
 const SLIDERS = {cell:v=>v+' px', angle:v=>v+'°', contrast:v=>(+v).toFixed(2), black:pct, white:pct, gamma:v=>(+v).toFixed(2), posterize:v=>v>1?v+(LANG==='zh'?' 级':' lv'):(LANG==='zh'?'关':'off'),
-  copyGen:v=>v>0?(LANG==='zh'?`翻印 ${v} 次`:`gen ${v}`):(LANG==='zh'?'原稿':'original'), mx:v=>v+' px', my:v=>v+' px', grain:pct, starve:pct, band:pct, tex:pct, gain:pct, ca:v=>v+' px', wear:pct, age:pct, fox:pct};
+  copyGen:v=>v>0?(LANG==='zh'?`翻印 ${v} 次`:`gen ${v}`):(LANG==='zh'?'原稿':'original'), mx:v=>v+' px', my:v=>v+' px', grain:pct, starve:pct, band:pct, tex:pct, gain:pct, ca:v=>v+' px', wear:pct, age:pct, fox:pct, dotvar:pct, trap:pct, rot:v=>(+v).toFixed(2)+'°', stretch:v=>(+v).toFixed(2)+'%'};
 $('outlineText').addEventListener('input', e => { P.outlineText = e.target.value || ' '; manual(); schedule(); });
 Object.keys(SLIDERS).forEach(k => {
   $(k).addEventListener('input', e => { P[k] = parseFloat(e.target.value); $(k+'Out').textContent = SLIDERS[k](P[k]); manual(); schedule(); });

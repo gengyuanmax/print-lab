@@ -13,8 +13,9 @@
   };
   const wire = () => document.querySelectorAll('a[data-page]').forEach(a => {
     const k = a.dataset.page;
-    if (local || !ART[k] || ART[k].startsWith('@')) { a.href = FILE[k]; return; }
-    a.href = ART[k]; a.target = '_blank'; a.rel = 'noopener';
+    const hs = a.dataset.hash || '';
+    if (local || !ART[k] || ART[k].startsWith('@')) { a.href = FILE[k] + hs; return; }
+    a.href = ART[k] + hs; a.target = '_blank'; a.rel = 'noopener';
   });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wire); else wire();
 })();

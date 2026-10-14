@@ -12,12 +12,12 @@ The project is also a record of learning to design with AI: understanding the bu
 
 | Lab | What you can try |
 | --- | --- |
-| [01 · Print Texture Lab](https://gengyuanmax.github.io/print-labs/print.html) | Turn an image into dots and ink. Compare screens, printing processes, overprinting and paper textures. |
+| [01 · Print Texture Lab](https://gengyuanmax.github.io/print-labs/print.html) | Turn an image into dots and ink. Compare screens, printing processes, overprinting and paper textures. The focus is how processes differ; fine noise is on by default. |
 | [02 · Layout Lab](https://gengyuanmax.github.io/print-labs/layout.html) | Build posters with adjustable grids, typography, colour and collage. Compare styles and export your design. |
 | [03 · Object Lab](https://gengyuanmax.github.io/print-labs/object.html) | Explore how flat sheets become zines, folded leaflets and booklets. See page order, folds, bleed and safe areas. |
 | [04 · Element Lab](https://gengyuanmax.github.io/print-labs/element.html) | Restyle web components, process photos, and combine shapes, text and images with different ink and masking effects. |
 
-At the bottom of the home page, **Simulation Lab** is a reference version of the whole pipeline (tone → plates → screen → print → imperfection → paper), with every setting exposed. Tune it, then copy the spec to reproduce the same print look in another project. The values are visual judgements, not measurements from real prints.
+At the bottom of the home page, **Simulation Lab** is the simulation-focused reference version of the whole pipeline (tone → plates → screen → print → imperfection → paper), with every setting exposed. Tune it, then copy the spec to reproduce the same print look in another project. The values are visual judgements, not measurements from real prints.
 
 **A good place to start:** open Print Texture Lab, try the Riso preset, and change the dot size or ink colours. Then move to Layout Lab and see how the same visual ideas work in a poster.
 

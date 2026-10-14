@@ -214,7 +214,7 @@ a.labcard:focus-visible{outline:2.5px solid var(--blue);outline-offset:4px}
       <div class="proofbox"><canvas id="pvPrint" width="480" height="600" aria-hidden="true"></canvas></div>
       <div class="lhead"><span class="num">01</span><span class="status"><span class="zh">可用</span><span class="en">Open</span></span></div>
       <h2><span class="zh">印痕实验室</span><span class="en">Print Texture Lab</span><small><span class="zh">Print texture lab</span><span class="en">印痕实验室</span></small></h2>
-      <p><span class="zh">调整网点、油墨和纸张，观察图像的印刷效果。</span><span class="en">How an image turns into dots, and how the dots land on paper.</span></p>
+      <p><span class="zh">比较不同工艺的面貌：同一张图用丝网、凸版、Riso、复印印出来分别是什么样。细节噪声作为默认效果自动开启。</span><span class="en">Compare what each process looks like: the same image as a screen print, letterpress, Riso or photocopy. Fine noise is on by default.</span></p>
       <ul>
         <li><span class="zh">调幅加网、调频加网、抖动等图像处理方式</span><span class="en">Halftone dots, dithering, FM grain and other screens</span></li>
         <li><span class="zh">丝网、凸版、木刻、印章、拓印、复印、蓝晒、物影摄影</span><span class="en">Screen print, letterpress, woodcut, seals, rubbings, photocopies, cyanotypes, photograms</span></li>
@@ -295,7 +295,7 @@ a.labcard:focus-visible{outline:2.5px solid var(--blue);outline-offset:4px}
 
   <section class="split simlab" id="simlab" data-aria-zh="模拟实验室" data-aria-en="Simulation Lab">
     <h2><span class="zh">模拟实验室</span><span class="en">Simulation Lab</span> <small class="tag">REFERENCE</small></h2>
-    <p><span class="zh">这里将印刷模拟拆成六个环节：影调、分版、加网、印刷、瑕疵和纸张。逐项调整参数，观察网点、叠印和纸张质感如何变化。调好后可复制参数配置，供其他项目复用；下方也提供算法说明。</span><span class="en">Every parameter of the pipeline above, laid out as a reference implementation: tone → plates → screen → print → imperfection → paper. To reproduce the style elsewhere, tune it here and copy the spec. Rendering follows the screen's device pixel ratio, noise is sampled in page coordinates, ink starvation has a floor, and grain comes in small clusters.</span></p>
+    <p><span class="zh">印痕实验室强调工艺的差别，噪声只作为默认效果；这里关注仿真本身：把印刷拆成影调、分版、加网、印刷、瑕疵和纸张六个环节，逐项调整参数，观察网点、叠印和纸张质感如何变化。调好后可复制参数配置，供其他项目复用；下方也提供算法说明。</span><span class="en">The Print Texture Lab is about how processes differ, with noise as a default; this lab is about the simulation itself. Every parameter of the pipeline above, laid out as a reference implementation: tone → plates → screen → print → imperfection → paper. To reproduce the style elsewhere, tune it here and copy the spec. Rendering follows the screen's device pixel ratio, noise is sampled in page coordinates, ink starvation has a floor, and grain comes in small clusters.</span></p>
     <div class="simgrid">
       <div class="simstage">
         <div class="seg" id="simView" role="group"></div>
@@ -371,8 +371,9 @@ FM   <span class="zh">按 max(1.2, 0.3·pitch) 的网格间距进行 Floyd–Ste
   };
   const wire = () => document.querySelectorAll('a[data-page]').forEach(a => {
     const k = a.dataset.page;
-    if (local || !ART[k] || ART[k].startsWith('@')) { a.href = FILE[k]; return; }
-    a.href = ART[k]; a.target = '_blank'; a.rel = 'noopener';
+    const hs = a.dataset.hash || '';
+    if (local || !ART[k] || ART[k].startsWith('@')) { a.href = FILE[k] + hs; return; }
+    a.href = ART[k] + hs; a.target = '_blank'; a.rel = 'noopener';
   });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wire); else wire();
 })();

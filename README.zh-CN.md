@@ -12,7 +12,7 @@
 
 | 实验室 | 可以尝试的内容 |
 | --- | --- |
-| [01 · 印痕实验室](https://gengyuanmax.github.io/print-labs/print.html) | 把图像变成网点与油墨，比较加网方式、印刷工艺、叠印和纸张质感。 |
+| [01 · 印痕实验室](https://gengyuanmax.github.io/print-labs/print.html) | 把图像变成网点与油墨，比较加网方式、印刷工艺、叠印和纸张质感。重点是工艺之间的差别，细节噪声默认开启。 |
 | [02 · 版式实验室](https://gengyuanmax.github.io/print-labs/layout.html) | 调整网格、字体、配色与拼贴，生成海报、比较风格并导出作品。 |
 | [03 · 实物实验室](https://gengyuanmax.github.io/print-labs/object.html) | 看一张纸如何变成小志、折页或小册子，了解页序、折线、出血和安全区。 |
 | [04 · 元素实验室](https://gengyuanmax.github.io/print-labs/element.html) | 改造网页组件、处理照片，再用叠印、挖空和蒙版等方式组合形状、文字与图像。 |

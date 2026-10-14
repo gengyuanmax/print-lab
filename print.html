@@ -209,6 +209,10 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
 .trow .tl small{font-family:var(--mono);font-size:10.5px;color:var(--muted)}
 .trow canvas{display:block;width:100%;height:auto;border:1px solid var(--rule)}
 @media (max-width:520px){.trow{grid-template-columns:minmax(0,1fr);gap:4px}}
+.noise{margin:6px 0 4px;border-top:1px solid var(--rule);padding-top:8px}
+.noise summary{cursor:pointer;font:500 13px var(--body);padding:4px 0}
+.noise[open] summary{margin-bottom:8px}
+.noise .field{margin-bottom:6px}
 </style>
 
 </head>
@@ -327,20 +331,26 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
 
       <div class="group">
         <h2><span class="zh">瑕疵</span><span class="en">Misprint</span> <small class="zh">MISPRINT</small><small class="en">瑕疵</small></h2>
+        <p class="hint"><span class="zh">这里只放决定工艺面貌的几项：套色错位、网点扩大、活字磨损。细节噪声由预设自动设好、默认开启，一般不用调。</span><span class="en">Only the settings that define a process are here: misregistration, dot gain and type wear. Fine noise is set by each preset and on by default; you rarely need to touch it.</span></p>
         <div class="field"><label for="mx"><span class="zh">套色错位 X</span><span class="en">Misregister X</span></label><input type="range" id="mx" min="-14" max="14" step="1"><output id="mxOut"></output></div>
         <div class="field"><label for="my"><span class="zh">套色错位 Y</span><span class="en">Misregister Y</span></label><input type="range" id="my" min="-14" max="14" step="1"><output id="myOut"></output></div>
-        <div class="field"><label for="grain"><span class="zh">墨色颗粒</span><span class="en">Ink grain</span></label><input type="range" id="grain" min="0" max="1" step="0.01"><output id="grainOut"></output></div>
-        <div class="field"><label for="rot"><span class="zh">套准旋转</span><span class="en">Plate rotation</span></label><input type="range" id="rot" min="-1" max="1" step="0.05"><output id="rotOut"></output></div>
-        <div class="field"><label for="stretch"><span class="zh">纸张伸缩</span><span class="en">Paper stretch</span></label><input type="range" id="stretch" min="-1" max="1" step="0.05"><output id="stretchOut"></output></div>
-        <div class="field"><label for="trap"><span class="zh">叠印吸墨率</span><span class="en">Ink trapping</span></label><input type="range" id="trap" min="0.6" max="1" step="0.01"><output id="trapOut"></output></div>
-        <div class="field"><label for="starve"><span class="zh">缺墨漏白</span><span class="en">Ink starvation</span></label><input type="range" id="starve" min="0" max="1" step="0.01"><output id="starveOut"></output></div>
-        <div class="field"><label for="band"><span class="zh">墨辊条纹</span><span class="en">Roller banding</span></label><input type="range" id="band" min="0" max="1" step="0.01"><output id="bandOut"></output></div>
-        <div class="field"><label for="tex"><span class="zh">纸张纹理</span><span class="en">Paper texture</span></label><input type="range" id="tex" min="0" max="1" step="0.01"><output id="texOut"></output></div>
-        <div class="field"><label for="dotvar"><span class="zh">网点不匀</span><span class="en">Dot irregularity</span></label><input type="range" id="dotvar" min="0" max="1" step="0.01"><output id="dotvarOut"></output></div>
         <div class="field"><label for="gain"><span class="zh">网点扩大</span><span class="en">Dot gain</span></label><input type="range" id="gain" min="0" max="1" step="0.01"><output id="gainOut"></output></div>
         <div class="field"><label for="wear"><span class="zh">活字磨损</span><span class="en">Type wear</span></label><input type="range" id="wear" min="0" max="1" step="0.01"><output id="wearOut"></output></div>
         <div class="field"><label for="ca"><span class="zh">RGB 通道偏移</span><span class="en">RGB split</span></label><input type="range" id="ca" min="0" max="12" step="1"><output id="caOut"></output></div>
-        <p class="hint"><span class="zh">网点不匀：每个点略偏离网格，大小和边缘各不相同，最小的点印不出来，最暗处糊成实地。套准旋转和纸张伸缩：后印的版绕纸张中心转动零点几度，并沿走纸方向略微伸长，所以四个角的错位各不相同。叠印吸墨率：墨压在未干的墨上时吸得比纸少，叠色因此比纯正片叠底浅一些。纸张纹理也会让纤维处少吃一点墨，各色版在同一处一起变浅。</span><span class="en">Dot irregularity: each dot sits slightly off the grid with its own size and edge; the smallest dots fail to print and the darkest areas fill in. Plate rotation and paper stretch: later plates turn a fraction of a degree about the sheet centre and stretch slightly along the feed, so each corner is out of register by a different amount. Ink trapping: ink laid on wet ink takes less well than on paper, so overprints come out a little lighter than a pure multiply. Paper texture also lets the fibres hold back a little ink, at the same spot on every plate.</span></p>
+        
+        <details class="noise">
+          <summary><span class="zh">细节噪声（默认开启）</span><span class="en">Fine noise (on by default)</span></summary>
+          <div class="field"><label for="dotvar"><span class="zh">网点不匀</span><span class="en">Dot irregularity</span></label><input type="range" id="dotvar" min="0" max="1" step="0.01"><output id="dotvarOut"></output></div>
+          <div class="field"><label for="grain"><span class="zh">墨色颗粒</span><span class="en">Ink grain</span></label><input type="range" id="grain" min="0" max="1" step="0.01"><output id="grainOut"></output></div>
+          <div class="field"><label for="starve"><span class="zh">缺墨漏白</span><span class="en">Ink starvation</span></label><input type="range" id="starve" min="0" max="1" step="0.01"><output id="starveOut"></output></div>
+          <div class="field"><label for="band"><span class="zh">墨辊条纹</span><span class="en">Roller banding</span></label><input type="range" id="band" min="0" max="1" step="0.01"><output id="bandOut"></output></div>
+          <div class="field"><label for="tex"><span class="zh">纸张纹理</span><span class="en">Paper texture</span></label><input type="range" id="tex" min="0" max="1" step="0.01"><output id="texOut"></output></div>
+          <div class="field"><label for="trap"><span class="zh">叠印吸墨率</span><span class="en">Ink trapping</span></label><input type="range" id="trap" min="0.6" max="1" step="0.01"><output id="trapOut"></output></div>
+          <div class="field"><label for="rot"><span class="zh">套准旋转</span><span class="en">Plate rotation</span></label><input type="range" id="rot" min="-1" max="1" step="0.05"><output id="rotOut"></output></div>
+          <div class="field"><label for="stretch"><span class="zh">纸张伸缩</span><span class="en">Paper stretch</span></label><input type="range" id="stretch" min="-1" max="1" step="0.05"><output id="stretchOut"></output></div>
+          <p class="hint"><span class="zh">网点不匀：每个点略偏离网格，大小和边缘各不相同，最小的点印不出来，最暗处糊成实地。套准旋转和纸张伸缩：后印的版绕纸张中心转动零点几度，并沿走纸方向略微伸长，所以四个角的错位各不相同。叠印吸墨率：墨压在未干的墨上时吸得比纸少，叠色因此比纯正片叠底浅一些。纸张纹理也会让纤维处少吃一点墨，各色版在同一处一起变浅。</span><span class="en">Dot irregularity: each dot sits slightly off the grid with its own size and edge; the smallest dots fail to print and the darkest areas fill in. Plate rotation and paper stretch: later plates turn a fraction of a degree about the sheet centre and stretch slightly along the feed, so each corner is out of register by a different amount. Ink trapping: ink laid on wet ink takes less well than on paper, so overprints come out a little lighter than a pure multiply. Paper texture also lets the fibres hold back a little ink, at the same spot on every plate.</span></p>
+          <p class="hint"><span class="zh">要逐项对齐仿真参数、查看公式，请用首页底部的<a data-page="home" data-hash="#simlab" href="index.html#simlab">模拟实验室</a>。</span><span class="en">To match simulation parameters one by one and see the formulas, use the <a data-page="home" data-hash="#simlab" href="index.html#simlab">Simulation Lab</a> at the bottom of the home page.</span></p>
+        </details>
         <p class="hint"><span class="zh">网点扩大使墨点增大、边缘变粗，中间调的变化尤其明显。RGB 通道偏移则将红、蓝通道向两侧错开，模拟数字故障效果。“活字磨损”仅在凸版模式下生效：模拟字形边缘缺口、色块中的木纹和局部墨色不匀，并加强压痕效果。</span><span class="en">Dot gain fattens the dots and roughens their edges, most visibly in the midtones. RGB split is misregistration on a screen: the red and blue channels slide apart for a glitch look. Type wear only affects letterpress: chipped edges, wood grain in the solids, each block inked a little differently and a deeper impression.</span></p>
       </div>
 
@@ -435,8 +445,9 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
   };
   const wire = () => document.querySelectorAll('a[data-page]').forEach(a => {
     const k = a.dataset.page;
-    if (local || !ART[k] || ART[k].startsWith('@')) { a.href = FILE[k]; return; }
-    a.href = ART[k]; a.target = '_blank'; a.rel = 'noopener';
+    const hs = a.dataset.hash || '';
+    if (local || !ART[k] || ART[k].startsWith('@')) { a.href = FILE[k] + hs; return; }
+    a.href = ART[k] + hs; a.target = '_blank'; a.rel = 'noopener';
   });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wire); else wire();
 })();

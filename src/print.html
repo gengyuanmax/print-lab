@@ -261,6 +261,7 @@
         <div class="field"><label for="grain"><span class="zh">墨色颗粒</span><span class="en">Ink grain</span></label><input type="range" id="grain" min="0" max="1" step="0.01"><output id="grainOut"></output></div>
         <div class="field"><label for="rot"><span class="zh">套准旋转</span><span class="en">Plate rotation</span></label><input type="range" id="rot" min="-1" max="1" step="0.05"><output id="rotOut"></output></div>
         <div class="field"><label for="stretch"><span class="zh">纸张伸缩</span><span class="en">Paper stretch</span></label><input type="range" id="stretch" min="-1" max="1" step="0.05"><output id="stretchOut"></output></div>
+        <div class="field"><label for="trap"><span class="zh">叠印吸墨率</span><span class="en">Ink trapping</span></label><input type="range" id="trap" min="0.6" max="1" step="0.01"><output id="trapOut"></output></div>
         <div class="field"><label for="starve"><span class="zh">缺墨漏白</span><span class="en">Ink starvation</span></label><input type="range" id="starve" min="0" max="1" step="0.01"><output id="starveOut"></output></div>
         <div class="field"><label for="band"><span class="zh">墨辊条纹</span><span class="en">Roller banding</span></label><input type="range" id="band" min="0" max="1" step="0.01"><output id="bandOut"></output></div>
         <div class="field"><label for="tex"><span class="zh">纸张纹理</span><span class="en">Paper texture</span></label><input type="range" id="tex" min="0" max="1" step="0.01"><output id="texOut"></output></div>
@@ -268,7 +269,7 @@
         <div class="field"><label for="gain"><span class="zh">网点扩大</span><span class="en">Dot gain</span></label><input type="range" id="gain" min="0" max="1" step="0.01"><output id="gainOut"></output></div>
         <div class="field"><label for="wear"><span class="zh">活字磨损</span><span class="en">Type wear</span></label><input type="range" id="wear" min="0" max="1" step="0.01"><output id="wearOut"></output></div>
         <div class="field"><label for="ca"><span class="zh">RGB 通道偏移</span><span class="en">RGB split</span></label><input type="range" id="ca" min="0" max="12" step="1"><output id="caOut"></output></div>
-        <p class="hint"><span class="zh">网点不匀：每个点略偏离网格，大小和边缘各不相同，最小的点印不出来，最暗处糊成实地。套准旋转和纸张伸缩：后印的版绕纸张中心转动零点几度，并沿走纸方向略微伸长，所以四个角的错位各不相同。</span><span class="en">Dot irregularity: each dot sits slightly off the grid with its own size and edge; the smallest dots fail to print and the darkest areas fill in. Plate rotation and paper stretch: later plates turn a fraction of a degree about the sheet centre and stretch slightly along the feed, so each corner is out of register by a different amount.</span></p>
+        <p class="hint"><span class="zh">网点不匀：每个点略偏离网格，大小和边缘各不相同，最小的点印不出来，最暗处糊成实地。套准旋转和纸张伸缩：后印的版绕纸张中心转动零点几度，并沿走纸方向略微伸长，所以四个角的错位各不相同。叠印吸墨率：墨压在未干的墨上时吸得比纸少，叠色因此比纯正片叠底浅一些。纸张纹理也会让纤维处少吃一点墨，各色版在同一处一起变浅。</span><span class="en">Dot irregularity: each dot sits slightly off the grid with its own size and edge; the smallest dots fail to print and the darkest areas fill in. Plate rotation and paper stretch: later plates turn a fraction of a degree about the sheet centre and stretch slightly along the feed, so each corner is out of register by a different amount. Ink trapping: ink laid on wet ink takes less well than on paper, so overprints come out a little lighter than a pure multiply. Paper texture also lets the fibres hold back a little ink, at the same spot on every plate.</span></p>
         <p class="hint"><span class="zh">网点扩大使墨点增大、边缘变粗，中间调的变化尤其明显。RGB 通道偏移则将红、蓝通道向两侧错开，模拟数字故障效果。“活字磨损”仅在凸版模式下生效：模拟字形边缘缺口、色块中的木纹和局部墨色不匀，并加强压痕效果。</span><span class="en">Dot gain fattens the dots and roughens their edges, most visibly in the midtones. RGB split is misregistration on a screen: the red and blue channels slide apart for a glitch look. Type wear only affects letterpress: chipped edges, wood grain in the solids, each block inked a little differently and a deeper impression.</span></p>
       </div>
 
@@ -563,7 +564,7 @@ const PROV = {
   opaque:{o:{zh:'不透明遮盖：油墨厚而不透明，后印的颜色直接盖住先印的，丝网印刷里很常见。', en:'Opaque: thick ink that covers whatever was printed before it, common in screen printing.'}},
 };
 const linkList = l => l ? l.map(([t,u]) => `<a href="${u}" target="_blank" rel="noopener">${t}</a>`).join('<i>·</i>') : '';
-const DEFAULTS = {trans:'am', pattern:'none', shape:'round', gain:0, ca:0, inkC:'yellow', blend:'multiply', process:'none', stampType:'zhu', copyGen:0, black:0, white:1, gamma:1, posterize:0, stock:'uncoated', invA:false, invB:false, wear:0, dotvar:.5, rot:.15, stretch:.15, age:0, fox:0, fold:'none', geo:'grid', outline:'none', outlineText:'INK'};
+const DEFAULTS = {trans:'am', pattern:'none', shape:'round', gain:0, ca:0, inkC:'yellow', blend:'multiply', process:'none', stampType:'zhu', copyGen:0, black:0, white:1, gamma:1, posterize:0, stock:'uncoated', invA:false, invB:false, wear:0, dotvar:.5, rot:.15, stretch:.15, trap:.88, age:0, fox:0, fold:'none', geo:'grid', outline:'none', outlineText:'INK'};
 /* presets describe a final effect. Each lists the visible features that make it recognisable:
    e = essential, r = representative, o = optional; where each comes from: d = design decision, p = process, m = material;
    and what switching the feature off changes (used by the feature switches). */
@@ -798,9 +799,11 @@ function noises(n){
   for (let i=0;i<N;i++){ const v = ga[i]*.65 + gb[i]*.35; gr[i] = v; H[Math.min(1023, v*1024|0)]++; }
   for (let k=1;k<1024;k++) H[k] += H[k-1];
   for (let i=0;i<N;i++) gr[i] = H[Math.min(1023, gr[i]*1024|0)]/N;
+  // paper fibres: a fine field (about 1.2 px in page units), shared by every plate, since all inks land on the same sheet
+  const fib = lowNoise(n, Math.round(S/1.2), rng(777));
   const rows = new Float32Array(n), rv = []; for (let i=0;i<=20;i++) rv.push(r());
   for (let y=0;y<n;y++){ const f=y/n*20, i=Math.floor(f), t=f-i, s=t*t*(3-2*t); const v=rv[i]+(rv[i+1]-rv[i])*s; rows[y]=Math.min(1,Math.max(0,(v-.5)*2.4+.5)); }
-  return noiseCache[n] = {g1,g2,fm,low,low2,rows,gr};
+  return noiseCache[n] = {g1,g2,fm,low,low2,rows,gr,fib};
 }
 
 // grain: a soft clustered mottle plus small specks where little ink lands; speck coverage = 16% of the grain setting
@@ -1070,7 +1073,7 @@ function render(canvas, p, srcCanvas){
   ctx.drawImage(srcCanvas, 0, 0, n, n);
   const sd = ctx.getImageData(0,0,n,n), data = sd.data;
   const N = n*n;
-  const {g1,g2,low,low2,rows,gr} = nz;
+  const {g1,g2,low,low2,rows,gr,fib} = nz;
   // paper stock: absorbency adds dot gain and dulls colour; tracing paper veils everything
   const st = STOCKS.find(x => x.id===p.stock) || STOCKS[0];
   const kA = ink(p.inkA), kB = ink(p.inkB), kC = ink(p.inkC);
@@ -1179,26 +1182,29 @@ function render(canvas, p, srcCanvas){
       if (stamp){ const t = (x + y)/(2*n); s *= 1 - .5*Math.max(0, t - .45)/.55; }   // uneven pressure fades one corner
       return s<0?0:s;
     };
-    const col = [0,0,0];
+    const col = [0,0,0]; let laid = 0;
+    // ink on ink: a wet layer takes less of the next ink than bare paper does (trapping), so overprints come out lighter than a pure multiply
     const lay = (ic, s, white) => {
+      if (laid > 0) s *= 1 - (1 - (p.trap ?? 1))*laid; laid = Math.max(laid, s);
       if (white){ const w = Math.min(1, s*1.2)*.94; col[0]+=(ic[0]-col[0])*w; col[1]+=(ic[1]-col[1])*w; col[2]+=(ic[2]-col[2])*w; return; }   // white ink is semi-opaque
       if (opaque){ col[0]+=(ic[0]-col[0])*s; col[1]+=(ic[1]-col[1])*s; col[2]+=(ic[2]-col[2])*s; }
       else { col[0]*=1-s*(1-ic[0]); col[1]*=1-s*(1-ic[1]); col[2]*=1-s*(1-ic[2]); }
     };
     for (let y=0;y<n;y++) for (let x=0;x<n;x++){
       const i = y*n+x;
-      let pt = 1 - tex*(.08*g2[i] + .06*low2[i]);
+      let pt = 1 - tex*(.08*fib[i] + .06*low2[i]);
+      const fa = 1 - tex*.18*fib[i]*fib[i]; laid = 0;     // fibres hold back a little ink, the same spot on every plate
       if (letter && !mA[i]){ // impression into the paper: shadow on one side of each inked edge, highlight on the other
         const o = Math.max(1, Math.round((1 + p.wear*1.5)*sc));
         if (x>=o && y>=o && mA[i-o*n-o]) pt *= .9 - .04*p.wear; else if (x<n-o && y<n-o && mA[i+o*n+o]) pt *= 1.03;
       }
       col[0]=Math.min(1,pp[0]*pt); col[1]=Math.min(1,pp[1]*pt); col[2]=Math.min(1,pp[2]*pt);
       for (let q=0;q<patL.length;q++){ const mm = patL[q][0][i]; if (mm){ const pc = patL[q][1]; col[0]*=1-mm*(1-pc[0]); col[1]*=1-mm*(1-pc[1]); col[2]*=1-mm*(1-pc[2]); } }
-      const a = mA[i]; if (a) lay(iA, strength(i, y, (letter||stamp) && eA[i], x) * a, kA.white);
+      const a = mA[i]; if (a) lay(iA, strength(i, y, (letter||stamp) && eA[i], x) * a * fa, kA.white);
       if (mB){ const [xs, ys] = mapB(x, y);
-        if (xs>=0&&xs<n&&ys>=0&&ys<n){ const j=ys*n+xs, b=mB[j]; if (b) lay(iB, strength(N-1-i, ys, (letter||stamp) && eB[j], xs) * b, kB.white); } }
+        if (xs>=0&&xs<n&&ys>=0&&ys<n){ const j=ys*n+xs, b=mB[j]; if (b) lay(iB, strength(N-1-i, ys, (letter||stamp) && eB[j], xs) * b * fa, kB.white); } }
       if (mC){ const [xs, ys] = mapC(x, y);
-        if (xs>=0&&xs<n&&ys>=0&&ys<n){ const j=ys*n+xs, c=mC[j]; if (c) lay(iC, strength((i+(N>>1))%N, ys, (letter||stamp) && eC[j], xs) * c, kC.white); } }
+        if (xs>=0&&xs<n&&ys>=0&&ys<n){ const j=ys*n+xs, c=mC[j]; if (c) lay(iC, strength((i+(N>>1))%N, ys, (letter||stamp) && eC[j], xs) * c * fa, kC.white); } }
       data[i*4]=col[0]*255; data[i*4+1]=col[1]*255; data[i*4+2]=col[2]*255; data[i*4+3]=255;
     }
   }
@@ -1329,7 +1335,7 @@ buildControls();
 
 const pct = v => Math.round(v*100)+'%';
 const SLIDERS = {cell:v=>v+' px', angle:v=>v+'°', contrast:v=>(+v).toFixed(2), black:pct, white:pct, gamma:v=>(+v).toFixed(2), posterize:v=>v>1?v+(LANG==='zh'?' 级':' lv'):(LANG==='zh'?'关':'off'),
-  copyGen:v=>v>0?(LANG==='zh'?`翻印 ${v} 次`:`gen ${v}`):(LANG==='zh'?'原稿':'original'), mx:v=>v+' px', my:v=>v+' px', grain:pct, starve:pct, band:pct, tex:pct, gain:pct, ca:v=>v+' px', wear:pct, age:pct, fox:pct, dotvar:pct, rot:v=>(+v).toFixed(2)+'°', stretch:v=>(+v).toFixed(2)+'%'};
+  copyGen:v=>v>0?(LANG==='zh'?`翻印 ${v} 次`:`gen ${v}`):(LANG==='zh'?'原稿':'original'), mx:v=>v+' px', my:v=>v+' px', grain:pct, starve:pct, band:pct, tex:pct, gain:pct, ca:v=>v+' px', wear:pct, age:pct, fox:pct, dotvar:pct, trap:pct, rot:v=>(+v).toFixed(2)+'°', stretch:v=>(+v).toFixed(2)+'%'};
 $('outlineText').addEventListener('input', e => { P.outlineText = e.target.value || ' '; manual(); schedule(); });
 Object.keys(SLIDERS).forEach(k => {
   $(k).addEventListener('input', e => { P[k] = parseFloat(e.target.value); $(k+'Out').textContent = SLIDERS[k](P[k]); manual(); schedule(); });

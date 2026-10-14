@@ -811,9 +811,14 @@ function noises(n){
   for (let i=0;i<N;i++) gr[i] = H[Math.min(1023, gr[i]*1024|0)]/N;
   // paper fibres: a fine field (about 1.2 px in page units), shared by every plate, since all inks land on the same sheet
   const fib = lowNoise(n, Math.round(S/1.2), rng(777));
+  // edge field for dot gain: about 1 px in page units, histogram-equalised like the grain, so the ragged rim keeps its size on any screen
+  const ge0 = lowNoise(n, S, rng(991)), ge = new Float32Array(N), HE = new Uint32Array(1024);
+  for (let i=0;i<N;i++) HE[Math.min(1023, ge0[i]*1024|0)]++;
+  for (let k=1;k<1024;k++) HE[k] += HE[k-1];
+  for (let i=0;i<N;i++) ge[i] = HE[Math.min(1023, ge0[i]*1024|0)]/N;
   const rows = new Float32Array(n), rv = []; for (let i=0;i<=20;i++) rv.push(r());
   for (let y=0;y<n;y++){ const f=y/n*20, i=Math.floor(f), t=f-i, s=t*t*(3-2*t); const v=rv[i]+(rv[i+1]-rv[i])*s; rows[y]=Math.min(1,Math.max(0,(v-.5)*2.4+.5)); }
-  return noiseCache[n] = {g1,g2,fm,low,low2,rows,gr,fib};
+  return noiseCache[n] = {g1,g2,fm,low,low2,rows,gr,fib,ge};
 }
 
 // grain: a soft clustered mottle plus small specks where little ink lands; speck coverage = 16% of the grain setting
@@ -1163,9 +1168,9 @@ function render(canvas, p, srcCanvas){
       mC = pc ? screen(pc, n, eff, cell, p.angle + (lineish?90:60), 2, nz, p.shape, p.wear, p.geo, p.dotvar||0) : null;
       if (gainEff > .02){
         const r = Math.max(1, Math.round(gainEff*2.5*sc)), amt = .3 + .6*gainEff;
-        spread(mA, n, r, g2, amt, 0);
-        if (mB) spread(mB, n, r, g2, amt, 7919);
-        if (mC) spread(mC, n, r, g2, amt, 15401);
+        spread(mA, n, r, nz.ge, amt, 0);
+        if (mB) spread(mB, n, r, nz.ge, amt, Math.round(n*n*.37));
+        if (mC) spread(mC, n, r, nz.ge, amt, Math.round(n*n*.71));
       }
     }
     result = {n, masks:[mA, mB, mC], cont};

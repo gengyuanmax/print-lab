@@ -2,7 +2,7 @@
 
 **English** · [简体中文](README.zh-CN.md)
 
-[Open the labs ↗](https://gengyuanmax.github.io/print-lab/) · [GitHub source ↗](https://github.com/gengyuanmax/print-lab)
+[Open the labs ↗](https://gengyuanmax.github.io/print-labs/) · [GitHub source ↗](https://github.com/gengyuanmax/print-labs)
 
 A visual playground for learning how print-inspired design works. Experiment with halftones, ink, typography, composition and paper formats by changing the settings and watching the results.
 
@@ -12,10 +12,10 @@ The project is also a record of learning to design with AI: understanding the bu
 
 | Lab | What you can try |
 | --- | --- |
-| [01 · Print Texture Lab](https://gengyuanmax.github.io/print-lab/print.html) | Turn an image into dots and ink. Compare screens, printing processes, overprinting and paper textures. |
-| [02 · Layout Lab](https://gengyuanmax.github.io/print-lab/layout.html) | Build posters with adjustable grids, typography, colour and collage. Compare styles and export your design. |
-| [03 · Object Lab](https://gengyuanmax.github.io/print-lab/object.html) | Explore how flat sheets become zines, folded leaflets and booklets. See page order, folds, bleed and safe areas. |
-| [04 · Element Lab](https://gengyuanmax.github.io/print-lab/element.html) | Restyle web components, process photos, and combine shapes, text and images with different ink and masking effects. |
+| [01 · Print Texture Lab](https://gengyuanmax.github.io/print-labs/print.html) | Turn an image into dots and ink. Compare screens, printing processes, overprinting and paper textures. |
+| [02 · Layout Lab](https://gengyuanmax.github.io/print-labs/layout.html) | Build posters with adjustable grids, typography, colour and collage. Compare styles and export your design. |
+| [03 · Object Lab](https://gengyuanmax.github.io/print-labs/object.html) | Explore how flat sheets become zines, folded leaflets and booklets. See page order, folds, bleed and safe areas. |
+| [04 · Element Lab](https://gengyuanmax.github.io/print-labs/element.html) | Restyle web components, process photos, and combine shapes, text and images with different ink and masking effects. |
 
 At the bottom of the home page, **Simulation Lab** is a reference version of the whole pipeline (tone → plates → screen → print → imperfection → paper), with every setting exposed. Tune it, then copy the spec to reproduce the same print look in another project. The values are visual judgements, not measurements from real prints.
 
@@ -26,7 +26,7 @@ Switch between English and Chinese in the top-right corner of any page. The site
 <details>
 <summary><strong>Watch a 26-second demo</strong></summary>
 
-[![Print Labs demo: print textures, poster layouts, paper formats and graphic composition, with English captions](assets/social/print-lab-demo-en.gif)](https://gengyuanmax.github.io/print-lab/)
+[![Print Labs demo: print textures, poster layouts, paper formats and graphic composition, with English captions](assets/social/print-lab-demo-en.gif)](https://gengyuanmax.github.io/print-labs/)
 
 </details>
 
@@ -78,8 +78,8 @@ Switch between English and Chinese in the top-right corner of any page. The site
 No package installation or application server is required. To serve a local copy:
 
 ```sh
-git clone https://github.com/gengyuanmax/print-lab.git
-cd print-lab
+git clone https://github.com/gengyuanmax/print-labs.git
+cd print-labs
 python3 -m http.server 8000 --bind 127.0.0.1
 ```
 
@@ -118,7 +118,7 @@ Platforms control cropping, image selection and animation playback. Use [LinkedI
 
 ## Sources and limitations
 
-Explanations and reference links are available in the labs. The controls bring together ideas from printing and graphic design; they are not a reproduction of one book or design system. Corrections and additional references are welcome through [GitHub issues](https://github.com/gengyuanmax/print-lab/issues).
+Explanations and reference links are available in the labs. The controls bring together ideas from printing and graphic design; they are not a reproduction of one book or design system. Corrections and additional references are welcome through [GitHub issues](https://github.com/gengyuanmax/print-labs/issues).
 
 Ink colours, textures and print checks are screen simulations. For production, use your printer's physical swatches and specifications.
 

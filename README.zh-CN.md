@@ -2,7 +2,7 @@
 
 [English](README.md) · **简体中文**
 
-[打开实验室 ↗](https://gengyuanmax.github.io/print-lab/) · [GitHub 源码 ↗](https://github.com/gengyuanmax/print-lab)
+[打开实验室 ↗](https://gengyuanmax.github.io/print-labs/) · [GitHub 源码 ↗](https://github.com/gengyuanmax/print-labs)
 
 一个边动手、边学习印刷与视觉设计的交互实验室。调整网点、油墨、字体、构图和纸张形式，观察它们如何改变画面。
 
@@ -12,10 +12,10 @@
 
 | 实验室 | 可以尝试的内容 |
 | --- | --- |
-| [01 · 印痕实验室](https://gengyuanmax.github.io/print-lab/print.html) | 把图像变成网点与油墨，比较加网方式、印刷工艺、叠印和纸张质感。 |
-| [02 · 版式实验室](https://gengyuanmax.github.io/print-lab/layout.html) | 调整网格、字体、配色与拼贴，生成海报、比较风格并导出作品。 |
-| [03 · 实物实验室](https://gengyuanmax.github.io/print-lab/object.html) | 看一张纸如何变成小志、折页或小册子，了解页序、折线、出血和安全区。 |
-| [04 · 元素实验室](https://gengyuanmax.github.io/print-lab/element.html) | 改造网页组件、处理照片，再用叠印、挖空和蒙版等方式组合形状、文字与图像。 |
+| [01 · 印痕实验室](https://gengyuanmax.github.io/print-labs/print.html) | 把图像变成网点与油墨，比较加网方式、印刷工艺、叠印和纸张质感。 |
+| [02 · 版式实验室](https://gengyuanmax.github.io/print-labs/layout.html) | 调整网格、字体、配色与拼贴，生成海报、比较风格并导出作品。 |
+| [03 · 实物实验室](https://gengyuanmax.github.io/print-labs/object.html) | 看一张纸如何变成小志、折页或小册子，了解页序、折线、出血和安全区。 |
+| [04 · 元素实验室](https://gengyuanmax.github.io/print-labs/element.html) | 改造网页组件、处理照片，再用叠印、挖空和蒙版等方式组合形状、文字与图像。 |
 
 首页底部的**模拟实验室**把整条管线（影调 → 分版 → 加网 → 印刷 → 不完美 → 纸）的参数全部摊开，作为参考实现。调好后复制“参数规格”，就能在别的项目里复现同一种印刷质感。这些数值是目测判断，没有用真实印刷品校准。
 
@@ -26,7 +26,7 @@
 <details>
 <summary><strong>观看 26 秒功能演示（英文字幕）</strong></summary>
 
-[![印刷实验室演示：印刷质感、海报版式、纸张折叠与图形组合，配有英文字幕](assets/social/print-lab-demo-en.gif)](https://gengyuanmax.github.io/print-lab/)
+[![印刷实验室演示：印刷质感、海报版式、纸张折叠与图形组合，配有英文字幕](assets/social/print-lab-demo-en.gif)](https://gengyuanmax.github.io/print-labs/)
 
 </details>
 
@@ -78,8 +78,8 @@
 无需安装依赖包或配置应用后端。下载项目后，可以启动本地静态服务器：
 
 ```sh
-git clone https://github.com/gengyuanmax/print-lab.git
-cd print-lab
+git clone https://github.com/gengyuanmax/print-labs.git
+cd print-labs
 python3 -m http.server 8000 --bind 127.0.0.1
 ```
 
@@ -118,7 +118,7 @@ python3 build.py
 
 ## 资料来源与使用边界
 
-各实验室提供原理说明与参考链接。参数结合了多种印刷和视觉设计方法，并非照搬某一本书或某套设计系统。欢迎通过 [GitHub issues](https://github.com/gengyuanmax/print-lab/issues) 纠错或补充资料。
+各实验室提供原理说明与参考链接。参数结合了多种印刷和视觉设计方法，并非照搬某一本书或某套设计系统。欢迎通过 [GitHub issues](https://github.com/gengyuanmax/print-labs/issues) 纠错或补充资料。
 
 油墨颜色、纹理和印前检查均为屏幕模拟。实际生产请以印厂实物色卡和工艺要求为准。
 

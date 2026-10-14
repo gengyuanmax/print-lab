@@ -119,7 +119,7 @@ textarea.txt{min-height:76px;resize:vertical;line-height:1.45}
 <div class="wrap">
   <header class="mast">
     <div class="mast-top">
-      <div class="eyebrow"><a data-page="home" href="index.html"><span class="zh">← 印刷实验室</span><span class="en">← Print Labs</span></a><span>02 · Layout lab · <span class="zh">网格 / 字体 / 构图 / 动线</span><span class="en">Grid / Type / Composition / Flow</span></span><a data-page="print" href="print.html"><span class="zh">← 印痕实验室</span><span class="en">← Print Texture Lab</span></a><a href="https://github.com/gengyuanmax/print-lab" target="_blank" rel="noopener"><span class="zh">GitHub 源码</span><span class="en">GitHub code</span> <span aria-hidden="true">↗</span></a></div>
+      <div class="eyebrow"><a data-page="home" href="index.html"><span class="zh">← 印刷实验室</span><span class="en">← Print Labs</span></a><span>02 · Layout lab · <span class="zh">网格 / 字体 / 构图 / 动线</span><span class="en">Grid / Type / Composition / Flow</span></span><a data-page="print" href="print.html"><span class="zh">← 印痕实验室</span><span class="en">← Print Texture Lab</span></a><a href="https://github.com/gengyuanmax/print-labs" target="_blank" rel="noopener"><span class="zh">GitHub 源码</span><span class="en">GitHub code</span> <span aria-hidden="true">↗</span></a></div>
       <div class="langsw" role="group" aria-label="Language / 语言">
         <button type="button" data-setlang="zh" lang="zh-CN">中文</button>
         <button type="button" data-setlang="en" lang="en">EN</button>
@@ -1488,8 +1488,8 @@ function loadH2I(){
 async function doExport(kind){
   const zh = LANG==='zh';
   if (!LOCAL){
-    status(zh ? '在 claude.ai 的预览里，浏览器会拦截下载。请在 GitHub Pages 版本里导出：<a href="https://gengyuanmax.github.io/print-lab/layout.html" target="_blank" rel="noopener">gengyuanmax.github.io/print-lab/layout.html</a>'
-              : 'Downloads are blocked inside the claude.ai preview. Export from the GitHub Pages version: <a href="https://gengyuanmax.github.io/print-lab/layout.html" target="_blank" rel="noopener">gengyuanmax.github.io/print-lab/layout.html</a>');
+    status(zh ? '在 claude.ai 的预览里，浏览器会拦截下载。请在 GitHub Pages 版本里导出：<a href="https://gengyuanmax.github.io/print-labs/layout.html" target="_blank" rel="noopener">gengyuanmax.github.io/print-labs/layout.html</a>'
+              : 'Downloads are blocked inside the claude.ai preview. Export from the GitHub Pages version: <a href="https://gengyuanmax.github.io/print-labs/layout.html" target="_blank" rel="noopener">gengyuanmax.github.io/print-labs/layout.html</a>');
     return;
   }
   const Ly = layouts[0]; if (!Ly) return;
@@ -1632,7 +1632,7 @@ $('cfgApply').addEventListener('click', () => {
   catch(e){ cfgStatus('无法读取：请确认粘贴的是完整的 JSON。', 'Could not read it: make sure the pasted text is complete JSON.'); }
 });
 $('cfgLink').addEventListener('click', async () => {
-  const url = 'https://gengyuanmax.github.io/print-lab/layout.html#cfg=' + b64(JSON.stringify(configObj()));
+  const url = 'https://gengyuanmax.github.io/print-labs/layout.html#cfg=' + b64(JSON.stringify(configObj()));
   const ok = await copyText(url); if (!ok) $('cfgText').value = url;
   cfgStatus(ok ? '分享链接已复制：打开它会直接得到这张海报。' : '浏览器不允许自动复制：链接已放进文本框，请手动复制。', ok ? 'Share link copied: opening it rebuilds this poster.' : 'The browser blocked copying: the link is in the text box, copy it by hand.');
 });

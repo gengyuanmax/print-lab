@@ -264,11 +264,11 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
         <div class="seg" id="shapeSeg"></div>
         <div class="field"><label for="cell"><span class="zh">网点尺寸</span><span class="en">Dot size</span></label><input type="range" id="cell" min="3" max="28" step="1"><output id="cellOut"></output></div>
         <div class="field"><label for="angle"><span class="zh">网角</span><span class="en">Screen angle</span></label><input type="range" id="angle" min="0" max="90" step="1"><output id="angleOut"></output></div>
-        <div class="sublabel"><span class="zh">网格排列</span><span class="en">Screen geometry</span> <span class="note"><span class="zh">网点和线条沿什么排开；仅 AM 调幅网、线条网和交叉排线</span><span class="en">what the dots and lines are arranged along; AM dots, line screen and cross-hatch only</span></span></div>
+        <div class="sublabel"><span class="zh">网点排列</span><span class="en">Screen geometry</span> <span class="note"><span class="zh">设置网点或线条的排列方式；适用于 AM 调幅网、线条网和交叉排线</span><span class="en">what the dots and lines are arranged along; AM dots, line screen and cross-hatch only</span></span></div>
         <div class="seg" id="geoSeg"></div>
-        <div class="sublabel"><span class="zh">外形</span><span class="en">Outline</span> <span class="note"><span class="zh">只在一个形状或几个字里面印，外面留纸色</span><span class="en">print only inside a shape or a few letters; outside stays paper</span></span></div>
+        <div class="sublabel"><span class="zh">裁切形状</span><span class="en">Outline</span> <span class="note"><span class="zh">将图像限制在指定形状或文字轮廓内，外部保留纸色</span><span class="en">print only inside a shape or a few letters; outside stays paper</span></span></div>
         <div class="seg" id="outlineSeg"></div>
-        <div class="field" id="outlineTextRow"><label for="outlineText"><span class="zh">外形文字</span><span class="en">Letters</span></label><input type="text" id="outlineText" maxlength="6" autocomplete="off" style="font:inherit;padding:6px 8px;border:1.5px solid var(--ink);background:var(--sheet);color:var(--ink);min-width:0"><output></output></div>
+        <div class="field" id="outlineTextRow"><label for="outlineText"><span class="zh">裁切文字</span><span class="en">Letters</span></label><input type="text" id="outlineText" maxlength="6" autocomplete="off" style="font:inherit;padding:6px 8px;border:1.5px solid var(--ink);background:var(--sheet);color:var(--ink);min-width:0"><output></output></div>
       </div>
 
       <div class="group">
@@ -370,7 +370,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,label.btn:focus-
         <ol>
           <li><a href="https://en.wikipedia.org/wiki/Halftone" target="_blank" rel="noopener">Halftone</a><span><span class="zh">Wikipedia · 调幅网点、加网角度与摩尔纹</span><span class="en">Wikipedia · AM dots, screen angles and moiré</span></span></li>
           <li><a href="https://www.fineprintschool.com/glossary-of-printing-terms/circular-screen" target="_blank" rel="noopener">Circular screen</a><span><span class="zh">Fine Print School · 用同心圆代替网点的网屏</span><span class="en">Fine Print School · a screen of concentric circles instead of dots</span></span></li>
-          <li><a href="https://en.wikipedia.org/wiki/Clipping_path" target="_blank" rel="noopener">Clipping path</a><span><span class="zh">Wikipedia · 用闭合路径裁出图像；“外形”选项的原理</span><span class="en">Wikipedia · a closed path that cuts out an image; how the outline option works</span></span></li>
+          <li><a href="https://en.wikipedia.org/wiki/Clipping_path" target="_blank" rel="noopener">Clipping path</a><span><span class="zh">Wikipedia · 用闭合路径限定图像的显示区域；“裁切形状”选项的原理</span><span class="en">Wikipedia · a closed path that cuts out an image; how the outline option works</span></span></li>
           <li><a href="https://en.wikipedia.org/wiki/Ben-Day_dots" target="_blank" rel="noopener">Ben-Day dots</a><span><span class="zh">Wikipedia · 固定尺寸网点与波普印刷</span><span class="en">Wikipedia · fixed-size dots and pop printing</span></span></li>
           <li><a href="https://en.wikipedia.org/wiki/Ordered_dithering" target="_blank" rel="noopener">Ordered dithering</a><span><span class="zh">Wikipedia · Bayer 矩阵（Bayer, 1973）</span><span class="en">Wikipedia · Bayer matrix (Bayer, 1973)</span></span></li>
           <li><a href="https://en.wikipedia.org/wiki/Floyd%E2%80%93Steinberg_dithering" target="_blank" rel="noopener">Floyd–Steinberg dithering</a><span><span class="zh">Wikipedia · 误差扩散（Floyd &amp; Steinberg, 1976）</span><span class="en">Wikipedia · error diffusion (Floyd &amp; Steinberg, 1976)</span></span></li>
@@ -523,7 +523,7 @@ const TRANS = [
 ];
 const STAMPS = [{id:'zhu', zh:'朱文（红字）', en:'Zhuwen (red characters)'}, {id:'bai', zh:'白文（白字）', en:'Baiwen (white characters)'}];
 const GEOS = [{id:'grid', zh:'直角网格', en:'Grid'}, {id:'rings', zh:'同心圆', en:'Concentric'}, {id:'rays', zh:'放射线', en:'Radial'}, {id:'spiral', zh:'螺旋', en:'Spiral'}];
-const OUTLINES = [{id:'none', zh:'整张', en:'Full sheet'}, {id:'circle', zh:'圆', en:'Circle'}, {id:'star', zh:'星', en:'Star'}, {id:'heart', zh:'心', en:'Heart'}, {id:'text', zh:'文字', en:'Letters'}];
+const OUTLINES = [{id:'none', zh:'不裁切', en:'Full sheet'}, {id:'circle', zh:'圆形', en:'Circle'}, {id:'star', zh:'星形', en:'Star'}, {id:'heart', zh:'心形', en:'Heart'}, {id:'text', zh:'文字', en:'Letters'}];
 const FOLDS = [{id:'none', zh:'无折痕', en:'No fold'}, {id:'half', zh:'对折痕', en:'Folded once'}, {id:'quarter', zh:'十字折痕', en:'Folded in four'}];
 const STOCKS = [
   {id:'uncoated', zh:'非涂布', en:'Uncoated', gain:.18, sat:.88, tex:.15},
@@ -559,12 +559,12 @@ const SHAPES = [
 /* provenance / credits for each style: short origin note + links (fact-checked against the linked sources) */
 const W = t => 'https://en.wikipedia.org/wiki/' + t;
 const PROV = {
-  grid:{o:{zh:'常规做法：网点排在一张旋转过网角的直角网格上。', en:'The usual case: dots on a square grid turned to the screen angle.'}},
-  rings:{o:{zh:'同心圆网（circular screen，也叫 bullseye）是传统的特殊效果网屏之一：用同心圆代替网点，和直线网、波浪线网、铜版雕刻网等一起出现在制版手册里。', en:'The circular (bullseye) screen is one of the classic special-effect screens: concentric circles instead of dots, listed in platemaking manuals alongside straight-line, wavy-line and steel-engraving screens.'},
+  grid:{o:{zh:'常规加网方式：网点沿直角网格排列，网格按设定的网角旋转。', en:'The usual case: dots on a square grid turned to the screen angle.'}},
+  rings:{o:{zh:'同心圆网（circular screen，也称 bullseye）是一种特殊效果网屏，以同心圆线条表现明暗。本页在线条网模式下绘制同心圆，其他适用模式则沿圆周排列网点或排线。', en:'The circular (bullseye) screen is one of the classic special-effect screens: concentric circles instead of dots, listed in platemaking manuals alongside straight-line, wavy-line and steel-engraving screens.'},
     l:[['Fine Print School · Circular screen','https://www.fineprintschool.com/glossary-of-printing-terms/circular-screen'],['A graphic guide to Veloxes','https://aiap.it/2000-2020/cdpg/index%EF%B9%96ID=4870&IDsubarea=169&IDsez=188.html']]},
-  rays:{o:{zh:'放射线排列：网点和线条从中心向外辐射。没有找到可靠的单一出处，是本页按同心圆网的思路做的变体。', en:'Radial: dots and lines fan out from the centre. No reliable single source; this page\'s variation on the circular screen.'}},
-  spiral:{o:{zh:'螺旋排列：线条绕中心一圈圈外旋。没有找到可靠的单一出处，是本页的变体。', en:'Spiral: lines wind outwards from the centre. No reliable single source; this page\'s variation.'}},
-  circle:{o:{zh:'只在形状内部印，外面留纸色，相当于用一条闭合路径裁出图像（clipping path）。', en:'Printing only inside a shape and leaving the rest paper is a clipping path: a closed path that cuts out the image.'}, l:[['Clipping path',W('Clipping_path')]]},
+  rays:{o:{zh:'网点或线条从中心向外呈放射状排列。这是本页参考同心圆网思路设计的变体，尚未找到可确认其起源的可靠资料。', en:'Radial: dots and lines fan out from the centre. No reliable single source; this page\'s variation on the circular screen.'}},
+  spiral:{o:{zh:'网点或线条围绕中心向外螺旋排列。这是本页设计的效果变体，尚未找到可确认其起源的可靠资料。', en:'Spiral: lines wind outwards from the centre. No reliable single source; this page\'s variation.'}},
+  circle:{o:{zh:'用闭合路径限定图像的显示范围，轮廓外保留纸色。这种做法称为剪切路径（clipping path）。', en:'Printing only inside a shape and leaving the rest paper is a clipping path: a closed path that cuts out the image.'}, l:[['Clipping path',W('Clipping_path')]]},
   // screens
   am:{o:{zh:'1852 年 Fox Talbot 在专利中提出用“网幕”把照片转成可印刷的图像；1880 年《纽约每日图报》首次在报纸上印出具有完整明暗层次的照片；1881 年 Frederic Ives 取得第一个商业成功的半色调工艺专利，此后交叉线网屏让它成为标准做法。',
     en:'In an 1852 patent, Fox Talbot proposed using screens to turn photographs into printable images. In 1880 the New York Daily Graphic printed the first full-tone photograph in a newspaper. In 1881 Frederic Ives patented the first commercially successful halftone process, and cross-line screens later made halftone the standard.'},
@@ -690,10 +690,10 @@ const PRESETS = [
     f:[F('e','p','色块内部斑驳、边缘积墨，纸面带压痕','Mottled solids, squeezed edges, a pressed impression',{process:'none'}), F('r','m','明显的纸张纹理','Heavy paper texture',{tex:0}), F('r','p','墨色不匀','Uneven ink',{grain:0,starve:0})]},
   {name:{zh:'木活字演出海报', en:'Wood-type show bill'}, tag:{zh:'凸版 · 亮红 + 联邦蓝 · 再生纸', en:'Letterpress · bright red + federal blue · recycled'}, src:'poster', p:{screen:'am',process:'letter',cell:8,angle:0,contrast:1.3,mode:'sep',inkA:'red',inkB:'fedblue',paper:'recycled',mx:3,my:2,grain:.3,starve:.35,band:0,tex:.6,gain:.2,wear:.7,age:.35,fox:.3,fold:'half'},
     f:[F('e','p','凸版质感：色块斑驳、边缘积墨、纸面压痕','Letterpress: mottled solids, squeezed edges, a pressed impression',{process:'none',screen:'thresh'}), F('e','d','少量鲜明专色，重叠处形成混色','Two or three bright spot colours, overlapping into a third',{mode:'mono'}), F('e','m','旧木活字的磨损效果：字形缺口、色块木纹与局部墨色不匀','Worn wood type: chipped edges, wood grain in the solids, each block inked a little differently',{wear:0}), F('r','m','粗纹再生纸','Rough recycled paper',{tex:0,paper:'white'}), F('r','p','模拟手工套准的轻微偏差','Hand-registered plates, slightly off',{mx:0,my:0,rot:0,stretch:0}), F('o','p','墨色不匀','Uneven ink',{grain:0,starve:0}), F('o','m','纸张做旧：泛黄、褐斑与折痕处的墨层开裂','Time: yellowing, foxing, ink cracked along the fold',{age:0,fox:0,fold:'none'})]},
-  {name:{zh:'同心圆网徽章', en:'Bullseye badge'}, tag:{zh:'线条网 · 同心圆 · 圆形外形', en:'Line screen · concentric · circle outline'}, p:{screen:'line',geo:'rings',outline:'circle',cell:9,angle:0,contrast:1.25,mode:'mono',inkA:'fedblue',inkB:'black',paper:'recycled',mx:0,my:0,grain:.2,starve:.15,band:0,tex:.35},
-    f:[F('e','d','线条沿同心圆排开，粗细表现明暗','Lines run in concentric rings, their weight carrying the tone',{geo:'grid'}), F('e','d','只在圆里印，外面留纸色','Printed only inside a circle, paper outside',{outline:'none'}), F('o','m','米色再生纸','Recycled cream paper',{paper:'white',tex:0})]},
-  {name:{zh:'字形放射网', en:'Radial letters'}, tag:{zh:'AM · 放射线 · 文字外形 · 双色', en:'AM · radial · letter outline · two-colour'}, p:{screen:'am',geo:'rays',outline:'text',outlineText:'INK',cell:10,angle:0,contrast:1.2,mode:'sep',inkA:'fpink',inkB:'blue',paper:'white',mx:4,my:3,grain:.35,starve:.25,band:.15,tex:.3},
-    f:[F('e','d','网点沿放射线排开','Dots fanned out along rays',{geo:'grid'}), F('e','d','图像只出现在大字里面','The image appears only inside the big letters',{outline:'none'}), F('r','p','双色叠印与错位','Two-colour overprint and misregistration',{mode:'mono',mx:0,my:0})]},
+  {name:{zh:'同心圆网徽章', en:'Bullseye badge'}, tag:{zh:'线条网 · 同心圆 · 圆形裁切', en:'Line screen · concentric · circle outline'}, p:{screen:'line',geo:'rings',outline:'circle',cell:9,angle:0,contrast:1.25,mode:'mono',inkA:'fedblue',inkB:'black',paper:'recycled',mx:0,my:0,grain:.2,starve:.15,band:0,tex:.35},
+    f:[F('e','d','线条呈同心圆排列，以粗细变化表现明暗','Lines run in concentric rings, their weight carrying the tone',{geo:'grid'}), F('e','d','圆形范围内着墨，外部保留纸色','Printed only inside a circle, paper outside',{outline:'none'}), F('o','m','米色再生纸','Recycled cream paper',{paper:'white',tex:0})]},
+  {name:{zh:'字形放射网', en:'Radial letters'}, tag:{zh:'AM · 放射线 · 字形裁切 · 双色', en:'AM · radial · letter outline · two-colour'}, p:{screen:'am',geo:'rays',outline:'text',outlineText:'INK',cell:10,angle:0,contrast:1.2,mode:'sep',inkA:'fpink',inkB:'blue',paper:'white',mx:4,my:3,grain:.35,starve:.25,band:.15,tex:.3},
+    f:[F('e','d','网点从中心向外呈放射状排列','Dots fanned out along rays',{geo:'grid'}), F('e','d','用图像填充文字轮廓','The image appears only inside the big letters',{outline:'none'}), F('r','p','双色叠印与错位','Two-colour overprint and misregistration',{mode:'mono',mx:0,my:0,rot:0,stretch:0})]},
   {name:{zh:'木刻版画', en:'Woodcut print'}, tag:{zh:'木刻 · 黑 · 再生纸', en:'Woodcut · black · recycled'}, p:{screen:'am',process:'wood',cell:8,angle:10,contrast:1.3,mode:'mono',inkA:'black',inkB:'black',paper:'recycled',mx:0,my:0,grain:.2,starve:.15,band:0,tex:.5},
     f:[F('e','p','刀痕线条与色块边缘的缺口','Gouged lines and chipped solids',{process:'none'}), F('r','m','再生纸','Recycled paper',{paper:'white'}), F('o','p','墨色带木纹','Wood grain in the ink',{grain:0,starve:0})]},
   {name:{zh:'连续调双色', en:'Continuous duotone'}, tag:{zh:'连续调 · 橙 + 黑 双色调', en:'Continuous · orange + black duotone'}, p:{screen:'cont',cell:8,angle:0,contrast:1.15,mode:'duo',inkA:'orange',inkB:'black',paper:'recycled',mx:2,my:1,grain:.2,starve:.1,band:0,tex:.4},

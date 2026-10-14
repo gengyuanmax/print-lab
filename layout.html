@@ -223,19 +223,19 @@ textarea.txt{min-height:76px;resize:vertical;line-height:1.45}
         </div>
       </div>
       <details class="cfgbox" id="cfgBox">
-        <summary><span class="zh">描述这张海报：给人、给 AI、给本工具</span><span class="en">Describe this poster: for people, for AI, for this tool</span></summary>
+        <summary><span class="zh">导出设计说明与海报配置</span><span class="en">Describe this poster: for people, for AI, for this tool</span></summary>
         <div class="seg cfgtabs" id="cfgTabs" role="group">
           <button type="button" data-tab="brief"><span class="zh">设计说明</span><span class="en">Design brief</span></button>
           <button type="button" data-tab="prompt"><span class="zh">图像生成提示词</span><span class="en">Image prompt</span></button>
-          <button type="button" data-tab="tokens"><span class="zh">设计 tokens</span><span class="en">Design tokens</span></button>
-          <button type="button" data-tab="json"><span class="zh">配置 JSON</span><span class="en">Config JSON</span></button>
+          <button type="button" data-tab="tokens"><span class="zh">设计变量（CSS）</span><span class="en">Design tokens</span></button>
+          <button type="button" data-tab="json"><span class="zh">海报配置（JSON）</span><span class="en">Config JSON</span></button>
         </div>
         <p class="hint" id="cfgHint"></p>
         <textarea id="cfgText" class="txt" spellcheck="false" rows="14" aria-label="Description"></textarea>
         <div class="row">
           <button class="btn" type="button" id="cfgCopy"><span class="zh">复制</span><span class="en">Copy</span></button>
           <button class="btn" type="button" id="cfgDown"><span class="zh">下载</span><span class="en">Download</span></button>
-          <label class="btn" id="cfgOpen"><span class="zh">打开 .json</span><span class="en">Open .json</span><input type="file" id="cfgFile" accept="application/json,.json" hidden></label>
+          <label class="btn" id="cfgOpen"><span class="zh">导入 JSON 文件</span><span class="en">Open .json</span><input type="file" id="cfgFile" accept="application/json,.json" hidden></label>
           <button class="btn" type="button" id="cfgLink"><span class="zh">复制分享链接</span><span class="en">Copy share link</span></button>
           <button class="btn" type="button" id="cfgApply"><span class="zh">应用</span><span class="en">Apply</span></button>
         </div>
@@ -1601,7 +1601,7 @@ async function doExport(kind){
 /* ---------- config: every setting as JSON, so a poster can be saved, shared and rebuilt exactly ---------- */
 const CFG_VERSION = 1;
 /* descriptions: the same settings written for a person, for an image model and for code */
-const FAMILIES = {swiss:{d:'Archivo (neo-grotesque sans, variable weight and width)', dz:'Archivo（新怪诞无衬线体，字重和字宽可调）', b:'Archivo'}, editorial:{d:'Instrument Serif (display serif)', dz:'Instrument Serif（标题衬线体）', b:'Instrument Sans'}, zine:{d:'Bricolage Grotesque (expressive grotesque)', dz:'Bricolage Grotesque（个性化的怪诞无衬线体）', b:'Space Mono (monospace)', bz:'Space Mono（等宽体）'}};
+const FAMILIES = {swiss:{d:'Archivo (neo-grotesque sans, variable weight and width)', dz:'Archivo（无衬线字体，字重和字宽可调）', b:'Archivo'}, editorial:{d:'Instrument Serif (display serif)', dz:'Instrument Serif（标题衬线体）', b:'Instrument Sans'}, zine:{d:'Bricolage Grotesque (expressive grotesque)', dz:'Bricolage Grotesque（字形富于变化的无衬线字体）', b:'Space Mono (monospace)', bz:'Space Mono（等宽体）'}};
 const labelOf = k => { const it = ITEM[k]; if (!it) return k; const l = typeof it.label==='function' ? it.label() : it.label; return T(l); };
 const valOf = k => { const it = ITEM[k]; if (it && it.type==='swatch'){ const x = (it.list==='papers' ? PAPERS : INKS).find(o => o.id===P[k]); return x ? `${x[LANG] || x.zh} ${x.c}` : String(P[k]); } return fmtVal(k, P); };
 const inkUsed = () => ['inkA','inkB','inkC'].slice(0, P.inks).map(k => INKS.find(o => o.id===P[k]));
@@ -1614,33 +1614,34 @@ function briefText(){
   out.push(T(st.essence));
   out.push('');
   out.push(`## ${L2('关键特征','Key features')}`);
-  out.push(`- ${L2('画幅','Format')}: ${valOf('format')}, ${d.W} × ${d.H} px; ${P.cols} ${L2('栏','columns')}, ${L2('页边距','margin')} ${pc(P.margin)} ${L2('页宽','of the width')}, ${L2('栏间距','gutter')} ${(P.gutter*100).toFixed(1)}%, ${L2('基线','baseline')} ${P.baseline} px.`);
-  out.push(`- ${L2('字体','Type')}: ${L2('标题','headline')} ${zh ? fam.dz : fam.d}${P.pair==='swiss' ? `, ${L2('字重','weight')} ${P.tWeight}, ${L2('字宽','width')} ${P.tWidth}%` : ''}; ${L2('正文','body')} ${zh && fam.bz ? fam.bz : fam.b}. ${L2('标题约为页宽的','Headline about')} ${pc(P.titleScale)}${zh ? '' : ' of the page width'}, ${L2('字号比例','type scale')} ${P.ratio}, ${P.levels} ${L2('级层级','levels')}; ${valOf('align')}${P.upper ? L2('，全大写',', all caps') : ''}; ${L2('标题处理','headline treatment')} ${valOf('titleStyle')}.`);
-  out.push(`- ${L2('颜色','Colour')}: ${L2('纸','paper')} ${pap ? `${pap[LANG] || pap.zh} ${pap.c}` : P.paper}; ${L2('油墨','inks')} ${ink.map(x => `${x[LANG] || x.zh} ${x.c}`).join(' + ')}; ${P.overprint ? L2('叠印混色（重叠处出现第三色）','overprinting (overlaps make a third colour)') : L2('不叠印','no overprint')}; ${L2('面积比例','area ratio')} ${valOf('colorRatio')}; ${L2('文字用','text in')} ${valOf('textInk')}.`);
-  out.push(`- ${L2('构图','Composition')}: ${L2('留白目标','whitespace target')} ${pc(P.white)}, ${L2('破格强度','rule-breaking')} ${pc(P.breakS)}, ${L2('焦点','focal point')} ${valOf('focal')}${P.axis ? `, ${L2('主轴倾斜','axis tilted')} ${P.axis}°` : ''}${P.bleed ? L2('，出血',', bleeds off the page') : ''}${P.titleCrop ? `, ${L2('标题裁出页面','headline cropped by')} ${pc(P.titleCrop)}` : ''}; ${L2('阅读路径','reading path')} ${valOf('path')}.`);
+  out.push(`- ${L2('画幅','Format')}: ${valOf('format')}, ${d.W} × ${d.H} px; ${P.cols} ${L2('栏','columns')}, ${L2('页边距占','margin')} ${pc(P.margin)} ${L2('页宽','of the width')}, ${L2('栏间距占页宽','gutter')} ${(P.gutter*100).toFixed(1)}%, ${L2('基线间距','baseline')} ${P.baseline} px.`);
+  out.push(`- ${L2('字体','Type')}: ${L2('标题','headline')} ${zh ? fam.dz : fam.d}${P.pair==='swiss' ? `, ${L2('字重','weight')} ${P.tWeight}, ${L2('字宽','width')} ${P.tWidth}%` : ''}; ${L2('正文','body')} ${zh && fam.bz ? fam.bz : fam.b}. ${L2('标题字号约为页宽的','Headline about')} ${pc(P.titleScale)}${zh ? '' : ' of the page width'}, ${L2('相邻层级字号比','type scale')} ${P.ratio}, ${P.levels} ${L2('档字号','levels')}; ${valOf('align')}${P.upper ? L2('，拉丁字母全大写',', all caps') : ''}; ${L2('标题处理','headline treatment')} ${valOf('titleStyle')}.`);
+  out.push(`- ${L2('颜色','Colour')}: ${L2('纸张','paper')} ${pap ? `${pap[LANG] || pap.zh} ${pap.c}` : P.paper}; ${L2('油墨','inks')} ${ink.map(x => `${x[LANG] || x.zh} ${x.c}`).join(' + ')}; ${P.overprint ? L2('叠印混色（不同油墨重叠处形成混色）','overprinting (overlaps make a third colour)') : L2('不叠印','no overprint')}; ${L2('配色面积比例','area ratio')} ${valOf('colorRatio')}; ${L2('文字颜色','text in')} ${valOf('textInk')}.`);
+  out.push(`- ${L2('构图','Composition')}: ${L2('留白倾向','whitespace target')} ${pc(P.white)}, ${L2('破格强度','rule-breaking')} ${pc(P.breakS)}, ${L2('焦点','focal point')} ${valOf('focal')}${P.axis ? `, ${L2('主轴倾斜','axis tilted')} ${P.axis}°` : ''}${P.bleed ? L2('，元素可延伸至页边之外',', bleeds off the page') : ''}${P.titleCrop ? `, ${L2('标题向页外偏移比例','headline cropped by')} ${pc(P.titleCrop)}` : ''}; ${L2('阅读路径','reading path')} ${valOf('path')}.`);
   const vocab = Object.keys(P.vocab).filter(k => P.vocab[k]);
-  out.push(`- ${L2('图形','Shapes')}: ${vocab.length ? valOf('vocab') : L2('无','none')}; ${L2('数量','count')} ${P.nShapes}, ${L2('填充比例','filled')} ${pc(P.fill)}, ${L2('角度','angles')} ${valOf('angles')}.`);
-  out.push(`- ${L2('图像','Image')}: ${P.img ? `${valOf('treat')}, ${L2('网点','dot size')} ${P.cell} px, ${L2('外形','shape')} ${valOf('mask')}, ${L2('宽度','width')} ${pc(P.imgSpan)}` : L2('不使用图片','no image')}.`);
+  out.push(`- ${L2('图形','Shapes')}: ${vocab.length ? valOf('vocab') : L2('无','none')}; ${L2('数量','count')} ${P.nShapes}, ${L2('实心形状比例','filled')} ${pc(P.fill)}, ${L2('角度','angles')} ${valOf('angles')}.`);
+  out.push(`- ${L2('图像','Image')}: ${P.img ? `${valOf('treat')}, ${L2('网点尺寸','dot size')} ${P.cell} px, ${L2('外形','shape')} ${valOf('mask')}, ${L2('图像宽度设置','width')} ${pc(P.imgSpan)}` : L2('不使用图片','no image')}.`);
   out.push(`- ${L2('印刷质感','Print texture')}: ${L2('套色错位','misregistration')} ${P.tMisX}, ${P.tMisY} px; ${L2('颗粒','grain')} ${pc(P.tGrain)}, ${L2('缺墨','ink starvation')} ${pc(P.tStarve)}, ${L2('纸纹','paper texture')} ${pc(P.tPaper)}.`);
   const rules = Object.keys(P.rules).filter(k => P.rules[k]);
   out.push(`- ${L2('规则','Rules')}: ${rules.length ? valOf('rules') : L2('无','none')}${rules.length ? (zh ? `（严格程度 ${pc(P.strict)}）` : ` (strictness ${pc(P.strict)})`) : ''}.`);
   const m = $('metrics') ? $('metrics').innerText.replace(/\n+/g, ' ').replace(/\s{2,}/g, ' ').trim() : '';
-  if (m){ out.push(''); out.push(`## ${L2('实测','Measured')}`); out.push(m); }
+  if (m){ out.push(''); out.push(`## ${L2('版式指标（估算）','Measured')}`); out.push(m); }
   out.push(''); out.push(`## ${L2('全部参数','All settings')}`);
   GROUPS.forEach(g => { const rows = g.items.filter(it => it.key && !['text','textarea','upload'].includes(it.type) && (!it.when || it.when()) && !(it.need && P.inks < it.need) && !(g.s==='IMAGE' && !P.img && it.key!=='img')).map(it => `- ${labelOf(it.key)}: ${valOf(it.key)}`);
     if (rows.length){ out.push(`### ${T(g.t)}`); out.push(...rows); } });
-  out.push(''); out.push(L2(`由版式实验室生成，随机种子 ${P.seed}。用“配置 JSON”可在本工具里还原同一张海报。`, `Made with Layout Lab, seed ${P.seed}. The Config JSON tab rebuilds the identical poster in this tool.`));
+  out.push(''); out.push(L2(`由版式实验室生成，随机种子为 ${P.seed}。可在“海报配置（JSON）”中保存并恢复文字与版式参数；上传的照片需另行载入。`, `Made with Layout Lab, seed ${P.seed}. The Config JSON tab rebuilds the identical poster in this tool.`));
   return out.join('\n');
 }
 function promptText(){
   const ink = inkUsed(), pap = PAPERS.find(o => o.id===P.paper), pr = PRESETS[activePreset || lastPreset], st = STYLE[activePreset || lastPreset], d = dims(P);
+  const optionEn = k => { const o = ITEM[k].opts.find(([v]) => v===P[k]); return o ? o[1].en : String(P[k]); };
   const shapes = Object.keys(P.vocab).filter(k => P.vocab[k]).join(', ') || 'no shapes';
   const parts = [
     `A ${d.W > d.H ? 'landscape' : d.W===d.H ? 'square' : 'portrait'} printed poster in the ${pr.name.en} style (${st.essence.en.split('.')[0].toLowerCase()}).`,
     `${P.cols}-column grid, ${Math.round(P.margin*100)}% margins, about ${Math.round(P.white*100)}% white space${P.bleed ? ', elements bleeding off the edge' : ''}${P.axis ? `, composition tilted ${P.axis} degrees` : ''}.`,
     `Headline in ${FAMILIES[P.pair].d.split(' (')[0]}${P.upper ? ', all caps' : ''}, ${P.align==='fill' ? 'every line set to the full width like wood type' : P.align==='center' ? 'centred' : 'flush left'}, about ${Math.round(P.titleScale*100)}% of the page width; small ${FAMILIES[P.pair].b.split(' (')[0]} body text.`,
     `Only ${ink.length} flat spot ink${ink.length>1 ? 's' : ''}: ${ink.map(x => `${x.en.toLowerCase()} (${x.c})`).join(', ')} on ${pap ? pap.en.toLowerCase() + ` paper (${pap.c})` : 'paper'}${P.overprint && ink.length>1 ? ', overprinting where they overlap' : ''}.`,
-    P.img ? `One photograph screened as ${valOf('treat')} with visible dots, ${valOf('mask').toLowerCase()} shape.` : 'No photograph; type and simple shapes only.',
+    P.img ? `One photograph screened as ${optionEn('treat')} with visible dots, ${optionEn('mask').toLowerCase()} shape.` : 'No photograph; type and simple shapes only.',
     `Shapes: ${shapes}.`,
     `${P.tMisX || P.tMisY ? 'Slight colour misregistration, ' : ''}${P.tGrain > .2 ? 'ink grain, ' : ''}${P.tStarve > .2 ? 'patchy ink coverage, ' : ''}${P.tPaper > .2 ? 'visible paper texture, ' : ''}no gradients, no drop shadows, no 3D, no glossy effects.`,
   ];
@@ -1659,10 +1660,10 @@ function tokensText(){
 }
 let cfgTab = 'brief';
 const CFG_HINT = {
-  brief:L('写给人和 AI 看的设计说明：先用一句话说风格，再按网格、字体、颜色、构图、图形、图像、质感、规则列出关键特征，最后附上全部参数。','A brief for people and AI: the style in one line, then grid, type, colour, composition, shapes, image, texture and rules, then every setting.'),
-  prompt:L('给图像生成模型的一段英文提示词：只描述看得见的结果，并写明不要渐变、投影和立体效果。生成的图只会接近，不会完全一样。','An English prompt for image models: it describes only the visible result and rules out gradients, shadows and 3D. The result will be close, not identical.'),
-  tokens:L('给前端或编码 AI 的设计 tokens（CSS 变量）：颜色、字体、字号、网格和叠印方式，可以直接用在网页里。','Design tokens (CSS variables) for front-end work or a coding AI: colours, fonts, sizes, grid and blending, ready for a web page.'),
-  json:L('只给本工具用：全部参数、随机种子和文字。粘贴回来点“应用”，得到完全相同的海报；上传的照片不会写进去。','For this tool only: every setting, the seed and the text. Paste it back and press Apply for the identical poster; an uploaded photo is not stored.'),
+  brief:L('将当前海报整理成可与他人或 AI 交流的设计说明：概述风格，说明网格、字体、配色、构图与印刷质感，并附上全部参数。','A brief for people and AI: the style in one line, then grid, type, colour, composition, shapes, image, texture and rules, then every setting.'),
+  prompt:L('根据当前海报生成英文图像提示词，描述风格、构图与印刷质感，并排除渐变、投影和立体效果。用于生成相近风格的图像，无法精确还原原稿。','An English prompt for image models: it describes only the visible result and rules out gradients, shadows and 3D. The result will be close, not identical.'),
+  tokens:L('将配色、字体、字号、网格和叠印方式整理成 CSS 自定义属性（设计变量），方便在网页开发中复用，或交给 AI 编程工具参考。','Design tokens (CSS variables) for front-end work or a coding AI: colours, fonts, sizes, grid and blending, ready for a web page.'),
+  json:L('保存本工具使用的全部参数、随机种子和文字。粘贴配置后点击“应用”，即可恢复版式；也可导入 JSON 文件或复制分享链接。配置不包含上传的照片，恢复时需另行载入。','For this tool only: every setting, the seed and the text. Paste it back and press Apply for the identical poster; an uploaded photo is not stored.'),
 };
 function cfgFill(){
   $('cfgText').value = cfgTab==='brief' ? briefText() : cfgTab==='prompt' ? promptText() : cfgTab==='tokens' ? tokensText() : cfgString();
@@ -1708,9 +1709,9 @@ async function copyText(t){
 }
 $('cfgBox').addEventListener('toggle', () => { if ($('cfgBox').open) cfgFill(); });
 $('cfgCopy').addEventListener('click', async () => { if (cfgTab!=='json') cfgFill(); const ok = await copyText($('cfgText').value);
-  cfgStatus(ok ? '已复制。' : '浏览器不允许自动复制：文本框里的内容已选中，请按 Ctrl/⌘ + C。', ok ? 'Copied.' : 'The browser blocked copying: the text is selected, press Ctrl/⌘ + C.'); });
+  cfgStatus(ok ? '已复制。' : '自动复制未成功，文本框中的内容已选中。请按 Ctrl+C（Mac 上为 ⌘C）复制。', ok ? 'Copied.' : 'The browser blocked copying: the text is selected, press Ctrl/⌘ + C.'); });
 $('cfgDown').addEventListener('click', () => {
-  if (!LOCAL){ cfgStatus('claude.ai 的预览会拦截下载：请用“复制”，或在 GitHub Pages 版本里下载。', 'Downloads are blocked in the claude.ai preview: use Copy, or download from the GitHub Pages version.'); return; }
+  if (!LOCAL){ cfgStatus('claude.ai 预览不支持下载。请复制内容，或打开 GitHub Pages 网站下载。', 'Downloads are blocked in the claude.ai preview: use Copy, or download from the GitHub Pages version.'); return; }
   const ext = {brief:'md', prompt:'txt', tokens:'css', json:'json'}[cfgTab], body = cfgTab==='json' ? cfgString() : $('cfgText').value;
   const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([body], {type: ext==='json' ? 'application/json' : 'text/plain'})); a.download = `layout-lab-${P.seed}-${cfgTab}.${ext}`; document.body.appendChild(a); a.click(); a.remove();
   cfgStatus(`已下载 layout-lab-${P.seed}-${cfgTab}.${ext}`, `Downloaded layout-lab-${P.seed}-${cfgTab}.${ext}`);
@@ -1720,12 +1721,12 @@ $('cfgFile').addEventListener('change', e => { const f = e.target.files && e.tar
 $('cfgApply').addEventListener('click', () => {
   try { const skipped = applyConfig(JSON.parse($('cfgText').value)); cfgFill();
     cfgStatus('已应用配置' + (skipped.length ? `；忽略了无法识别的设置：${skipped.join('、')}` : '。'), 'Config applied' + (skipped.length ? `; ignored unknown settings: ${skipped.join(', ')}` : '.')); }
-  catch(e){ cfgStatus('无法读取：请确认粘贴的是完整的 JSON。', 'Could not read it: make sure the pasted text is complete JSON.'); }
+  catch(e){ cfgStatus('无法应用配置。请检查 JSON 是否完整、格式是否正确，以及参数类型是否符合要求。', 'Could not read it: make sure the pasted text is complete JSON.'); }
 });
 $('cfgLink').addEventListener('click', async () => {
   const url = 'https://gengyuanmax.github.io/print-labs/layout.html#cfg=' + b64(JSON.stringify(configObj()));
   const ok = await copyText(url); if (!ok) $('cfgText').value = url;
-  cfgStatus(ok ? '分享链接已复制：打开它会直接得到这张海报。' : '浏览器不允许自动复制：链接已放进文本框，请手动复制。', ok ? 'Share link copied: opening it rebuilds this poster.' : 'The browser blocked copying: the link is in the text box, copy it by hand.');
+  cfgStatus(ok ? '分享链接已复制。打开链接即可载入当前文字与版式参数；上传的照片需另行载入。' : '自动复制未成功，分享链接已放入文本框，请手动复制。', ok ? 'Share link copied: opening it rebuilds this poster.' : 'The browser blocked copying: the link is in the text box, copy it by hand.');
 });
 
 /* ---------- toolbar ---------- */

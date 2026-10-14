@@ -879,10 +879,19 @@ function noises(n){
   const la = lowNoise(n,5,r), lb = lowNoise(n,13,r), lc = lowNoise(n,7,r);
   const low = new Float32Array(N), low2 = new Float32Array(N);
   for (let i=0;i<N;i++){ low[i] = la[i]*.65 + lb[i]*.35; low2[i] = lc[i]; }
+  // clustered grain: value noise with 1.6 px and 4 px cells in page units (S), so its size does not depend on the canvas resolution;
+  // histogram-equalised to 0..1 so a threshold gives an exact coverage
+  const r2 = rng(4242), ga = lowNoise(n, Math.round(S/1.6), r2), gb = lowNoise(n, Math.round(S/4), r2), gr = new Float32Array(N), H = new Uint32Array(1024);
+  for (let i=0;i<N;i++){ const v = ga[i]*.65 + gb[i]*.35; gr[i] = v; H[Math.min(1023, v*1024|0)]++; }
+  for (let k=1;k<1024;k++) H[k] += H[k-1];
+  for (let i=0;i<N;i++) gr[i] = H[Math.min(1023, gr[i]*1024|0)]/N;
   const rows = new Float32Array(n), rv = []; for (let i=0;i<=20;i++) rv.push(r());
   for (let y=0;y<n;y++){ const f=y/n*20, i=Math.floor(f), t=f-i, s=t*t*(3-2*t); const v=rv[i]+(rv[i+1]-rv[i])*s; rows[y]=Math.min(1,Math.max(0,(v-.5)*2.4+.5)); }
-  return noiseCache[n] = {g1,g2,fm,low,low2,rows};
+  return noiseCache[n] = {g1,g2,fm,low,low2,rows,gr};
 }
+
+// grain: a soft clustered mottle plus small specks where little ink lands; speck coverage = 16% of the grain setting
+function grainF(g, u){ if (!g) return 1; const t = 1 - g*.16; return (1 - g*.3*u*u)*(1 - .8*Math.min(1, Math.max(0, (u - t)/.02))); }
 
 /* ---------- plates ---------- */
 function plates(data, n, mode, k, gain, tone){
@@ -1096,7 +1105,7 @@ function boxBlur(src, n, r){
 }
 /* cyanotype and photogram: light through or around objects, not ink; exposed = dark, shaded = paper */
 function renderLight(data, n, sc, p, nz, kind){
-  const {g1, low, low2} = nz, N = n*n, E = new Float32Array(N);
+  const {g1, low, low2, gr} = nz, N = n*n, E = new Float32Array(N);
   for (let i=0;i<N;i++){ const L = (.299*data[i*4] + .587*data[i*4+1] + .114*data[i*4+2])/255; let e = (L - .5)*p.contrast + .5; E[i] = e<0?0:e>1?1:e; }
   const soft = boxBlur(E, n, Math.max(1, Math.round((kind==='gram' ? 2.6 : 1.6)*sc)));
   const PB = [.07,.24,.45], STAIN = [.9,.94,.98], DARK = [.06,.06,.07];
@@ -1111,7 +1120,7 @@ function renderLight(data, n, sc, p, nz, kind){
       const inside = x > m + w*edge(y/6, 0) && x < n - m - w*edge(y/6, 1) && y > m + w*edge(x/6, 2) && y < n - m - w*edge(x/6, 3);
       if (!inside){ const pt = 1 - p.tex*(.1*nz.g2[i] + .08*low2[i]); col = pp.map(v => v*pt); }
       else {
-        let d = Math.pow(e, .85) * (.8 + .2*low2[i]) * (1 - p.grain*.35*Math.pow(g1[i], 2)) * (1 - p.starve*.25*low[i]);
+        let d = Math.pow(e, .85) * (.8 + .2*low2[i]) * (1 - p.grain*.35*gr[i]*gr[i]) * (1 - p.starve*.25*low[i]);
         const pt = 1 - p.tex*(.1*nz.g2[i] + .08*low2[i]);
         col = [0,1,2].map(k => (STAIN[k]*(1-d) + PB[k]*d) * pp[k] / Math.max(pp[0],pp[1],pp[2]) * pt);
       }
@@ -1121,7 +1130,7 @@ function renderLight(data, n, sc, p, nz, kind){
       if (!inside) col = pp;
       else {
         let d = e*e*(3 - 2*e);
-        if (g1[i] > .997 - p.grain*.004) d *= .15;
+        if (gr[i] > 1 - p.grain*.02) d *= .15;
         col = [0,1,2].map(k => pp[k]*(1-d) + DARK[k]*d);
       }
     }
@@ -1134,7 +1143,7 @@ function render(canvas, p, srcCanvas){
   ctx.drawImage(srcCanvas, 0, 0, n, n);
   const sd = ctx.getImageData(0,0,n,n), data = sd.data;
   const N = n*n;
-  const {g1,g2,low,low2,rows} = nz;
+  const {g1,g2,low,low2,rows,gr} = nz;
   // paper stock: absorbency adds dot gain and dulls colour; tracing paper veils everything
   const st = STOCKS.find(x => x.id===p.stock) || STOCKS[0];
   const kA = ink(p.inkA), kB = ink(p.inkB), kC = ink(p.inkC);
@@ -1159,7 +1168,7 @@ function render(canvas, p, srcCanvas){
     }
     for (let y=0;y<n;y++) for (let x=0;x<n;x++){
       const i = y*n+x;
-      const s = .96*(1 - p.grain*.85*Math.pow(g1[i],1.6))*(1 - p.starve*.92*Math.pow(Math.max(0,(low[i]-.42)/.38),2))*(1 - p.band*.5*rows[y]);
+      const s = .96*grainF(p.grain, gr[i])*(1 - p.starve*.6*Math.pow(Math.min(1, Math.max(0,(low[i]-.42)/.38)),2))*(1 - p.band*.5*rows[y]);
       const pt = 1 - tex*(.08*g2[i] + .06*low2[i]);
       let c0 = pp[0]*pt, c1 = pp[1]*pt, c2 = pp[2]*pt;
       for (let q=0;q<patL.length;q++){ const mm = patL[q][0][i]; if (mm){ const pc = patL[q][1]; c0*=1-mm*(1-pc[0]); c1*=1-mm*(1-pc[1]); c2*=1-mm*(1-pc[2]); } }
@@ -1227,8 +1236,8 @@ function render(canvas, p, srcCanvas){
     const cdx = Math.round(-p.my*.7*sc), cdy = Math.round(p.mx*.7*sc);
     const strength = (j, y, er, x) => {
       let s = .96;
-      s *= 1 - p.grain*.85*Math.pow(g1[j],1.6);
-      const l = low[j]; const m = l<.42?0:l>.8?1:(l-.42)/.38; s *= 1 - p.starve*.92*m*m;
+      s *= grainF(p.grain, gr[j]);
+      const l = low[j]; const m = l<.42?0:l>.8?1:(l-.42)/.38; s *= 1 - p.starve*.6*m*m;   // starvation lightens by at most 60%; it never punches white holes
       s *= 1 - p.band*.5*rows[y];
       if (er) s *= (.64 + .36*Math.min(1, low2[j]*1.25)) * (.86 + .14*g2[j]);  // relief: mottled interior, full ink at the squeezed rim
       if (wood) s *= .82 + .18*(.5 + .5*Math.sin(y/sc*.5 + low[j]*16));      // wood grain
@@ -1323,7 +1332,14 @@ function ageing(data, n, p, nz, sc, pp){
 /* ---------- UI ---------- */
 const out = $('out');
 let queued = false, lastResult = null;
-function schedule(){ if (queued) return; queued = true; requestAnimationFrame(() => { queued = false; lastResult = render(out, P, srcC); syncInfo(); drawSeps(); syncDock(); drawTrans(); }); }
+// render at the screen's pixel ratio (up to 2x) so dots stay sharp on high-density screens; while controls move,
+// a quick pass at 1x runs first and the full pass follows when they settle
+let sharpT = 0;
+const fullN = () => Math.round(S*Math.min(2, Math.max(1, window.devicePixelRatio || 1)));
+function paint(n){ if (out.width!==n){ out.width = out.height = n; } lastResult = render(out, P, srcC); }
+function schedule(){ if (queued) return; queued = true; requestAnimationFrame(() => { queued = false; clearTimeout(sharpT);
+  const N2 = fullN(); paint(N2 > S ? S : N2); syncInfo(); drawSeps(); syncDock(); drawTrans();
+  if (N2 > S) sharpT = setTimeout(() => { paint(N2); drawSeps(); }, 260); }); }
 
 function seg(el, items, key){
   el.innerHTML = '';
@@ -1515,7 +1531,7 @@ function drawTrans(){
     if (!open && t.id!==(P.trans||'am')) return;
     const g = cv.getContext('2d'), im = g.createImageData(W, H), d = im.data;
     for (let y=0;y<H;y++) for (let x=0;x<W;x++){
-      const j = (y % W)*W + x, s = .95*(1 - P.grain*.8*Math.pow(nz.g1[j], 1.6))*(1 - P.starve*.55*Math.max(0, nz.low[j] - .45)*1.8);
+      const j = (y % W)*W + x, s = .95*grainF(P.grain, nz.gr[j])*(1 - P.starve*.55*Math.max(0, nz.low[j] - .45)*1.8);
       const pt = 1 - P.tex*(.08*nz.g2[j] + .06*nz.low2[j]);
       let col = pp.map(v => v*pt);
       const lay = (c, a) => { if (a > 0) col = col.map((v,k) => v*(1 - a*s*(1 - c[k]))); };

@@ -260,7 +260,7 @@ fbm(p, n)   = Σₖ 0.5ᵏ · vnoise(2.3ᵏ · p) / Σₖ 0.5ᵏ ,  k = 0…n−
       <h3><span class="zh">加网</span><span class="en">Screening</span></h3>
 <pre>AM   (u,w) = rotate(p, angle) / pitch
      (u,w) += dotPos · 2(vnoise(0.9·(u,w)) − 0.5)   <span class="zh">网点位置抖动</span><span class="en">dot position jitter</span>
-     v' ≥ 1 − fillIn <span class="zh">→ 实地；</span><span class="en">→ solid;</span> v'·j &lt; minDot·(0.5 + hash) <span class="zh">→ 不出点</span><span class="en">→ no dot</span>
+     v' ≥ 1 − fillIn <span class="zh">→ 实地；</span><span class="en">→ solid;</span> v'·j &lt; minDot·(0.5 + hash) <span class="zh">→ 不出点（已知局限：按像素的深浅判断，渐变区里门槛附近的网点可能只丢半颗；更准确的做法是在网点中心取深浅，整颗决定）</span><span class="en">→ no dot (known limit: decided from each pixel's tone, so in a gradient a dot at the threshold can lose half of itself; the faithful version reads the tone at the dot's centre and drops whole dots)</span>
      <span class="zh">着墨条件</span><span class="en">ink if</span> spot(u,w) + <span class="zh">边缘噪声</span><span class="en">edge noise</span> &gt; 1 − v'·(1 + jitter·(hash(⌊u⌋,⌊w⌋) − 0.5)·2)
      <span class="zh">圆点</span><span class="en">round</span>   (cos 2πu + cos 2πw + 2)/4
      <span class="zh">链状点</span><span class="en">chain</span>   (0.6 cos 2πu + 1.4 cos 2πw + 2)/4
@@ -682,7 +682,9 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { dr
       let u = (X*c + Y*s)/S.pitch, w = (-X*s + Y*c)/S.pitch;
       if (S.dotPos){ const du = S.dotPos*(vnoise(u*.9 + 3.1, w*.9, seed + 60 + pl) - .5)*2, dw = S.dotPos*(vnoise(u*.9, w*.9 + 7.3, seed + 70 + pl) - .5)*2; u += du; w += dw; }   // each dot sits a little off the grid
       const hc = hash(Math.floor(u), Math.floor(w), seed + pl*31), j = 1 + S.jitter*(hc - .5)*2;
-      if (v*j < S.minDot*(.5 + hc)) return 0;                           // highlight dropout: dots too small to image
+      // highlight dropout: dots too small to image. Known limit: v is this pixel's tone, not the tone at the dot's centre, so in a
+      // gradient a dot right at the threshold can lose only part of itself; real dropout removes whole dots
+      if (v*j < S.minDot*(.5 + hc)) return 0;
       const th = spot(u, w) + S.rough*.16*(vnoise(X/(S.pitch*.35), Y/(S.pitch*.35), seed + 50 + pl) - .5);
       return th > 1 - Math.min(1, v*j) ? 1 : 0;
     };
@@ -728,7 +730,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { dr
     return JSON.stringify({name:'Print Labs · simulation spec', version:1, preset, units:'px are CSS pixels; render at devicePixelRatio; noise sampled in page coordinates',
       tone:{black:r('black'), white:r('white'), contrast:r('contrast'), posterize:S.levels || null, appliesTo:'photographic elements only'},
       plates:{inkA:S.inkA, inkB:S.inkB, paper:S.paper, plateA:`lights and midtones: t^${r('aCurve')}`, plateB:`darks: t^${r('bCurve')}`, solidType:'not screened'},
-      screen:{type:S.screen, pitchPx:r('pitch'), cellPx:+Math.max(1.2, S.pitch*.3).toFixed(2), angleA:S.angleA, angleB:S.angleB, dotGain:r('gain'), dotSizeJitter:r('jitter'), edgeRoughness:r('rough'), dotPositionJitter:r('dotPos'), highlightDropout:r('minDot'), shadowFillIn:r('fillIn')},
+      screen:{type:S.screen, pitchPx:r('pitch'), cellPx:+Math.max(1.2, S.pitch*.3).toFixed(2), angleA:S.angleA, angleB:S.angleB, dotGain:r('gain'), dotSizeJitter:r('jitter'), edgeRoughness:r('rough'), dotPositionJitter:r('dotPos'), highlightDropout:r('minDot'), highlightDropoutNote:'decided per pixel from that pixel\'s tone; a faithful version samples the tone at each dot\'s centre so whole dots drop', shadowFillIn:r('fillIn')},
       print:{blend:S.blend, misregisterPx:[r('misX'), r('misY')], plateBRotationDeg:r('rotB'), paperStretchPct:r('stretch'), inkTrapping:r('trap'), misregisterAppliesTo:'plate B: shift, then rotation about the centre and stretch along the feed (y), so the error varies across the sheet'},
       imperfection:{grainCoverage:r('grain'), grainSizePx:r('grainSize'), starvation:r('starve'), starvationFloor:r('floor'), starvationScalePx:r('starveScale'), starvationOctaves:S.oct, noTextureBelowPx:r('smallText')},
       paper:{texture:r('tex'), fibreInkHoldBack:r('fiber'), seed:S.seed, textureShowsThroughInk:true},

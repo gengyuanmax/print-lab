@@ -249,7 +249,7 @@ fbm(p, n)   = Σₖ 0.5ᵏ · vnoise(2.3ᵏ · p) / Σₖ 0.5ᵏ ,  k = 0…n−
 
 <span class="zh">缺墨</span><span class="en">starvation</span>  n = fbm(p / starveScale, octaves)
 <span class="zh">颗粒</span><span class="en">grain</span>       g = smoothstep(τ, τ+0.06, vnoise(p / grainSize)),  τ = 1 − 2.2·grain
-<span class="zh">边缘</span><span class="en">edges</span>       0.16·rough · (vnoise(p / 0.35·pitch) − 0.5)  <span class="zh">叠加到网点函数的值上</span><span class="en">added to the spot value</span>
+<span class="zh">边缘</span><span class="en">edges</span>       (u,w) += 1.2·rough / pitch · 2(vnoise(p / 0.35·pitch) − 0.5)  <span class="zh">边缘按固定距离挪动，不是改阈值</span><span class="en">the edge moves a fixed distance, not a threshold offset</span>
 <span class="zh">纸纹</span><span class="en">paper</span>       0.6·vnoise(p / 1.3) + 0.4·vnoise(p / 9)
 <span class="zh">平涂色块</span><span class="en">flat shapes</span> 0.14·(vnoise(p / 150) − 0.5)  <span class="zh">在加网前为色块加入轻微的明暗变化</span><span class="en">added to the tone, so they have a gradient before screening</span></pre>
       <h3><span class="zh">影调与分版函数</span><span class="en">Fitted curves</span></h3>
@@ -261,7 +261,7 @@ fbm(p, n)   = Σₖ 0.5ᵏ · vnoise(2.3ᵏ · p) / Σₖ 0.5ᵏ ,  k = 0…n−
 <pre>AM   (u,w) = rotate(p, angle) / pitch
      (u,w) += dotPos · 2(vnoise(0.9·(u,w)) − 0.5)   <span class="zh">网点位置抖动</span><span class="en">dot position jitter</span>
      v' ≥ 1 − fillIn <span class="zh">→ 实地；</span><span class="en">→ solid;</span> v'·j &lt; minDot·(0.5 + hash) <span class="zh">→ 不出点（已知局限：按像素的深浅判断，渐变区里门槛附近的网点可能只丢半颗；更准确的做法是在网点中心取深浅，整颗决定）</span><span class="en">→ no dot (known limit: decided from each pixel's tone, so in a gradient a dot at the threshold can lose half of itself; the faithful version reads the tone at the dot's centre and drops whole dots)</span>
-     <span class="zh">着墨条件</span><span class="en">ink if</span> spot(u,w) + <span class="zh">边缘噪声</span><span class="en">edge noise</span> &gt; 1 − v'·(1 + jitter·(hash(⌊u⌋,⌊w⌋) − 0.5)·2)
+     <span class="zh">着墨条件</span><span class="en">ink if</span> spot(u,w) &gt; 1 − v<sub>j</sub>,   v<sub>j</sub> = v' + jitter·(hash(⌊u⌋,⌊w⌋) − 0.5)·2·min(v', 1 − v')   <span class="zh">大小随机作用在网点和空洞中较小的一边</span><span class="en">size jitter acts on the smaller of dot and hole</span>
      <span class="zh">圆点</span><span class="en">round</span>   (cos 2πu + cos 2πw + 2)/4
      <span class="zh">链状点</span><span class="en">chain</span>   (0.6 cos 2πu + 1.4 cos 2πw + 2)/4
      <span class="zh">线条网</span><span class="en">line</span>    (cos 2πw + 1)/2
@@ -270,7 +270,7 @@ FM   <span class="zh">按 max(1.2, 0.3·pitch) 的网格间距进行 Floyd–Ste
       <h3><span class="zh">合成</span><span class="en">Compositing</span></h3>
 <pre><span class="zh">纸张</span><span class="en">paper</span>  c = paper · (1 − tex · paperNoise)
 <span class="zh">墨量</span><span class="en">ink</span>    k = coverage · 0.97 · max(floor, 1 − starve · smoothstep(0.35, 0.85, n)) · (1 − 0.85·g)
-<span class="zh">纤维边缘</span><span class="en">fibre edges</span>  p' = p + 7·fiber·(vnoise(p/1.1) − 0.5, vnoise'(p/1.1) − 0.5)   <span class="zh">所有版在 p' 处取样，小字除外</span><span class="en">every plate samples at p', small text excepted</span>
+<span class="zh">纤维边缘</span><span class="en">fibre edges</span>  p' = p + 4·fiber·(vnoise(p/1.6) − 0.5, vnoise'(p/1.6) − 0.5)   <span class="zh">所有版在 p' 处取样，小字除外</span><span class="en">every plate samples at p', small text excepted</span>
 <span class="zh">纤维</span><span class="en">fibres</span>  k ·= 1 − fiber·f²   <span class="zh">f 为 1.3 px 纸纹噪声，各版共用同一处</span><span class="en">f = the 1.3 px paper noise, the same spot for every plate</span>
 <span class="zh">吸墨</span><span class="en">trapping</span>  k_B ·= 1 − (1 − trap)·k_A   <span class="zh">墨压墨时吸得少</span><span class="en">ink on ink takes less</span>
 <span class="zh">叠印</span><span class="en">multiply</span> c ·= 1 − k(1 − ink)      <span class="zh">遮盖</span><span class="en">opaque</span> c += (ink − c)·k
@@ -681,12 +681,16 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { dr
       if (v > 1 - S.fillIn) return 1;                                   // shadow fill-in: the darkest dots merge into a solid
       let u = (X*c + Y*s)/S.pitch, w = (-X*s + Y*c)/S.pitch;
       if (S.dotPos){ const du = S.dotPos*(vnoise(u*.9 + 3.1, w*.9, seed + 60 + pl) - .5)*2, dw = S.dotPos*(vnoise(u*.9, w*.9 + 7.3, seed + 70 + pl) - .5)*2; u += du; w += dw; }   // each dot sits a little off the grid
-      const hc = hash(Math.floor(u), Math.floor(w), seed + pl*31), j = 1 + S.jitter*(hc - .5)*2;
+      // size jitter acts on whichever is smaller, the dot or the paper hole, so shadow holes vary as much as highlight dots do
+      const hc = hash(Math.floor(u), Math.floor(w), seed + pl*31), vj = Math.min(1, v + S.jitter*(hc - .5)*2*Math.min(v, 1 - v));
       // highlight dropout: dots too small to image. Known limit: v is this pixel's tone, not the tone at the dot's centre, so in a
       // gradient a dot right at the threshold can lose only part of itself; real dropout removes whole dots
-      if (v*j < S.minDot*(.5 + hc)) return 0;
-      const th = spot(u, w) + S.rough*.16*(vnoise(X/(S.pitch*.35), Y/(S.pitch*.35), seed + 50 + pl) - .5);
-      return th > 1 - Math.min(1, v*j) ? 1 : 0;
+      if (vj < S.minDot*(.5 + hc)) return 0;
+      // rough edge: the edge moves by a fixed distance (up to 1.2 CSS px at roughness 1), not by a threshold offset, which would tear up
+      // small dots and holes where the spot function is flat; the wobble is only sampled near an edge
+      const d = spot(u, w) - (1 - vj), ra = S.rough*1.2/S.pitch;
+      if (ra && d > -2.3*ra && d < 2.3*ra){ const q = S.pitch*.35, u2 = u + ra*(vnoise(X/q, Y/q, seed + 50 + pl) - .5)*2, w2 = w + ra*(vnoise(X/q + 5.3, Y/q, seed + 55 + pl) - .5)*2; return spot(u2, w2) > 1 - vj ? 1 : 0; }
+      return d > 0 ? 1 : 0;
     };
     const imperfect = (X, Y, pl) => {
       let s = .97;
@@ -697,13 +701,13 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { dr
     const mx = S.misX, my = S.misY, opaque = S.blend==='opaque', big = (cssH*.3) >= S.smallText;
     // plate B registration: shift, a small turn about the centre, and paper stretch along the feed (vertical)
     const rth = S.rotB*Math.PI/180, rco = Math.cos(rth), rsi = Math.sin(rth), cx0 = cssW/2, cy0 = cssH/2, fy = 1 + S.stretch/100, fx = 1 + S.stretch/300;
-    const ew = S.fiber*7;   // fibre edge wander, in CSS px (about 0.8 px at the default 0.12)
+    const ew = S.fiber*4;   // fibre edge wander, in CSS px (about 0.5 px at the default 0.12)
     const plateB = (X, Y) => { const a = X - mx - cx0, b = Y - my - cy0; return [cx0 + (a*rco + b*rsi)/fx, cy0 + (-a*rsi + b*rco)/fy]; };
     for (let y=0;y<H;y++) for (let x=0;x<W;x++){
       const i = y*W + x, X = x/dpr, Y = y/dpr;
       // ink wicks along the paper fibres: every edge, solid or dot, is sampled through a small displacement that comes from the
       // same fibre field on every plate (zero fibre = coated stock, clean edges); small text keeps its clean edge
-      const ex = ew ? ew*(vnoise(X/1.1, Y/1.1, seed + 400) - .5) : 0, ey = ew ? ew*(vnoise(X/1.1, Y/1.1, seed + 410) - .5) : 0, XE = X + ex, YE = Y + ey;
+      const ex = ew ? ew*(vnoise(X/1.6, Y/1.6, seed + 400) - .5) : 0, ey = ew ? ew*(vnoise(X/1.6, Y/1.6, seed + 410) - .5) : 0, XE = X + ex, YE = Y + ey;
       const [BX, BY] = plateB(XE, YE), [B0X, B0Y] = plateB(X, Y), [tA, , raw] = src(XE, YE), [, tB2] = src(BX, BY);
       const xe = Math.round(XE*dpr), ye = Math.round(YE*dpr), hA = xe>=0 && ye>=0 && xe<W && ye<H ? masks.head[ye*W + xe] : 0;
       const sm = masks.small[i], xb = Math.round(B0X*dpr), yb = Math.round(B0Y*dpr);
@@ -736,11 +740,11 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { dr
       paper:{texture:r('tex'), fibreInkHoldBack:r('fiber'), seed:S.seed, textureShowsThroughInk:true},
       algorithms:{
         noise:{valueNoise:'hash(i,j)=fract(sin(127.1i+311.7j+74.7seed)*43758.5453); bilinear between lattice points with smoothstep 3t^2-2t^3', fbm:'sum_k 0.5^k * vnoise(2.3^k * p) / sum_k 0.5^k', sampledIn:'CSS px of the page, not device pixels',
-          fields:{starvation:'fbm(p/starvationScalePx, octaves)', grain:'vnoise(p/grainSizePx) > 1-2.2*grainCoverage (smoothstep width 0.06)', edgeRoughness:'0.16*rough*(vnoise(p/(0.35*pitch))-0.5) added to the spot value', paper:'0.6*vnoise(p/1.3)+0.4*vnoise(p/9)', floodTone:'0.14*(vnoise(p/150)-0.5) added to flat shapes'}},
+          fields:{starvation:'fbm(p/starvationScalePx, octaves)', grain:'vnoise(p/grainSizePx) > 1-2.2*grainCoverage (smoothstep width 0.06)', edgeRoughness:'positional: the sample point moves up to 1.2*rough CSS px, vnoise at 0.35*pitch', paper:'0.6*vnoise(p/1.3)+0.4*vnoise(p/9)', floodTone:'0.14*(vnoise(p/150)-0.5) added to flat shapes'}},
         curves:{tone:'t=clamp((d-black)/(white-black)); t=clamp((t-0.5)*contrast+0.5); posterize: round(t*(n-1))/(n-1)', plateA:'t^aCurve', plateB:'t^bCurve', dotGain:'v + gain*v*(1-v)*1.3 (largest at 50%)', fittedBy:'eye, not measured from prints'},
-        screen:{am:'(u,w)=rotate(x,y,angle)/pitch; (u,w) += dotPositionJitter*2*(vnoise(0.9(u,w))-0.5); v >= 1-shadowFillIn prints solid; v*j < highlightDropout*(0.5+hash) prints nothing; else ink if spot(u,w)+roughness > 1 - v*j, j = 1+jitter*(hash(floor u, floor w)-0.5)*2', spots:{round:'(cos 2πu + cos 2πw + 2)/4', ellipse:'(0.6cos 2πu + 1.4cos 2πw + 2)/4', line:'(cos 2πw + 1)/2'},
+        screen:{am:'(u,w)=rotate(x,y,angle)/pitch; (u,w) += dotPositionJitter*2*(vnoise(0.9(u,w))-0.5); v >= 1-shadowFillIn prints solid; v*j < highlightDropout*(0.5+hash) prints nothing; else ink if spot(u+δu, w+δw) > 1 - vj, vj = v + jitter*(hash(floor u, floor w)-0.5)*2*min(v,1-v), (δu,δw) = rough*1.2px/pitch*2*(vnoise(p/0.35pitch)-0.5) [edge moves a fixed distance]', spots:{round:'(cos 2πu + cos 2πw + 2)/4', ellipse:'(0.6cos 2πu + 1.4cos 2πw + 2)/4', line:'(cos 2πw + 1)/2'},
           fm:'Floyd-Steinberg error diffusion on a grid of cellPx, serpentine, weights 7/16 3/16 5/16 1/16; each on-cell prints a round dot of radius (0.62+0.25*gain)*cellPx', bayer:'8x8 Bayer matrix b; cell on if v > (b+0.5)/64', solids:'v >= 0.999 prints solid'},
-        compose:{paper:'paperRGB*(1-texture*paperNoise)', imperfection:'0.97*max(floor, 1-starvation*smoothstep(0.35,0.85,n))*(1-0.85*grainMask)', multiply:'c *= 1-k*(1-ink)', opaque:'c += (ink-c)*k', trapping:'kB *= 1-(1-inkTrapping)*kA', fibre:'k *= 1-fibreInkHoldBack*paperNoise1.3^2, same page position for every plate; edges: every plate is sampled at p + 7*fibreInkHoldBack*(vnoise(p/1.1)-0.5, vnoise\'(p/1.1)-0.5) CSS px, the same fibre field on every plate; small text is not displaced', k:'coverage*imperfection; plate B sampled at R(-rotation)·(p - misregister - centre)/(1+stretch_x, 1+stretch_y) + centre, stretch_y = paperStretch, stretch_x = paperStretch/3'}},
+        compose:{paper:'paperRGB*(1-texture*paperNoise)', imperfection:'0.97*max(floor, 1-starvation*smoothstep(0.35,0.85,n))*(1-0.85*grainMask)', multiply:'c *= 1-k*(1-ink)', opaque:'c += (ink-c)*k', trapping:'kB *= 1-(1-inkTrapping)*kA', fibre:'k *= 1-fibreInkHoldBack*paperNoise1.3^2, same page position for every plate; edges: every plate is sampled at p + 4*fibreInkHoldBack*(vnoise(p/1.6)-0.5, vnoise\'(p/1.6)-0.5) CSS px, the same fibre field on every plate; small text is not displaced', k:'coverage*imperfection; plate B sampled at R(-rotation)·(p - misregister - centre)/(1+stretch_x, 1+stretch_y) + centre, stretch_y = paperStretch, stretch_x = paperStretch/3'}},
       rules:['Flat shapes get a tone field before screening, never a flat fill', 'One screen per ink across the page: same pitch and angle everywhere', 'Starvation lightens ink, never below the floor; no white holes', 'Grain is clustered and smaller than 0.3 x pitch']}, null, 2);
   }
   let raf = 0, slow = 0;

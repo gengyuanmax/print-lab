@@ -928,16 +928,19 @@ function screen(pl, n, type, cell, angDeg, idx, nz, shape, wear = 0, geo = 'grid
         // the smallest dots do not image at all (highlight dropout) and the darkest areas fill in solid
         u += dv*.22*(cNoise(u*.9 + 3.1, w*.9, 11 + idx) - .5)*2; w += dv*.22*(cNoise(u*.9, w*.9 + 7.3, 23 + idx) - .5)*2;
         const h = cHash(Math.floor(u), Math.floor(w), 5 + idx*31);
-        vv = v*(1 + dv*.3*(h - .5)*2);
+        // size jitter acts on whichever is smaller, the dot or the paper hole, so shadow holes vary as much as highlight dots do
+        vv = v + dv*.3*(h - .5)*2*Math.min(v, 1 - v);
         // known limit: the dropout test uses this pixel's tone, not the tone at the dot's centre, so in a gradient a dot right at the
         // threshold can lose only part of itself; real dropout removes whole dots
         if (vv < dv*.06*(.5 + h)) vv = 0; else if (vv > 1 - dv*.08) vv = 1;
-        er = dv;   // the edge noise is only sampled near a dot edge (below)
+        er = dv*1.2*(n/S)/cell;   // rough edge: a positional wobble of up to about 1.2 page px, in cell units (sampled only near an edge, below)
       }
       let on;
       if (vv<=0) on = false; else if (vv>=1) on = true;
-      else if (type!=='hatch'){ const t = type==='am' ? spotT(shape, u, w) : (1-Math.cos(TAU*w))/2, d = vv - t;
-        on = (er && d > -.09 && d < .09) ? d > er*.16*(cNoise(u*3.2, w*3.2, 41 + idx) - .5) : d > 0; }
+      else if (type!=='hatch'){ const sp = (a, b) => type==='am' ? spotT(shape, a, b) : (1-Math.cos(TAU*b))/2, d = vv - sp(u, w);
+        // the edge moves by a fixed distance (not a fixed threshold offset, which would tear up the small dots and holes where the spot function is flat)
+        if (er && d > -2.3*er && d < 2.3*er){ const u2 = u + er*(cNoise(u*3.2, w*3.2, 41 + idx) - .5)*2, w2 = w + er*(cNoise(u*3.2 + 5.3, w*3.2, 43 + idx) - .5)*2; on = vv > sp(u2, w2); }
+        else on = d > 0; }
       else { const t1=(1-Math.cos(TAU*w))/2, t2=(1-Math.cos(TAU*u))/2; on = Math.min(1,v*1.7)>t1*.95+.03 || (v>.42 && (v-.42)/.58*1.1>t2); }
       out[i]=on?1:0;
     }
